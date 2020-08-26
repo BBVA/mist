@@ -1,0 +1,17 @@
+
+// Builtin actions
+BuiltIn:
+    BuiltExec | BuiltPrint | BuiltCall
+;
+
+BuiltExec:
+    'exec' command=STRING
+;
+
+BuiltPrint:
+    'print' text=STRING
+;
+
+BuiltCall:
+    'call' function=ID params*=STRING
+;

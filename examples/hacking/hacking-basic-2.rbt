@@ -1,0 +1,95 @@
+begin
+
+    def scan {
+
+        inputParams {
+           cliArgs
+        }
+
+        data Ports <- do binary => build {
+            ip
+            port
+        }
+
+        data ScriptsResults <- do bash => build.sh {
+            pepe = json.find("xxx")
+            juan = xml.find("xxx")
+            juan = xml.find("xxx")
+        }
+
+        data ports {
+            pepe = json.find("xxx")
+            juan = xml.find("xxx")
+            juan = xml.find("xxx")
+        }
+    }
+
+    parallel {
+
+        [where XXXX | watch XXXX | query QUERY ] do [scan "127.0.0.1"] [-> nmapresult] {
+            where nmapresult.port == 22 do {
+                nmapresult.ports => interestingPorts.ports
+            }
+        }
+
+        where a == 1 do scan "127.0.0.1" {
+            exec "hola mundo"
+            call scan
+            print "asdfsad"
+        }
+
+        query from port.pepe == 90 {
+            exec "hola mundo"
+            print "adfasdf"
+        }
+    }
+
+    watch ports.pepe -> event {
+
+        v = select ip from event where port == 80
+
+        query from event where port == 80 {
+            print "hola mundo"
+            exec "/usr/bin/nmap -n -p 80 $event.ip"
+        }
+    }
+
+
+
+
+        iports <- interestingPorts[nmapresult]
+
+        do scan on nmapresult.finish and sqlmapresult.finish {
+            ip <- select ip from nmapresult where port == 80 or port 9000
+        }
+        when nmapresult[tcp.port.open == 1000] OR sqlmapresult {
+            call "nmapresult" "10.0.0.1"
+        }
+    }
+
+end
+
+xml.xpath("xxx") -> XXXX
+
+XXXX.asdf
+
+
+json.search("xxx") -> aaa
+
+aaaa.sdafasd
+
+data host {
+    ports:int <- json.search("xxx")
+    vulns: list[str] <- xml.search("xxx")
+     <- xml.search("xxx")
+}
+
+
+end
+
+
+-- parsing
+-- chain
+-- lanzar paralelo
+-- catalogo
+-- facil de entender
