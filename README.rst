@@ -1,4 +1,4 @@
-.. image:: https://raw.githubusercontent.com/cr0hn/mist/master/images/mole-logo.png
+.. image:: https://raw.githubusercontent.com/cr0hn/mist/master/assets/images/mole-logo.png
 
 `MIST` is an easy way to collect your `microservices` definition and build a deployment config.
 
