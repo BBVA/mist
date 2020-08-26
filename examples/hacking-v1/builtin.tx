@@ -1,0 +1,29 @@
+
+// Builtin actions
+BuiltIn:
+    BuiltExec | BuiltPrint | BuiltCall
+;
+
+BuiltExec:
+    'exec' command=STRING
+;
+
+BuiltPrint:
+    'print' text=STRING
+;
+
+BuiltCall:
+    'call' function=ID params*=STRING
+;
+
+BuiltCall:
+    'regex' function=ID params*=STRING
+;
+
+BuiltCall:
+    'searchInText' function=ID text=STRING params*=STRING
+;
+
+BuiltCall:
+    'searchInXML' function=ID text=STRING params*=STRING
+;

@@ -1,0 +1,50 @@
+begin
+
+    parallel {
+    }
+
+    scan "127.0.0.1" -> nmapresult {
+        when xxxx {
+            exec "ls"
+            print "hola mundo"
+
+            call sqlmap "sadf" "asdf" "asdf"
+        }
+
+        when SADFASDFSD {
+            exec "rm -rf /"
+        }
+
+        exec "echo 'ejecutando en el exec'"
+    }
+
+
+    sqlmap "127.0.0.1" -> sqlmapresult {
+        print "haciendo un sqlmap"
+    }
+
+
+xml.xpath("xxx") -> XXXX
+
+XXXX.asdf
+
+
+json.search("xxx") -> aaa
+
+aaaa.sdafasd
+
+data host {
+    ports:int <- json.search("xxx")
+    vulns: list[str] <- xml.search("xxx")
+     <- xml.search("xxx")
+}
+
+
+end
+
+
+-- parsing
+-- chain
+-- lanzar paralelo
+-- catalogo
+-- facil de entender

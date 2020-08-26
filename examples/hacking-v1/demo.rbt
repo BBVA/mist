@@ -1,0 +1,38 @@
+begin
+
+    struct data {
+        host
+    }
+
+    parallel {
+        do ping -> ping-results {
+            if  ping-results.dst_host == "127.0.0.2" {
+                ping-results.dst_host -> data.host
+            }
+        }
+
+        do nmap {
+            input {
+                ip => "127.0.0.1"
+                enableScripts => true
+                noDns => true
+            }
+            output {
+                console => output-console
+                xml => output-xml
+                json => json-xml
+            }
+
+            do {
+                if "127.0.0.2" in file-output.hosts {
+                    file-output.hosts["127.0.0.2"] -> data.host
+                }
+            }
+        }
+    }
+
+    watch data.host {
+        save data.dst_host -> "/home/Dani/hosts.txt"
+    }
+
+end

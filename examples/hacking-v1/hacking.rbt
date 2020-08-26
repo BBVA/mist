@@ -1,0 +1,29 @@
+begin {
+    metadata {
+        name = "hola"
+        tags = uno, dos, tres
+    }
+
+    scan $terminal.params {
+
+        definitions {
+            results <- $terminal.out
+            errors <- $terminal.errors
+            counter <- 0
+
+        }
+
+        when TCP.80 AND IP.src = "xx.x.x.x" {
+
+        }
+
+        on error {
+
+        }
+
+        on finish {
+        }
+
+    }
+
+}
