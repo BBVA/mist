@@ -1,6 +1,6 @@
-.. image:: https://raw.githubusercontent.com/cr0hn/franki/master/images/franki-logo-200x200.png
+.. image:: https://raw.githubusercontent.com/cr0hn/mist/master/images/mole-logo.png
 
-`Franki` is an easy way to collect your `microservices` definition and build a deployment config.
+`MIST` is an easy way to collect your `microservices` definition and build a deployment config.
 
 
 Development output
