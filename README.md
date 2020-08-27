@@ -1,6 +1,6 @@
 ![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/doc/images/logo-280x280.png)
 
-`MIST` a high level programing language focussed in security
+`MIST` a high level programming language focussed in security
 
 # Install
 
