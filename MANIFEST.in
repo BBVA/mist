@@ -1,4 +1,4 @@
-include requirements.txt README.rst VERSION
+include requirements.txt README.rst VERSION mist/models/*
 
 recursive-exclude * __pycache__
 recursive-exclude * *.pyc

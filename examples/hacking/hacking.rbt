@@ -4,7 +4,7 @@ begin {
         tags = uno, dos, tres
     }
 
-    scan $terminal.params {
+    scan $terminal.params{
 
         definitions {
             results <- $terminal.out

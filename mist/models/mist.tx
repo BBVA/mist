@@ -1,0 +1,55 @@
+import builtin
+
+Program:
+  'begin'
+        commands*=Command
+  'end'
+;
+
+Command:
+  ScanCommand | SQLMapCommand | Actions | Parallel
+;
+
+Parallel:
+   'parallel' '{'
+    commands*=Command
+   '}'
+;
+
+ScanCommand:
+  'scan' target=STRING '->' result=ID '{'
+   actions*=Actions
+  '}'
+;
+
+SQLMapCommand:
+  'sqlmap' target=STRING ('->' result=ID)? '{'
+   actions*=Actions
+  '}'
+;
+
+Actions:
+    WhenAction | BuiltIn | FlowControl
+;
+
+WhenAction:
+    'when' condition=ID '{'
+        when_commands*=BuiltIn
+    '}'
+;
+
+// FlowControl
+FlowControl:
+    For
+;
+
+For:
+    'for' from_data=ID '->' tmp_var=ID '{'
+     commands*=Command
+    '}'
+;
+
+
+Comment:
+  /\/\/.*$/
+;

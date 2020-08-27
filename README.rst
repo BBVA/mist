@@ -1,30 +1,25 @@
-.. image:: https://raw.githubusercontent.com/cr0hn/mist/master/assets/images/mole-logo.png
+!(MIST LOGO)[https://raw.githubusercontent.com/cr0hn/mist/master/assets/images/logo.png]
 
-`MIST` is an easy way to collect your `microservices` definition and build a deployment config.
+`MIST` a high level programing language focussed in security
+
+# Install
+
+```bash
+> pip install mist-lang
+```
+
+# Developers
+
+After clone the repository, you can urn `MIST` without install them:
+
+```bash
+> git clone https://github.com/cr0hn/mist
+> cd mist
+> python3 -m mist -h
+```
+
+# License
+
+This project is distributed under `BSD license <https://github.com/cr0hn/mist/blob/master/LICENSE>`_
 
 
-Development output
-==================
-
-Currently supported:
-
-- Docker-compose
-- Swarm Mode Docker-compose
-
-Install
-=======
-
-.. code-block:: console
-
-    $ pip install franki
-
-License
-=======
-
-This project is distributed under `BSD license <https://github.com/cr0hn/realtime-redis-backup/blob/master/LICENSE>`_
-
-
-Acknowledgements
-================
-
-Logo thanks to `pikisuperstar <https://www.freepik.com/free-photos-vectors/background>`_.
