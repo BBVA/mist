@@ -584,3 +584,6 @@ pip-selfcheck.json
 .jekyll-metadata
 .jekyll-cache
 _site
+
+# TextX
+*.dot

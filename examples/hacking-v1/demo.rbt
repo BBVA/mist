@@ -1,13 +1,30 @@
 begin
 
-    struct data {
-        host
+    data myHosts {
+        Host
+        Status
     }
 
     parallel {
-        do ping -> ping-results {
-            if  ping-results.dst_host == "127.0.0.2" {
-                ping-results.dst_host -> data.host
+        do ping {
+            input {
+                ip <= "127.0.0.2"
+            }
+            output {
+                result
+                console
+            }
+            then {
+                ip, result => myHosts
+                # ip, result => myHosts(Host, Status)
+                
+
+                # check result is Ok {
+                #     ip, "Up" => myHosts
+                # }
+                # check result is Error {
+                #     ip, "Down" => myHosts(Host, Status)
+                # }
             }
         }
 
@@ -22,10 +39,15 @@ begin
                 xml => output-xml
                 json => json-xml
             }
-
-            do {
-                if "127.0.0.2" in file-output.hosts {
-                    file-output.hosts["127.0.0.2"] -> data.host
+            then {
+                searchInText  {
+                    input {
+                        find => "127.0.0.2"
+                        into => "file-output.hosts"
+                    }
+                    then {
+                        "127.0.0.2" => data.host
+                    }
                 }
             }
         }
