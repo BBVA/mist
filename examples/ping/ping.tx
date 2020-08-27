@@ -1,0 +1,42 @@
+Program:
+  commands*=Command
+;
+
+Command:
+  PingCommand | SaveCommand | DataCommand | CheckCommand
+;
+
+DataCommand:
+  'data' name=ID '{'
+    params*=ID
+  '}'
+;
+
+SaveCommand:
+  'save' p1=ID ',' p2=STRING '=>' target=ID ('(' targetParams*=ID ')')?
+;
+
+PingCommand:
+  'ping' '{' 
+    'input' '{'
+      ip=ID '<=' STRING
+    '}'
+    'output' '{'
+      'result' 
+      'console' '=>' consoleRename=ID
+    '}'
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;
+
+CheckCommand:
+  'check' var=ID 'is' result=ID '{'
+    commands*=Command
+  '}'
+;
+
+Comment:
+  /#.*$/
+;
