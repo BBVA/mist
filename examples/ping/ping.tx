@@ -12,14 +12,18 @@ DataCommand:
   '}'
 ;
 
+IDorSTRING:
+  ID | STRING
+;
+
 SaveCommand:
-  'save' p1=ID ',' p2=STRING '=>' target=ID ('(' targetParams*=ID ')')?
+  'save' source*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
 ;
 
 PingCommand:
   'ping' '{' 
     'input' '{'
-      ip=ID '<=' STRING
+      'ip' '<=' ip*=STRING
     '}'
     'output' '{'
       'result' 

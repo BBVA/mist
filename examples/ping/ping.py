@@ -6,7 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class PingCommand:
     parent: object
-    ip: str
+    ip: list
     consoleRename: str
     commands: list
 
@@ -32,20 +32,19 @@ class CheckCommand:
     commands: list
 
     def run(self, spaces: int = 0):
-        print(f"-> Check {self.var} is {self.result}")
+        print(f"-> Check that {self.var} is {self.result}")
         for c in self.commands:
             c.run()
 
 @dataclass
 class SaveCommand:
     parent: object
-    p1: str
-    p2: str
+    source: list
     target: str
-    targetParams: list
+    params: list
 
     def run(self, spaces: int = 0):
-        print(f"-> Save {self.p1} {self.p2} to {self.target}")
+        print(f"-> Save {self.source} to {self.target}({self.params})")
 
 def process_scan(model):
     print(f"Target: {model.target}")
