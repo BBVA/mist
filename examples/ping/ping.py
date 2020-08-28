@@ -1,19 +1,51 @@
 from textx import metamodel_from_file
 
 from dataclasses import dataclass
+import subprocess
 
+stack = []
+mapped = {}
 
 @dataclass
 class PingCommand:
     parent: object
-    ip: list
+    ip: str
+    resultRename: str
     consoleRename: str
     commands: list
 
     def run(self, spaces: int = 0):
         print(f"-> Doing Ping to {self.ip}")
+        process = subprocess.Popen(['ping', '-c 1', self.ip], 
+                           stdout=subprocess.PIPE,
+                           universal_newlines=True)
+        while True:
+            output = process.stdout.readline()
+            console = output
+            print(output.strip())
+            return_code = process.poll()
+            if return_code is not None:
+                print('RETURN CODE', return_code)
+                # Process has finished, read rest of the output 
+                for output in process.stdout.readlines():
+                    print(output.strip())
+                    console = console + output
+                result = "Ok" if return_code == 0 else "Error"
+                stack.append({
+                    "result": result,
+                    "console": console
+                })
+                if self.resultRename != "":
+                    mapped[self.resultRename] = result
+                if self.consoleRename != "":
+                    mapped[self.consoleRename] = console
+                break
+        #print(f"stack before then {stack}")
         for c in self.commands:
             c.run()
+        stack.pop()
+        #print(f"stack after then {stack}")
+        #print(f"mapped after then {mapped}")
 
 @dataclass
 class DataCommand:
@@ -24,6 +56,14 @@ class DataCommand:
     def run(self, spaces: int = 0):
         print(f"-> Define data {self.name}")
 
+def getVar(var):
+    #print(f"Find Var: {var}")
+    if var in stack[len(stack)-1]:
+        return stack[len(stack)-1][var]
+    if var in mapped:
+        return mapped[var]
+    return None
+
 @dataclass
 class CheckCommand:
     parent: object
@@ -33,8 +73,9 @@ class CheckCommand:
 
     def run(self, spaces: int = 0):
         print(f"-> Check that {self.var} is {self.result}")
-        for c in self.commands:
-            c.run()
+        if getVar(self.var) == self.result:
+            for c in self.commands:
+                c.run()
 
 @dataclass
 class SaveCommand:

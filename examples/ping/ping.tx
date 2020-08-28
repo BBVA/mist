@@ -23,11 +23,11 @@ SaveCommand:
 PingCommand:
   'ping' '{' 
     'input' '{'
-      'ip' '<=' ip*=STRING
+      'ip' '<=' ip=STRING
     '}'
     'output' '{'
-      'result' 
-      'console' '=>' consoleRename=ID
+      'result' ('=>' resultRename=ID)?
+      'console' ('=>' consoleRename=ID)?
     '}'
     'then' '{'
       commands*=Command
