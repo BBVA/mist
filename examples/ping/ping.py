@@ -80,12 +80,12 @@ class CheckCommand:
 @dataclass
 class SaveCommand:
     parent: object
-    source: list
+    sources: list
     target: str
     params: list
 
     def run(self, spaces: int = 0):
-        print(f"-> Save {self.source} to {self.target}({self.params})")
+        print(f"-> Save {self.sources} to {self.target}({self.params})")
 
 def process_scan(model):
     print(f"Target: {model.target}")

@@ -13,11 +13,11 @@ DataCommand:
 ;
 
 IDorSTRING:
-  ID | STRING
+  id=ID | string=STRING
 ;
 
 SaveCommand:
-  'save' source*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
+  sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
 ;
 
 PingCommand:
