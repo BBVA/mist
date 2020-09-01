@@ -60,7 +60,14 @@ Available commands are:
 
         parsed_args = parser.parse_args(sys.argv[2:])
 
-        check(parsed_args)
+        try:
+            check(parsed_args)
+
+            print(f"[*] File '{parsed_args.MIST_FILE}' is ok")
+        except Exception as e:
+
+            print(f"[!] Parsing error:")
+            print(str(e))
 
 def main():
 
