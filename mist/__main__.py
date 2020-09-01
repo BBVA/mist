@@ -1,31 +1,66 @@
 import os
 import argparse
 import platform
+import sys
+
 import pkg_resources
 
-import textx
-
-class MistException(Exception):
-    pass
-
-def execute(parsed: argparse.Namespace):
-    # check if input file exits
-    mist_file = parsed.MIST_FILE
-
-    if not os.path.exists(mist_file):
-        raise MistException(f"File '{mist_file}' doesn't exits")
-
-    here = os.path.dirname(__file__)
-
-    model_file = os.path.join(here, "models", "mist.tx")
-    mist_model = textx.metamodel_from_file(model_file)
+from .interpreter import execute, check
 
 
-    #
-    # TODO
-    #
-    # hacking_model = mist_model.model_from_file(mist_file)
-    # interpret(hacking_model)
+class Mist(object):
+
+    def __init__(self):
+        parser = argparse.ArgumentParser(
+            description='MIST - programing language for security made easy',
+            usage='''mist <command> [<args>]
+
+Available commands are:
+   version    Displays installed MIST version
+   exec       Run a .mist file (default option)
+   check      Check a .mist file without execute them
+''')
+        parser.add_argument('command', help='Subcommand to run')
+        # parse_args defaults to [1:] for args, but you need to
+        # exclude the rest of the args too, or validation will fail
+        parsed_args = parser.parse_args(sys.argv[1:2])
+
+        if not hasattr(self, parsed_args.command):
+            self.exec()
+        else:
+            # use dispatch pattern to invoke method with same name
+            getattr(self, parsed_args.command)()
+
+    def version(self):
+        print(f"version: {pkg_resources.get_distribution('mist').version}")
+        print()
+        exit()
+
+    def exec(self):
+        parser = argparse.ArgumentParser(
+            description='execute a .mist file')
+        parser.add_argument('MIST_FILE')
+
+        if sys.argv[1] == "exec":
+            in_args = sys.argv[2:]
+        else:
+            in_args = sys.argv[1:]
+
+        parsed_args = parser.parse_args(in_args)
+
+        execute(parsed_args)
+
+
+
+    def check(self):
+        parser = argparse.ArgumentParser(
+            description='check a .mist file without execute')
+        # NOT prefixing the argument with -- means it's not optional
+        parser.add_argument('MIST_FILE')
+
+        parsed_args = parser.parse_args(sys.argv[2:])
+
+        check(parsed_args)
 
 def main():
 
@@ -39,28 +74,7 @@ def main():
         print("   $ docker run --rm cr0hn/mist -h")
         exit(1)
 
-    parser = argparse.ArgumentParser(
-        description='MIST - programing language for security made easy'
-    )
-
-    parser.add_argument("MIST_FILE")
-    parser.add_argument("--version",
-                        action="store_true",
-                        default=False,
-                        help="show version")
-
-    parsed = parser.parse_args()
-
-    if parsed.version:
-        print(f"version: {pkg_resources.get_distribution('mist').version}")
-        print()
-        exit()
-
-    try:
-        execute(parsed)
-    except MistException as e:
-        print(f"[!] {e}")
-        exit(1)
+    Mist()
 
 
 if __name__ == '__main__':

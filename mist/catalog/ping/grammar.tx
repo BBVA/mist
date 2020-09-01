@@ -1,0 +1,14 @@
+PingCommand:
+  'ping' '{'
+    'input' '{'
+      'ip' '<=' ip=STRING
+    '}'
+    'output' '{'
+      'result' ('=>' resultRename=ID)?
+      'console' ('=>' consoleRename=ID)?
+    '}'
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;

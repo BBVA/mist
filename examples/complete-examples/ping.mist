@@ -1,0 +1,28 @@
+# Name: Ping
+# Description: Ping some host and save result
+# Tags: Ping, Network
+
+data myHosts {
+    Host
+    Status
+}
+
+ping {
+    input {
+        ip <= "127.0.0.1"
+    }
+    output {
+        result
+        console => pingOutput
+    }
+    then {
+        check result is Ok {
+            ip 'Up' => myHosts
+        }
+        check result is Error {
+            ip 'Down' => myHosts(Host Status)
+        }
+    }
+}
+
+dump myHosts

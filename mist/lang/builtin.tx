@@ -1,0 +1,15 @@
+BuiltIn:
+    BuiltExec | BuiltPrint | BuiltCall
+;
+
+BuiltExec:
+    'exec' command=STRING
+;
+
+BuiltPrint:
+    'print' text=STRING
+;
+
+BuiltCall:
+    'call' fn=ID params*=STRING
+;

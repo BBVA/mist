@@ -19,7 +19,7 @@ class PingCommand:
 
     def run(self, spaces: int = 0):
         print(f"-> Doing Ping to {self.ip}")
-        process = subprocess.Popen(['ping', '-c 1', '-W 1', self.ip], 
+        process = subprocess.Popen(['ping', '-c 1', '-W 1', self.ip],
                            stdout=subprocess.PIPE,
                            universal_newlines=True)
         while True:
@@ -29,7 +29,7 @@ class PingCommand:
             return_code = process.poll()
             if return_code is not None:
                 print('RETURN CODE', return_code)
-                # Process has finished, read rest of the output 
+                # Process has finished, read rest of the output
                 for output in process.stdout.readlines():
                     print(output.strip())
                     console = console + output
@@ -82,11 +82,11 @@ class SaveCommand:
             for i in self.params:
                 sqlCommand += f"{i},"
             sqlCommand = sqlCommand[:-1]
-            sqlCommand += ") VALUES(" 
+            sqlCommand += ") VALUES("
         else:
             sqlCommand += "VALUES(null, "
         for i in self.sources:
-            value = getVar(i.id) if i.id != "" else i.string
+            value = get_var(i.id) if i.id != "" else i.string
             sqlCommand += f"'{value}',"
         sqlCommand = sqlCommand[:-1]
         sqlCommand += ")"
@@ -109,7 +109,7 @@ class DumpCommand:
         for row in rows:
             print(row)
 
-def getVar(var):
+def get_var(var):
     # print(f"Find Var: {var}")
     # print(f"Stack: {stack}")
     if var in stack[len(stack)-1]:
@@ -127,7 +127,7 @@ class CheckCommand:
 
     def run(self, spaces: int = 0):
         print(f"-> Check that {self.var} is {self.result}")
-        if getVar(self.var) == self.result:
+        if get_var(self.var) == self.result:
             for c in self.commands:
                 c.run()
 

@@ -1,0 +1,35 @@
+Program:
+  commands*=Command
+;
+
+Command:
+  BuiltIn | DumpCommand | SaveCommand | DataCommand | CheckCommand | ##MODULES##
+;
+
+DataCommand:
+  'data' name=ID '{'
+    params*=ID
+  '}'
+;
+
+IDorSTRING:
+  id=ID | string=STRING
+;
+
+DumpCommand:
+  'dump' target=ID
+;
+
+SaveCommand:
+  sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
+;
+
+CheckCommand:
+  'check' var=ID 'is' result=ID '{'
+    commands*=Command
+  '}'
+;
+
+Comment:
+  /#.*$/
+;

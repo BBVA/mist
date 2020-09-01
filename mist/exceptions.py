@@ -1,0 +1,2 @@
+class MistException(Exception):
+    pass
