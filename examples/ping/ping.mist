@@ -16,8 +16,6 @@ ping {
         console => pingOutput
     }
     then {
-        # ip result => myHosts
-        # ip result => myHosts(Host Status)
         check result is Ok {
             ip 'Up' => myHosts
         }
@@ -26,3 +24,5 @@ ping {
         }
     }
 }
+
+dump myHosts

@@ -2,6 +2,9 @@ from textx import metamodel_from_file
 
 from dataclasses import dataclass
 import subprocess
+import sqlite3
+
+con = sqlite3.connect(':memory:')
 
 stack = []
 mapped = {}
@@ -16,7 +19,7 @@ class PingCommand:
 
     def run(self, spaces: int = 0):
         print(f"-> Doing Ping to {self.ip}")
-        process = subprocess.Popen(['ping', '-c 1', self.ip], 
+        process = subprocess.Popen(['ping', '-c 1', '-W 1', self.ip], 
                            stdout=subprocess.PIPE,
                            universal_newlines=True)
         while True:
@@ -32,6 +35,7 @@ class PingCommand:
                     console = console + output
                 result = "Ok" if return_code == 0 else "Error"
                 stack.append({
+                    "ip": self.ip,
                     "result": result,
                     "console": console
                 })
@@ -54,10 +58,60 @@ class DataCommand:
     params: list
 
     def run(self, spaces: int = 0):
-        print(f"-> Define data {self.name}")
+        sqlCommand = f"CREATE TABLE {self.name} (id integer PRIMARY KEY AUTOINCREMENT, "
+        for i in self.params:
+            sqlCommand += f"{i} text,"
+        sqlCommand = sqlCommand[:-1]
+        sqlCommand += ")"
+        print(f"-> Define data: {sqlCommand}")
+        cursorObj = con.cursor()
+        cursorObj.execute(sqlCommand)
+        con.commit()
+
+@dataclass
+class SaveCommand:
+    parent: object
+    sources: list
+    target: str
+    params: list
+
+    def run(self, spaces: int = 0):
+        sqlCommand = f"INSERT INTO {self.target} "
+        if len(self.params)>0:
+            sqlCommand += "("
+            for i in self.params:
+                sqlCommand += f"{i},"
+            sqlCommand = sqlCommand[:-1]
+            sqlCommand += ") VALUES(" 
+        else:
+            sqlCommand += "VALUES(null, "
+        for i in self.sources:
+            value = getVar(i.id) if i.id != "" else i.string
+            sqlCommand += f"'{value}',"
+        sqlCommand = sqlCommand[:-1]
+        sqlCommand += ")"
+        print(f"-> Save: {sqlCommand}")
+        cursorObj = con.cursor()
+        cursorObj.execute(sqlCommand)
+        con.commit()
+
+@dataclass
+class DumpCommand:
+    parent: object
+    target: str
+
+    def run(self, spaces: int = 0):
+        print(f"-> Dump {self.target}")
+        cursorObj = con.cursor()
+        sqlCommand = f"SELECT * FROM {self.target}"
+        cursorObj.execute(sqlCommand)
+        rows = cursorObj.fetchall()
+        for row in rows:
+            print(row)
 
 def getVar(var):
-    #print(f"Find Var: {var}")
+    # print(f"Find Var: {var}")
+    # print(f"Stack: {stack}")
     if var in stack[len(stack)-1]:
         return stack[len(stack)-1][var]
     if var in mapped:
@@ -77,16 +131,6 @@ class CheckCommand:
             for c in self.commands:
                 c.run()
 
-@dataclass
-class SaveCommand:
-    parent: object
-    sources: list
-    target: str
-    params: list
-
-    def run(self, spaces: int = 0):
-        print(f"-> Save {self.sources} to {self.target}({self.params})")
-
 def process_scan(model):
     print(f"Target: {model.target}")
     for action in model.actions:
@@ -105,7 +149,8 @@ def main():
             PingCommand,
             DataCommand,
             CheckCommand,
-            SaveCommand
+            SaveCommand,
+            DumpCommand,
         ])
     hacking_model = hacking_mm.model_from_file(
         'ping.mist'
