@@ -2,8 +2,8 @@ import subprocess
 
 from dataclasses import dataclass
 
-import mist.sdk.stack as s
-import mist.sdk.mapping as m
+from mist.sdk import stack, mapped
+
 
 @dataclass
 class PingCommand:
@@ -30,20 +30,21 @@ class PingCommand:
                     print(output.strip())
                     console = console + output
                 result = "Ok" if return_code == 0 else "Error"
-                s.stack.append({
+
+                stack.append({
                     "ip": self.ip,
                     "result": result,
                     "console": console
                 })
                 if self.resultRename != "":
-                    m.mapped[self.resultRename] = result
+                    mapped.set(self.resultRename, result)
                 if self.consoleRename != "":
-                    m.mapped[self.consoleRename] = console
+                    mapped.set(self.consoleRename, console)
                 break
         #print(f"stack before then {stack}")
         for c in self.commands:
             c.run()
-        s.stack.pop()
+        stack.pop()
         #print(f"stack after then {stack}")
         #print(f"mapped after then {mapped}")
 

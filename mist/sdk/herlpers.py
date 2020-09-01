@@ -1,9 +1,10 @@
-def get_var(var):
-    import mist.sdk.stack as s
-    import mist.sdk.mapping as m
+from mist.sdk.mapping import mapped
+from mist.sdk.stack import stack
 
-    if var in s.stack[len(s.stack)-1]:
-        return s.stack[len(s.stack)-1][var]
-    if var in m.mapped:
-        return m.mapped[var]
+def get_var(var):
+
+    if var in stack[len(stack)-1]:
+        return stack[len(stack)-1][var]
+    if var in mapped:
+        return mapped[var]
     return None

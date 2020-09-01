@@ -1,7 +1,6 @@
-import os
+import sys
 import argparse
 import platform
-import sys
 
 import pkg_resources
 

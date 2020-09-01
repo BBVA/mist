@@ -35,10 +35,10 @@ class _DB:
     def insert(self, table: str, values: List[str], *, fields=None):
         query = f'''
         INSERT INTO {table}
-        {f"({', '.join(fields)})" if fields else '' }
+        {f"({', '.join(fields)})" if fields else ''}
         VALUES (null, {', '.join(['?' for _ in range(len(values))])})
         '''
-        # VALUES ({', '.join(values)})
+
         with cm(self.connection) as cur:
             cur.execute(query, values)
 
