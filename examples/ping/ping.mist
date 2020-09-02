@@ -17,10 +17,10 @@ ping {
     }
     then {
         check result is Ok {
-            ip 'Up' => myHosts
+            put ip 'Up' => myHosts
         }
         check result is Error {
-            ip 'Down' => myHosts(Host Status)
+            put ip 'Down' => myHosts(Host Status)
         }
     }
 }

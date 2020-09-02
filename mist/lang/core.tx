@@ -21,7 +21,7 @@ DumpCommand:
 ;
 
 SaveCommand:
-  sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
+  'put' sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
 ;
 
 CheckCommand:
