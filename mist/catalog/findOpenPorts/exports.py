@@ -1,21 +1,30 @@
 import subprocess
+import tempfile
+from xml.dom import minidom
 
 from dataclasses import dataclass
 
-from mist.sdk import stack, mapped
+from mist.sdk import stack, mapped, get_var
 
 
 @dataclass
-class PingCommand:
+class FindOpenPortsCommand:
     parent: object
     ip: str
-    resultRename: str
+    ports: str
+    openPortsRename: str
     consoleRename: str
     commands: list
 
     def run(self, spaces: int = 0):
-        print(f"-> Doing Ping to {self.ip}")
-        process = subprocess.Popen(['ping', '-c 1', '-W 1', self.ip],
+        ip = self.ip.string if self.ip.id == "" else get_var(self.ip.id)
+        if isinstance(ip, list): 
+            ip = ip[0]
+        print(f"-> Doing findOpenPorts to {ip}")
+        tmpFile = tempfile.NamedTemporaryFile()
+        tmpFile.close()
+        print(tmpFile.name)
+        process = subprocess.Popen(['nmap', '-p', self.ports, '--open', ip, '-oX', tmpFile.name],
                            stdout=subprocess.PIPE,
                            universal_newlines=True)
         while True:
@@ -30,14 +39,22 @@ class PingCommand:
                     print(output.strip())
                     console = console + output
                 result = "Ok" if return_code == 0 else "Error"
+                #Parse xml output to find ports
+                mydoc = minidom.parse(tmpFile.name)
+                items = mydoc.getElementsByTagName('port')
+                openPorts = []
+                for elem in items:
+                    openPorts.append(elem.attributes['portid'].value)                
 
                 stack.append({
-                    "ip": self.ip,
+                    "ip": ip,
+                    "ports": self.ports,
                     "result": result,
+                    "openPorts": ','.join(openPorts),
                     "console": console
                 })
-                if self.resultRename != "":
-                    mapped.set(self.resultRename, result)
+                if self.openPortsRename != "":
+                    mapped.set(self.openPortsRename, openPorts)
                 if self.consoleRename != "":
                     mapped.set(self.consoleRename, console)
                 break
@@ -45,6 +62,7 @@ class PingCommand:
             c.run()
         stack.pop()
 
+
 exports = [
-    PingCommand
+    FindOpenPortsCommand
 ]
