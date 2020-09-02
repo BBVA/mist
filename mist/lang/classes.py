@@ -62,5 +62,16 @@ class CheckCommand:
             for c in self.commands:
                 c.run()
 
+@dataclass
+class BuiltPrint:
+    parent: object
+    text: str
 
-exports = [DataCommand, SaveCommand, DumpCommand, CheckCommand]
+    def run(self, spaces: int = 0):
+        if self.text.id == "":
+            print(self.text.string)
+        else:
+            print(get_var(self.text.id))
+
+
+exports = [DataCommand, SaveCommand, DumpCommand, CheckCommand, BuiltPrint]

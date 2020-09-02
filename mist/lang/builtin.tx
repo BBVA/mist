@@ -7,7 +7,7 @@ BuiltExec:
 ;
 
 BuiltPrint:
-    'print' text=STRING
+    'print' text=IDorSTRING
 ;
 
 BuiltCall:
