@@ -2,7 +2,7 @@ import subprocess
 
 from dataclasses import dataclass
 
-from mist.sdk import stack, mapped
+from mist.sdk import stack, mapped, get_id
 
 
 @dataclass
@@ -13,9 +13,10 @@ class PingCommand:
     consoleRename: str
     commands: list
 
-    def run(self, spaces: int = 0):
-        print(f"-> Doing Ping to {self.ip}")
-        process = subprocess.Popen(['ping', '-c 1', '-W 1', self.ip],
+    def run(self):
+        ip = get_id(self.ip)
+        print(f"-> Doing Ping to {ip}")
+        process = subprocess.Popen(['ping', '-c 1', '-W 1', ip],
                            stdout=subprocess.PIPE,
                            universal_newlines=True)
         while True:
@@ -32,7 +33,7 @@ class PingCommand:
                 result = "Ok" if return_code == 0 else "Error"
 
                 stack.append({
-                    "ip": self.ip,
+                    "ip": ip,
                     "result": result,
                     "console": console
                 })

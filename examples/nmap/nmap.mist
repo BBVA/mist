@@ -12,7 +12,7 @@ readCSV "examples/nmap/myhosts.csv" => myHosts
 iterate myHosts => host {
     findOpenPorts {
         input {
-            ip <= host
+            ip <= host.ip
             ports <= "80,5432,1000,9000"
         }
         output {
@@ -25,5 +25,6 @@ iterate myHosts => host {
     }
 }
  
-dump myHostsChecked
-# writeCSV myHostsChecked => "myHostsChecked.csv"
+#dump myHostsChecked
+
+writeCSV myHostsChecked => "myHostsChecked.csv"

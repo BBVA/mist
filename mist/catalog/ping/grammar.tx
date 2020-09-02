@@ -1,7 +1,7 @@
 PingCommand:
   'ping' '{'
     'input' '{'
-      'ip' '<=' ip=STRING
+      'ip' '<=' ip=IDorSTRING
     '}'
     'output' '{'
       'result' ('=>' resultRename=ID)?

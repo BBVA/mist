@@ -4,7 +4,7 @@ from xml.dom import minidom
 
 from dataclasses import dataclass
 
-from mist.sdk import stack, mapped, get_var
+from mist.sdk import stack, mapped, get_id
 
 
 @dataclass
@@ -16,10 +16,8 @@ class FindOpenPortsCommand:
     consoleRename: str
     commands: list
 
-    def run(self, spaces: int = 0):
-        ip = self.ip.string if self.ip.id == "" else get_var(self.ip.id)
-        if isinstance(ip, list): 
-            ip = ip[0]
+    def run(self):
+        ip = get_id(self.ip)
         print(f"-> Doing findOpenPorts to {ip}")
         tmpFile = tempfile.NamedTemporaryFile()
         tmpFile.close()

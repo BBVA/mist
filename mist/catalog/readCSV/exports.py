@@ -15,9 +15,13 @@ class ReadCSVCommand:
         print(f"-> Reading CSV '{self.fileName}' => {self.target}")
         with open(self.fileName) as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
+            headers = next(reader)
             rows = []
             for row in reader:
-                rows.append(row)
+                item = {}
+                for i,h in enumerate(headers):
+                    item[h]=row[i]
+                rows.append(item)
             mapped.set(self.target, rows)
 
 exports = [
