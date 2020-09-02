@@ -1,0 +1,3 @@
+ReadCSVCommand:
+  'readCSV' fileName=STRING '=>' target=ID
+;

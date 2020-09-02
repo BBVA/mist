@@ -1,0 +1,35 @@
+# Name: Nmap
+# Description: Read file with list of IPs and check for open ports, write the result in csv file
+# Tags: nmap, Network
+
+data myHosts {
+    Host
+}
+
+data myHostsChecked {
+    Host
+    OpenPorts
+}
+
+readCSV "examples/nmap/myhosts.csv" => myHosts
+
+print "hola"
+print myHosts
+#iterate myHosts => host {
+#    print host
+#     findOpenPorts {
+#         input {
+#             ip <= host.ip
+#             ports <= "0-1000"
+#         }
+#         output {
+#             openPorts
+#             console
+#         }
+#         then {
+#             ip openPorts => myHostsChecked
+#         }
+#     }
+#}
+ 
+# writeCSV myHostsChecked => "myHostsChecked.csv"
