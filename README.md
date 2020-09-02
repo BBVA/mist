@@ -1,4 +1,4 @@
-![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/doc/images/logo-280x280.png)
+![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/doc/images/logo-250x250.png)
 
 `MIST` a high level programming language focussed in security
 
