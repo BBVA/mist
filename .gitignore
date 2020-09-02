@@ -587,3 +587,6 @@ _site
 
 # TextX
 *.dot
+
+# Mist
+grammar.tx
