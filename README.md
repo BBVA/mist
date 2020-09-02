@@ -15,6 +15,7 @@ After clone the repository, you can urn `MIST` without install them:
 ```bash
 > git clone https://github.com/cr0hn/mist
 > cd mist
+> python3 -m pip install -r requirements.txt
 > python3 -m mist -h
 ```
 
