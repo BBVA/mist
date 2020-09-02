@@ -13,9 +13,9 @@ data myHostsChecked {
 
 readCSV "examples/nmap/myhosts.csv" => myHosts
 
-print "hola"
-print myHosts
-#iterate myHosts => host {
+iterate myHosts => host {
+    print index
+    print host
 #    print host
 #     findOpenPorts {
 #         input {
@@ -30,6 +30,6 @@ print myHosts
 #             ip openPorts => myHostsChecked
 #         }
 #     }
-#}
+}
  
 # writeCSV myHostsChecked => "myHostsChecked.csv"

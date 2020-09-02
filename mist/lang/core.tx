@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | DumpCommand | SaveCommand | DataCommand | CheckCommand | ##MODULES##
+  BuiltIn | DumpCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | ##MODULES##
 ;
 
 DataCommand:
@@ -26,6 +26,12 @@ SaveCommand:
 
 CheckCommand:
   'check' var=ID 'is' result=ID '{'
+    commands*=Command
+  '}'
+;
+
+IterateCommand:
+  'iterate' var=ID '=>' name=ID '{'
     commands*=Command
   '}'
 ;
