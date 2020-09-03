@@ -2,15 +2,13 @@ import subprocess
 
 from dataclasses import dataclass
 
-from mist.sdk import stack, mapped, get_id
+from mist.sdk import stack, get_id
 
 
 @dataclass
 class PingCommand:
     parent: object
     ip: str
-    resultRename: str
-    consoleRename: str
     commands: list
 
     def run(self):
@@ -31,16 +29,11 @@ class PingCommand:
                     print(output.strip())
                     console = console + output
                 result = "Ok" if return_code == 0 else "Error"
-
                 stack.append({
                     "ip": ip,
                     "result": result,
                     "console": console
                 })
-                if self.resultRename != "":
-                    mapped.set(self.resultRename, result)
-                if self.consoleRename != "":
-                    mapped.set(self.consoleRename, console)
                 break
         for c in self.commands:
             c.run()

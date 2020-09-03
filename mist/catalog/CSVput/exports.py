@@ -2,11 +2,11 @@ import csv
 
 from dataclasses import dataclass
 
-from mist.sdk import mapped
+from mist.sdk import db
 
 
 @dataclass
-class ReadCSVCommand:
+class PutCSVCommand:
     parent: object
     fileName: str
     target: str
@@ -16,14 +16,13 @@ class ReadCSVCommand:
         with open(self.fileName) as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             headers = next(reader)
-            rows = []
+            try:
+                db.create_table(self.target, headers)
+            except:
+                pass
             for row in reader:
-                item = {}
-                for i,h in enumerate(headers):
-                    item[h]=row[i]
-                rows.append(item)
-            mapped.set(self.target, rows)
+                db.insert(self.target, row)
 
 exports = [
-    ReadCSVCommand
+    PutCSVCommand
 ]

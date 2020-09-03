@@ -4,8 +4,8 @@ PingCommand:
       'ip' '<=' ip=IDorSTRING
     '}'
     'output' '{'
-      'result' ('=>' resultRename=ID)?
-      'console' ('=>' consoleRename=ID)?
+      'result'
+      'console'
     '}'
     'then' '{'
       commands*=Command

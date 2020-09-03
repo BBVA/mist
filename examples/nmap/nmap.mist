@@ -7,9 +7,18 @@ data myHostsChecked {
     OpenPorts
 }
 
-readCSV "examples/nmap/myhosts.csv" => myHosts
+#data myHosts {
+#    ip
+#    so
+#}
+#put "127.0.0.1" "windows" => myHosts
+#put "127.0.0.1" "linux" => myHosts
 
+CSVput "examples/nmap/myhosts.csv" => myHosts
+
+print myHosts
 iterate myHosts => host {
+    print host.ip
     findOpenPorts {
         input {
             ip <= host.ip
@@ -20,11 +29,12 @@ iterate myHosts => host {
             console
         }
         then {
+            print openPorts
             put ip openPorts => myHostsChecked
         }
     }
 }
  
-#dump myHostsChecked
-
-writeCSV myHostsChecked => "myHostsChecked.csv"
+dump myHosts
+dump myHostsChecked
+CSVdump myHostsChecked => "myHostsChecked.csv"

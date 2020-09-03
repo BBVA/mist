@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from mist.sdk import db, get_var, stack
+from mist.sdk import db, get_var, get_id, stack
 
 
 @dataclass
@@ -71,7 +71,7 @@ class BuiltPrint:
         if self.text.id == "":
             print(self.text.string)
         else:
-            print(get_var(self.text.id))
+            print(get_id(self.text))
 
 @dataclass
 class IterateCommand:

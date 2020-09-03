@@ -4,7 +4,7 @@ from xml.dom import minidom
 
 from dataclasses import dataclass
 
-from mist.sdk import stack, mapped, get_id
+from mist.sdk import stack, get_id
 
 
 @dataclass
@@ -12,8 +12,6 @@ class FindOpenPortsCommand:
     parent: object
     ip: str
     ports: str
-    openPortsRename: str
-    consoleRename: str
     commands: list
 
     def run(self):
@@ -51,10 +49,6 @@ class FindOpenPortsCommand:
                     "openPorts": ','.join(openPorts),
                     "console": console
                 })
-                if self.openPortsRename != "":
-                    mapped.set(self.openPortsRename, openPorts)
-                if self.consoleRename != "":
-                    mapped.set(self.consoleRename, console)
                 break
         for c in self.commands:
             c.run()

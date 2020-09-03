@@ -13,7 +13,7 @@ DataCommand:
 ;
 
 IDorSTRING:
-  id=ID(('.'child=ID)|('['index=INT)']')? | string=STRING
+  id=ID(('.'child=ID))? | string=STRING
 ;
 
 DumpCommand:

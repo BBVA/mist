@@ -54,6 +54,23 @@ class _DB:
             cur.execute(query)
             return cur.fetchall()
 
+    def get_headers(self, table:str) -> List[tuple]:
+        schema = db.fetch_many(f"PRAGMA table_info({table});")
+        headers = []
+        for s in schema:
+            headers.append(s[1])
+        return headers
+
+    def fetch_table_as_dict(self, table: str) -> List[dict]:
+        headers = db.get_headers(table)
+        tuples = self.fetch_many(f"SELECT * FROM {table}")
+        result = []
+        for tuple in tuples:
+            item = {}
+            for index,header in enumerate(headers):
+                item[header] = tuple[index]
+            result.append(item)
+        return result
 
 db = _DB()
 
