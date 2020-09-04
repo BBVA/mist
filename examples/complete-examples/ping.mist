@@ -13,7 +13,7 @@ ping {
     }
     output {
         result
-        console => pingOutput
+        console
     }
     then {
         check result is Ok {

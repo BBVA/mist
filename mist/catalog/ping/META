@@ -1,0 +1,11 @@
+[default]
+Name=ping
+Description=Ping some host and save result
+Tags=Ping, Network
+
+[local]
+command = ping
+
+;[docker]
+;image = cr0h/ping
+;cmd = "/usr/local/bin/ping"
