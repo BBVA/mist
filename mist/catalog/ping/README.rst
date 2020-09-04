@@ -17,6 +17,13 @@ Output parameters
 - result: string with values "Ok" or "KO". Ok if ping reached target, "OK" otherwise.
 - console: raw text with console output of the command
 
+Tools and services
+------------------
+
+Ping need to be available in your path command:
+
+- ping
+
 Examples
 --------
 
