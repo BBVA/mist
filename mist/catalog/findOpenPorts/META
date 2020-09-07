@@ -1,7 +1,7 @@
 [default]
 Name=Find Open Ports
 Description=Find open ports at some specific host
-Tags=Ports, Network, nmap
+Tags=ports, network, nmap
 
 [local]
 command = findOpenPorts

@@ -1,7 +1,7 @@
 [default]
 Name=ping
 Description=Ping some host and save result
-Tags=Ping, Network
+Tags=ping, network
 
 [local]
 command = ping
