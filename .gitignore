@@ -588,5 +588,8 @@ _site
 # TextX
 *.dot
 
+# Visual Studio Code
+.vscode
+
 # Mist
 /grammar.tx
