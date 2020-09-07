@@ -3,10 +3,10 @@ PingCommand:
     'input' '{'
       'ip' '<=' ip=IDorSTRING
     '}'
-    'output' '{'
+    ('output' '{'
       'result'
       'console'
-    '}'
+    '}')?
     'then' '{'
       commands*=Command
     '}'
