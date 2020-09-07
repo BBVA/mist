@@ -1,0 +1,7 @@
+[default]
+Name=CSV dump
+Description=Write a data structure of the knowledge base into a CSV file
+Tags=CSV, dump, write, file, knowledge base
+
+[local]
+command = CSVdump
