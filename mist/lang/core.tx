@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | DumpCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | ##MODULES##
 ;
 
 DataCommand:
@@ -14,10 +14,6 @@ DataCommand:
 
 IDorSTRING:
   id=ID(('.'child=ID))? | string=STRING
-;
-
-DumpCommand:
-  'dump' target=ID
 ;
 
 SaveCommand:

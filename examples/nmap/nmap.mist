@@ -36,6 +36,6 @@ iterate myHosts => host {
     }
 }
  
-dump myHosts
-dump myHostsChecked
+print myHosts
+print myHostsChecked
 CSVdump myHostsChecked => "myHostsChecked.csv"

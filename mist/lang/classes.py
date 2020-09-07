@@ -9,7 +9,7 @@ class DataCommand:
     name: str
     params: list = field(default_factory=list)
 
-    def run(self, spaces: int = 0):
+    def run(self):
 
         table_params = [
             f"{param} text"
@@ -25,7 +25,7 @@ class SaveCommand:
     target: str
     params: list
 
-    def run(self, spaces: int = 0):
+    def run(self):
         fields = None
         if len(self.params)>0:
             fields = [p for p in self.params]
@@ -38,25 +38,13 @@ class SaveCommand:
         db.insert(self.target, values, fields=fields)
 
 @dataclass
-class DumpCommand:
-    parent: object
-    target: str
-
-    def run(self, spaces: int = 0):
-
-        print(f"-> Dump {self.target}")
-        for row in db.fetch_many(f"SELECT * FROM {self.target}"):
-            print(row)
-
-
-@dataclass
 class CheckCommand:
     parent: object
     var: str
     result: list
     commands: list
 
-    def run(self, spaces: int = 0):
+    def run(self):
         print(f"-> Check that {self.var} is {self.result}")
         if get_var(self.var) == self.result:
             for c in self.commands:
@@ -88,4 +76,4 @@ class IterateCommand:
                 c.run()
             stack.pop()
 
-exports = [DataCommand, SaveCommand, DumpCommand, CheckCommand, BuiltPrint, IterateCommand]
+exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand]
