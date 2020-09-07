@@ -25,6 +25,7 @@ iterate myHosts => host {
             ports <= "80,5432,1000,9000"
         }
         output {
+            result
             openPorts
             console
         }

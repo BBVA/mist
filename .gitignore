@@ -589,4 +589,4 @@ _site
 *.dot
 
 # Mist
-grammar.tx
+/grammar.tx
