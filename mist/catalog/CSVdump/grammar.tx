@@ -1,0 +1,3 @@
+DumpCSVCommand:
+  'CSVdump' source=ID '=>' fileName=STRING
+;
