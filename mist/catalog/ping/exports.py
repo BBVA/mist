@@ -28,7 +28,7 @@ class PingCommand:
                 for output in process.stdout.readlines():
                     print(output.strip())
                     console = console + output
-                result = "Ok" if return_code == 0 else "Error"
+                result = "Success" if return_code == 0 else "Error"
                 stack.append({
                     "ip": ip,
                     "result": result,

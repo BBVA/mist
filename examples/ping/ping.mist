@@ -16,7 +16,7 @@ ping {
         console
     }
     then {
-        check result is Ok {
+        check result is Success {
             put ip 'Up' => myHosts
         }
         check result is Error {
@@ -25,4 +25,4 @@ ping {
     }
 }
 
-dump myHosts
+print myHosts

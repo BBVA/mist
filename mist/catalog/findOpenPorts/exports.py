@@ -34,7 +34,7 @@ class FindOpenPortsCommand:
                 for output in process.stdout.readlines():
                     print(output.strip())
                     console = console + output
-                result = "Ok" if return_code == 0 else "Error"
+                result = "Success" if return_code == 0 else "Error"
                 #Parse xml output to find ports
                 mydoc = minidom.parse(tmpFile.name)
                 items = mydoc.getElementsByTagName('port')
