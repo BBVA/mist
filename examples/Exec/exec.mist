@@ -1,0 +1,16 @@
+
+exec "bash -c ls {hidden} -1 {filter}" {
+    input {
+        filter = "*"
+        hidden = "-a"
+    }
+    output {
+        result
+        resultCode
+        consoleOutput
+        consoleError
+    }
+    then {
+        print resultCode
+    }
+}

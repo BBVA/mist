@@ -1,15 +1,38 @@
 BuiltIn:
-    BuiltExec | BuiltPrint | BuiltCall
-;
-
-BuiltExec:
-    'exec' command=STRING
+    BuiltPrint | BuiltExec
 ;
 
 BuiltPrint:
     'print' text=IDorSTRING
 ;
 
-BuiltCall:
-    'call' fn=ID params*=STRING
+Param:
+    key=ID '=' value=STRING
 ;
+
+BuiltExec:
+  'exec' command=STRING '{'
+    'input' '{'
+      params+=Param
+    '}'
+    ('output' '{'
+      'result'
+      'resultCode'
+      'consoleOutput'
+      'consoleError'
+    '}')?
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;
+
+/*
+BuiltSearchInText:
+    'searchInText' function=ID text=STRING params*=STRING
+;
+
+BuiltSearchInXML:
+    'searchInXML' xpath=STRING
+;
+*/
