@@ -1,0 +1,26 @@
+
+exec "ls {hidden} -1 {filter}" {
+    input {
+        filter = "*.txt"
+        hidden = "-a"
+    }
+    output {
+        resultCode
+        consoleOutput
+        consoleError
+    }
+    then {
+        searchInText "pepe.txt" consoleOutput {
+            output {
+                result
+                found
+            }
+            then {
+                check found (is True)? {
+                    print "Fichero encontrado"
+                }
+            }
+        }
+        
+    }
+}
