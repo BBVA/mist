@@ -6,7 +6,7 @@ from textx import metamodel_from_str
 from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry
 from .lang.classes import exports as core_exports
-from .lang.exec import exports as exec_exports
+from .lang.builtin import exports as builtin_exports
 
 def _load_mist_language_():
 
@@ -63,7 +63,7 @@ def _load_mist_language_():
     #
     exports = []
     exports.extend(core_exports)
-    exports.extend(exec_exports)
+    exports.extend(builtin_exports)
     exports.extend(
         find_catalog_exports(catalog_path)
     )

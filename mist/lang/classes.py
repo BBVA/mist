@@ -75,5 +75,6 @@ class IterateCommand:
             for c in self.commands:
                 c.run()
             stack.pop()
+            
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand]

@@ -1,5 +1,5 @@
 import subprocess
-import tempfile
+import re
 
 from dataclasses import dataclass, field
 
@@ -44,4 +44,33 @@ class BuiltExec:
             c.run()
         stack.pop()
 
-exports = [BuiltExec]
+@dataclass
+class BuiltSearchInText:
+    parent: object
+    regex: str
+    text: str
+    commands: list
+
+    def run(self):
+        text = get_id(self.text)
+        print( f"-> SearchInText '{self.regex}'")
+        found = "False"
+        try:
+            found = re.search(self.regex, text)
+            if found != None:
+                found = "True"
+            result = "Success"
+        except:
+            result = "Error"
+
+        stack.append({
+            "regex": self.regex,
+            "text": text,
+            "result": result,
+            "found": found
+        })
+        for c in self.commands:
+            c.run()
+        stack.pop()
+
+exports = [BuiltExec, BuiltSearchInText]

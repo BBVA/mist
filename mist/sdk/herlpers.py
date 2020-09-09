@@ -8,9 +8,14 @@ def get_var(var):
 
 def get_id(id):
     #print(f"get_id id={id.id} string={id.string} child={id.child}")
+    if not hasattr(id, "string"):
+        return get_var(id)
     if id.string != "":
         return id.string
     elif id.child != "":
-        return get_var(id.id)[id.child]
+        all = get_var(id.id)
+        if isinstance(all, list):
+            return all[len(all)-1][id.child]
+        else: 
+            return all[id.child]
     return get_var(id.id)
-    

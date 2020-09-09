@@ -1,3 +1,6 @@
+# Name: exec
+# Description: executes a custom user shell command
+# Tags: command, exec, shell
 
 exec "bash -c ls {hidden} -1 {filter}" {
     input {

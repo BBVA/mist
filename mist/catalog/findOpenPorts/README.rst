@@ -1,4 +1,4 @@
-Find Open Ports command
+*findOpenPorts* command
 =======================
 
 Description
@@ -15,7 +15,7 @@ Input parameters
 Output parameters
 -----------------
 
-- result: a string with values "Ok" or "KO". Ok if ping reached target, "OK" otherwise.
+- result: string with values "Success" or "Error". "Success" if the command has been executed without errors, "Error" otherwise.
 - openPorts: a string with a comma separated list of found open ports.
 - console: raw text with console output of the command.
 

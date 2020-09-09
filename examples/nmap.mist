@@ -1,4 +1,4 @@
-# Name: Nmap
+# Name: findOpenPorts
 # Description: Read file with list of IPs and check for open ports, write the result in csv file
 # Tags: nmap, Network
 
@@ -14,7 +14,7 @@ data myHostsChecked {
 #put "127.0.0.1" "windows" => myHosts
 #put "127.0.0.1" "linux" => myHosts
 
-CSVput "examples/nmap/myhosts.csv" => myHosts
+CSVput "examples/myhosts.csv" => myHosts
 
 print myHosts
 iterate myHosts => host {

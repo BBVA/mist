@@ -1,5 +1,5 @@
-Ping command
-============
+*ping* command
+==============
 
 Description
 -----------
@@ -14,7 +14,7 @@ Input parameters
 Output parameters
 -----------------
 
-- result: string with values "Ok" or "KO". Ok if ping reached target, "OK" otherwise.
+- result: string with values "Success" or "Error". "Success" if ping reached target, "Error" otherwise.
 - console: raw text with console output of the command
 
 Tools and services
@@ -45,7 +45,7 @@ Pinging local host and store host status in *myHost* bucket
             console
         }
         then {
-            check result is Ok {
+            check result is Success {
                 put ip 'Up' => myHosts
             }
             check result is Error {

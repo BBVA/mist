@@ -127,3 +127,128 @@ Examples
     iterate myHosts => host {
         print host.ip
     }
+
+*exec* command
+==============
+
+Description
+-----------
+
+This command executes a custom user shell command
+
+Syntax
+------
+
+.. code-block:: console
+
+    exec myCustomCommand {
+        input {
+            param1 = param1value
+            ...
+        }
+        output {
+            result
+            resultCode
+            consoleOutput
+            consoleError
+        }
+        then {
+            ...
+        }
+    }
+    
+
+Input parameters
+----------------
+
+- myCustomCommand: An string with the shell command I want to execute. You can parametrize it using {} place holders
+- paramN: The value of the parameters used in the command
+
+Output parameters
+-----------------
+
+- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
+- resultCode: the exit code provided after command execution
+- consoleOutput: raw text with console standard output of the command.
+- consoleError: raw text with console standard error of the command.
+
+Examples
+--------
+
+List all files with "txt" extension
+
+.. code-block:: console
+
+    exec "bash -c ls -1 {filter}" {
+        input {
+            filter = "*.txt"
+        }
+        output {
+            result
+            resultCode
+            consoleOutput
+            consoleError
+        }
+        then {
+            print resultCode
+        }
+    }
+
+*search* command
+================
+
+Description
+-----------
+
+Search some regex in a text
+
+Syntax
+------
+
+.. code-block:: console
+
+    find regex text {
+        output {
+            result
+            found
+        }
+        then {
+            ...
+        }
+    }
+    
+
+Input parameters
+----------------
+
+- regex: a Python3 regex expression
+- text: a variable that contains the text to look into.
+
+Output parameters
+-----------------
+
+- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
+- found: "True" if regex was found. "False" otherwise
+
+Examples
+--------
+
+Find a name in a phrase.
+
+.. code-block:: console
+
+    data myData {
+        text
+    }
+    put "Hello, my name is Peter and I like Mist!" => myData
+    searchInText "Peter" myData.text {
+        output {
+            result
+            found
+        }
+        then {
+            check found is True {
+                print "Peter found"
+            }
+        }
+    }
