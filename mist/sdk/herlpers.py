@@ -12,6 +12,8 @@ def get_id(id):
         return get_var(id)
     if id.string != "":
         return id.string
+    elif id.data != "":
+        return id.data
     elif id.child != "":
         all = get_var(id.id)
         if isinstance(all, list):

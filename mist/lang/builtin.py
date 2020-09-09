@@ -1,5 +1,6 @@
 import subprocess
 import re
+import xml.etree.ElementTree as ET
 
 from dataclasses import dataclass, field
 
@@ -73,4 +74,34 @@ class BuiltSearchInText:
             c.run()
         stack.pop()
 
-exports = [BuiltExec, BuiltSearchInText]
+@dataclass
+class BuiltSearchInXML:
+    parent: object
+    xpath: str
+    text: str
+    commands: list
+
+    def run(self):
+        text = get_id(self.text)
+        print( f"-> SearchInXML '{self.xpath}'")
+        try:
+            root = ET.fromstring(text)
+            items = root.findall(self.xpath)
+            result = "Success"
+        except Exception as e:
+            print(f"-> {e}")
+            result = "Error"
+
+        stack.append({
+            "xpath": self.xpath,
+            "text": text,
+            "result": result,
+            "found": "True" if len(items) > 0 else "False",
+            "value": items[0].text
+        })
+        for c in self.commands:
+            c.run()
+        stack.pop()
+
+
+exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML]

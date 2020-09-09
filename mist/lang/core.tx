@@ -13,7 +13,7 @@ DataCommand:
 ;
 
 IDorSTRING:
-  id=ID(('.'child=ID))? | string=STRING
+  data=/(?ms)\'{3}(.*?)\'{3}/ | id=ID(('.'child=ID))? | string=STRING
 ;
 
 SaveCommand:

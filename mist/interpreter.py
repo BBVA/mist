@@ -73,7 +73,8 @@ def _load_mist_language_():
     # Load MIST language definition
     mist_meta_model = metamodel_from_str(
         grammar,
-        classes=exports
+        classes=exports,
+        use_regexp_group=True
     )
 
     return mist_meta_model

@@ -1,5 +1,5 @@
 BuiltIn:
-    BuiltPrint | BuiltExec | BuiltSearchInText
+    BuiltPrint | BuiltExec | BuiltSearchInText | BuiltSearchInXML
 ;
 
 BuiltPrint:
@@ -39,8 +39,16 @@ BuiltSearchInText:
   '}'
 ;
 
-/*
 BuiltSearchInXML:
-    'searchInXML' xpath=STRING
+    'searchInText' xpath=STRING text=IDorSTRING '{'
+    ('output' '{'
+      'result'
+      'found'
+      'value'
+    '}')?
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
 ;
-*/  
+ 
