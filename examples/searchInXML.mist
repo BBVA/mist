@@ -25,7 +25,7 @@ put '''<?xml version="1.0" encoding="UTF-8"?>
 ''' => myData
 
 #./bookstore/book[2]/title
-searchInText "./book[2]/title" myData.XMLtext {
+searchInXML "./book[2]/title" myData.XMLtext {
     output {
         result
         found
