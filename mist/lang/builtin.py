@@ -1,6 +1,8 @@
 import subprocess
 import re
 import xml.etree.ElementTree as ET
+import json
+from jsonpath_ng import jsonpath, parse
 
 from dataclasses import dataclass, field
 
@@ -84,6 +86,7 @@ class BuiltSearchInXML:
     def run(self):
         text = get_id(self.text)
         print( f"-> SearchInXML '{self.xpath}'")
+        items = []
         try:
             root = ET.fromstring(text)
             items = root.findall(self.xpath)
@@ -97,11 +100,41 @@ class BuiltSearchInXML:
             "text": text,
             "result": result,
             "found": "True" if len(items) > 0 else "False",
-            "value": items[0].text
+            "value": items[0].text if len(items) > 0 else "None"
         })
         for c in self.commands:
             c.run()
         stack.pop()
 
+@dataclass
+class BuiltSearchInJSON:
+    parent: object
+    jsonpath: str
+    text: str
+    commands: list
 
-exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML]
+    def run(self):
+        text = get_id(self.text)
+        print( f"-> SearchInJSON '{self.jsonpath}'")
+        items = []
+        try:
+            json_data = json.loads(text)
+            jsonpath_expression = parse(self.jsonpath)
+            items = jsonpath_expression.find(json_data)
+            result = "Success"
+        except Exception as e:
+            print(f"-> {e}")
+            result = "Error"
+
+        stack.append({
+            "xpath": self.jsonpath,
+            "text": text,
+            "result": result,
+            "found": "True" if len(items) > 0 else "False",
+            "value": items[0].value if len(items) > 0 else "None"
+        })
+        for c in self.commands:
+            c.run()
+        stack.pop()
+
+exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON]

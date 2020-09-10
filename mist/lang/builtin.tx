@@ -51,3 +51,16 @@ BuiltSearchInXML:
     '}'
   '}'
 ;
+
+BuiltSearchInJSON:
+    'searchInJSON' jsonpath=STRING text=IDorSTRING '{'
+    ('output' '{'
+      'result'
+      'found'
+      'value'
+    '}')?
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;

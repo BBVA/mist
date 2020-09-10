@@ -1,0 +1,38 @@
+# Name: searchInJSON
+# Description: Search some jsonpath in a JSON string
+# Tags: search, find, JSON
+
+data myData {
+    JSONtext
+}
+
+put '''
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "Pankaj",
+      "salary": "10000"
+    },
+    {
+      "name": "David",
+      "salary": "5000",
+      "id": 2
+    }
+  ]
+}
+''' => myData
+
+searchInJSON "employees[1].name" myData.JSONtext {
+    output {
+        result
+        found
+        value
+    }
+    then {
+        print result
+        print found
+        print value
+    }
+}
+

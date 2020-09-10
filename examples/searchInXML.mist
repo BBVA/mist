@@ -1,8 +1,7 @@
 # Name: searchInXML
 # Description: Search some xpath in a XML string
-# Tags: search, finds, XML
+# Tags: search, find, XML
 
-print "Running Example 1"
 data myData {
     XMLtext
 }
@@ -24,7 +23,6 @@ put '''<?xml version="1.0" encoding="UTF-8"?>
 </bookstore>
 ''' => myData
 
-#./bookstore/book[2]/title
 searchInXML "./book[2]/title" myData.XMLtext {
     output {
         result
@@ -32,11 +30,9 @@ searchInXML "./book[2]/title" myData.XMLtext {
         value
     }
     then {
-        check found is True {
-            print result
-            print found
-            print value
-        }
+        print result
+        print found
+        print value
     }
 }
 
