@@ -1,6 +1,6 @@
 # Name: searchInText
 # Description: Search some regex in a text
-# Tags: search, finds
+# Tags: search, find
 
 print "Running Example 1"
 data myData {

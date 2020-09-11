@@ -1,6 +1,6 @@
 # Name: Ping
 # Description: Ping some host and save result
-# Tags: Ping, Network
+# Tags: ping, network
 
 data myHosts {
     Host
