@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Sphinx
         run: |
-          python3 -m pip -r requirements-doc.txt
+          python3 -m pip install -r requirements-doc.txt
           sphinx-build docs/source docs/build
 
       - name: Deploy
