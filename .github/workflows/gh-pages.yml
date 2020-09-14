@@ -21,12 +21,12 @@ jobs:
       - name: Run Sphinx
         run: |
           python3 -m pip install -r requirements-doc.txt
-          sphinx-build docs/source docs/build
+          python3 -m sphinx docs/source docs/build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./docs/build
           keep_files: false
           enable_jekyll: false
