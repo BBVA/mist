@@ -60,13 +60,3 @@ It's *BSD 3* licensed and freely available.
 
 Table Of Contents
 =================
-
-.. toctree::
-   :caption: Catalog
-   :name: mastertoc
-   :maxdepth: 2
-
-   catalog/CSVput/README.rst
-   catalog/ping/README.rst
-   catalog/CSVdump/README.rst
-   catalog/findOpenPorts/README.rst
