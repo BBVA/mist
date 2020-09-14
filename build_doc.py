@@ -12,6 +12,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 DOC_PATH = os.path.join(HERE, "docs", "source")
 CATALOG = os.path.join(HERE, "mist", "catalog")
+BUILTIN = os.path.join(HERE, "mist", "lang")
 
 def main():
 
@@ -47,6 +48,16 @@ def main():
 
         commands_in_catalog.append(command_name)
 
+    #
+    # Copy builtin
+    #
+    doc_builtin_path = os.path.join(DOC_PATH, "builtin")
+    if not os.path.exists(doc_builtin_path):
+        os.mkdir(doc_builtin_path)
+
+    shutil.copy(os.path.join(BUILTIN, "README.rst"),
+                os.path.join(doc_builtin_path, "README.rst"))
+
     # Update index.rst
     with open(os.path.join(DOC_PATH, "index.rst"), "a+") as f:
         # catalog
@@ -56,11 +67,21 @@ def main():
         catalog = f'''        
 .. toctree::
    :caption: Catalog
-   :name: mastertoc
    :maxdepth: 2
 
 {catalog_commands}
         '''
+
+        built_in = f'''        
+.. toctree::
+   :caption: Built In
+   :maxdepth: 2
+
+   builtin/README.rst
+
+            '''
+
+        f.write(built_in)
         f.write(catalog)
 
 
