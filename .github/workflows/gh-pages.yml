@@ -9,7 +9,7 @@ on:
 #      - "mist/catalog/**/README.md"
 #      - "mist/lang/**/README.md"
 #
-#jobs:
+jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
