@@ -18,6 +18,6 @@ def get_id(id):
         all = get_var(id.id)
         if isinstance(all, list):
             return all[len(all)-1][id.child]
-        else: 
+        else:
             return all[id.child]
     return get_var(id.id)

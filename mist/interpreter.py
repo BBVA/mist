@@ -68,8 +68,6 @@ def _load_mist_language_():
         find_catalog_exports(catalog_path)
     )
 
-    open("grammar.tx", "w").write(grammar)
-
     # Load MIST language definition
     mist_meta_model = metamodel_from_str(
         grammar,

@@ -1,6 +1,7 @@
 import sqlite3
 
 from typing import List
+from functools import lru_cache
 from contextlib import contextmanager
 
 @contextmanager
@@ -54,23 +55,23 @@ class _DB:
             cur.execute(query)
             return cur.fetchall()
 
-    def get_headers(self, table:str) -> List[tuple]:
-        schema = db.fetch_many(f"PRAGMA table_info({table});")
-        headers = []
-        for s in schema:
-            headers.append(s[1])
-        return headers
+    @lru_cache(50)
+    def fetch_table_headers(self, table:str) -> List[tuple]:
+        schema = self.fetch_many(f"PRAGMA table_info({table});")
+
+        return [
+            s[1] for s in schema
+        ]
+
 
     def fetch_table_as_dict(self, table: str) -> List[dict]:
-        headers = db.get_headers(table)
-        tuples = self.fetch_many(f"SELECT * FROM {table}")
-        result = []
-        for tuple in tuples:
-            item = {}
-            for index,header in enumerate(headers):
-                item[header] = tuple[index]
-            result.append(item)
-        return result
+        table_headers = self.fetch_table_headers(table)
+        table_data = self.fetch_many(f"SELECT * FROM {table}")
+
+        return [
+            dict(zip(table_headers, tuple))
+            for tuple in table_data
+        ]
 
 db = _DB()
 

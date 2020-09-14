@@ -4,6 +4,8 @@ import platform
 
 import pkg_resources
 
+from mist.sdk import config
+
 from .interpreter import execute, check
 
 
@@ -39,6 +41,18 @@ Available commands are:
         parser = argparse.ArgumentParser(
             description='execute a .mist file')
         parser.add_argument('MIST_FILE')
+        parser.add_argument('-C', '--console-output',
+                            action="store_false",
+                            help="displays console output of executed tools",
+                            default=True)
+        parser.add_argument('-R', '--real-time',
+                            action="store_false",
+                            help="display console output in real time",
+                            default=True)
+        parser.add_argument('-d', '--debug',
+                            action="store_true",
+                            help="enable debug messages",
+                            default=False)
 
         if sys.argv[1] == "exec":
             in_args = sys.argv[2:]
@@ -46,6 +60,11 @@ Available commands are:
             in_args = sys.argv[1:]
 
         parsed_args = parser.parse_args(in_args)
+
+        #
+        # Load console config
+        #
+        config.load_cli_values(parsed_args)
 
         execute(parsed_args)
 

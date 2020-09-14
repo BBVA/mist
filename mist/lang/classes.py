@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from mist.sdk import db, get_var, get_id, stack
+from mist.sdk import db, get_var, get_id, stack, config
 
 
 @dataclass
@@ -45,7 +45,9 @@ class CheckCommand:
     commands: list
 
     def run(self):
-        print(f"-> Check that {self.var} is {self.result}")
+        if config.debug:
+            print(f"-> Check that {self.var} is {self.result}")
+
         if get_var(self.var) == self.result:
             for c in self.commands:
                 c.run()
@@ -56,10 +58,10 @@ class BuiltPrint:
     text: str
 
     def run(self):
-        if self.text.id == "":
-            print(self.text.string)
+        if not getattr(self.text, "id", None):
+            print(get_id(self.text), end='')
         else:
-            print(get_id(self.text))
+            print(getattr(self.text, "string", None), end='')
 
 @dataclass
 class IterateCommand:
@@ -69,12 +71,14 @@ class IterateCommand:
     commands: list
 
     def run(self):
-        print(f"-> Iterate {self.var}")
-        for index,item in enumerate(get_var(self.var)):
+        if config.debug:
+            print(f"-> Iterate {self.var}")
+
+        for index, item in enumerate(get_var(self.var)):
             stack.append({self.name: item, "index": index})
             for c in self.commands:
                 c.run()
             stack.pop()
-            
+
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand]

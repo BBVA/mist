@@ -1,12 +1,13 @@
-import subprocess
 import re
-import xml.etree.ElementTree as ET
 import json
-from jsonpath_ng import jsonpath, parse
+import subprocess
+import xml.etree.ElementTree as ET
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
-from mist.sdk import db, get_var, get_id, stack
+from jsonpath_ng import parse
+
+from mist.sdk import get_id, stack, config
 
 
 @dataclass
@@ -20,7 +21,10 @@ class BuiltExec:
         command = self.command
         for p in self.params:
             command = command.replace("{" + p.key + "}", p.value)
-        print( f"-> Exec '{command}'")
+
+        if config.debug:
+            print( f"-> Exec '{command}'")
+
         process = subprocess.Popen(command.split(" "),
                            text=True,
                            stdout=subprocess.PIPE,
@@ -35,7 +39,7 @@ class BuiltExec:
                 for output in process.stdout.readlines():
                     consoleOutput = consoleOutput + output
                 for output in process.stderr.readlines():
-                    consoleError = consoleError + output    
+                    consoleError = consoleError + output
                 stack.append({
                     "result": "Success" if return_code == 0 else "Error",
                     "resultCode": return_code,
@@ -56,14 +60,18 @@ class BuiltSearchInText:
 
     def run(self):
         text = get_id(self.text)
-        print( f"-> SearchInText '{self.regex}'")
+
+        if config.debug:
+            print( f"-> SearchInText '{self.regex}'")
+
         found = "False"
         try:
-            found = re.search(self.regex, text)
-            if found != None:
+            if re.search(self.regex, text):
                 found = "True"
+
             result = "Success"
-        except:
+        except Exception as e:
+            print(f" Error in 'BuiltSearchInText' -> {e}")
             result = "Error"
 
         stack.append({
@@ -85,22 +93,23 @@ class BuiltSearchInXML:
 
     def run(self):
         text = get_id(self.text)
-        print( f"-> SearchInXML '{self.xpath}'")
-        items = []
+
+        if config.debug:
+            print( f"-> SearchInXML '{self.xpath}'")
+
         try:
             root = ET.fromstring(text)
-            items = root.findall(self.xpath)
-            result = "Success"
+            found = root.find(self.xpath)
         except Exception as e:
-            print(f"-> {e}")
-            result = "Error"
+            found = None
+            print(f" Error in 'BuiltSearchInXML' -> {e}")
 
         stack.append({
             "xpath": self.xpath,
             "text": text,
-            "result": result,
-            "found": "True" if len(items) > 0 else "False",
-            "value": items[0].text if len(items) > 0 else "None"
+            "result": "Success" if found else "Error",
+            "found": "True" if found else "False",
+            "value": found.text if found else "None"
         })
         for c in self.commands:
             c.run()
@@ -115,23 +124,24 @@ class BuiltSearchInJSON:
 
     def run(self):
         text = get_id(self.text)
-        print( f"-> SearchInJSON '{self.jsonpath}'")
-        items = []
+
+        if config.debug:
+            print( f"-> SearchInJSON '{self.jsonpath}'")
+
         try:
             json_data = json.loads(text)
             jsonpath_expression = parse(self.jsonpath)
-            items = jsonpath_expression.find(json_data)
-            result = "Success"
+            found = jsonpath_expression.find(json_data)
         except Exception as e:
-            print(f"-> {e}")
-            result = "Error"
+            found = None
+            print(f" Error in 'BuiltSearchInJSON' -> {e}")
 
         stack.append({
             "xpath": self.jsonpath,
             "text": text,
-            "result": result,
-            "found": "True" if len(items) > 0 else "False",
-            "value": items[0].value if len(items) > 0 else "None"
+            "result": "Success" if found else "Error",
+            "found": "True" if found else "False",
+            "value": found.value if found else "None"
         })
         for c in self.commands:
             c.run()

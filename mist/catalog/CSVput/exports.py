@@ -2,7 +2,7 @@ import csv
 
 from dataclasses import dataclass
 
-from mist.sdk import db
+from mist.sdk import db, config
 
 
 @dataclass
@@ -12,16 +12,22 @@ class PutCSVCommand:
     target: str
 
     def run(self):
-        print(f"-> Reading CSV '{self.fileName}' => {self.target}")
+        if config.debug:
+            print(f"-> Reading CSV '{self.fileName}' => {self.target}")
+
         with open(self.fileName) as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
+            # TODO: ADD CSV HEADER?
             headers = next(reader)
+
             try:
                 db.create_table(self.target, headers)
-            except:
-                pass
-            for row in reader:
-                db.insert(self.target, row)
+
+                for row in reader:
+                    db.insert(self.target, row)
+
+            except Exception as e:
+                print(f"Error while creating database: {self.target}")
 
 exports = [
     PutCSVCommand

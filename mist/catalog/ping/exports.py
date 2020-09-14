@@ -1,8 +1,6 @@
-import subprocess
-
 from dataclasses import dataclass
 
-from mist.sdk import stack, get_id
+from mist.sdk import stack, get_id, execution, config
 
 
 @dataclass
@@ -13,28 +11,22 @@ class PingCommand:
 
     def run(self):
         ip = get_id(self.ip)
-        print(f"-> Doing Ping to {ip}")
-        process = subprocess.Popen(['ping', '-c 1', '-W 1', ip],
-                           stdout=subprocess.PIPE,
-                           universal_newlines=True)
-        while True:
-            output = process.stdout.readline()
-            console = output
-            print(output.strip())
-            return_code = process.poll()
-            if return_code is not None:
-                print('RETURN CODE', return_code)
-                # Process has finished, read rest of the output
-                for output in process.stdout.readlines():
-                    print(output.strip())
-                    console = console + output
-                result = "Success" if return_code == 0 else "Error"
-                stack.append({
-                    "ip": ip,
-                    "result": result,
-                    "console": console
-                })
-                break
+
+        if config.debug:
+            print(f"-> Doing Ping to {ip}")
+
+        with execution(f"ping -c1 -W 1 {ip}") as (executor, _, _):
+            executor.run()
+
+            if config.console_output:
+                print(executor.console_output())
+
+            stack.append({
+                "ip": ip,
+                "result": executor.status_text,
+                "console": executor.console_output
+            })
+
         for c in self.commands:
             c.run()
         stack.pop()
