@@ -50,14 +50,14 @@ Basic: Find open ports (range 0-1023) at localhost and print it on console
 
 Advanced: Read a csv file with my hosts, scan (range 0-49151) all ips and write the result to another csv file
 
-.. code-block:: "examples/nmap/myhosts.csv"
+.. csv-table::
+    :header: "IP", "SO"
 
-    ip,so
     127.0.0.1,linux
     192.168.1.23,windows
     8.8.8.8,unknown
 
-.. code-block:: console
+.. code-block:: text
 
     data myHostsChecked {
         Host
@@ -82,6 +82,6 @@ Advanced: Read a csv file with my hosts, scan (range 0-49151) all ips and write 
             }
         }
     }
-    
+
     CSVdump myHostsChecked => "myHostsChecked.csv"
 

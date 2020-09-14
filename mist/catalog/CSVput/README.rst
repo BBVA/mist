@@ -3,7 +3,7 @@
 
 Description
 -----------
- 
+
 This command reads a CSV file and put all the data into the knowledge base
 
 Syntax
@@ -26,12 +26,12 @@ Examples
 
 Read a csvFile and iterate over it printing some of its content.
 
-.. code-block:: "examples/nmap/myhosts.csv"
+.. csv-table::
+   :header: "IP", "SO"
 
-    ip,so
-    127.0.0.1,linux
-    192.168.1.23,windows
-    8.8.8.8,unknown
+    "127.0.0.1", "linux"
+    "192.168.1.23", "windows"
+    "8.8.8.8", "unknown"
 
 .. code-block:: console
 

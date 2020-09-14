@@ -1,0 +1,32 @@
+name: github pages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "docs/**"
+      - "mist/catalog/**/README.md"
+      - "mist/lang/**/README.md"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1  # v2 does not have submodules option now
+
+      - name: Build Doc
+        run: python3 build_doc.py
+
+      - name: Run Sphinx
+        run: |
+          python3 -m pip -r requirements-doc.txt
+          sphinx-build docs/source docs/build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: false
+          enable_jekyll: false
