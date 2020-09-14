@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from jsonpath_ng import parse
 
-from mist.sdk import get_id, stack, config
+from mist.sdk import get_id, stack, config, execution
 
 
 @dataclass
@@ -18,35 +18,28 @@ class BuiltExec:
     commands: list
 
     def run(self):
-        command = self.command
-        for p in self.params:
-            command = command.replace("{" + p.key + "}", p.value)
+        command = self.command.format(**{
+            p.key: p.value
+            for p in self.params
+        })
 
         if config.debug:
             print( f"-> Exec '{command}'")
 
-        process = subprocess.Popen(command.split(" "),
-                           text=True,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.PIPE,
-                           universal_newlines=True)
-        while True:
-            consoleOutput = process.stdout.readline()
-            consoleError = process.stderr.readline()
-            return_code = process.poll()
-            if return_code is not None:
-                # Process has finished, read rest of the output
-                for output in process.stdout.readlines():
-                    consoleOutput = consoleOutput + output
-                for output in process.stderr.readlines():
-                    consoleError = consoleError + output
-                stack.append({
-                    "result": "Success" if return_code == 0 else "Error",
-                    "resultCode": return_code,
-                    "consoleOutput": consoleOutput,
-                    "consoleError": consoleError
-                })
-                break
+        with execution(command) as (executor, in_files, out_files):
+
+            with executor as console_lines:
+                if config.real_time and config.console_output:
+                    for line in console_lines:
+                        print(line)
+
+            stack.append({
+                "result": executor.status_text(),
+                "resultCode": executor.status(),
+                "consoleOutput": executor.console_output(),
+                "consoleError": executor.stderr_output()
+            })
+
         for c in self.commands:
             c.run()
         stack.pop()

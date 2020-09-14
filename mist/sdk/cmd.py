@@ -5,6 +5,7 @@ import tempfile
 import subprocess
 
 from functools import lru_cache
+from typing import Tuple
 
 input_file_regex = re.compile(r'''(\{)(infile-[\w\.\-\d]+)(\})''')
 output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
@@ -33,6 +34,7 @@ class Executor(object):
         self.input_files = input_files
         self.output_files = output_files
         self._console_output = []
+        self._console_stderr = []
         self.error_code = None
 
     @abc.abstractmethod
@@ -40,8 +42,12 @@ class Executor(object):
         pass
 
     @lru_cache(1)
-    def console_output(self):
+    def console_output(self) -> str:
         return "\n".join(self._console_output)
+
+    @lru_cache(1)
+    def stderr_output(self) -> str:
+        return "\n".join(self._console_stderr)
 
     def status(self):
         return self.error_code
@@ -66,6 +72,7 @@ class LocalExecutor(Executor):
         command = shlex.split(new_command)
         process = subprocess.Popen(command,
                                    stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
                                    universal_newlines=True)
 
         while True:
@@ -79,6 +86,8 @@ class LocalExecutor(Executor):
             self._console_output.append(output.strip())
 
             yield line
+
+        self._console_stderr.extend(process.stderr.readlines())
 
     def run(self):
         ctx = self.run_ctx()
@@ -116,7 +125,7 @@ class execution(object):
                 else:
                     self.input_files[f] = tmp_file.name
 
-    def __enter__(self):
+    def __enter__(self) -> Tuple[Executor, dict, dict]:
         executor = LocalExecutor(
             self.command,
             self.input_files,
