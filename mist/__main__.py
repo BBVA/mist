@@ -4,7 +4,7 @@ import platform
 
 import pkg_resources
 
-from mist.sdk import config
+from mist.sdk import config, db
 
 from .interpreter import execute, check
 
@@ -53,6 +53,10 @@ Available commands are:
                             action="store_true",
                             help="enable debug messages",
                             default=False)
+        parser.add_argument('-p', '--persist',
+                            action="store_true",
+                            help="persist database information to disk",
+                            default=False)
 
         if sys.argv[1] == "exec":
             in_args = sys.argv[2:]
@@ -65,6 +69,12 @@ Available commands are:
         # Load console config
         #
         config.load_cli_values(parsed_args)
+
+        #
+        # Setup database
+        #
+        if config.persist:
+            db.setup(f"sqlite3://{config.MIST_FILE}.db")
 
         execute(parsed_args)
 

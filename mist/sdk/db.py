@@ -16,7 +16,24 @@ def cm(connection) -> sqlite3.Cursor:
 class _DB:
 
     def __init__(self):
-        self.connection = sqlite3.connect(':memory:')
+        self._connection = None
+        self._connection_string: str = ""
+
+    @property
+    def connection(self):
+        if not self._connection:
+            if not self._connection_string:
+                self._connection = sqlite3.connect(':memory:')
+            elif self._connection_string.startswith("sqlite3://"):
+                _cs = self._connection_string.replace("sqlite3://", "")
+                self._connection = sqlite3.connect(_cs)
+            else:
+                raise ValueError("Invalid database connection string")
+
+        return self._connection
+
+    def setup(self, connection_string: str):
+        self._connection_string = connection_string
 
     def create_table(self,
                      table_name: str,
