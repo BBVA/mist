@@ -2,10 +2,12 @@
 Name=Find Open Ports
 Description=Find open ports at some specific host
 Tags=ports, network, nmap
+binary=nmap
+binary_message=you need... apt-get nmap
 
 [local]
 command = findOpenPorts
 
 ;[docker]
 ;image = nmap
-;cmd = "/usr/local/bin/nmap"
+;binary = "/usr/local/bin/nmap"
