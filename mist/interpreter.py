@@ -18,6 +18,20 @@ from .lang.builtin import exports as builtin_exports
 @lru_cache(1)
 def _load_mist_language_():
 
+    def launch(self):
+        from mist.sdk import stack
+
+        if results := self.run():
+            if type(results) is list:
+                stack.extend(results)
+            else:
+                stack.append(results)
+
+            if self.commands:
+                for c in self.commands:
+                    c.launch()
+                stack.pop()
+
     here = os.path.dirname(__file__)
     catalog_path = os.path.join(here, "catalog")
 
@@ -76,6 +90,12 @@ def _load_mist_language_():
         find_catalog_exports(catalog_path)
     )
 
+    #
+    # Add some "magic"...
+    #
+    for e in exports:
+        e.launch = launch
+
     # Load MIST language definition
     mist_meta_model = metamodel_from_str(
         grammar,
@@ -102,7 +122,7 @@ def execute(parsed_args: Namespace):
 
     # Run user program!
     for c in mist_model.commands:
-        c.run()
+        c.launch()
 
 def execute_from_text(text: str) -> str:
     mist_meta_model = _load_mist_language_()

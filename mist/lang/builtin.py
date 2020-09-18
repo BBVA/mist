@@ -32,16 +32,13 @@ class BuiltExec:
                     for line in console_lines:
                         print(line)
 
-            stack.append({
+            return {
                 "result": executor.status_text(),
                 "resultCode": executor.status(),
                 "consoleOutput": executor.console_output(),
                 "consoleError": executor.stderr_output()
-            })
+            }
 
-        for c in self.commands:
-            c.run()
-        stack.pop()
 
 @dataclass
 class BuiltSearchInText:
@@ -66,15 +63,12 @@ class BuiltSearchInText:
             print(f" Error in 'BuiltSearchInText' -> {e}")
             result = "Error"
 
-        stack.append({
+        return {
             "regex": self.regex,
             "text": text,
             "result": result,
             "found": found
-        })
-        for c in self.commands:
-            c.run()
-        stack.pop()
+        }
 
 @dataclass
 class BuiltSearchInXML:
@@ -96,16 +90,13 @@ class BuiltSearchInXML:
             found = None
             print(f" Error in 'BuiltSearchInXML' -> {e}")
 
-        stack.append({
+        return {
             "xpath": self.xpath,
             "text": text,
             "result": "Success" if found else "Error",
             "found": "True" if found else "False",
             "value": found.text if found else "None"
-        })
-        for c in self.commands:
-            c.run()
-        stack.pop()
+        }
 
 @dataclass
 class BuiltSearchInJSON:
@@ -128,15 +119,12 @@ class BuiltSearchInJSON:
             found = None
             print(f" Error in 'BuiltSearchInJSON' -> {e}")
 
-        stack.append({
+        return {
             "xpath": self.jsonpath,
             "text": text,
             "result": "Success" if found else "Error",
             "found": "True" if found else "False",
             "value": found.value if found else "None"
-        })
-        for c in self.commands:
-            c.run()
-        stack.pop()
+        }
 
 exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON]

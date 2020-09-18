@@ -100,8 +100,9 @@ class LocalExecutor(Executor):
 
 
 class execution(object):
-    def __init__(self, command: str):
+    def __init__(self, command: str, metadata: dict = None):
         self.command = command
+        self.metadata = metadata or {}
 
         self.input_files = {}
         self.output_files = {}

@@ -2,6 +2,3 @@
 Name=CSV put
 Description=Reads a CSV file and put all the data into the knowledge base
 Tags=CSV, put, read, knowledge base
-
-[local]
-command = CSVput

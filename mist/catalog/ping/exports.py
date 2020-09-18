@@ -15,21 +15,27 @@ class PingCommand:
         if config.debug:
             print(f"-> Doing Ping to {ip}")
 
-        with execution(f"ping -c1 -W 1 {ip}") as (executor, _, _):
+        with execution(f"ping -c1 -W 1 {ip}", self.meta) as (executor, _, _):
             executor.run()
 
             if config.console_output:
                 print(executor.console_output())
 
-            stack.append({
+            return {
                 "ip": ip,
                 "result": executor.status_text,
                 "console": executor.console_output
-            })
+            }
 
-        for c in self.commands:
-            c.run()
-        stack.pop()
+        #     stack.append({
+        #         "ip": ip,
+        #         "result": executor.status_text,
+        #         "console": executor.console_output
+        #     })
+        #
+        # for c in self.commands:
+        #     c.run()
+        # stack.pop()
 
 exports = [
     PingCommand

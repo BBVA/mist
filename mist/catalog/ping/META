@@ -2,10 +2,10 @@
 Name=ping
 Description=Ping some host and save result
 Tags=ping, network
+cmd = ping
+cmd-error = Can't find ping command
 
-[local]
-command = ping
-
-;[docker]
-;image = cr0h/ping
-;cmd = "/usr/local/bin/ping"
+[docker]
+image = cr0hn/ping
+cmd = "/usr/local/bin/ping"
+cmd-error = Can't find ping command

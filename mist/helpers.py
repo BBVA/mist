@@ -3,6 +3,7 @@ import re
 import importlib
 
 from typing import Set, List
+from configparser import ConfigParser
 
 EXTRACT_MODULE_REGEX = re.compile(r'''^(.*Command)(:)''')
 
@@ -23,11 +24,26 @@ def find_catalog_exports(base_path: str) -> List[str]:
         if "exports.py" not in files:
             continue
 
+        meta_file = os.path.join(root, "META")
+
+        if os.path.exists(meta_file):
+            _c_parser = ConfigParser()
+            _c_parser.read(filenames=meta_file)
+            meta_content = _c_parser.__dict__["_sections"]
+        else:
+            meta_content = {}
+
         module_name = _file_to_module_(root.replace(base_path, ""))
 
         m = importlib.import_module(f"mist.catalog.{module_name}.exports")
 
         if ex := getattr(m, "exports", None):
+            #
+            # Attach META Info
+            #
+            for e in ex:
+                e.meta = meta_content
+
             exports.extend(ex)
 
     return exports

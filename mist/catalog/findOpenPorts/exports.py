@@ -17,8 +17,10 @@ class FindOpenPortsCommand:
         if config.debug:
             print(f"-> Doing findOpenPorts to {ip}")
 
-        with execution(f"nmap -p {self.ports} --open {ip} -oX {{outfile-1}}") \
-                as (executor, in_files, out_files):
+        with execution(
+                f"nmap -p {self.ports} --open {ip} -oX {{outfile-1}}",
+                self.meta
+        ) as (executor, in_files, out_files):
 
             with executor as console_lines:
                 if config.real_time and config.console_output:
@@ -39,17 +41,13 @@ class FindOpenPortsCommand:
                 for elem in items
             ]
 
-            stack.append({
+            return {
                 "ip": ip,
                 "ports": self.ports,
                 "result": executor.status_text(),
                 "openPorts": ','.join(openPorts),
                 "console": executor.console_output()
-            })
-
-        for c in self.commands:
-            c.run()
-        stack.pop()
+            }
 
 
 exports = [
