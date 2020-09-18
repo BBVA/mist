@@ -40,13 +40,14 @@
         <div class="row justify-content-start">
             <h2>Interactive IDE:</h2>
             <div class="col" >
-                <div id="editor"></div>
+                <div id="editor" class="rounded-lg"></div>
                 <a id="execute" class="btn btn-success mt-2">Run!</a>
+                <small>(Use ctrl+Enter as shortcut)</small>
             </div>
         </div>
         <div class="col mt-4">
             <h2>Output results</h2>
-            <div id="resultsConsole" disabled></div>
+            <div id="resultsConsole" disabled class="rounded-lg"></div>
         </div>
     </div>
 
@@ -64,13 +65,14 @@
     var results = ace.edit("resultsConsole");
     results.setTheme("ace/theme/monokai");
     results.session.setMode("ace/mode/python");
-    results.setReadOnly(true);
+    // results.setReadOnly(true);
     document.getElementById('resultsConsole').style.fontSize='15px';
 
     const resultsObject = document.getElementById("resultsConsole");
     const btn = document.getElementById("execute");
 
-    btn.addEventListener("click", function (event) {
+    function runCode(){
+
         fetch(
             "http://localhost:9000",
             {
@@ -79,16 +81,25 @@
                 cache: 'no-cache',
             }
         ).then(response => {
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-                return response.json();
+            if (!response.ok) {
+                throw new Error("HTTP error " + response.status);
+            }
+            return response.json();
         }).then(json => {
-            // results.destroy();
-            resultsObject.innerText = json.console;
+            results.setValue(json.console);
         }).catch(err => {
             console.log(err);
         });
+    }
+
+    btn.addEventListener("click", function (event) {
+        runCode();
+    })
+
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.keyCode === 13) {
+            runCode();
+        }
     });
 
 </script>
