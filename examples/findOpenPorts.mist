@@ -7,13 +7,6 @@ data myHostsChecked {
     OpenPorts
 }
 
-#data myHosts {
-#    ip
-#    so
-#}
-#put "127.0.0.1" "windows" => myHosts
-#put "127.0.0.1" "linux" => myHosts
-
 CSVput "examples/myhosts.csv" => myHosts
 
 print myHosts

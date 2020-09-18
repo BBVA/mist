@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>MIST Editor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <style type="text/css" media="screen">
+        #editor {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 400px;
+            border: 2px solid #808080;
+        }
+
+        #resultsConsole {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            border: 2px solid #808080;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="text-center">
+        <img class="d-block mx-auto" src="https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png" alt="" width="72" height="72">
+        <p class="lead">Online editor for MIST</p>
+    </div>
+
+    <div class="col">
+        <div class="row justify-content-start">
+            <h2>Interactive IDE:</h2>
+            <div class="col" >
+                <div id="editor">
+# Name: Ping
+# Description: Ping some host and save result
+# Tags: ping, network
+
+data myHosts {
+    Host
+    Status
+}
+
+ping {
+    input {
+        ip <= "127.0.0.1"
+    }
+    output {
+        result
+        console
+    }
+    then {
+        check result is Success {
+            put ip 'Up' => myHosts
+        }
+        check result is Error {
+            put ip 'Down' => myHosts(Host Status)
+        }
+    }
+}
+
+print myHosts
+                </div>
+                <a id="execute" class="btn btn-success mt-2">Run!</a>
+            </div>
+        </div>
+        <div class="col mt-4">
+            <h2>Output results</h2>
+            <div id="resultsConsole" disabled></div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="mode-mist.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/mist");
+    document.getElementById('editor').style.fontSize='15px';
+
+    var results = ace.edit("resultsConsole");
+    results.setTheme("ace/theme/monokai");
+    results.session.setMode("ace/mode/python");
+    results.setReadOnly(true);
+    document.getElementById('resultsConsole').style.fontSize='15px';
+
+    const resultsObject = document.getElementById("resultsConsole");
+    const btn = document.getElementById("execute");
+
+    btn.addEventListener("click", function (event) {
+        fetch(
+            "http://localhost:9000",
+            {
+                method: "POST",
+                body: editor.getValue(),
+                cache: 'no-cache',
+            }
+        ).then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+        }).then(json => {
+            // results.destroy();
+            resultsObject.innerText = json.console;
+        }).catch(err => {
+            console.log(err);
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -1,13 +1,21 @@
 import os
 
+from io import StringIO
+from typing import Tuple
 from argparse import Namespace
+from functools import lru_cache
+
 from textx import metamodel_from_str
+from contextlib import redirect_stdout, redirect_stderr
+
+from mist.sdk.db import db
 
 from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry
 from .lang.classes import exports as core_exports
 from .lang.builtin import exports as builtin_exports
 
+@lru_cache(1)
 def _load_mist_language_():
 
     here = os.path.dirname(__file__)
@@ -96,5 +104,24 @@ def execute(parsed_args: Namespace):
     for c in mist_model.commands:
         c.run()
 
+def execute_from_text(text: str) -> str:
+    mist_meta_model = _load_mist_language_()
+
+    stream_stdout = StringIO()
+    write_to_output = redirect_stdout(stream_stdout)
+
+    with write_to_output:
+        try:
+            mist_model = mist_meta_model.model_from_str(text)
+
+            for c in mist_model.commands:
+                c.run()
+        except Exception as e:
+            print(f"[!] {e}", flush=True)
+
+    # Clean database
+    db.clean_database()
+
+    return stream_stdout.getvalue()
 
 __all__ = ("execute", "check")

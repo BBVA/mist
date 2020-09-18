@@ -2,6 +2,14 @@ import argparse
 
 class _CurrentApp(dict):
 
+    def __init__(self):
+        super().__init__()
+
+        self.__dict__["console_output"] = True
+        self.__dict__["real_time"] = True
+        self.__dict__["debug"] = False
+        self.__dict__["persist"] = False
+
     def __setattr__(self, key, value):
         self.__dict__[key] = value
 

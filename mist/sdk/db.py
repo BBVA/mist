@@ -18,6 +18,7 @@ class _DB:
     def __init__(self):
         self._connection = None
         self._connection_string: str = ""
+        self.database_type: str = "sqlite"
 
     @property
     def connection(self):
@@ -89,6 +90,12 @@ class _DB:
             dict(zip(table_headers, tuple))
             for tuple in table_data
         ]
+
+    def clean_database(self):
+        if self.database_type == "sqlite":
+            if self._connection:
+                self._connection.close()
+                self._connection = None
 
 db = _DB()
 
