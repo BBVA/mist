@@ -40,36 +40,7 @@
         <div class="row justify-content-start">
             <h2>Interactive IDE:</h2>
             <div class="col" >
-                <div id="editor">
-# Name: Ping
-# Description: Ping some host and save result
-# Tags: ping, network
-
-data myHosts {
-    Host
-    Status
-}
-
-ping {
-    input {
-        ip <= "127.0.0.1"
-    }
-    output {
-        result
-        console
-    }
-    then {
-        check result is Success {
-            put ip 'Up' => myHosts
-        }
-        check result is Error {
-            put ip 'Down' => myHosts(Host Status)
-        }
-    }
-}
-
-print myHosts
-                </div>
+                <div id="editor"></div>
                 <a id="execute" class="btn btn-success mt-2">Run!</a>
             </div>
         </div>
