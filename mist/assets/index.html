@@ -49,12 +49,12 @@
                     <h2>Interactive IDE:</h2>
                     <div class="col" >
                         <div id="editor" class="rounded-lg"></div>
-                        <a id="execute" class="btn btn-success mt-2">Run!</a>
-                        <small>(Use ctrl+Enter as shortcut)</small>
+                        <a id="execute" class="btn btn-success mt-2 my-2">Execute!</a><br>
+                        <small>(Use <kbd> ctrl+Enter</kbd> as execution shortcut)</small>
                     </div>
                 </div>
             </div>
-            <div class="col mt-8">
+            <div class="col my-4 mt-8">
                 <h2>Output results</h2>
                 <div id="resultsConsole" disabled class="rounded-lg"></div>
             </div>
@@ -67,44 +67,331 @@
             <div class="row">
                 <div class="col scroll">
                     <ul class="list-group mb-3">
+
+                        <!-- Print Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>print</code> <small class="text-muted align-right">Print a text into screen</small></h6>
-                                <br>
-                                <code>print "hello"</code>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">print</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Print a text into screen</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>print "hello"</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#printExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="printExample">
+                                                <code><pre>
+data MyData {
+    ip
+}
+print "hello"
+print MyData.ip
+
+}</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END Print Command -->
+
+                        <!-- Exec Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>exec</code></h6>
-                                <small class="text-muted">Execute a shell command</small><br>
-                                <code>exec "bash -c ls {hidden} -1 {filter}" {...}</code>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">exec</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Execute a shell command</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>exec "bash -c ls {hidden} -1 {filter}" {...}</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#execExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="execExample">
+                                                <code><pre>
+exec "bash -c ls {hidden} -1 {filter}" {
+    input {
+        filter = "*"
+        hidden = "-a"
+    }
+    output {
+        result
+        resultCode
+        consoleOutput
+        consoleError
+    }
+    then {
+        print resultCode
+    }
+}</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END Exec Command -->
+
+                        <!-- Put Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>put</code></h6>
-                                <small class="text-muted">Put information into information bucket </small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">put</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Put information into information bucket</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>put "hello" => myData</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#putExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="putExample">
+                                                <code><pre>
+data myHosts {
+    Host
+    Status
+}
+
+# ip is a variable form before executions
+put ip 'Up' => myHosts
+put ip 'Up' => myHosts(Host, Status)
+put 'Up' => myHosts(Status)
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END Put Command -->
+
+                        <!-- searchInJSON Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>searchInJSON</code></h6>
-                                <small class="text-muted">Search into JSON document by using JSON Path</small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">searchInJSON</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Search into JSON document by using JSON Path</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>searchInJSON "[JSON PATH QUERY]" myData.JSONtext {...}</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#searchInJsonExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="searchInJsonExample">
+                                                <code><pre>
+
+data myData {
+    JSONtext
+}
+
+put '''
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "Pankaj",
+      "salary": "10000"
+    },
+    {
+      "name": "David",
+      "salary": "5000",
+      "id": 2
+    }
+  ]
+}
+''' => myData
+
+searchInJSON "employees[1].name" myData.JSONtext {
+    output {
+        result
+        found
+        value
+    }
+    then {
+        print result
+        print found
+        print value
+    }
+}
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END searchInJSON Command -->
+
+                        <!-- searchInText Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>searchInText</code></h6>
-                                <small class="text-muted">Search into Text by using Regex expression</small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">searchInText</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Search into Text by using Regex expression</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>searchInText "[REGEX]" myData.text {...}</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#searchInTextExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="searchInTextExample">
+                                                <code><pre>
+data myData {
+    text
+}
+
+put "Hello, my name is Peter and I like Mist!" => myData
+
+searchInText "Peter" myData.text {
+    output {
+        result
+        found
+    }
+    then {
+        check found is True {
+            print "Peter found"
+        }
+    }
+}
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END searchInText Command -->
+
+                        <!-- searchInXML Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>searchInXML</code></h6>
-                                <small class="text-muted">Search into XML document by using XPath</small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">searchInXML</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Search into XML document by using XPath</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>searchInXML "[XPATH QUERY]" myData.XMLtext {...}</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#searchInXMLExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="searchInXMLExample">
+                                                <code><pre>
+
+data myData {
+    XMLtext
+}
+
+put '''&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;bookstore&gt;
+    &lt;book category=&quot;cooking&quot;&gt;
+        &lt;title lang=&quot;en&quot;&gt;Everyday Italian&lt;/title&gt;
+        &lt;author&gt;Giada De Laurentiis&lt;/author&gt;
+        &lt;year&gt;2005&lt;/year&gt;
+        &lt;price&gt;30.00&lt;/price&gt;
+    &lt;/book&gt;
+    &lt;book category=&quot;children&quot;&gt;
+        &lt;title lang=&quot;en&quot;&gt;Harry Potter&lt;/title&gt;
+        &lt;author&gt;J K. Rowling&lt;/author&gt;
+        &lt;year&gt;2005&lt;/year&gt;
+        &lt;price&gt;29.99&lt;/price&gt;
+    &lt;/book&gt;
+&lt;/bookstore&gt;
+''' => myData
+
+searchInXML "./book[2]/title" myData.XMLtext {
+    output {
+        result
+        found
+        value
+    }
+    then {
+        print result
+        print found
+        print value
+    }
+}
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END searchInXML Command -->
+
                     </ul>
                 </div>
             </div>
@@ -116,42 +403,218 @@
             <div class="row">
                 <div class="col scroll">
                     <ul class="list-group mb-3">
+
+                        <!-- Ping Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>print</code></h6>
-                                <small class="text-muted">Print a texto into screen</small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">ping</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Ping some host and save result</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>ping {...}</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#pingExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="pingExample">
+                                                <code><pre>
+
+data myHosts {
+    Host
+    Status
+}
+
+ping {
+    input {
+        ip <= "127.0.0.1"
+    }
+    output {
+        result
+        console
+    }
+    then {
+        check result is Success {
+            put ip 'Up' => myHosts
+        }
+        check result is Error {
+            put ip 'Down' => myHosts(Host Status)
+        }
+    }
+}
+
+print myHosts
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END Ping Command -->
+
+                        <!-- findOpenPorts Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>exec</code></h6>
-                                <small class="text-muted">Execute a shell command</small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">findOpenPorts</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Find open ports at some specific host</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>findOpenPorts {...}</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#findOpenPortsExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="findOpenPortsExample">
+                                                <code><pre>
+
+data myHostsChecked {
+    Host
+    OpenPorts
+}
+
+CSVput "examples/myhosts.csv" => myHosts
+
+print myHosts
+iterate myHosts => host {
+    print host.ip
+    findOpenPorts {
+        input {
+            ip <= host.ip
+            ports <= "80,5432,1000,9000"
+        }
+        output {
+            result
+            openPorts
+            console
+        }
+        then {
+            print openPorts
+            put ip openPorts => myHostsChecked
+        }
+    }
+}
+
+print myHosts
+print myHostsChecked
+CSVdump myHostsChecked => "myHostsChecked.csv"
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END findOpenPorts Command -->
+
+                        <!-- CSVPut Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>put</code></h6>
-                                <small class="text-muted">Put information into information bucket </small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">CSVPut</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Find open ports at some specific host</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>CSVput "[FILE]" => [DATA STRUCTURE]</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#CSVPutExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="CSVPutExample">
+                                                <code><pre>
+data myHostsChecked {
+    Host
+    OpenPorts
+}
+
+CSVput "examples/myhosts.csv" => myHosts
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
+                        <!-- END CSVPut Command -->
+
+                        <!-- CSVdump Command -->
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>searchInJSON</code></h6>
-                                <small class="text-muted">Search into JSON document by using JSON Path</small>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6 class="my-0">CSVdump</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">Write a data structure of the knowledge base into a CSV file</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <code>CSVdump [DATA STRUCTURE] => "[FILE]"</code>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#CSVdumpExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse my-2" id="CSVdumpExample">
+                                                <code><pre>
+data myHostsChecked {
+    Host
+    OpenPorts
+}
+
+put "127.0.0.1" "21,22,8080" => myHostsChecked
+
+CSVdump myHostsChecked => "myHostsChecked.csv"
+</pre></code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>searchInText</code></h6>
-                                <small class="text-muted">Search into Text by using Regex expression</small>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div>
-                                <h6 class="my-0"><code>searchInXML</code></h6>
-                                <small class="text-muted">Search into XML document by using XPath</small>
-                            </div>
-                        </li>
+                        <!-- END CSVdump Command -->
+
+
                     </ul>
                 </div>
             </div>
@@ -159,6 +622,7 @@
     </div>
 </div>
 
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="mode-mist.js" type="text/javascript" charset="utf-8"></script>
 
