@@ -1,7 +1,5 @@
 from dataclasses import dataclass, field
-
-from mist.sdk import db, get_var, get_id, stack, config
-
+from mist.sdk import db, get_var, get_id, stack, watchers, config, watchedInsert
 
 @dataclass
 class DataCommand:
@@ -35,7 +33,7 @@ class SaveCommand:
             for i in self.sources
         ]
 
-        db.insert(self.target, values, fields=fields)
+        watchedInsert(self.target, values, fields=fields)
 
 @dataclass
 class CheckCommand:
@@ -47,7 +45,6 @@ class CheckCommand:
     def run(self):
         if config.debug:
             print(f"-> Check that {self.var} is {self.result}")
-
         if get_var(self.var) == self.result:
             for c in self.commands:
                 c.run()
@@ -58,10 +55,9 @@ class BuiltPrint:
     text: str
 
     def run(self):
-        if not getattr(self.text, "id", None):
-            print(get_id(self.text), end='')
-        else:
-            print(getattr(self.text, "string", None), end='')
+        if config.debug:
+            print(f"-> BuiltPrint")
+        print(get_id(self.text), end='')
 
 @dataclass
 class IterateCommand:
@@ -80,5 +76,16 @@ class IterateCommand:
                 c.run()
             stack.pop()
 
+@dataclass
+class WatchCommand:
+    parent: object
+    var: str
+    name: str
+    commands: list
 
-exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand]
+    def run(self):
+        if config.debug:
+            print(f"-> Watch {self.var}")
+        watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
+
+exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand, WatchCommand]

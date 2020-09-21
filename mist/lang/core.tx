@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | ##MODULES##
 ;
 
 DataCommand:
@@ -18,6 +18,12 @@ IDorSTRING:
 
 SaveCommand:
   'put' sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
+;
+
+WatchCommand:
+  'watch' var=ID '=>' name=ID '{'
+    commands*=Command
+  '}'
 ;
 
 CheckCommand:

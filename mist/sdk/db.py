@@ -55,7 +55,7 @@ class _DB:
         query = f'''
         INSERT INTO {table}
         {f"({', '.join(fields)})" if fields else ''}
-        VALUES (null, {', '.join(['?' for _ in range(len(values))])})
+        VALUES ({'' if fields else 'null,'} {', '.join(['?' for _ in range(len(values))])})
         '''
 
         with cm(self.connection) as cur:

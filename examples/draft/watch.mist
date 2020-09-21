@@ -3,14 +3,14 @@ data ports {
     protocol
 }
 
-watch ports -> event {
-    print event.port
-    print event.ip
+watch ports => event {
+    print event.number
+    print event.protocol
 }
 
-watch ports -> event {
+watch ports => event {
     print "hola"
 }
 
-put 22, "tcp" => ports
-put 23, "udp" => ports
+put "22" "tcp" => ports(number protocol)
+put "23" "udp" => ports
