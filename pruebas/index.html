@@ -29,8 +29,38 @@
     <div class="col">
         <div class="row justify-content-start">
             <div class="col" >&nbsp;
+                <div id="editor"># Name: Ping
+# Description: Ping some host and save result
+# Tags: ping, network
 
-                <div id="editor"></div>
+data myHosts {
+    Host
+    Status
+}
+
+print '''
+This is a
+multiline string
+'''
+
+ping {
+    input {
+        ip <= "127.0.0.1"
+    }
+    output {
+        result
+        console
+    }
+    then {
+        check result is Success {
+            put ip 'Up' => myHosts
+        }
+        check result is Error {
+            put ip 'Down' => myHosts(Host Status)
+        }
+    }
+}               
+                </div>
             </div>
         </div>
     </div>
@@ -38,7 +68,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
-<!--<script src="./mist.language.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="./mode-mist.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
     var editor = ace.edit("editor");

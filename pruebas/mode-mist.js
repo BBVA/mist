@@ -50,20 +50,20 @@ define("ace/mode/mist_highlight_rules",["require","exports","module","ace/lib/oo
                 },
                 {
                     token : function(val) {
-                        if (val[val.length - 1] == "(") {
-                            return [{
-                                type: keywordMapper(val.slice(0, -1)) || "support.function",
-                                value: val.slice(0, -1)
-                            }, {
-                                type: "paren.lparen",
-                                value: val.slice(-1)
-                            }];
-                        }
-                        
+                        // if (val[val.length - 1] == "(") {
+                        //     return [{
+                        //         type: keywordMapper(val.slice(0, -1)) || "support.function",
+                        //         value: val.slice(0, -1)
+                        //     }, {
+                        //         type: "paren.lparen",
+                        //         value: val.slice(-1)
+                        //     }];
+                        // }
                         return keywordMapper(val) || "identifier";
                     },
                     regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b\\(?"
-                }, {
+                },
+                {
                     token : "text",
                     regex : "\\s+"
                 }
