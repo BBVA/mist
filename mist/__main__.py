@@ -144,6 +144,13 @@ Available commands are:
     def editor(self):
 
         print("[*] Starting editor at port 9000")
+        print('''
+
+        Open in your browser: http://localhot:9000
+        
+        BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'
+        
+        ''')
         httpd = HTTPServer(('localhost', 9000), SimpleHTTPRequestHandler)
         httpd.serve_forever()
 

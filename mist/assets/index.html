@@ -668,6 +668,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
 
     document.addEventListener('keydown', function(event) {
         if (event.ctrlKey && event.keyCode === 13) {
+            event.preventDefault();
             runCode();
         }
     });
