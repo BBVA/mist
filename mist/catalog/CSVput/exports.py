@@ -2,7 +2,7 @@ import csv
 
 from dataclasses import dataclass
 
-from mist.sdk import db, config
+from mist.sdk import db, config, watchedInsert
 
 
 @dataclass
@@ -24,7 +24,7 @@ class PutCSVCommand:
                 db.create_table(self.target, headers)
 
                 for row in reader:
-                    db.insert(self.target, row)
+                    watchedInsert(self.target, row)
 
             except Exception as e:
                 print(f"Error while creating database: {self.target}")
