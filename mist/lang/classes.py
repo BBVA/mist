@@ -24,6 +24,8 @@ class SaveCommand:
     params: list
 
     def run(self):
+        if config.debug:
+            print(f"-> Put to {self.target}")
         fields = None
         if len(self.params)>0:
             fields = [p for p in self.params]
@@ -57,7 +59,8 @@ class BuiltPrint:
     def run(self):
         if config.debug:
             print(f"-> BuiltPrint")
-        print(get_id(self.text), end='')
+        #print(get_id(self.text), end='')
+        print(get_id(self.text))
 
 @dataclass
 class IterateCommand:
