@@ -23,8 +23,8 @@ class PingCommand:
 
             return {
                 "ip": ip,
-                "result": executor.status_text,
-                "console": executor.console_output
+                "result": executor.status_text(),
+                "console": executor.console_output()
             }
 
         #     stack.append({
