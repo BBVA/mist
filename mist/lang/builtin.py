@@ -124,7 +124,7 @@ class BuiltSearchInJSON:
             "text": text,
             "result": "Success" if found else "Error",
             "found": "True" if found else "False",
-            "value": found.value if found else "None"
+            "value": found[0].value if found else "None"
         }
 
 exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON]
