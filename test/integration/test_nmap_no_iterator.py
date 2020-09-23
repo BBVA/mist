@@ -11,3 +11,4 @@ def test_nmap_no_iterator_example(examples_path):
     console = execute_from_text(content)
 
     assert "Starting Nmap 7" in console
+    assert "Nmap done" in console
