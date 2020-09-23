@@ -79,7 +79,6 @@ class BuiltSearchInXML:
 
     def run(self):
         text = get_id(self.text)
-
         if config.debug:
             print( f"-> SearchInXML '{self.xpath}'")
 
@@ -93,9 +92,9 @@ class BuiltSearchInXML:
         return {
             "xpath": self.xpath,
             "text": text,
-            "result": "Success" if found else "Error",
-            "found": "True" if found else "False",
-            "value": found.text if found else "None"
+            "result": "Success" if found is not None else "Error",
+            "found": "True" if found is not None else "False",
+            "value": found.text if found is not None else "None"
         }
 
 @dataclass
