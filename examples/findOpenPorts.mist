@@ -23,12 +23,13 @@ iterate myHosts => host {
             console
         }
         then {
+            print "hola"
             print openPorts
             put ip openPorts => myHostsChecked
         }
     }
 }
 
-print myHosts
-print myHostsChecked
-CSVdump myHostsChecked => "myHostsChecked.csv"
+#print myHosts
+#print myHostsChecked
+#CSVdump myHostsChecked => "myHostsChecked.csv"

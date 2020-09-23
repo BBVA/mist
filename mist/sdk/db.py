@@ -4,6 +4,8 @@ from typing import List
 from functools import lru_cache
 from contextlib import contextmanager
 
+from .config import config
+
 @contextmanager
 def cm(connection) -> sqlite3.Cursor:
     cur = connection.cursor()
@@ -45,7 +47,11 @@ class _DB:
         '''
 
         with cm(self.connection) as cur:
-            cur.execute(query)
+            try:
+                cur.execute(query)
+            except:
+                if config.debug:
+                    print("[!] Error while creating database")
 
     def execute(self, query: str):
         with cm(self.connection) as cur:

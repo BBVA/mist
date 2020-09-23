@@ -1,11 +1,14 @@
 import re
 import abc
 import shlex
+import datetime
 import tempfile
 import subprocess
 
-from functools import lru_cache
 from typing import Tuple
+from functools import lru_cache
+
+from .db import db
 
 input_file_regex = re.compile(r'''(\{)(infile-[\w\.\-\d]+)(\})''')
 output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
@@ -29,6 +32,8 @@ extract_output_files = lambda x: _extract_files(x, "output")
 
 class Executor(object):
 
+    __db_created__ = False
+
     def __init__(self, command: str, input_files: dict, output_files :dict):
         self.command = command
         self.input_files = input_files
@@ -37,9 +42,26 @@ class Executor(object):
         self._console_stderr = []
         self.error_code = None
 
+    def __create_database__(self):
+        if not self.__db_created__:
+            db.create_table(
+                "executions",
+                ("command", "start_time", "end_time", "stdout", "stderr")
+            )
+
+            self.__db_created__ = True
+
     @abc.abstractmethod
     def run_ctx(self):
         pass
+
+    def run(self):
+        ctx = self.run_ctx()
+        while 1:
+            try:
+                next(ctx)
+            except StopIteration:
+                return
 
     @lru_cache(1)
     def console_output(self) -> str:
@@ -67,6 +89,8 @@ class LocalExecutor(Executor):
         return self.command.format(**{**self.output_files, **self.input_files})
 
     def run_ctx(self):
+
+
         new_command = self._replace_files_in_command_()
 
         command = shlex.split(new_command)
@@ -88,14 +112,6 @@ class LocalExecutor(Executor):
             yield line
 
         self._console_stderr.extend(process.stderr.readlines())
-
-    def run(self):
-        ctx = self.run_ctx()
-        while 1:
-            try:
-                next(ctx)
-            except StopIteration:
-                return
 
 
 

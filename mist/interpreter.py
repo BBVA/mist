@@ -22,10 +22,7 @@ def _load_mist_language_():
         from mist.sdk import stack
 
         if results := self.run():
-            if type(results) is list:
-                stack.extend(results)
-            else:
-                stack.append(results)
+            stack.append(results)
 
             if self.commands:
                 for c in self.commands:
@@ -135,7 +132,7 @@ def execute_from_text(text: str) -> str:
             mist_model = mist_meta_model.model_from_str(text)
 
             for c in mist_model.commands:
-                c.run()
+                c.launch()
         except Exception as e:
             print(f"[!] {e}", flush=True)
 
