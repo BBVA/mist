@@ -48,8 +48,7 @@ class CheckCommand:
         if config.debug:
             print(f"-> Check that {self.var} is {self.result}")
         if get_var(self.var) == self.result:
-            for c in self.commands:
-                c.run()
+            return True
 
 @dataclass
 class BuiltPrint:
@@ -59,7 +58,6 @@ class BuiltPrint:
     def run(self):
         if config.debug:
             print(f"-> BuiltPrint")
-        #print(get_id(self.text), end='')
         print(get_id(self.text))
 
 @dataclass
@@ -73,11 +71,12 @@ class IterateCommand:
         if config.debug:
             print(f"-> Iterate {self.var}")
 
+        res = []
+
         for index, item in enumerate(get_var(self.var)):
-            stack.append({self.name: item, "index": index})
-            for c in self.commands:
-                c.run()
-            stack.pop()
+            res.append({self.name: item, "index": index})
+
+        return res
 
 @dataclass
 class WatchCommand:

@@ -22,7 +22,12 @@ def _load_mist_language_():
         from mist.sdk import stack
 
         if results := self.run():
-            stack.append(results)
+            if type(results) is list:
+                stack.extend(results)
+            elif type(results) is dict:
+                stack.append(results)
+            elif type(results) is bool:
+                stack.append({})
 
             if self.commands:
                 for c in self.commands:
