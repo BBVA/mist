@@ -23,16 +23,26 @@ def _load_mist_language_():
 
         if results := self.run():
             if type(results) is list:
-                stack.extend(results)
-            elif type(results) is dict:
-                stack.append(results)
-            elif type(results) is bool:
-                stack.append({})
 
-            if self.commands:
-                for c in self.commands:
-                    c.launch()
-                stack.pop()
+                for r in results:
+                    stack.append(r)
+
+                    if self.commands:
+                        for c in self.commands:
+                            c.launch()
+                        stack.pop()
+
+            else:
+
+                if type(results) is bool:
+                    stack.append({})
+                else:
+                    stack.append(results)
+
+                if self.commands:
+                    for c in self.commands:
+                        c.launch()
+                    stack.pop()
 
     here = os.path.dirname(__file__)
     catalog_path = os.path.join(here, "catalog")
