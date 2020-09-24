@@ -30,6 +30,5 @@ iterate myHosts => host {
     }
 }
 
-#print myHosts
-#print myHostsChecked
+print myHostsChecked
 #CSVdump myHostsChecked => "myHostsChecked.csv"
