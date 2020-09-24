@@ -10,4 +10,4 @@ def test_search_in_xml_example(examples_path):
 
     console = execute_from_text(content)
 
-    assert 'Error\nFalse\nNone\n' in console
+    assert 'Success\nTrue\nHarry Potter\n' in console
