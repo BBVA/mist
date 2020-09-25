@@ -3,11 +3,11 @@
 # Tags: search, find
 
 print "Running Example 1"
-data myData {
+data myDataSearchText {
     text
 }
-put "Hello, my name is Peter and I like Mist!" => myData
-searchInText "Peter" myData.text {
+put "Hello, my name is Peter and I like Mist!" => myDataSearchText
+searchInText "Peter" myDataSearchText.text {
     output {
         result
         found
@@ -31,7 +31,7 @@ exec "bash -c ls -1 {filter}" {
         consoleError
     }
     then {
-        searchInText "grammar.tx" consoleOutput {
+        searchInText "build_doc.py" consoleOutput {
             output {
                 result
                 found

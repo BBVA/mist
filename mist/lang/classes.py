@@ -27,7 +27,7 @@ class SaveCommand:
         if config.debug:
             print(f"-> Put to {self.target}")
         fields = None
-        if len(self.params)>0:
+        if self.params:
             fields = [p for p in self.params]
 
         values = [

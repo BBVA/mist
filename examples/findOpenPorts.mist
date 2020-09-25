@@ -7,10 +7,10 @@ data myHostsChecked {
     OpenPorts
 }
 
-CSVput "examples/myhosts.csv" => myHosts
+CSVput "examples/myhosts.csv" => myHostsCSV
 
-print myHosts
-iterate myHosts => host {
+print myHostsCSV
+iterate myHostsCSV => host {
     print host.ip
     findOpenPorts {
         input {

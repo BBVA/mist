@@ -136,11 +136,14 @@ def execute(parsed_args: Namespace):
     for c in mist_model.commands:
         c.launch()
 
-def execute_from_text(text: str) -> str:
+def execute_from_text(text: str, session_name: str = None) -> str:
     mist_meta_model = _load_mist_language_()
 
     stream_stdout = StringIO()
     write_to_output = redirect_stdout(stream_stdout)
+
+    if session_name:
+        db.session_name = session_name
 
     with write_to_output:
         try:
