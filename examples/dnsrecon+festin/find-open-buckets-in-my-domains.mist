@@ -1,0 +1,22 @@
+# Name: find-open-buckets-in-my-domains
+# Description: Read file with list of domains, use dnsrecon to find more domain and then festin to find open s3 buckets.
+# Tags: dnsrecon, festin, dns, s3, network
+
+CSVput "examples/dnsrecon+festin/mydomains.csv" => domains
+
+iterate domains => domain {
+    print domain.name
+    searchDomains {
+        input {
+            domain <= domain.name
+        }
+        output {
+            result
+            domains
+            console
+        }
+        then {
+            print domains
+        }
+    }
+}
