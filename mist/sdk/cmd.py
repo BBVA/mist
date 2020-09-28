@@ -1,7 +1,7 @@
 import re
 import abc
+import time
 import shlex
-import datetime
 import tempfile
 import subprocess
 
@@ -12,6 +12,10 @@ from .db import db
 
 input_file_regex = re.compile(r'''(\{)(infile-[\w\.\-\d]+)(\})''')
 output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
+
+_DB_TABLE_NAME = "execution"
+_DB_TABLE_FIELDS = ("command", "start_time", "end_time", "stdout", "stderr",
+                    "in_file", "out_files")
 
 def _extract_files(text: str, input_or_output: str) -> list:
     if input_or_output == "input":
@@ -42,14 +46,16 @@ class Executor(object):
         self._console_stderr = []
         self.error_code = None
 
+        self.__create_database__()
+
     def __create_database__(self):
-        if not self.__db_created__:
+        if not Executor.__db_created__:
             db.create_table(
-                "executions",
-                ("command", "start_time", "end_time", "stdout", "stderr")
+                _DB_TABLE_NAME,
+                _DB_TABLE_FIELDS
             )
 
-            self.__db_created__ = True
+            Executor.__db_created__ = True
 
     @abc.abstractmethod
     def run_ctx(self):
@@ -90,7 +96,7 @@ class LocalExecutor(Executor):
 
     def run_ctx(self):
 
-
+        start_time = time.time()
         new_command = self._replace_files_in_command_()
 
         command = shlex.split(new_command)
@@ -113,9 +119,28 @@ class LocalExecutor(Executor):
 
         self._console_stderr.extend(process.stderr.readlines())
 
+        end_time = time.time()
 
+        #
+        # Save execution information
+        #
+        db.insert(
+            _DB_TABLE_NAME,
+            [
+                new_command,
+                str(start_time),
+                str(end_time),
+                self.console_output(),
+                self.stderr_output(),
+                ",".join(self.input_files.values()),
+                ",".join(self.output_files.values())
+            ]
+        )
 
 class execution(object):
+
+    __db_created__: bool = False
+
     def __init__(self, command: str, metadata: dict = None):
         self.command = command
         self.metadata = metadata or {}

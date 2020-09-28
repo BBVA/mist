@@ -9,6 +9,7 @@ class _CurrentApp(dict):
         self.__dict__["real_time"] = True
         self.__dict__["debug"] = False
         self.__dict__["persist"] = False
+        self.__dict__["database_path"] = None
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value

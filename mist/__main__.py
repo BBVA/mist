@@ -11,6 +11,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from mist.sdk import config, db
 
+from .action_log import do_log
 from .interpreter import execute, check, execute_from_text
 
 HERE = os.path.dirname(__file__)
@@ -62,21 +63,23 @@ class Mist(object):
             usage='''mist <command> [<args>]
 
 Available commands are:
+   help       Displays help menu
    version    Displays installed MIST version
    exec       Run a .mist file (default option)
    check      Check a .mist file without execute them
    editor     Run live editor on browser
 ''')
-        parser.add_argument('command', help='Subcommand to run')
+        parser.add_argument('command', help='Subcommand to run', nargs="*")
         # parse_args defaults to [1:] for args, but you need to
         # exclude the rest of the args too, or validation will fail
-        parsed_args = parser.parse_args(sys.argv[1:2])
+        actions = [x for x in dir(self) if not x.startswith("_")]
 
-        if not hasattr(self, parsed_args.command):
+        if sys.argv[1] not in actions:
             self.exec()
         else:
+            parsed_args = parser.parse_args(sys.argv[1:2])
             # use dispatch pattern to invoke method with same name
-            getattr(self, parsed_args.command)()
+            getattr(self, parsed_args.command[0])()
 
     def version(self):
         print(f"version: {pkg_resources.get_distribution('mist').version}")
@@ -99,17 +102,17 @@ Available commands are:
                             action="store_true",
                             help="enable debug messages",
                             default=False)
-        parser.add_argument('-p', '--persist',
+
+        db_group = parser.add_argument_group("Database")
+        db_group.add_argument('-p', '--persist',
                             action="store_true",
                             help="persist database information to disk",
                             default=False)
+        db_group.add_argument('-db', '--database-path',
+                            help="database path file",
+                            default=None)
 
-        if sys.argv[1] == "exec":
-            in_args = sys.argv[2:]
-        else:
-            in_args = sys.argv[1:]
-
-        parsed_args = parser.parse_args(in_args)
+        parsed_args = parser.parse_args(sys.argv[2:])
 
         #
         # Load console config
@@ -120,9 +123,43 @@ Available commands are:
         # Setup database
         #
         if config.persist:
-            db.setup(f"sqlite3://{config.MIST_FILE}.db")
+            if config.database_path:
+                if not config.database_path.endswith("db"):
+                    config.database_path = f"{config.database_path}.db"
+
+                db.setup(f"sqlite3://{config.database_path}")
+            else:
+                db.setup(f"sqlite3://{config.MIST_FILE}.db")
 
         execute(parsed_args)
+
+    def log(self):
+
+        parser = argparse.ArgumentParser(
+            description='Manage logs for MIST executions')
+        parser.add_argument('MIST_DB')
+
+        parsed_args = parser.parse_args(sys.argv[2:])
+
+        #
+        # Load console config
+        #
+        config.load_cli_values(parsed_args)
+
+        #
+        # Setup database
+        #
+        db.setup(f"sqlite3://{config.MIST_DB}")
+
+        #
+        # Load console config
+        #
+        config.load_cli_values(parsed_args)
+
+        #
+        # Setup database
+        #
+        do_log(parsed_args)
 
     def check(self):
         parser = argparse.ArgumentParser(

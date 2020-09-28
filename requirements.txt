@@ -1,2 +1,3 @@
 textx
 jsonpath-ng
+terminaltables
