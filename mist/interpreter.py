@@ -180,9 +180,12 @@ def check(parsed_args: Namespace) \
 def execute(parsed_args: Namespace):
     mist_model = check(parsed_args)
 
-    # Run user program!
-    for c in mist_model.commands:
-        c.launch()
+    if parsed_args.simulate:
+        print("[*] File loaded successfully")
+    else:
+        # Run user program!
+        for c in mist_model.commands:
+            c.launch()
 
 def execute_from_text(text: str, session_name: str = None) -> str:
     mist_meta_model = _load_mist_language_()

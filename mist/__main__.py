@@ -76,6 +76,10 @@ Available commands are:
                             action="store_true",
                             help="enable debug messages",
                             default=False)
+        parser.add_argument('-S', '--simulate',
+                            action="store_true",
+                            help="simulate without execute",
+                            default=False)
 
         db_group = parser.add_argument_group("Database")
         db_group.add_argument('-p', '--persist',
