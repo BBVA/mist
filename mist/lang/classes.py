@@ -47,7 +47,7 @@ class CheckCommand:
     def run(self):
         if config.debug:
             print(f"-> Check that {self.var} is {self.result}")
-        if get_var(self.var) == self.result:
+        if get_id(self.var) == self.result:
             return True
 
 @dataclass
@@ -73,7 +73,7 @@ class IterateCommand:
 
         res = []
 
-        for index, item in enumerate(get_var(self.var)):
+        for index, item in enumerate(get_id(self.var, as_list=True)):
             res.append({self.name: item, "index": index})
 
         return res

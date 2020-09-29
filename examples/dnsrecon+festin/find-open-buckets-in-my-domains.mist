@@ -17,7 +17,9 @@ iterate domains => domain {
             console
         }
         then {
-            print domains
+            iterate domains => d {
+                print d
+            }
         }
     }
 }
