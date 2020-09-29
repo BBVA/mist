@@ -38,7 +38,12 @@ class Executor(object):
 
     __db_created__ = False
 
-    def __init__(self, command: str, input_files: dict, output_files :dict):
+    def __init__(self,
+                 command: str,
+                 environment: dict,
+                 input_files: dict,
+                 output_files :dict):
+        self.environment = environment or {}
         self.command = command
         self.input_files = input_files
         self.output_files = output_files
@@ -101,6 +106,7 @@ class LocalExecutor(Executor):
 
         command = shlex.split(new_command)
         process = subprocess.Popen(command,
+                                   env=self.environment,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
                                    universal_newlines=True)
@@ -141,9 +147,10 @@ class execution(object):
 
     __db_created__: bool = False
 
-    def __init__(self, command: str, metadata: dict = None):
+    def __init__(self, command: str, metadata: dict = None, environment: dict = None):
         self.command = command
         self.metadata = metadata or {}
+        self.environment = environment or {}
 
         self.input_files = {}
         self.output_files = {}
@@ -170,6 +177,7 @@ class execution(object):
     def __enter__(self) -> Tuple[Executor, dict, dict]:
         executor = LocalExecutor(
             self.command,
+            self.environment,
             self.input_files,
             self.output_files
         )
