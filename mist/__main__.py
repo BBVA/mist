@@ -6,11 +6,11 @@ import pkg_resources
 
 from http.server import HTTPServer
 
-from mist.sdk import config, db
+from mist.sdk import config, db, params
 
 from .action_log import do_log
 from .editor import EditorServer
-from .interpreter import execute, check
+from .interpreter import execute
 from .exceptions import MistMissingBinaryException
 
 HERE = os.path.dirname(__file__)
@@ -29,21 +29,29 @@ Available commands are:
    help       Displays help menu
    version    Displays installed MIST version
    exec       Run a .mist file (default option)
-   check      Check a .mist file without execute them
+   log        Manage execution log of MIST database
    editor     Run live editor on browser
 ''')
         parser.add_argument('command', help='Subcommand to run', nargs="*")
-        # parse_args defaults to [1:] for args, but you need to
-        # exclude the rest of the args too, or validation will fail
-        actions = [x for x in dir(self) if not x.startswith("_")]
+
+        if len(sys.argv) < 2:
+            parser.print_usage()
+            exit(0)
+
+        actions = [*[x for x in dir(self) if not x.startswith("_")], "help"]
 
         if sys.argv[1] not in actions:
             self._default_action = True
             self.exec()
         else:
             parsed_args = parser.parse_args(sys.argv[1:2])
-            # use dispatch pattern to invoke method with same name
-            getattr(self, parsed_args.command[0])()
+
+            if parsed_args.command[0] == "help":
+                parser.print_usage()
+                exit(0)
+            else:
+                # use dispatch pattern to invoke method with same name
+                getattr(self, parsed_args.command[0])()
 
     def version(self):
         print(f"version: {pkg_resources.get_distribution('mist').version}")
@@ -53,7 +61,9 @@ Available commands are:
     def exec(self):
         parser = argparse.ArgumentParser(
             description='execute a .mist file')
-        parser.add_argument('MIST_FILE')
+        parser.add_argument('OPTIONS',
+                            help="MIST - FILE[param1 = value1 param2 = value2...]",
+                            metavar="OPTIONS", nargs="+")
         parser.add_argument('-C', '--console-output',
                             action="store_false",
                             help="displays console output of executed tools",
@@ -65,6 +75,10 @@ Available commands are:
         parser.add_argument('-d', '--debug',
                             action="store_true",
                             help="enable debug messages",
+                            default=False)
+        parser.add_argument('-S', '--simulate',
+                            action="store_true",
+                            help="simulate without execute",
                             default=False)
 
         db_group = parser.add_argument_group("Database")
@@ -82,9 +96,21 @@ Available commands are:
             parsed_args = parser.parse_args(sys.argv[2:])
 
         #
+        # Check if filename is passed as parameter
+        #
+        if not parsed_args.OPTIONS:
+            print("[!] .mist file needed as first parameter")
+            exit(1)
+        else:
+            if not os.path.exists(parsed_args.OPTIONS[0]):
+                print("[!] Can't find .mist file")
+                exit(1)
+
+        #
         # Load console config
         #
         config.load_cli_values(parsed_args)
+        params.load_cli_values(parsed_args)
 
         #
         # Setup database
@@ -103,6 +129,10 @@ Available commands are:
         except MistMissingBinaryException as e:
             print("")
             print("[!] ", e)
+            print()
+        except KeyboardInterrupt:
+            print()
+            print("[*] Closing session")
             print()
 
     def log(self):
@@ -133,23 +163,6 @@ Available commands are:
         #
         do_log(parsed_args)
 
-    def check(self):
-        parser = argparse.ArgumentParser(
-            description='check a .mist file without execute')
-        # NOT prefixing the argument with -- means it's not optional
-        parser.add_argument('MIST_FILE')
-
-        parsed_args = parser.parse_args(sys.argv[2:])
-
-        try:
-            check(parsed_args)
-
-            print(f"[*] File '{parsed_args.MIST_FILE}' is ok")
-        except Exception as e:
-
-            print(f"[!] Parsing error:")
-            print(str(e))
-
     def editor(self):
 
         print("[*] Starting editor at port 9000")
@@ -161,7 +174,10 @@ Available commands are:
         
         ''')
         httpd = HTTPServer(('localhost', 9000), EditorServer)
-        httpd.serve_forever()
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            pass
 
 def main():
 

@@ -63,6 +63,20 @@ class Executor(object):
 
             Executor.__db_created__ = True
 
+    def __add_to_database__(self, command, start_time, end_time):
+        db.insert(
+            _DB_TABLE_NAME,
+            [
+                command,
+                str(start_time),
+                str(end_time),
+                self.console_output(),
+                self.stderr_output(),
+                ",".join(self.input_files.values()),
+                ",".join(self.output_files.values())
+            ]
+        )
+
     @abc.abstractmethod
     def run_ctx(self):
         pass
@@ -134,18 +148,7 @@ class LocalExecutor(Executor):
         #
         # Save execution information
         #
-        db.insert(
-            _DB_TABLE_NAME,
-            [
-                new_command,
-                str(start_time),
-                str(end_time),
-                self.console_output(),
-                self.stderr_output(),
-                ",".join(self.input_files.values()),
-                ",".join(self.output_files.values())
-            ]
-        )
+        self.__add_to_database__(new_command, start_time, end_time)
 
 class execution(object):
 

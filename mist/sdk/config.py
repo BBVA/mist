@@ -10,6 +10,7 @@ class _CurrentApp(dict):
         self.__dict__["debug"] = False
         self.__dict__["persist"] = False
         self.__dict__["database_path"] = None
+        self.__dict__["simulate"] = False
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value

@@ -7,7 +7,7 @@ data myHostsChecked {
     OpenPorts
 }
 
-CSVput "examples/myhosts.csv" => myHostsCSV
+CSVput "catalog/myhosts.csv" => myHostsCSV
 
 print myHostsCSV
 iterate myHostsCSV => host {

@@ -116,7 +116,7 @@ class _DB:
             for table in self.fetch_many(q):
                 _table = table[0]
 
-                if "sqlite" in _table:
+                if any(x in _table for x in ("sqlite", "execution")):
                     continue
 
                 self.execute(f"DROP TABLE IF EXISTS {_table}")
@@ -125,9 +125,6 @@ class _DB:
         if self.database_type == "sqlite":
             if self._connection:
                 _drop_database_sqlite()
-                self.session_name = None
-                del self._connection
-                self._connection = None
 
 db = _DB()
 
