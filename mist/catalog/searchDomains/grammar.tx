@@ -1,0 +1,15 @@
+SearchDomainsCommand:
+  'searchDomains' '{'
+    'input' '{'
+      'domain' '<=' domain=IDorSTRING
+    '}'
+    ('output' '{'
+      'result'
+      'domains'
+      'console'
+    '}')?
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;
