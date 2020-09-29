@@ -1,7 +1,7 @@
 # Name: exec
+# Version: 1.0.0
 # Description: executes a custom user shell command
 # Tags: command, exec, shell
-
 exec "bash -c ls {hidden} -1 {filter}" {
     input {
         filter = "*"

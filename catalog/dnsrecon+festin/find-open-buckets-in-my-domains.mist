@@ -16,7 +16,11 @@ iterate domains => domain {
             console
         }
         then {
-            print domains
+            iterate domains => domain {
+                print domain.name
+                print domain.ssl
+                print domain.commonName
+            }
         }
     }
 }

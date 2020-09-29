@@ -2,7 +2,7 @@
 # Description: Read file with list of IPs and check for open ports, write the result in csv file
 # Tags: nmap, network, ports
 
-CSVput "examples/myhosts.csv" => myHosts
+CSVput "catalog/myhosts.csv" => myHosts
 
 findOpenPorts {
     input {

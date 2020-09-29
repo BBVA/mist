@@ -48,14 +48,14 @@ def _load_mist_language_():
                         stack.pop()
 
     here = os.path.dirname(__file__)
-    catalog_path = os.path.join(here, "catalog")
+    commands_path = os.path.join(here, "commands")
 
     #
     # Locate grammars
     #
 
     # Locate grammar files from catalog modules
-    catalog_grammar_files = find_grammars(catalog_path)
+    catalog_grammar_files = find_grammars(commands_path)
 
     # Locate core grammar files
     core_grammar_files = [
@@ -102,7 +102,7 @@ def _load_mist_language_():
     exports.extend(core_exports)
     exports.extend(builtin_exports)
     exports.extend(
-        find_catalog_exports(catalog_path)
+        find_catalog_exports(commands_path)
     )
 
     #
@@ -130,7 +130,7 @@ def check(parsed_args: Namespace) \
     #
     # Check model and language
     #
-    mist_file = parsed_args.MIST_FILE
+    mist_file = parsed_args.OPTIONS[0]
 
     mist_meta_model = _load_mist_language_()
 
