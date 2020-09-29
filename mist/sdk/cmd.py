@@ -1,3 +1,4 @@
+import os
 import re
 import abc
 import time
@@ -104,9 +105,12 @@ class LocalExecutor(Executor):
         start_time = time.time()
         new_command = self._replace_files_in_command_()
 
+        run_env = os.environ.copy()
+        run_env.update(self.environment)
+
         command = shlex.split(new_command)
         process = subprocess.Popen(command,
-                                   env=self.environment,
+                                   env=run_env,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
                                    universal_newlines=True)

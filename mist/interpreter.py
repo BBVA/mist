@@ -1,14 +1,17 @@
 import os
+import shutil
 
 from io import StringIO
-from typing import Tuple
 from argparse import Namespace
 from functools import lru_cache
+from typing import List
 
 from textx import metamodel_from_str
-from contextlib import redirect_stdout, redirect_stderr
+from contextlib import redirect_stdout
 
 from mist.sdk.db import db
+
+from .exceptions import MistMissingBinaryException
 
 from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry
@@ -118,7 +121,15 @@ def _load_mist_language_():
     return mist_meta_model
 
 
-def check(parsed_args: Namespace):
+def check(parsed_args: Namespace) \
+        -> object or MistMissingBinaryException:
+    """
+    This function checks model, language and that all binaries are available
+    """
+
+    #
+    # Check model and language
+    #
     mist_file = parsed_args.MIST_FILE
 
     mist_meta_model = _load_mist_language_()
@@ -126,6 +137,43 @@ def check(parsed_args: Namespace):
     mist_model = mist_meta_model.model_from_file(
         mist_file
     )
+
+    #
+    # Check binaries
+    #
+    def _check_commands(command: List[object]):
+
+        meta = []
+
+        if type(command) is list:
+            for c in command:
+                meta.extend(_check_commands(c))
+
+        if hasattr(command, "meta"):
+            meta.append((command.__class__.__name__, command.meta))
+
+        try:
+            for c in command.commands:
+                meta.extend(_check_commands(c))
+        except AttributeError:
+            pass
+
+        return meta
+
+    #
+    # Check that binaries needed to execute a command are installed
+    #
+    if metas := _check_commands(mist_model.commands):
+        for command_name, m in metas:
+            if bin := m.get("default", {}).get("cmd", None):
+                if not shutil.which(bin):
+                    cmd_name = m.get("default", {}).get("name", None)
+                    cmd_message = m.get("default", {}).get("cmd-message", None)
+                    raise MistMissingBinaryException(
+                        f"Command '{command_name}' need '{bin}' to be "
+                        f"executed. Please install them. \n\nExtra "
+                        f"help: {cmd_message}"
+                    )
 
     return mist_model
 

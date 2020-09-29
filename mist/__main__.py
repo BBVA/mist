@@ -1,63 +1,26 @@
 import os
 import sys
-import json
 import argparse
 import platform
-import socketserver
 import pkg_resources
 
-from typing import Tuple
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer
 
 from mist.sdk import config, db
 
 from .action_log import do_log
-from .interpreter import execute, check, execute_from_text
+from .editor import EditorServer
+from .interpreter import execute, check
+from .exceptions import MistMissingBinaryException
 
 HERE = os.path.dirname(__file__)
-
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-
-    def __init__(self, request: bytes, client_address: Tuple[str, int],
-                 server: socketserver.BaseServer):
-        assets_base = os.path.join(os.path.dirname(__file__), "assets")
-        self.assets_index = os.path.join(assets_base, "index.html")
-        self.assets_js = os.path.join(assets_base, "mode-mist.js")
-
-        super().__init__(request, client_address, server)
-
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-
-        if self.path == "/mode-mist.js":
-            with open(self.assets_js, "rb") as f:
-                self.wfile.write(f.read())
-
-        else:
-            with open(self.assets_index, "rb") as f:
-                self.wfile.write(f.read())
-
-
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        program = self.rfile.read(content_length)
-
-        stdout = execute_from_text(program.decode("utf-8"))
-
-        response = json.dumps({"console": stdout})
-
-        self.send_response(200)
-        self.send_header("Content-type", "application/json")
-        self.send_header("Content-Length", str(len(response)))
-        self.end_headers()
-        self.wfile.write(response.encode("utf-8"))
-
 
 
 class Mist(object):
 
     def __init__(self):
+        self._default_action = False
+
         parser = argparse.ArgumentParser(
             description='MIST - programing language for security made easy',
             usage='''mist <command> [<args>]
@@ -75,6 +38,7 @@ Available commands are:
         actions = [x for x in dir(self) if not x.startswith("_")]
 
         if sys.argv[1] not in actions:
+            self._default_action = True
             self.exec()
         else:
             parsed_args = parser.parse_args(sys.argv[1:2])
@@ -112,7 +76,10 @@ Available commands are:
                             help="database path file",
                             default=None)
 
-        parsed_args = parser.parse_args(sys.argv[2:])
+        if self._default_action:
+            parsed_args = parser.parse_args(sys.argv[1:])
+        else:
+            parsed_args = parser.parse_args(sys.argv[2:])
 
         #
         # Load console config
@@ -131,7 +98,12 @@ Available commands are:
             else:
                 db.setup(f"sqlite3://{config.MIST_FILE}.db")
 
-        execute(parsed_args)
+        try:
+            execute(parsed_args)
+        except MistMissingBinaryException as e:
+            print("")
+            print("[!] ", e)
+            print()
 
     def log(self):
 
@@ -188,7 +160,7 @@ Available commands are:
         BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'
         
         ''')
-        httpd = HTTPServer(('localhost', 9000), SimpleHTTPRequestHandler)
+        httpd = HTTPServer(('localhost', 9000), EditorServer)
         httpd.serve_forever()
 
 def main():
