@@ -23,7 +23,6 @@ iterate myHostsCSV => host {
             console
         }
         then {
-            print "hola"
             print openPorts
             put ip openPorts => myHostsChecked
         }

@@ -31,7 +31,7 @@ class SaveCommand:
             fields = [p for p in self.params]
 
         values = [
-            get_var(i.id) if i.id else i.string if i.string else i.data
+            get_id(i)
             for i in self.sources
         ]
 

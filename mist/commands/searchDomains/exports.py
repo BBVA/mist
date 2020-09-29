@@ -43,7 +43,7 @@ class SearchDomainsCommand:
             return {
                 "domain": originDomain,
                 "result": executor.status_text(),
-                "domains": ','.join(domains),
+                "domains": domains,
                 "console": executor.console_output()
             }
 

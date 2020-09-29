@@ -7,7 +7,10 @@ from mist.sdk.watchers import watchers
 
 def get_var(var):
     if stack and var in stack[len(stack)-1]:
-        return stack[len(stack)-1][var]
+        v = stack[len(stack)-1][var]
+        if type(v) is list:
+            return ','.join(v)
+        return v
     return db.fetch_table_as_dict(var)
 
 def get_id(id):
