@@ -45,7 +45,7 @@ class FindOpenPortsCommand:
                 "ip": ip,
                 "ports": self.ports,
                 "result": executor.status_text(),
-                "openPorts": ','.join(openPorts),
+                "openPorts": openPorts,
                 "console": executor.console_output()
             }
 

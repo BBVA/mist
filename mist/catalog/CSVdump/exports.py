@@ -2,7 +2,7 @@ import csv
 
 from dataclasses import dataclass
 
-from mist.sdk import get_var, db, config
+from mist.sdk import get_id, db, config
 
 
 @dataclass
@@ -15,7 +15,7 @@ class DumpCSVCommand:
         if config.debug:
             print(f"-> Writing {self.source} => '{self.fileName}'")
 
-        items = get_var(self.source)
+        items = get_id(self.source)
         with open(self.fileName, mode='w') as csvFile:
             csvWriter = csv.writer(csvFile,
                                    delimiter=',',
