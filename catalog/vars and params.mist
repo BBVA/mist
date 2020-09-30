@@ -4,5 +4,5 @@
 # Tags: command, variables, parameters, params, shell
 
 print "hola"
-#print $PATH
+print $PATH
 print %p1

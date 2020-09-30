@@ -2,8 +2,14 @@ import argparse
 
 class _InputParams(dict):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super(_InputParams, self).__init__(*args, **kwargs)
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value

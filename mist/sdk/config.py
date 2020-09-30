@@ -2,8 +2,8 @@ import argparse
 
 class _CurrentApp(dict):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super(_CurrentApp, self).__init__()
 
         self.__dict__["console_output"] = True
         self.__dict__["real_time"] = True
@@ -11,6 +11,12 @@ class _CurrentApp(dict):
         self.__dict__["persist"] = False
         self.__dict__["database_path"] = None
         self.__dict__["simulate"] = False
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
