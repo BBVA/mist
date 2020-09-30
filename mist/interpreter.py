@@ -2,14 +2,15 @@ import os
 import shutil
 
 from io import StringIO
+from typing import List
 from argparse import Namespace
 from functools import lru_cache
-from typing import List
 
 from textx import metamodel_from_str
 from contextlib import redirect_stdout
 
 from mist.sdk.db import db
+from mist.sdk.params import params
 
 from .exceptions import MistMissingBinaryException
 
@@ -187,14 +188,14 @@ def execute(parsed_args: Namespace):
         for c in mist_model.commands:
             c.launch()
 
-def execute_from_text(text: str, session_name: str = None) -> str:
+def execute_from_text(text: str, fn_params: dict = None) -> str:
+    if fn_params:
+        params.update(fn_params)
+
     mist_meta_model = _load_mist_language_()
 
     stream_stdout = StringIO()
     write_to_output = redirect_stdout(stream_stdout)
-
-    if session_name:
-        db.session_name = session_name
 
     with write_to_output:
         try:

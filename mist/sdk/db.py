@@ -21,7 +21,6 @@ class _DB:
         self._connection = None
         self._connection_string: str = ""
         self.database_type: str = "sqlite"
-        self.session_name = ""
 
     @property
     def connection(self):
@@ -38,17 +37,13 @@ class _DB:
 
         return self._connection
 
-    def setup(self, connection_string: str, session_name: str = None):
-        self.session_name = session_name
+    def setup(self, connection_string: str):
         self._connection_string = connection_string
 
     @lru_cache(50)
     def tbl_name(self, name: str) -> str:
-
-        if self.session_name:
-            return f"{self.session_name}_{name}"
-        else:
-            return name
+        # TODO: not deleted because we don't know if we'll need in the future
+        return name
 
     def create_table(self,
                      table_name: str,
