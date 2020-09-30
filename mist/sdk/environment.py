@@ -5,13 +5,10 @@ class _EnvironmentVars(dict):
     def __init__(self, *args, **kwargs):
         super(_EnvironmentVars, self).__init__()
 
-        self.__dict__.update(os.environ)
+        self.update(os.environ)
 
     def __getitem__(self, key):
-        return getattr(self, key)
-
-    def __setitem__(self, key, value):
-        setattr(self, key, value)
+        return self.get(key)
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
