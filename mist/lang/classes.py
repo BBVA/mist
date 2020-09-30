@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from mist.sdk import db, get_var, get_id, stack, watchers, config, watchedInsert
+from mist.sdk import db, get_id, stack, watchers, config, watchedInsert
 
 @dataclass
 class DataCommand:
@@ -90,4 +90,16 @@ class WatchCommand:
             print(f"-> Watch {self.var}")
         watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
 
-exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand, WatchCommand]
+@dataclass
+class IDorSTRING:
+    parent: object
+    data: str
+    id: str
+    string: str
+    child: str
+    var: str
+    param: str
+    # TODO: check var and params
+
+
+exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand, WatchCommand, IDorSTRING]

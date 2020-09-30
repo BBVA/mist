@@ -4,6 +4,8 @@ from mist.sdk.stack import stack
 from mist.sdk.db import db
 from mist.sdk.config import config
 from mist.sdk.watchers import watchers
+from mist.sdk.environment import environment
+from mist.sdk.params import params
 
 def get_var(var, as_list):
     #print(f"get_var {var}")
@@ -15,7 +17,13 @@ def get_var(var, as_list):
     return db.fetch_table_as_dict(var)
 
 def get_id(id, as_list=False):
-    #print(f"get_id id={id.id} string={id.string} child={id.child}")
+    # print(f"get_id id={id.id} string={id.string} child={id.child} var={id.var} param={id.param}")
+    # print(environment)
+    # print(params)
+    if id.var:
+        return environment[id.var]
+    if id.param:
+        return params[id.param]
     if not hasattr(id, "string"):
         return get_var(id, as_list)
     if id.string:
