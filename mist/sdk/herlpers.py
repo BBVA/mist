@@ -18,14 +18,12 @@ def get_var(var, as_list):
 
 def get_id(id, as_list=False):
     # print(f"get_id id={id.id} string={id.string} child={id.child} var={id.var} param={id.param}")
-    # print(environment)
-    # print(params)
+    if not hasattr(id, "string"):
+        return get_var(id, as_list)
     if id.var:
         return environment[id.var]
     if id.param:
         return params[id.param]
-    if not hasattr(id, "string"):
-        return get_var(id, as_list)
     if id.string:
         return id.string
     elif id.data:
