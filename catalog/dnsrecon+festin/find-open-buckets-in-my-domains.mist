@@ -3,7 +3,15 @@
 # Description: Read file with list of domains, use dnsrecon to find more domain and then festin to find open s3 buckets.
 # Tags: dnsrecon, festin, dns, s3, network
 
-CSVput "examples/dnsrecon+festin/mydomains.csv" => domains
+CSVput "catalog/dnsrecon+festin/mydomains.csv" => domains
+
+data bucketsFound {
+    bucket
+}
+
+data objectsFound {
+    object
+}
 
 iterate domains => domain {
     print domain.name
@@ -18,8 +26,31 @@ iterate domains => domain {
         }
         then {
             iterate domains => d {
-                print d
+                searchOpenS3Buckets {
+                    input {
+                        domain <= d
+                        dns <= "212.166.64.1"
+                        tor <= 'True'
+                    }
+                    output {
+                        result
+                        domains
+                        buckets
+                        objects
+                        console
+                    }
+                    then {
+                        iterate buckets => b {
+                            put b => bucketsFound
+                        } 
+                        iterate objects => o {
+                            put o => objectsFound
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+print bucketsFound

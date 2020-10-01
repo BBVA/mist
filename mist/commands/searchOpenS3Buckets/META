@@ -1,0 +1,10 @@
+[default]
+Name=Search Open S3 Buckets
+Tags=network, festin, dns, s3, network
+cmd=festin
+cmd-message=you need... pip install festin
+
+[docker]
+image = cr0hn/festin
+cmd = "festin"
+cmd-error = "Can't find entrypoint 'festin' at Docker Image 'cr0hn/festin'"
