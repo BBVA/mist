@@ -7,21 +7,21 @@ from mist.sdk import stack, get_id, execution, config
 @dataclass
 class SearchOpenS3BucketsCommand:
     parent: object
-    domain: str
+    inputDomains: str
     dns: str
     tor: str
     commands: list
 
     def run(self):
-        originDomain = get_id(self.domain)
         dns = get_id(self.dns)
         tor = self.tor.id == 'True' or self.tor.string == 'True'
+        inputDomains = ' '.join(get_id(self.inputDomains).split(','))
 
         if config.debug:
-            print(f"-> Doing searchOpenS3Buckets to {originDomain}")
+            print(f"-> Doing searchOpenS3Buckets to {inputDomains}")
 
         with execution(
-                f"festin {originDomain} -rr {{outfile-1}} {'--tor' if tor else ''} -ds {dns}",
+                f"festin {inputDomains} -rr {{outfile-1}} {'--tor' if tor else ''} -ds {dns}",
                 self.meta
         ) as (executor, in_files, out_files):
 
@@ -46,9 +46,9 @@ class SearchOpenS3BucketsCommand:
                     objects.append(json_data["bucket_name"] + "/" + object)
 
             return {
-                "domain": originDomain,
+                "inputDomains": inputDomains,
                 "result": executor.status_text(),
-                "domains": domains,
+                "outputDomains": domains,
                 "buckets": buckets,
                 "objects": objects,
                 "console": executor.console_output()

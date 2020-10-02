@@ -5,19 +5,19 @@
 
 searchOpenS3Buckets {
     input {
-        domain <= "contestia-pro-15-ompexporter-buckets-widget-config.s3.amazonaws.com"
+        inputDomains <= "contestia-pro-15-ompexporter-buckets-widget-config.s3.amazonaws.com"
         dns <= "212.166.64.1"
         tor <= True 
     }
     output {
         result
-        domains
+        outputDomains
         buckets
         objects
         console
     }
     then {
-        print domains
+        print inputDomains
         print buckets
         #print objects
     }

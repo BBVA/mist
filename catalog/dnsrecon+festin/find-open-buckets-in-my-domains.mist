@@ -25,27 +25,25 @@ iterate domains => domain {
             console
         }
         then {
-            iterate domains => d {
-                searchOpenS3Buckets {
-                    input {
-                        domain <= d
-                        dns <= "212.166.64.1"
-                        tor <= 'True'
-                    }
-                    output {
-                        result
-                        domains
-                        buckets
-                        objects
-                        console
-                    }
-                    then {
-                        iterate buckets => b {
-                            put b => bucketsFound
-                        } 
-                        iterate objects => o {
-                            put o => objectsFound
-                        }
+            searchOpenS3Buckets {
+                input {
+                    inputDomains <= domains
+                    dns <= "212.166.64.1"
+                    tor <= 'True'
+                }
+                output {
+                    result
+                    outputDomains
+                    buckets
+                    objects
+                    console
+                }
+                then {
+                    iterate buckets => b {
+                        put b => bucketsFound
+                    } 
+                    iterate objects => o {
+                        put o => objectsFound
                     }
                 }
             }
