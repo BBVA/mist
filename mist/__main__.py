@@ -64,6 +64,10 @@ Available commands are:
         parser.add_argument('OPTIONS',
                             help="MIST - FILE[param1 = value1 param2 = value2...]",
                             metavar="OPTIONS", nargs="+")
+        parser.add_argument('-N', '--no-check-tools',
+                            action="store_true",
+                            help="do not check if tools are installed",
+                            default=False)
         parser.add_argument('-C', '--console-output',
                             action="store_false",
                             help="displays console output of executed tools",

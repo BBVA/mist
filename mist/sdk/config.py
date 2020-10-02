@@ -11,6 +11,7 @@ class _CurrentApp(dict):
         self.__dict__["persist"] = False
         self.__dict__["database_path"] = None
         self.__dict__["simulate"] = False
+        self.__dict__["no_check_tools"] = False
 
     def __getitem__(self, key):
         return self.get(key)

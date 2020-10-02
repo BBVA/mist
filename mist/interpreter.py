@@ -164,17 +164,18 @@ def check(parsed_args: Namespace) \
     #
     # Check that binaries needed to execute a command are installed
     #
-    if metas := _check_commands(mist_model.commands):
-        for command_name, m in metas:
-            if bin := m.get("default", {}).get("cmd", None):
-                if not shutil.which(bin):
-                    cmd_name = m.get("default", {}).get("name", None)
-                    cmd_message = m.get("default", {}).get("cmd-message", None)
-                    raise MistMissingBinaryException(
-                        f"Command '{command_name}' need '{bin}' to be "
-                        f"executed. Please install them. \n\nExtra "
-                        f"help: {cmd_message}"
-                    )
+    if not parsed_args.no_check_tools:
+        if metas := _check_commands(mist_model.commands):
+            for command_name, m in metas:
+                if bin := m.get("default", {}).get("cmd", None):
+                    if not shutil.which(bin):
+                        cmd_name = m.get("default", {}).get("name", None)
+                        cmd_message = m.get("default", {}).get("cmd-message", None)
+                        raise MistMissingBinaryException(
+                            f"Command '{command_name}' need '{bin}' to be "
+                            f"executed. Please install them. \n\nExtra "
+                            f"help: {cmd_message}"
+                        )
 
     return mist_model
 

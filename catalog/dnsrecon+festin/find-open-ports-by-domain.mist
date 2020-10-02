@@ -12,17 +12,19 @@ data resultOpenPorts {
     ports
 }
 
+print %domain
+
 watch domains => d {
     findOpenPorts {
         input {
             ip <= d.name
             ports <= "22,80,81,8080,8081"
         }
-        then { 
+        then {
             put ip openPorts => resultOpenPorts
         }
     }
-} 
+}
 
 searchDomains {
     input {
@@ -33,7 +35,7 @@ searchDomains {
             put d => domains
         }
     }
-}   
+}
 
 searchOpenS3Buckets {
     input {
