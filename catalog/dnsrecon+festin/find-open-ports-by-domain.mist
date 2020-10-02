@@ -1,7 +1,7 @@
-# Name: find-open-buckets-in-my-domains
+# Name: find-open-ports-by-domains
 # Version: 1.0.0
-# Description: Read file with list of domains, use dnsrecon to find more domain and then festin to find open s3 buckets.
-# Tags: dnsrecon, festin, dns, s3, network
+# Description: Given a domain, find relared domains and open ports for each.
+# Tags: dnsrecon, festin, nmap, watch, dns, s3, network
 
 data domains {
     name
@@ -11,8 +11,6 @@ data resultOpenPorts {
     host
     ports
 }
-
-print %domain
 
 watch domains => d {
     findOpenPorts {
