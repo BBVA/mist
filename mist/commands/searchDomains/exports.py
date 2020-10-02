@@ -34,6 +34,7 @@ class SearchDomainsCommand:
             #
             csvfile = open(out_files['outfile-1'])
             reader = csv.reader(csvfile, delimiter=',')
+
             next(reader) # Discard headers
             domains = [
                 row[1]

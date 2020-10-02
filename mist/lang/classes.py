@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-from mist.sdk import db, get_id, stack, watchers, config, watchedInsert
+
+from mist.exceptions import MistAbortException
+from mist.sdk import db, get_id, watchers, config, watchedInsert
 
 @dataclass
 class DataCommand:
@@ -61,6 +63,19 @@ class BuiltPrint:
         print(get_id(self.text))
 
 @dataclass
+class BuiltAbort:
+    parent: object
+    reason: str
+
+    def run(self):
+        if self.reason:
+            reason = self.reason
+        else:
+            reason = "Abort reached"
+
+        raise MistAbortException(reason)
+
+@dataclass
 class IterateCommand:
     parent: object
     var: str
@@ -102,4 +117,5 @@ class IDorSTRING:
     # TODO: check var and params
 
 
-exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint, IterateCommand, WatchCommand, IDorSTRING]
+exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
+           IterateCommand, WatchCommand, IDorSTRING, BuiltAbort]

@@ -3,3 +3,6 @@ class MistException(Exception):
 
 class MistMissingBinaryException(Exception):
     pass
+
+class MistAbortException(Exception):
+    pass

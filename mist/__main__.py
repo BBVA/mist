@@ -11,7 +11,7 @@ from mist.sdk import config, db, params
 from .action_log import do_log
 from .editor import EditorServer
 from .interpreter import execute
-from .exceptions import MistMissingBinaryException
+from .exceptions import MistMissingBinaryException, MistAbortException
 
 HERE = os.path.dirname(__file__)
 
@@ -131,9 +131,24 @@ Available commands are:
         try:
             execute(parsed_args)
         except MistMissingBinaryException as e:
-            print("")
+            print()
             print("[!] ", e)
             print()
+        except MistAbortException as e:
+            ex_len = len(str(e))
+            ex_step1 = int(ex_len / 2) - 4
+
+            if ex_len % 2 != 0:
+                ex_step2 = ex_step1 + 2
+            else:
+                ex_step2 = ex_step1 + 1
+
+            print("!" * ( ex_len+ 4))
+            print("!", " " * ex_step1 , "ABORT", " " * ex_step2 ,"!")
+            print("!",  " " * ex_len, "!")
+            print("!", e, "!")
+            print("!",  " " * ex_len, "!")
+            print("!" * (ex_len + 4))
         except KeyboardInterrupt:
             print()
             print("[*] Closing session")

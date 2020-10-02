@@ -1,9 +1,13 @@
 BuiltIn:
-    BuiltPrint | BuiltExec | BuiltSearchInText | BuiltSearchInXML | BuiltSearchInJSON
+    BuiltPrint | BuiltAbort | BuiltExec | BuiltSearchInText | BuiltSearchInXML | BuiltSearchInJSON
 ;
 
 BuiltPrint:
     'print' text=IDorSTRING
+;
+
+BuiltAbort:
+    'Abort' (reason=STRING)?
 ;
 
 Param:
