@@ -1,4 +1,4 @@
-![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/doc/images/logo-250x250.png)
+![MIST LOGO](docs/source/_static/images/logo-250x250.png)
 
 `MIST` a high level programming language focussed in security
 
@@ -18,6 +18,11 @@ After clone the repository, you can urn `MIST` without install them:
 > python3 -m pip install -r requirements.txt
 > python3 -m mist -h
 ```
+
+# Screenshots
+
+![Image of editor](docs/source/_static/images/MIST_Editor.png)
+
 
 # License
 
