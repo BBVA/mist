@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 
 from typing import List
 from functools import lru_cache
@@ -20,6 +21,7 @@ class _DB:
     def __init__(self):
         self._connection = None
         self._connection_string: str = ""
+        self.db_path: str = ""
         self.database_type: str = "sqlite"
 
     @property
@@ -29,8 +31,10 @@ class _DB:
                 self._connection = sqlite3.connect(":memory:")
 
             elif self._connection_string.startswith("sqlite3://"):
-                _cs = self._connection_string.replace("sqlite3://", "")
-                self._connection = sqlite3.connect(_cs)
+                self.db_path = self._connection_string.replace(
+                    "sqlite3://", ""
+                )
+                self._connection = sqlite3.connect(self.db_path)
 
             else:
                 raise ValueError("Invalid database connection string")
@@ -65,7 +69,21 @@ class _DB:
         with cm(self.connection) as cur:
             cur.execute(query)
 
-    def insert(self, table: str, values: List[str], *, fields=None):
+    def update(self, row_id: int, table: str, values: dict):
+        """returns last row id inserted"""
+        query = f'''
+        UPDATE {self.tbl_name(table)}
+        SET
+            {", ".join(f'{x} = ?' for x in values.keys())}
+        WHERE id = {row_id}
+        '''
+
+        with cm(self.connection) as cur:
+            res = cur.execute(query, list(values.values()))
+            return res.rowcount
+
+    def insert(self, table: str, values: List[str], *, fields=None) -> int:
+        """returns last row id inserted"""
         query = f'''
         INSERT INTO {self.tbl_name(table)}
         {f"({', '.join(fields)})" if fields else ''}
@@ -73,7 +91,8 @@ class _DB:
         '''
 
         with cm(self.connection) as cur:
-            cur.execute(query, values)
+            res = cur.execute(query, values)
+            return res.lastrowid
 
     def fetch_one(self, query: str) -> tuple:
 
@@ -120,6 +139,15 @@ class _DB:
         if self.database_type == "sqlite":
             if self._connection:
                 _drop_database_sqlite()
+
+    @lru_cache(1)
+    def signature(self):
+        hash = hashlib.sha512()
+
+        with open(self.db_path, "rb") as f:
+            hash.update(f.read())
+
+        return hash.hexdigest()
 
 db = _DB()
 

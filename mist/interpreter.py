@@ -18,6 +18,8 @@ from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry
 from .lang.classes import exports as core_exports
 from .lang.builtin import exports as builtin_exports
+from .sdk import config
+
 
 @lru_cache(1)
 def _load_mist_language_():
@@ -192,6 +194,17 @@ def execute(parsed_args: Namespace):
 def execute_from_text(text: str, fn_params: dict = None) -> str:
     if fn_params:
         params.update(fn_params)
+
+    # Set config defaults
+    config.update({
+        "console_output": True,
+        "real_time": True,
+        "debug": False,
+        "persist": False,
+        "database_path": None,
+        "simulate": False,
+        "no_check_tools": False
+    })
 
     mist_meta_model = _load_mist_language_()
 

@@ -3,6 +3,7 @@ import re
 import abc
 import time
 import shlex
+import hashlib
 import tempfile
 import subprocess
 
@@ -15,7 +16,8 @@ input_file_regex = re.compile(r'''(\{)(infile-[\w\.\-\d]+)(\})''')
 output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
 
 _DB_TABLE_NAME = "execution"
-_DB_TABLE_FIELDS = ("command", "start_time", "end_time", "stdout", "stderr",
+_DB_TABLE_FIELDS = ("command", "start_time", "end_time", "stdout",
+                    "stdout_signature", "stderr", "stderr_signature",
                     "in_file", "out_files")
 
 def _extract_files(text: str, input_or_output: str) -> list:
@@ -63,15 +65,37 @@ class Executor(object):
 
             Executor.__db_created__ = True
 
-    def __add_to_database__(self, command, start_time, end_time):
-        db.insert(
+    def __update_with_results__(self, row_id, end_time):
+        if self.stderr_output():
+            stderr_signature = self.hashlib.sha512(
+                self.stderr_output().encode()
+            ).hexdigest()
+        else:
+            stderr_signature = None
+
+        return db.update(
+            row_id,
+            _DB_TABLE_NAME,
+            {
+                "stdout": self.console_output(),
+                "stdout_signature": hashlib.sha512(self.console_output().encode()).hexdigest(),
+                "stderr": self.stderr_output(),
+                "stderr_signature": stderr_signature,
+                "end_time": end_time
+            }
+        )
+
+    def __add_to_database__(self, command, start_time):
+        return db.insert(
             _DB_TABLE_NAME,
             [
                 command,
                 str(start_time),
-                str(end_time),
-                self.console_output(),
-                self.stderr_output(),
+                None,
+                None,
+                None,
+                None,
+                None,
                 ",".join(self.input_files.values()),
                 ",".join(self.output_files.values())
             ]
@@ -117,12 +141,16 @@ class LocalExecutor(Executor):
     def run_ctx(self):
 
         start_time = time.time()
+
         new_command = self._replace_files_in_command_()
 
         run_env = os.environ.copy()
         run_env.update(self.environment)
 
         command = shlex.split(new_command)
+
+        row_id: int = self.__add_to_database__(new_command, start_time)
+
         process = subprocess.Popen(command,
                                    env=run_env,
                                    stdout=subprocess.PIPE,
@@ -148,7 +176,7 @@ class LocalExecutor(Executor):
         #
         # Save execution information
         #
-        self.__add_to_database__(new_command, start_time, end_time)
+        self.__update_with_results__(row_id, end_time)
 
 class execution(object):
 

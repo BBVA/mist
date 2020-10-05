@@ -153,6 +153,12 @@ Available commands are:
             print()
             print("[*] Closing session")
             print()
+        finally:
+            # Write database signature
+            signature_path = f"{db.db_path}.signature.txt"
+
+            with open(signature_path, "w") as f:
+                f.write(db.signature())
 
     def log(self):
 
