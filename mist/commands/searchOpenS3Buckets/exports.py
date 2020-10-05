@@ -15,13 +15,14 @@ class SearchOpenS3BucketsCommand:
     def run(self):
         dns = get_id(self.dns)
         tor = self.tor.id == 'True' or self.tor.string == 'True'
-        inputDomains = ' '.join(get_id(self.inputDomains).split(','))
+        inputDomains = ' '.join(get_id(self.inputDomains).split(',')) if type(self.inputDomains) is str else self.inputDomains
 
         if config.debug:
             print(f"-> Doing searchOpenS3Buckets to {inputDomains}")
 
         with execution(
                 f"festin {inputDomains} -rr {{outfile-1}} {'--tor' if tor else ''} -ds {dns}",
+                # f"echo",
                 self.meta
         ) as (executor, in_files, out_files):
 
@@ -36,21 +37,20 @@ class SearchOpenS3BucketsCommand:
             #
             # Read result file
             #
+            itemsFound = []
             lines = open(out_files['outfile-1'], 'r').readlines() 
-            domains, buckets, objects = [],[], []
-            for line in lines: 
+            for line in lines:
                 json_data = json.loads(line)
-                domains.append(json_data["domain"])
-                buckets.append(json_data["bucket_name"])
-                for object in json_data["objects"]:
-                    objects.append(json_data["bucket_name"] + "/" + object)
+                item = Item(json_data["domain"], json_data["bucket_name"], json_data["objects"])
+                itemsFound.append(item)
+
+            # itemsFound.append({"domain": "hola.com", "bucket": "https://s3.hola.com", "objects": ["a.txt","b.txt"]})
+            # itemsFound.append({"domain": "adios.com", "bucket": "https://s3.adios.com", "objects": ["1.txt","2.txt"]})
 
             return {
                 "inputDomains": inputDomains,
                 "result": executor.status_text(),
-                "outputDomains": domains,
-                "buckets": buckets,
-                "objects": objects,
+                "itemsFound": itemsFound,
                 "console": executor.console_output()
             }
 

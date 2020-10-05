@@ -11,14 +11,18 @@ searchOpenS3Buckets {
     }
     output {
         result
-        outputDomains
-        buckets
-        objects
+        itemsFound
         console
     }
     then {
-        print inputDomains
-        print buckets
-        #print objects
+        print itemsFound
+        iterate itemsFound => i {
+            print i.domain
+            print i.bucket
+            print i.objects
+            iterate i.objects => o {
+                print o
+            }
+        }
     }
 }

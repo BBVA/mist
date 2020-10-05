@@ -7,9 +7,7 @@ SearchOpenS3BucketsCommand:
     '}'
     ('output' '{'
       'result'
-      'outputDomains'
-      'buckets'
-      'objects'
+      'itemsFound'
       'console'
     '}')?
     'then' '{'
