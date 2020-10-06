@@ -33,7 +33,7 @@ class SaveCommand:
         if self.params:
             fields = [p for p in self.params]
         values = [
-            json.dumps(get_id(i)) if i.customList else str(get_id(i))
+            json.dumps(get_id(i)) if i.customList or type(get_id(i)) is list else str(get_id(i))
             for i in self.sources
         ]
         watchedInsert(self.target, values, fields=fields)
