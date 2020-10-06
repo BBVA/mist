@@ -1,0 +1,21 @@
+# Name: persisted lists
+# Description: basic persistent list operations
+# Tags: list
+
+data myData {
+    Name
+    Objects
+}
+
+put "Letters" ['A', 'B'] => myData
+put "Numbers" ['1', '2'] => myData
+
+print myData
+
+iterate myData => d {
+    print d
+    print d.Objects
+    iterate d.Objects => o {
+        print o
+    }
+}
