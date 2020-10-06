@@ -88,7 +88,7 @@ class IterateCommand:
 
         res = []
 
-        for index, item in enumerate(get_id(self.var, as_list=True)):
+        for index, item in enumerate(get_id(self.var)):
             res.append({self.name: item, "index": index})
 
         return res

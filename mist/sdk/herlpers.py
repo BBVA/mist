@@ -7,19 +7,17 @@ from mist.sdk.watchers import watchers
 from mist.sdk.environment import environment
 from mist.sdk.params import params
 
-def get_var(var, as_list):
+def get_var(var):
     #print(f"get_var {var}")
     if stack and var in stack[len(stack)-1]:
         v = stack[len(stack)-1][var]
-        if type(v) is list and not as_list:
-            return ','.join(v)
         return v
     return db.fetch_table_as_dict(var)
 
-def get_id(id, as_list=False):
+def get_id(id):
     # print(f"get_id id={id.id} string={id.string} child={id.child} var={id.var} param={id.param}")
     if not hasattr(id, "string"):
-        return get_var(id, as_list)
+        return get_var(id)
     if id.var:
         return environment[id.var]
     if id.param:
@@ -29,12 +27,12 @@ def get_id(id, as_list=False):
     elif id.data:
         return id.data
     elif id.child:
-        all = get_var(id.id, as_list)
+        all = get_var(id.id)
         if type(all) is list:
             return all[len(all)-1][id.child]
         else:
             return all[id.child]
-    return get_var(id.id, as_list)
+    return get_var(id.id)
 
 def watchedInsert(table: str, values: List[str], *, fields=None):
     if config.debug:

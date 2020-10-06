@@ -33,7 +33,7 @@ CheckCommand:
 ;
 
 IterateCommand:
-  'iterate' var=ID '=>' name=ID '{'
+  'iterate' var=IDorSTRING '=>' name=ID '{'
     commands*=Command
   '}'
 ;
