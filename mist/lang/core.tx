@@ -13,7 +13,7 @@ DataCommand:
 ;
 
 CustomList:
-  '['components+=IDorSTRING ']'
+  '['(components+=IDorSTRING[','])? ']'
 ;
 
 IDorSTRING:

@@ -7,8 +7,8 @@ data myData {
     Objects
 }
 
-put "Letters" ['A' 'B'] => myData
-put "Numbers" ['1' '2'] => myData
+put "Letters" ['A', 'B'] => myData
+put "Numbers" ['1', '2'] => myData
 
 print myData
 
