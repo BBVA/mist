@@ -67,7 +67,7 @@ class Executor(object):
 
     def __update_with_results__(self, row_id, end_time):
         if self.stderr_output():
-            stderr_signature = self.hashlib.sha512(
+            stderr_signature = hashlib.sha512(
                 self.stderr_output().encode()
             ).hexdigest()
         else:
