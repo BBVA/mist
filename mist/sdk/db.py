@@ -21,7 +21,7 @@ class _DB:
     def __init__(self):
         self._connection = None
         self._connection_string: str = ""
-        self.db_path: str = ""
+        self.db_path: str = None
         self.database_type: str = "sqlite"
 
     @property
