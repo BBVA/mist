@@ -1,5 +1,6 @@
 import sqlite3
 import hashlib
+import json
 
 from typing import List
 from functools import lru_cache
@@ -114,14 +115,21 @@ class _DB:
             s[1] for s in schema
         ]
 
-
     def fetch_table_as_dict(self, table: str) -> List[dict]:
         table_headers = self.fetch_table_headers(self.tbl_name(table))
         table_data = self.fetch_many(f"SELECT * FROM {self.tbl_name(table)}")
-
+        transformed_table_data = []
+        for t in table_data:
+            row = []
+            for f in t:
+                if type(f) is str and f.startswith("[") and f.endswith("]"):
+                    row.append(json.loads(f))
+                else:
+                    row.append(f)
+            transformed_table_data.append(row)
         return [
             dict(zip(table_headers, tuple))
-            for tuple in table_data
+            for tuple in transformed_table_data
         ]
 
     def clean_database(self):

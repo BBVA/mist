@@ -18,6 +18,11 @@ def get_id(id):
     # print(f"get_id id={id.id} string={id.string} child={id.child} var={id.var} param={id.param}")
     if not hasattr(id, "string"):
         return get_var(id)
+    if id.customList:
+        return [
+            get_id(c)
+            for c in id.customList.components
+        ]
     if id.var:
         return environment[id.var]
     if id.param:
@@ -27,11 +32,11 @@ def get_id(id):
     elif id.data:
         return id.data
     elif id.child:
-        all = get_var(id.id)
-        if type(all) is list:
-            return all[len(all)-1][id.child]
+        t = get_var(id.id)
+        if type(t) is list:
+            return t[len(t)-1][id.child]
         else:
-            return all[id.child]
+            return t[id.child]
     return get_var(id.id)
 
 def watchedInsert(table: str, values: List[str], *, fields=None):

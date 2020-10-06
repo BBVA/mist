@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass, field
 
 from mist.exceptions import MistAbortException
@@ -31,12 +32,10 @@ class SaveCommand:
         fields = None
         if self.params:
             fields = [p for p in self.params]
-
         values = [
-            get_id(i)
+            json.dumps(get_id(i)) if i.customList else str(get_id(i))
             for i in self.sources
         ]
-
         watchedInsert(self.target, values, fields=fields)
 
 @dataclass
@@ -114,6 +113,7 @@ class IDorSTRING:
     child: str
     var: str
     param: str
+    customList: list
     # TODO: check var and params
 
 

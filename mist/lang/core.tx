@@ -12,12 +12,16 @@ DataCommand:
   '}'
 ;
 
+CustomList:
+  '['components+=IDorSTRING ']'
+;
+
 IDorSTRING:
-  data=/(?ms)\'{3}(.*?)\'{3}/ | id=ID(('.'child=ID))? | string=STRING | ('%')?param=ID | ('$')?var=ID
+  customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | id=ID(('.'child=ID))? | string=STRING | ('%')?param=ID | ('$')?var=ID
 ;
 
 SaveCommand:
-  'put' sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
+  'put' sources+=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
 ;
 
 WatchCommand:
