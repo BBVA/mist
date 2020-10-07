@@ -6,7 +6,8 @@ import pkg_resources
 
 from http.server import HTTPServer
 
-from mist.sdk import config, db, params, MistMissingBinaryException, MistAbortException
+from mist.sdk import config, db, params, MistMissingBinaryException, \
+    MistAbortException, MistInputDataException
 
 from .action_log import do_log
 from .editor import EditorServer
@@ -133,6 +134,11 @@ Available commands are:
             print()
             print("[!] ", e)
             print()
+        except MistInputDataException as e:
+            print()
+            print(str(e))
+            print()
+
         except MistAbortException as e:
             ex_len = len(str(e))
             ex_step1 = int(ex_len / 2) - 4

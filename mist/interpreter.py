@@ -1,15 +1,16 @@
 import os
+import re
 import shutil
 
 from io import StringIO
-from typing import List
+from typing import List, Set
 from argparse import Namespace
 from functools import lru_cache
 
 from textx import metamodel_from_str
 from contextlib import redirect_stdout
 
-from mist.sdk import db, params, MistMissingBinaryException
+from mist.sdk import db, params, MistMissingBinaryException, MistInputDataException
 
 from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry
@@ -17,6 +18,7 @@ from .lang.classes import exports as core_exports
 from .lang.builtin import exports as builtin_exports
 from .sdk import config
 
+REGEX_FIND_PARAMS = re.compile(r'''(\%[\w\_\-]+)''')
 
 @lru_cache(1)
 def _load_mist_language_():
@@ -141,30 +143,44 @@ def check(parsed_args: Namespace) \
     #
     # Check binaries
     #
-    def _check_commands(command: List[object]):
+    def _find_command_metadata(command: List[object]):
 
         meta = []
 
         if type(command) is list:
             for c in command:
-                meta.extend(_check_commands(c))
+                meta.extend(_find_command_metadata(c))
 
         if hasattr(command, "meta"):
             meta.append((command.__class__.__name__, command.meta))
 
         try:
             for c in command.commands:
-                meta.extend(_check_commands(c))
+                meta.extend(_find_command_metadata(c))
         except AttributeError:
             pass
 
         return meta
 
+    def _find_params_in_mist_file(mist_file_path: str) -> Set[str]:
+        with open(mist_file_path, "r") as f:
+            content = f.read()
+
+        params = set()
+
+        if found := REGEX_FIND_PARAMS.findall(content):
+            params.update({
+                x[1:] for x in found
+            })
+
+        return params
+
     #
     # Check that binaries needed to execute a command are installed
     #
     if not parsed_args.no_check_tools:
-        if metas := _check_commands(mist_model.commands):
+        if metas := _find_command_metadata(mist_model.commands):
+
             for command_name, m in metas:
                 if bin := m.get("default", {}).get("cmd", None):
                     if not shutil.which(bin):
@@ -175,6 +191,17 @@ def check(parsed_args: Namespace) \
                             f"executed. Please install them. \n\nExtra "
                             f"help: {cmd_message}"
                         )
+
+    #
+    # Check that params in .mist file matches with available params
+    #
+    if input_params := _find_params_in_mist_file(mist_file):
+        if missing_params := input_params.difference(params.keys()):
+            raise MistInputDataException(
+                f"This .mist file requires params for running. "
+                f"This params was not provided, but are necessary: "
+                f"'{','.join(missing_params)}'"
+            )
 
     return mist_model
 
