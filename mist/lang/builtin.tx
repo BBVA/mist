@@ -3,7 +3,7 @@ BuiltIn:
 ;
 
 BuiltPrint:
-    'print' text=IDorSTRING
+    'print' texts+=IDorSTRING[eolterm]
 ;
 
 BuiltAbort:
