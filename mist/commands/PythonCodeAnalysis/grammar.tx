@@ -1,0 +1,16 @@
+PythonCodeAnalysisCommand:
+  'PythonCodeAnalysis' '{'
+    'input' '{'
+      'sources' '<=' sources=IDorSTRING
+    '}'
+    ('output' '{'
+      'hasVulnerabilities'
+      'issues'
+      'result'
+      'console'
+    '}')?
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;

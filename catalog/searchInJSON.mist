@@ -2,7 +2,7 @@
 # Description: Search some jsonpath in a JSON string
 # Tags: search, find, JSON
 
-data myData {
+data myJsonData {
     JSONtext
 }
 
@@ -21,9 +21,9 @@ put '''
     }
   ]
 }
-''' => myData
+''' => myJsonData
 
-searchInJSON "employees[1].name" myData.JSONtext {
+searchInJSON "employees[1].name" myJsonData.JSONtext {
     output {
         result
         found

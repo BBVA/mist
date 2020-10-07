@@ -6,5 +6,6 @@ from .stack import stack
 from .watchers import watchers
 from .cmd import execution
 from .config import config
+from .exceptions import *
 
 

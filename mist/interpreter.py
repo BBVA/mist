@@ -9,10 +9,7 @@ from functools import lru_cache
 from textx import metamodel_from_str
 from contextlib import redirect_stdout
 
-from mist.sdk.db import db
-from mist.sdk.params import params
-
-from .exceptions import MistMissingBinaryException
+from mist.sdk import db, params, MistMissingBinaryException
 
 from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry

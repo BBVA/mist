@@ -6,12 +6,11 @@ import pkg_resources
 
 from http.server import HTTPServer
 
-from mist.sdk import config, db, params
+from mist.sdk import config, db, params, MistMissingBinaryException, MistAbortException
 
 from .action_log import do_log
 from .editor import EditorServer
 from .interpreter import execute
-from .exceptions import MistMissingBinaryException, MistAbortException
 
 HERE = os.path.dirname(__file__)
 

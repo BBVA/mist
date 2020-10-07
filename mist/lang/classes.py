@@ -1,8 +1,7 @@
 import json
 from dataclasses import dataclass, field
 
-from mist.exceptions import MistAbortException
-from mist.sdk import db, get_id, watchers, config, watchedInsert
+from mist.sdk import db, get_id, watchers, config, watchedInsert, MistAbortException
 
 @dataclass
 class DataCommand:
