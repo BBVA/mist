@@ -15,8 +15,9 @@ class SearchOpenS3BucketsCommand:
     def run(self):
         dns = get_id(self.dns)
         tor = self.tor.id == 'True' or self.tor.string == 'True'
-        inputDomains = ' '.join(get_id(self.inputDomains).split(',')) if type(self.inputDomains) is str else self.inputDomains
-
+        inputDomains = get_id(self.inputDomains)
+        inputDomains = ' '.join(inputDomains) if type(inputDomains) is list else inputDomains
+        
         if config.debug:
             print(f"-> Doing searchOpenS3Buckets to {inputDomains}")
 
@@ -41,7 +42,7 @@ class SearchOpenS3BucketsCommand:
             lines = open(out_files['outfile-1'], 'r').readlines() 
             for line in lines:
                 json_data = json.loads(line)
-                item = Item(json_data["domain"], json_data["bucket_name"], json_data["objects"])
+                item = {'domain': json_data["domain"], 'bucket': json_data["bucket_name"], 'objects': json_data["objects"] }
                 itemsFound.append(item)
 
             # itemsFound.append({"domain": "hola.com", "bucket": "https://s3.hola.com", "objects": ["a.txt","b.txt"]})
