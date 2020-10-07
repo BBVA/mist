@@ -1,15 +1,10 @@
 # Name: Ping
-# Description: Ping some host and save result
 # Tags: ping, network
-
-data myHostsPing {
-    Host
-    Status
-}
+# Description: Ping some host
 
 ping {
     input {
-        ip <= "127.0.0.1"
+        ip <= %target
     }
     output {
         result
@@ -17,12 +12,11 @@ ping {
     }
     then {
         check result is Success {
-            put ip 'Up' => myHostsPing
+            print "Remote host responds"
         }
         check result is Error {
-            put ip 'Down' => myHostsPing(Host Status)
+            print "Remote host not responds"
         }
     }
 }
 
-print myHostsPing

@@ -1,0 +1,14 @@
+FindSQLInjection {
+    input {
+        url
+        dbms = "auto"
+        custom_params = ""
+    }
+    output {
+        console
+        vulnerable
+    }
+    then {
+        print resultCode
+    }
+}

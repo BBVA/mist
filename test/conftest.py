@@ -8,6 +8,6 @@ HERE = os.path.dirname(__file__)
 def examples_path() -> str:
     top_path = os.path.abspath(os.path.join(HERE, ".."))
 
-    return os.path.join(top_path, "catalog")
+    return os.path.join(top_path, "examples")
 
 
