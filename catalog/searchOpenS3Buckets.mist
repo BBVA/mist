@@ -5,7 +5,7 @@
 
 searchOpenS3Buckets {
     input {
-        inputDomains <= "contestia-pro-15-ompexporter-buckets-widget-config.s3.amazonaws.com"
+        inputDomains <= %domain
         dns <= "212.166.64.1"
         tor <= True 
     }
