@@ -123,10 +123,6 @@ _
         if not parsed_args.OPTIONS:
             print("[!] .mist file needed as first parameter")
             exit(1)
-        else:
-            if not os.path.exists(parsed_args.OPTIONS[0]):
-                print("[!] Can't find .mist file")
-                exit(1)
 
         #
         # Load console config

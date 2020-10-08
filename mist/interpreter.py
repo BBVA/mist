@@ -1,6 +1,8 @@
 import os
 import re
 import shutil
+import tempfile
+import urllib.request
 
 from io import StringIO
 from typing import List, Set
@@ -8,7 +10,7 @@ from argparse import Namespace
 from functools import lru_cache
 
 from textx import metamodel_from_str
-from contextlib import redirect_stdout
+from contextlib import redirect_stdout, contextmanager
 
 from mist.sdk import db, params, MistMissingBinaryException, MistInputDataException
 
@@ -122,6 +124,21 @@ def _load_mist_language_():
 
     return mist_meta_model
 
+@contextmanager
+def get_or_download_mist_file(parsed_args):
+    mist_file = parsed_args.OPTIONS[0]
+
+    if mist_file.startswith("http"):
+        with tempfile.NamedTemporaryFile(prefix="mist-download") as f:
+            with urllib.request.urlopen(mist_file) as remote:
+                f.write(remote.read())
+                f.flush()
+
+            yield f.name
+
+    else:
+        yield mist_file
+
 
 def check(parsed_args: Namespace) \
         -> object or MistMissingBinaryException:
@@ -132,80 +149,80 @@ def check(parsed_args: Namespace) \
     #
     # Check model and language
     #
-    mist_file = parsed_args.OPTIONS[0]
 
-    mist_meta_model = _load_mist_language_()
+    with get_or_download_mist_file(parsed_args) as mist_file:
+        mist_meta_model = _load_mist_language_()
 
-    mist_model = mist_meta_model.model_from_file(
-        mist_file
-    )
+        mist_model = mist_meta_model.model_from_file(
+            mist_file
+        )
 
-    #
-    # Check binaries
-    #
-    def _find_command_metadata(command: List[object]):
+        #
+        # Check binaries
+        #
+        def _find_command_metadata(command: List[object]):
 
-        meta = []
+            meta = []
 
-        if type(command) is list:
-            for c in command:
-                meta.extend(_find_command_metadata(c))
+            if type(command) is list:
+                for c in command:
+                    meta.extend(_find_command_metadata(c))
 
-        if hasattr(command, "meta"):
-            meta.append((command.__class__.__name__, command.meta))
+            if hasattr(command, "meta"):
+                meta.append((command.__class__.__name__, command.meta))
 
-        try:
-            for c in command.commands:
-                meta.extend(_find_command_metadata(c))
-        except AttributeError:
-            pass
+            try:
+                for c in command.commands:
+                    meta.extend(_find_command_metadata(c))
+            except AttributeError:
+                pass
 
-        return meta
+            return meta
 
-    def _find_params_in_mist_file(mist_file_path: str) -> Set[str]:
-        with open(mist_file_path, "r") as f:
-            content = f.read()
+        def _find_params_in_mist_file(mist_file_path: str) -> Set[str]:
+            with open(mist_file_path, "r") as f:
+                content = f.read()
 
-        params = set()
+            params = set()
 
-        if found := REGEX_FIND_PARAMS.findall(content):
-            params.update({
-                x[1:] for x in found
-            })
+            if found := REGEX_FIND_PARAMS.findall(content):
+                params.update({
+                    x[1:] for x in found
+                })
 
-        return params
+            return params
 
-    #
-    # Check that binaries needed to execute a command are installed
-    #
-    if not parsed_args.no_check_tools:
-        if metas := _find_command_metadata(mist_model.commands):
+        #
+        # Check that binaries needed to execute a command are installed
+        #
+        if not parsed_args.no_check_tools:
+            if metas := _find_command_metadata(mist_model.commands):
 
-            for command_name, m in metas:
-                if bin := m.get("default", {}).get("cmd", None):
-                    if not shutil.which(bin):
-                        cmd_name = m.get("default", {}).get("name", None)
-                        cmd_message = m.get("default", {}).get("cmd-message", None)
-                        raise MistMissingBinaryException(
-                            f"Command '{command_name}' need '{bin}' to be "
-                            f"executed. Please install them. \n\nExtra "
-                            f"help: {cmd_message}"
-                        )
+                for command_name, m in metas:
+                    if bin := m.get("default", {}).get("cmd", None):
+                        if not shutil.which(bin):
+                            cmd_name = m.get("default", {}).get("name", None)
+                            cmd_message = m.get("default", {}).get("cmd-message", None)
+                            raise MistMissingBinaryException(
+                                f"Command '{command_name}' need '{bin}' to be "
+                                f"executed. Please install them. \n\nExtra "
+                                f"help: {cmd_message}"
+                            )
 
-    #
-    # Check that params in .mist file matches with available params
-    #
-    if input_params := _find_params_in_mist_file(mist_file):
-        if missing_params := input_params.difference(params.keys()):
-            _param_texts = "\n".join(f"- {x}" for x in missing_params)
-            raise MistInputDataException(
-                f"This .mist file requires params for running. "
-                f"This params was not provided, but are necessary: \n\n"
-                f"{_param_texts}"
-                f"\n\n* REMEMBER that params are case sensitive"
-            )
+        #
+        # Check that params in .mist file matches with available params
+        #
+        if input_params := _find_params_in_mist_file(mist_file):
+            if missing_params := input_params.difference(params.keys()):
+                _param_texts = "\n".join(f"- {x}" for x in missing_params)
+                raise MistInputDataException(
+                    f"This .mist file requires params for running. "
+                    f"This params was not provided, but are necessary: \n\n"
+                    f"{_param_texts}"
+                    f"\n\n* REMEMBER that params are case sensitive"
+                )
 
-    return mist_model
+        return mist_model
 
 def execute(parsed_args: Namespace):
     mist_model = check(parsed_args)
