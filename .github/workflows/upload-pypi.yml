@@ -24,10 +24,11 @@ jobs:
           python3 -m pip install setuptools wheel
           python setup.py bdist_wheel
           if [ ${{ matrix.os }} == "ubuntu-latest" ]; then python setup.py sdist; fi
-
+      - name: Save Pypi artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: pypi-wheels
-          path: dist/
+          name: pypi
+          path: dist/*
 
   build-windows:
     name: Build for Windows
