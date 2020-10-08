@@ -68,6 +68,9 @@ jobs:
           name: pypi
           path: dist/
 
+      - name: Listing artifacts
+        run: ls dist/*
+
       - name: Publish Package Manager PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
