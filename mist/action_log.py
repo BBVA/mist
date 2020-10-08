@@ -238,6 +238,9 @@ def log_details(parsed: argparse.Namespace):
             if not content:
                 content = "-"
 
+        if field in ("start_time", "end_time"):
+            content = datetime.datetime.fromtimestamp(float(content))
+
         table_content.append((
             field, content
         ))
