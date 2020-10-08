@@ -9,7 +9,7 @@ from http.server import HTTPServer
 from mist.sdk import config, db, params, MistMissingBinaryException, \
     MistAbortException, MistInputDataException
 
-from mist.action_log import do_log
+from mist.action_log import CliLog
 from mist.editor import EditorServer
 from mist.interpreter import execute
 
@@ -187,36 +187,7 @@ _
                     f.write(db.signature())
 
     def log(self):
-
-        parser = argparse.ArgumentParser(
-            description='Manage logs for MIST executions')
-        parser.add_argument('MIST_DB')
-
-        parsed_args = parser.parse_args(sys.argv[2:])
-        parser.add_argument('-N', '--no-check-tools',
-                            action="store_true",
-                            help="do not check if tools are installed",
-                            default=False)
-
-        #
-        # Load console config
-        #
-        config.load_cli_values(parsed_args)
-
-        #
-        # Setup database
-        #
-        db.setup(f"sqlite3://{config.MIST_DB}")
-
-        #
-        # Load console config
-        #
-        config.load_cli_values(parsed_args)
-
-        #
-        # Setup database
-        #
-        do_log(parsed_args)
+        CliLog()
 
     def editor(self):
 

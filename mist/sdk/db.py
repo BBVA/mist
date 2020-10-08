@@ -95,16 +95,24 @@ class _DB:
             res = cur.execute(query, values)
             return res.lastrowid
 
-    def fetch_one(self, query: str) -> tuple:
+    def fetch_one(self, query: str, values: list = None) -> tuple:
 
         with cm(self.connection) as cur:
-            cur.execute(query)
+            if values:
+                cur.execute(query, values)
+            else:
+                cur.execute(query)
+
             return cur.fetchone()
 
-    def fetch_many(self, query: str) -> List[tuple]:
+    def fetch_many(self, query: str, values: list = None) -> List[tuple]:
 
         with cm(self.connection) as cur:
-            cur.execute(query)
+            if values:
+                cur.execute(query, values)
+            else:
+                cur.execute(query)
+
             return cur.fetchall()
 
     @lru_cache(50)

@@ -73,7 +73,7 @@ class Executor(object):
                 self.stderr_output().encode()
             ).hexdigest()
         else:
-            stderr_signature = None
+            stderr_signature = ""
 
         #
         # Read input / output file contents
