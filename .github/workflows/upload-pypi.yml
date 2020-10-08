@@ -62,10 +62,11 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Download math result for job 2
+      - name: Recover Pypi artifacts
         uses: actions/download-artifact@v2
         with:
           name: pypi
+          path: dist/
 
       - name: Publish Package Manager PyPI
         uses: pypa/gh-action-pypi-publish@master
