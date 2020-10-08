@@ -6,8 +6,14 @@ on:
       - master
 
 jobs:
-  deploy:
-    runs-on: ubuntu-18.04
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: 3.8
+
     steps:
       - uses: actions/checkout@v1  # v2 does not have submodules option now
       - uses: actions/setup-python@v1
@@ -17,7 +23,17 @@ jobs:
       - name: Build distribution package
         run: |
           python3 -m pip install setuptools wheel
-          python setup.py sdist bdist_wheel
+          python setup.py bdist_wheel
+          if [ ${{ matrix.os }} -eq "ubuntu-latest" ]; then python setup.py sdist; fi
+
+  deploy:
+    name: Publish in Pypi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1  # v2 does not have submodules option now
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.8'
 
       - name: Publish Package Manager PyPI
         uses: pypa/gh-action-pypi-publish@master
