@@ -54,7 +54,7 @@ jobs:
 
   deploy:
     name: Publish in Pypi
-    needs: build-nix
+    needs: Build for Windows
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1  # v2 does not have submodules option now
