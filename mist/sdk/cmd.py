@@ -1,6 +1,8 @@
+import base64
 import os
 import re
 import abc
+import json
 import time
 import shlex
 import hashlib
@@ -18,7 +20,7 @@ output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
 _DB_TABLE_NAME = "execution"
 _DB_TABLE_FIELDS = ("command", "start_time", "end_time", "stdout",
                     "stdout_signature", "stderr", "stderr_signature",
-                    "in_file", "out_files")
+                    "in_files", "out_files")
 
 def _extract_files(text: str, input_or_output: str) -> list:
     if input_or_output == "input":
@@ -73,6 +75,24 @@ class Executor(object):
         else:
             stderr_signature = None
 
+        #
+        # Read input / output file contents
+        #
+        input_files = {}
+        output_files = {}
+
+        files = (
+            (input_files, self.input_files),
+            (output_files, self.output_files)
+        )
+
+        for (file_results, file_orig) in files:
+            for in_file_name, in_file_path in file_orig.items():
+                file_results[in_file_name] = {
+                    "path": in_file_path,
+                    "content": base64.b64encode(open(in_file_path, "rb").read()).decode()
+                }
+
         return db.update(
             row_id,
             _DB_TABLE_NAME,
@@ -81,7 +101,9 @@ class Executor(object):
                 "stdout_signature": hashlib.sha512(self.console_output().encode()).hexdigest(),
                 "stderr": self.stderr_output(),
                 "stderr_signature": stderr_signature,
-                "end_time": end_time
+                "end_time": end_time,
+                "in_files": json.dumps(input_files),
+                "out_files": json.dumps(output_files)
             }
         )
 

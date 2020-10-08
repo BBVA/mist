@@ -9,9 +9,9 @@ from http.server import HTTPServer
 from mist.sdk import config, db, params, MistMissingBinaryException, \
     MistAbortException, MistInputDataException
 
-from .action_log import do_log
-from .editor import EditorServer
-from .interpreter import execute
+from mist.action_log import do_log
+from mist.editor import EditorServer
+from mist.interpreter import execute
 
 HERE = os.path.dirname(__file__)
 
@@ -31,6 +31,22 @@ Available commands are:
    exec       Run a .mist file (default option)
    log        Manage execution log of MIST database
    editor     Run live editor on browser
+
+
+Execution examples:
+
+    > mist exec my-program.mist
+    > mist my-program.mist  # Same action that above command
+
+Launching editor: 
+    
+    > mist editor
+
+Managing log: 
+
+    > mist log my-program.db
+    
+_
 ''')
         parser.add_argument('command', help='Subcommand to run', nargs="*")
 
@@ -54,7 +70,9 @@ Available commands are:
                 getattr(self, parsed_args.command[0])()
 
     def version(self):
-        print(f"version: {pkg_resources.get_distribution('mist').version}")
+        print()
+        print(f"MIST version: "
+              f"{pkg_resources.get_distribution('mist-lang').version}")
         print()
         exit()
 
@@ -173,6 +191,10 @@ Available commands are:
         parser.add_argument('MIST_DB')
 
         parsed_args = parser.parse_args(sys.argv[2:])
+        parser.add_argument('-N', '--no-check-tools',
+                            action="store_true",
+                            help="do not check if tools are installed",
+                            default=False)
 
         #
         # Load console config

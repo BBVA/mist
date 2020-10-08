@@ -197,10 +197,12 @@ def check(parsed_args: Namespace) \
     #
     if input_params := _find_params_in_mist_file(mist_file):
         if missing_params := input_params.difference(params.keys()):
+            _param_texts = "\n".join(f"- {x}" for x in missing_params)
             raise MistInputDataException(
                 f"This .mist file requires params for running. "
-                f"This params was not provided, but are necessary: "
-                f"'{','.join(missing_params)}'"
+                f"This params was not provided, but are necessary: \n\n"
+                f"{_param_texts}"
+                f"\n\n* REMEMBER that params are case sensitive"
             )
 
     return mist_model

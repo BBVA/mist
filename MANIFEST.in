@@ -1,10 +1,20 @@
-include requirements.txt README.rst VERSION *.tx
+include requirements.txt README.rst VERSION
 
+include mist/assets/*
+
+recursive-include * *.tx
+recursive-include mist/ META
+
+exclude test
+
+recursive-exclude * test_*
 recursive-exclude * __pycache__
 recursive-exclude * *.pyc
 recursive-exclude * *.pyo
 recursive-exclude * *.orig
 recursive-exclude * .DS_Store
+
+global-exclude test/*
 global-exclude __pycache__/*
 global-exclude .deps/*
 global-exclude *.pyd

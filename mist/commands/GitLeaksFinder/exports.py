@@ -1,6 +1,5 @@
 import os
 import json
-import shutil
 
 from dataclasses import dataclass
 
@@ -25,7 +24,7 @@ class GitLeaksFinderCommand:
         if config.debug:
             print(f"-> Doing PythonCodeAnalysis for {git_path}")
 
-        with execution(f"gitleaks --repo-path {git_path} --report {{outfile-1}}",
+        with execution(f"gitleaks --repo-path \"{git_path}\" --report {{outfile-1}}",
                        self.meta) as (executor, in_files, out_files):
 
             #

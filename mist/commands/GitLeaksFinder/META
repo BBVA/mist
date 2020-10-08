@@ -2,7 +2,7 @@
 Name=Git Leaks finder
 Description=Find git secrets in a Git repository
 Tags=security, secrets, git
-cmd=bandit
+cmd=gitleaks
 cmd-message=you must install Gitleaks: https://github.com/zricethezav/gitleaks
 
 ;[docker]
