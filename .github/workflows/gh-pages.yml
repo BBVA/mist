@@ -4,10 +4,10 @@ on:
   push:
     branches:
 #      - master
-#    paths:
-#      - "docs/**"
-#      - "mist/catalog/**/README.md"
-#      - "mist/lang/**/README.md"
+    paths:
+      - "docs/**"
+      - "mist/catalog/**/README.md"
+      - "mist/lang/**/README.md"
 #
 jobs:
   deploy:

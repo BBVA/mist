@@ -23,7 +23,7 @@ jobs:
         run: |
           python3 -m pip install setuptools wheel
           python setup.py bdist_wheel
-          if [ ${{ matrix.os }} -eq "ubuntu-latest" ]; then python setup.py sdist; fi
+          if [ ${{ matrix.os }} == "ubuntu-latest" ]; then python setup.py sdist; fi
 
   deploy:
     name: Publish in Pypi
