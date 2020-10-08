@@ -16,6 +16,8 @@ def get_var(var):
 
 def get_id(id):
     # print(f"get_id id={id.id} string={id.string} child={id.child} var={id.var} param={id.param}")
+    if id == None:
+        return None
     if not hasattr(id, "string"):
         return get_var(id)
     if id.customList:

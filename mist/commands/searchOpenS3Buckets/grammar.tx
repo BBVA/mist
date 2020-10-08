@@ -2,8 +2,8 @@ SearchOpenS3BucketsCommand:
   'searchOpenS3Buckets' '{'
     'input' '{'
       'inputDomains' '<=' inputDomains=IDorSTRING
-      'dns' '<=' dns=IDorSTRING
-      'tor' '<=' tor=IDorSTRING
+      ('dns' '<=' dns=IDorSTRING)?
+      ('tor' '<=' tor=IDorSTRING)?
     '}'
     ('output' '{'
       'result'

@@ -14,7 +14,7 @@ class SearchOpenS3BucketsCommand:
 
     def run(self):
         dns = get_id(self.dns)
-        tor = self.tor.id == 'True' or self.tor.string == 'True'
+        tor = self.tor and (self.tor.id == 'True' or self.tor.string == 'True')
         inputDomains = get_id(self.inputDomains)
         inputDomains = ' '.join(inputDomains) if type(inputDomains) is list else inputDomains
         
@@ -22,7 +22,7 @@ class SearchOpenS3BucketsCommand:
             print(f"-> Doing searchOpenS3Buckets to {inputDomains}")
 
         with execution(
-                f"festin {inputDomains} -rr {{outfile-1}} {'--tor' if tor else ''} -ds {dns}",
+                f"festin {inputDomains} -rr {{outfile-1}} {'--tor' if tor else ''} {'-ds ' + dns if dns else ''}",
                 # f"echo",
                 self.meta
         ) as (executor, in_files, out_files):
