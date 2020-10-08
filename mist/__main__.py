@@ -172,6 +172,8 @@ _
             print("!", e, "!")
             print("!",  " " * ex_len, "!")
             print("!" * (ex_len + 4))
+
+            exit(1)
         except KeyboardInterrupt:
             print()
             print("[*] Closing session")
