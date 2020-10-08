@@ -44,9 +44,12 @@ jobs:
         run: |
           python -m pip install setuptools wheel
           python setup.py bdist_wheel
+
+      - name: Save Pypi artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: pypi-wheels
-          path: dist/
+          name: pypi
+          path: dist/*
 
   deploy:
     name: Publish in Pypi
@@ -58,10 +61,13 @@ jobs:
         with:
           python-version: '3.8'
 
+      - name: Download math result for job 2
+        uses: actions/download-artifact@v2
+        with:
+          name: pypi
+
       - name: Publish Package Manager PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: ${{ secrets.pypi_user }}
           password: ${{ secrets.pypi_password }}
-          name: pypi-wheels
-          path: dist/
