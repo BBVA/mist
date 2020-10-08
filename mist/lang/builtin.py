@@ -53,15 +53,15 @@ class BuiltSearchInText:
         if config.debug:
             print( f"-> SearchInText '{self.regex}'")
 
-        found = "False"
+        found = False
         try:
             if re.search(self.regex, text):
-                found = "True"
+                found = True
 
-            result = "Success"
+            result = True
         except Exception as e:
             print(f" Error in 'BuiltSearchInText' -> {e}")
-            result = "Error"
+            result = False
 
         return {
             "regex": self.regex,
@@ -92,9 +92,9 @@ class BuiltSearchInXML:
         return {
             "xpath": self.xpath,
             "text": text,
-            "result": "Success" if found is not None else "Error",
-            "found": "True" if found is not None else "False",
-            "value": found.text if found is not None else "None"
+            "result": found is not None,
+            "found": found is not None,
+            "value": found.text if found is not None else None
         }
 
 @dataclass
@@ -121,9 +121,9 @@ class BuiltSearchInJSON:
         return {
             "xpath": self.jsonpath,
             "text": text,
-            "result": "Success" if found else "Error",
-            "found": "True" if found else "False",
-            "value": found[0].value if found else "None"
+            "result": found is not None,
+            "found": found is not None and len(found) > 0,
+            "value": found[0].value if found else None
         }
 
 exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON]

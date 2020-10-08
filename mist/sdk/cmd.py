@@ -147,7 +147,7 @@ class Executor(object):
         return self.error_code
 
     def status_text(self):
-        return "Success" if self.error_code == 0 else "Error"
+        return True if self.error_code == 0 else False
 
     def __enter__(self):
         return self.run_ctx()
