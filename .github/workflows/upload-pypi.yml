@@ -37,7 +37,7 @@ jobs:
 
       - name: Build distribution package
         run: |
-          python3 -m pip install setuptools wheel
+          python -m pip install setuptools wheel
           python setup.py bdist_wheel
 
   deploy:
