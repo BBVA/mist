@@ -1,0 +1,16 @@
+GitLeaksFinderCommand:
+  'GitLeaksFinder' '{'
+    'input' '{'
+      'git_path' '<=' git_path=IDorSTRING
+    '}'
+    ('output' '{'
+      'hasVulnerabilities'
+      'issues'
+      'result'
+      'console'
+    '}')?
+    'then' '{'
+      commands*=Command
+    '}'
+  '}'
+;
