@@ -2,32 +2,17 @@
 # Description: Read file with list of IPs and check for open ports, write the result in csv file
 # Tags: nmap, network, ports
 
-data myHostsChecked {
-    Host
-    OpenPorts
-}
-
-CSVput "catalog/myhosts.csv" => myHostsCSV
-
-print myHostsCSV
-iterate myHostsCSV => host {
-    print host.ip
-    findOpenPorts {
-        input {
-            ip <= host.ip
-            ports <= "80,5432,1000,9000"
-        }
-        output {
-            result
-            openPorts
-            console
-        }
-        then {
-            print openPorts
-            put ip openPorts => myHostsChecked
-        }
+findOpenPorts {
+    input {
+        ip <= "127.0.0.1"
+        ports <= "80,5432,1000,9000"
+    }
+    output {
+        result
+        openPorts
+        console
+    }
+    then {
+        print openPorts
     }
 }
-
-print myHostsChecked
-#CSVdump myHostsChecked => "myHostsChecked.csv"

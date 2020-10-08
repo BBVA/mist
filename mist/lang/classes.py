@@ -54,12 +54,16 @@ class CheckCommand:
 @dataclass
 class BuiltPrint:
     parent: object
-    text: str
+    texts: list
 
     def run(self):
         if config.debug:
             print(f"-> BuiltPrint")
-        print(get_id(self.text))
+        t = [
+            get_id(t)
+            for t in self.texts
+        ]
+        print(*t)
 
 @dataclass
 class BuiltAbort:

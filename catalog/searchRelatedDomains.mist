@@ -5,7 +5,7 @@
 
 searchDomains {
     input {
-        domain <= 'bbva.com'
+        domain <= %domain
     }
     output {
         result

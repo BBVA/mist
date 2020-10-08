@@ -42,8 +42,8 @@ searchOpenS3Buckets {
         tor <= 'True'
     }
     then {
-        iterate outputDomains => d {
-            put d => domains
+        iterate itemsFound => item {
+            put item.domain => domains
         }
     }
 }
