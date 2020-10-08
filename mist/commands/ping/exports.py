@@ -27,16 +27,6 @@ class PingCommand:
                 "console": executor.console_output()
             }
 
-        #     stack.append({
-        #         "ip": ip,
-        #         "result": executor.status_text,
-        #         "console": executor.console_output
-        #     })
-        #
-        # for c in self.commands:
-        #     c.run()
-        # stack.pop()
-
 exports = [
     PingCommand
 ]

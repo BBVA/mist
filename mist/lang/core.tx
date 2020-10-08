@@ -31,7 +31,7 @@ WatchCommand:
 ;
 
 CheckCommand:
-  'check' var=ID 'is' result=ID '{'
+  'check' var=IDorSTRING 'is' result=IDorSTRING '{'
     commands*=Command
   '}'
 ;

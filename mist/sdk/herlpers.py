@@ -9,6 +9,8 @@ from mist.sdk.params import params
 
 def get_var(var):
     #print(f"get_var {var}")
+    if var in ("True", "False", "Success", "Error"):
+        return var
     if stack and var in stack[len(stack)-1]:
         v = stack[len(stack)-1][var]
         return v

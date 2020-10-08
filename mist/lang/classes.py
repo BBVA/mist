@@ -48,7 +48,7 @@ class CheckCommand:
     def run(self):
         if config.debug:
             print(f"-> Check that {self.var} is {self.result}")
-        if get_id(self.var) == self.result:
+        if get_id(self.var) == get_id(self.result):
             return True
 
 @dataclass
