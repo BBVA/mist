@@ -1,81 +1,47 @@
-import os
-import re
-import importlib
+import pygit2
+import urllib
+import pathlib
+import urllib.request
 
-from typing import Set, List
-from configparser import ConfigParser
-
-EXTRACT_MODULE_REGEX = re.compile(r'''^(.*Command)(:)''')
-
-def find_catalog_exports(base_path: str) -> List[str]:
-
-    def _file_to_module_(filename: str) -> str:
-        m = filename.replace("/", ".")
-
-        if m.startswith("."):
-            m = m[1:]
-
-        return m
-
-    exports = []
-
-    for root, dirs, files in os.walk(base_path, topdown=False):
-
-        if "exports.py" not in files:
-            continue
-
-        meta_file = os.path.join(root, "META")
-
-        if os.path.exists(meta_file):
-            _c_parser = ConfigParser()
-            _c_parser.read(filenames=meta_file)
-            meta_content = _c_parser.__dict__["_sections"]
-        else:
-            meta_content = {}
-
-        module_name = _file_to_module_(root.replace(base_path, ""))
-
-        m = importlib.import_module(f"mist.catalog.{module_name}.exports")
-
-        if ex := getattr(m, "exports", None):
-            #
-            # Attach META Info
-            #
-            for e in ex:
-                e.meta = meta_content
-
-            exports.extend(ex)
-
-    return exports
+from mist.sdk import MistException
 
 
-def find_grammars(base_path: str) -> Set[str]:
+def download(url: str, destination: str):
+    with open(destination, "w") as f:
+        with urllib.request.urlopen(url) as remote:
+            f.write(remote.read())
+            f.flush()
+
+def git_clone(url: str, destination: str):
+    try:
+        pygit2.clone_repository(url, str(destination))
+    except ValueError:
+        raise MistException("Catalog already exits")
+#
+# This function was taken from:
+# https://stackoverflow.com/a/57463161/8153205
+#
+def file_uri_to_path(file_uri, path_class=pathlib.PurePath):
     """
-    Search 'grammar.tx' files in catalog modules
+    This function returns a pathlib.PurePath object for the supplied file URI.
 
-    :return: an iterable with paths of grammars for each module found
+    :param str file_uri: The file URI ...
+    :param class path_class: The type of path in the file_uri. By default it uses
+        the system specific path pathlib.PurePath, to force a specific type of path
+        pass pathlib.PureWindowsPath or pathlib.PurePosixPath
+    :returns: the pathlib.PurePath object
+    :rtype: pathlib.PurePath
     """
-
-
-    grammar_files = set()
-
-    for root, dirs, files in os.walk(base_path, topdown=False):
-        for name in files:
-
-            if not name.endswith(".tx"):
-                continue
-
-            grammar_files.add(
-                os.path.abspath(os.path.join(root, name))
-            )
-
-    return grammar_files
-
-def extract_modules_grammar_entry(text: str) -> str or None:
-    if found := EXTRACT_MODULE_REGEX.search(text):
-        return found.group(1)
+    windows_path = isinstance(path_class(),pathlib.PureWindowsPath)
+    file_uri_parsed = urllib.parse.urlparse(file_uri)
+    file_uri_path_unquoted = urllib.parse.unquote(file_uri_parsed.path)
+    if windows_path and file_uri_path_unquoted.startswith("/"):
+        result = path_class(file_uri_path_unquoted[1:])
     else:
-        return None
+        result = path_class(file_uri_path_unquoted)
+    if result.is_absolute() == False:
+        raise ValueError("Invalid file uri {} : resulting path {} not absolute".format(
+            file_uri, result))
+    return result
 
-__all__ = ("find_grammars", "extract_modules_grammar_entry",
-           "find_catalog_exports")
+__all__ = ("download", "file_uri_to_path", "git_clone")

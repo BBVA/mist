@@ -1,6 +1,6 @@
 import os
 
-from mist.interpreter import execute_from_text
+from mist.action_exec import execute_from_text
 
 EXAMPLE_FILE = "searchInXML.mist"
 

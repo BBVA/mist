@@ -1,3 +1,0 @@
-PutCSVCommand:
-  'CSVput' fileName=STRING '=>' target=ID
-;

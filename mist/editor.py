@@ -5,7 +5,7 @@ import socketserver
 from typing import Tuple
 from http.server import BaseHTTPRequestHandler
 
-from .interpreter import execute_from_text
+from .action_exec import execute_from_text
 
 
 class EditorServer(BaseHTTPRequestHandler):

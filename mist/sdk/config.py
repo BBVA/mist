@@ -9,7 +9,6 @@ class _CurrentApp(dict):
         super(_CurrentApp, self).__init__()
 
     def load_cli_values(self, parsed: argparse.Namespace):
-        for k, v in parsed.__dict__.items():
-            self[k] = v
+        self.update(parsed.__dict__)
 
 config = _CurrentApp()

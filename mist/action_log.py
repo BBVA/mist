@@ -60,7 +60,7 @@ _
         #
         # Load console config
         #
-        config.load_cli_values(parsed_args)
+        config.load_cli_exec_values(parsed_args)
 
         #
         # Setup database

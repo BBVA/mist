@@ -1,10 +1,12 @@
 import os
 import re
 import shutil
+import argparse
 import tempfile
 import urllib.request
 
 from io import StringIO
+from pathlib import Path
 from typing import List, Set
 from argparse import Namespace
 from functools import lru_cache
@@ -12,15 +14,23 @@ from functools import lru_cache
 from textx import metamodel_from_str
 from contextlib import redirect_stdout, contextmanager
 
-from mist.sdk import db, params, MistMissingBinaryException, MistInputDataException
+from mist.sdk import db, config, params, MistMissingBinaryException, \
+    MistInputDataException
 
 from .helpers import find_grammars, find_catalog_exports, \
     extract_modules_grammar_entry
-from .lang.classes import exports as core_exports
-from .lang.builtin import exports as builtin_exports
-from .sdk import config
+from ..lang.classes import exports as core_exports
+from ..lang.builtin import exports as builtin_exports
 
 REGEX_FIND_PARAMS = re.compile(r'''(\%[\w\_\-]+)''')
+
+
+def load_cli_exec_values(d, parsed: argparse.Namespace):
+    if len(parsed.OPTIONS) > 1:
+
+        for _tuple in parsed.OPTIONS[1:]:
+            k, v = _tuple.split("=")
+            d[k] = v
 
 @lru_cache(1)
 def _load_mist_language_():
@@ -52,51 +62,52 @@ def _load_mist_language_():
                         stack.pop()
 
     here = os.path.dirname(__file__)
-    commands_path = os.path.join(here, "catalog")
+
+    # Add user catalogs
+    mist_path_catalog = Path().home().joinpath(".mist").joinpath("catalog")
 
     #
-    # Locate grammars
+    # Load core grammar
     #
+    _core_grammar = []
 
-    # Locate grammar files from catalog modules
-    catalog_grammar_files = find_grammars(commands_path)
-
-    # Locate core grammar files
-    core_grammar_files = [
-        os.path.join(here, "lang", "core.tx"),
-        os.path.join(here, "lang", "builtin.tx")
-    ]
-
-    core_grammars_builder = []
-
-    for core_grammar_file in core_grammar_files:
+    for core_grammar_file in [
+        os.path.join(here, "..", "lang", "core.tx"),
+        os.path.join(here, "..", "lang", "builtin.tx")
+    ]:
         with open(core_grammar_file, "r") as f:
-            core_grammars_builder.append(f.read())
+            _core_grammar.append(f.read())
 
-    core_grammar = "\n".join(core_grammars_builder)
+    core_grammar = "\n".join(_core_grammar)
 
+    #
+    # Load catalog grammar
+    #
+    catalog_grammar = []
     modules_entries = set()
-    catalog_grammars_builder = []
-
+    catalog_grammar_files = find_grammars(str(mist_path_catalog))
     for module_grammar_file in catalog_grammar_files:
         with open(module_grammar_file, "r") as f:
             content = f.read()
 
-            catalog_grammars_builder.append(content)
+            catalog_grammar.append(content)
 
             # Extract catalog modules entries
             if entry := extract_modules_grammar_entry(content):
                 modules_entries.add(entry)
 
-    # Add Modules to core grammar
+    # Include catalog grammar into core grammar
     core_grammar = core_grammar.replace(
         "##MODULES##",
         " | ".join(modules_entries)
     )
 
+    #
+    # Build global grammar
+    #
     grammar = "\n".join([
         core_grammar,
-        *catalog_grammars_builder
+        *catalog_grammar
     ])
 
     #
@@ -106,7 +117,7 @@ def _load_mist_language_():
     exports.extend(core_exports)
     exports.extend(builtin_exports)
     exports.extend(
-        find_catalog_exports(commands_path)
+        find_catalog_exports(str(mist_path_catalog), modules_entries)
     )
 
     #

@@ -1,6 +1,6 @@
 import os
 
-from mist.interpreter import execute_from_text
+from mist.action_exec import execute_from_text
 
 EXAMPLE_FILE = "persisted lists.mist"
 
@@ -19,5 +19,5 @@ B
 ['1', '2']
 1
 2
-""" == console    
+""" == console
 
