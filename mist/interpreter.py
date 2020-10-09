@@ -52,7 +52,7 @@ def _load_mist_language_():
                         stack.pop()
 
     here = os.path.dirname(__file__)
-    commands_path = os.path.join(here, "commands")
+    commands_path = os.path.join(here, "catalog")
 
     #
     # Locate grammars

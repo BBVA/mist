@@ -35,7 +35,7 @@ def find_catalog_exports(base_path: str) -> List[str]:
 
         module_name = _file_to_module_(root.replace(base_path, ""))
 
-        m = importlib.import_module(f"mist.commands.{module_name}.exports")
+        m = importlib.import_module(f"mist.catalog.{module_name}.exports")
 
         if ex := getattr(m, "exports", None):
             #

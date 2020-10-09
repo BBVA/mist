@@ -9,6 +9,16 @@ data openBucketsFound {
     objects
 }
 
+callPlayBook "http://ping.mist" {
+    input {
+        target <= %target
+        db <= XXX
+    }
+    then {
+
+    }
+}
+
 searchDomains {
     input {
         domain <= %domain
@@ -33,7 +43,7 @@ searchDomains {
             then {
                 iterate itemsFound => i {
                     put i.domain i.bucket i.objects => openBucketsFound
-                } 
+                }
             }
         }
     }
