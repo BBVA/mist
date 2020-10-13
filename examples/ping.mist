@@ -8,6 +8,7 @@ data myHostsPing {
 }
 
 ping {
+    version <= "1.0.0+"
     input {
         ip <= "127.0.0.1"
     }
