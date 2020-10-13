@@ -31,7 +31,7 @@ WatchCommand:
 ;
 
 CheckCommand:
-  'check' var=IDorSTRING 'is' result=IDorSTRING '{'
+  '_load_mist_model_' var=IDorSTRING 'is' result=IDorSTRING '{'
     commands*=Command
   '}'
 ;

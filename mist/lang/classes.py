@@ -118,7 +118,7 @@ class IDorSTRING:
     var: str
     param: str
     customList: list
-    # TODO: check var and params
+    # TODO: _load_mist_model_ var and params
 
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,

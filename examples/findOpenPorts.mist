@@ -1,5 +1,5 @@
 # Name: findOpenPorts
-# Description: Read file with list of IPs and check for open ports, write the result in csv file
+# Description: Read file with list of IPs and _load_mist_model_ for open ports, write the result in csv file
 # Tags: nmap, network, ports
 
 findOpenPorts {

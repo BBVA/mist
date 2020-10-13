@@ -52,14 +52,14 @@ ping {
         console
     }
     then {
-        check result is Success {
+        _load_mist_model_ result is Success {
             put ip 'Up' => myHosts
         }
-        check result is Error {
+        _load_mist_model_ result is Error {
             put ip 'Down' => myHosts(Host Status)
         }
     }
-}               
+}
                 </div>
             </div>
         </div>

@@ -16,10 +16,10 @@ ping {
         console
     }
     then {
-        check result is Success {
+        _load_mist_model_ result is Success {
             put ip 'Up' => myHostsPing
         }
-        check result is Error {
+        _load_mist_model_ result is Error {
             put ip 'Down' => myHostsPing(Host Status)
         }
     }

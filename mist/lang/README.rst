@@ -84,10 +84,10 @@ And now, we are going to run a ping over all my hosts and leave the result in ou
                 console
             }
             then {
-                check result is Success {
+                _load_mist_model_ result is Success {
                     put ip 'Up' => myHostsStatus
                 }
-                check result is Error {
+                _load_mist_model_ result is Error {
                     put ip 'Down' => myHostsStatus
                 }
             }
@@ -132,10 +132,10 @@ Finally this is all the code together:
                 console
             }
             then {
-                check result is Success {
+                _load_mist_model_ result is Success {
                     put ip 'Up' => myHostsStatus
                 }
-                check result is Error {
+                _load_mist_model_ result is Error {
                     put ip 'Down' => myHostsStatus
                 }
             }
@@ -148,7 +148,7 @@ Finally this is all the code together:
 
 Description
 -----------
- 
+
 This command define a knowledge base structure that can be populated later.
 You can access to the component of the structure by using "." symbol
 Every structure can store several instances.
@@ -170,7 +170,7 @@ Parameters
 ----------
 
 - myDaya: an identifier for the structure
-- keyN: an identifier for a component inside the structure 
+- keyN: an identifier for a component inside the structure
 
 Examples
 --------
@@ -199,7 +199,7 @@ This example define the structure myHosys, put 3 instances and then print it.
 
 Description
 -----------
- 
+
 This command put data to the knowledge base.
 The number of parameter must match with the data structure fields
 
@@ -245,7 +245,7 @@ Examples
 
 Description
 -----------
- 
+
 This command write an string, a local variable or a data structure of the knowledge base on console
 
 Syntax
@@ -282,20 +282,20 @@ Examples
         print host.ip
     }
 
-**check** command
+**_load_mist_model_** command
 =================
 
 Description
 -----------
- 
-This command check the value of a variable and execute commands if match.
+
+This command _load_mist_model_ the value of a variable and execute commands if match.
 
 Syntax
 ------
 
 .. code-block:: console
 
-    check id is value {
+    _load_mist_model_ id is value {
         ...
     }
 
@@ -308,7 +308,7 @@ Parameters
 Examples
 --------
 
-This example define the structure myHosys, put 1 instance, check the ip value and then print some log.
+This example define the structure myHosys, put 1 instance, _load_mist_model_ the ip value and then print some log.
 
 .. code-block:: console
 
@@ -318,8 +318,8 @@ This example define the structure myHosys, put 1 instance, check the ip value an
     }
 
     put "127.0.0.1" "linux" => myHosts
-    
-    check myHosts.ip "127.0.0.1" {
+
+    _load_mist_model_ myHosts.ip "127.0.0.1" {
         print "My IP is the same!"
     }
 
@@ -328,7 +328,7 @@ This example define the structure myHosys, put 1 instance, check the ip value an
 
 Description
 -----------
- 
+
 This command iterate over a data list
 
 Syntax
@@ -392,7 +392,7 @@ Syntax
             ...
         }
     }
-    
+
 
 Input parameters
 ----------------
@@ -452,7 +452,7 @@ Syntax
             ...
         }
     }
-    
+
 
 Input parameters
 ----------------
@@ -483,7 +483,7 @@ Find a name in a phrase.
             found
         }
         then {
-            check found is True {
+            _load_mist_model_ found is True {
                 print "Peter found"
             }
         }
@@ -512,7 +512,7 @@ Syntax
             ...
         }
     }
-    
+
 
 Input parameters
 ----------------
@@ -591,7 +591,7 @@ Syntax
             ...
         }
     }
-    
+
 
 Input parameters
 ----------------

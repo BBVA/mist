@@ -13,7 +13,7 @@ searchInText "Peter" myDataSearchText.text {
         found
     }
     then {
-        check found is True {
+        _load_mist_model_ found is True {
             print "Peter found"
         }
     }
@@ -37,7 +37,7 @@ exec "bash -c ls -1 {filter}" {
                 found
             }
             then {
-                check found is True {
+                _load_mist_model_ found is True {
                     print "File found"
                 }
             }

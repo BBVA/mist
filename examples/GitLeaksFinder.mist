@@ -9,10 +9,10 @@ GitLeaksFinder {
         console
     }
     then {
-        check result is Error {
+        _load_mist_model_ result is Error {
             Abort "Issues detected!"
         }
-        check result is Success {
+        _load_mist_model_ result is Success {
             print "Code is clean and safe"
         }
     }

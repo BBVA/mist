@@ -14,7 +14,7 @@ exec "bash -c 'ls --sadfasdf'" {
         consoleError
     }
     then {
-        check result is Error {
+        _load_mist_model_ result is Error {
             Abort
         }
     }
