@@ -151,16 +151,16 @@ def _find_commands_versions(mist_content,
 
         if type(command) is list:
             for c in command:
-                if ret := _find_command_metadata(c):
+                if ret := _find_versions(c):
                     meta.update(ret)
 
-        if hasattr(command, "version"):
-            # TODO: resolver version
-            meta[command] = command.version
+        elif hasattr(command, "version"):
+                # TODO: resolver version
+                meta[command.__class__.__name__] = command.version
 
         try:
             for c in command.commands:
-                meta.update(_find_command_metadata(c))
+                meta.update(_find_versions(c))
         except AttributeError:
             pass
 

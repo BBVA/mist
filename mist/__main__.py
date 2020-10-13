@@ -255,7 +255,7 @@ def main():
         print("[*] Downloading core playbooks...", end='', flush=True)
 
         git_clone("https://github.com/cr0hn/mist-playbooks",
-                      str(catalog_path.joinpath("core-playbooks")))
+                      str(playbooks.joinpath("core-playbooks")))
 
         print("Done", flush=True)
 
