@@ -4,8 +4,8 @@
 # Tags: command, exec, shell
 exec "bash -c 'ls --sadfasdf'" {
     input {
-        filter = "*"
-        hidden = "-a"
+        filter <= "*"
+        hidden <= "-a"
     }
     output {
         result

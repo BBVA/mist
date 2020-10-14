@@ -22,7 +22,7 @@ searchInText "Peter" myDataSearchText.text {
 print "Running Example 2"
 exec "bash -c ls -1 {filter}" {
     input {
-        filter = "*"
+        filter <= "*"
     }
     output {
         result
