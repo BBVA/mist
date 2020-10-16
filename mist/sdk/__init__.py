@@ -1,7 +1,7 @@
 from .db import db
 from .params import params
 from .environment import environment
-from .herlpers import get_id, watchedInsert
+from .herlpers import get_id, get_param, watchedInsert
 from .stack import stack
 from .watchers import watchers
 from .cmd import execution
