@@ -1,4 +1,4 @@
-GitLeaksFinder {
+gitLeaksFinder {
     input {
         git_path <= %gitPath
     }
