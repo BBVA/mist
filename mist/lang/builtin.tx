@@ -11,7 +11,7 @@ BuiltAbort:
 ;
 
 Param:
-    key=ID '=' value=STRING
+    key=ID '<=' value=IDorSTRING
 ;
 
 BuiltExec:

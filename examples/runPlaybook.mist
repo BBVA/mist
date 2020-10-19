@@ -1,0 +1,11 @@
+# Name: runPlaybook
+# Description: Run a playbook from another playbook
+# Tags: playbook
+
+runPlaybook 'examples/ping.mist'
+
+runPlaybook 'examples/vars and params.mist' {
+    input {
+        p1 <= "adios"
+    }
+}
