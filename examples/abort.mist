@@ -15,7 +15,7 @@ exec "bash -c 'ls --sadfasdf'" {
     }
     then {
         check result is Error {
-            Abort
+            abort
         }
     }
 }

@@ -7,7 +7,7 @@ BuiltPrint:
 ;
 
 BuiltAbort:
-    'Abort' (reason=STRING)?
+    'abort' (reason=STRING)?
 ;
 
 Param:
