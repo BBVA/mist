@@ -25,9 +25,11 @@ class Mist(object):
     def __init__(self):
         self._default_action = False
 
-        parser = argparse.ArgumentParser(
+        parser = argparse.ArgumentParser(prog = 'mist',
             description='MIST - programing language for security made easy',
             usage='''mist <command> [<args>]
+
+Programing language for security made easy
 
 Available commands are:
    help       Displays help menu
@@ -43,16 +45,17 @@ Execution examples:
     > mist exec my-program.mist
     > mist my-program.mist  # Same action that above command
 
-Launching editor: 
-    
+Launching editor:
+
     > mist editor
 
-Managing log: 
+Managing log:
 
     > mist log my-program.db
-    
+
 _
-''')
+''',
+            add_help = False)
         parser.add_argument('command', help='Subcommand to run', nargs="*")
 
         if len(sys.argv) < 2:
@@ -66,7 +69,6 @@ _
             self.exec()
         else:
             parsed_args = parser.parse_args(sys.argv[1:2])
-
             if parsed_args.command[0] == "help":
                 parser.print_usage()
                 exit(0)
@@ -82,8 +84,27 @@ _
         exit()
 
     def exec(self):
-        parser = argparse.ArgumentParser(
-            description='execute a .mist file')
+        parser = argparse.ArgumentParser(prog = 'mist exec',
+            description='execute a .mist file',
+            usage = '''%(prog)s [-h] [-N] [-C] [-R] [-d] [-S] [-p] [-db DATABASE_PATH] MIST_FILE [PARAMS ...]
+
+execute a .mist file
+
+positional arguments:
+  MIST_FILE             MIST - FILE to execute
+  PARAMS                Params for MIST - FILE param1=value1 ...
+
+optional arguments:
+  -h, --help            show help message and exit
+  -N, --no-check-tools  do not check if tools are installed
+  -C, --console-output  displays console output of executed tools
+  -R, --real-time       display console output in real time
+  -d, --debug           enable debug messages
+  -S, --simulate        simulate without execute
+  -db [DATABASE_PATH], --database-path [DATABASE_PATH]
+                        database path file
+''',
+            add_help = False)
         parser.add_argument('OPTIONS',
                             help="MIST - FILE[param1 = value1 param2 = value2...]",
                             metavar="OPTIONS", nargs="+")
@@ -107,14 +128,10 @@ _
                             action="store_true",
                             help="simulate without execute",
                             default=False)
-
-        db_group = parser.add_argument_group("Database")
-        db_group.add_argument('-p', '--persist',
-                            action="store_true",
-                            help="persist database information to disk",
-                            default=False)
-        db_group.add_argument('-db', '--database-path',
+        parser.add_argument('-db', '--database-path',
                             help="database path file",
+                            nargs = '?',
+                            const = 'default',
                             default=None)
 
         if self._default_action:
@@ -138,11 +155,10 @@ _
         #
         # Setup database
         #
-        if config.persist:
-            if config.database_path:
+        if config.database_path:
+            if config.database_path != 'default':
                 if not config.database_path.endswith("db"):
                     config.database_path = f"{config.database_path}.db"
-
                 db.setup(f"sqlite3://{config.database_path}")
             else:
                 db.setup(f"sqlite3://{config.MIST_FILE}.db")
@@ -199,9 +215,9 @@ _
         print('''
 
         Open in your browser: http://localhot:9000
-        
+
         BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'
-        
+
         ''')
         httpd = HTTPServer(('localhost', 9000), EditorServer)
         try:
