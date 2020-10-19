@@ -71,22 +71,23 @@ class _DB:
         with cm(self.connection) as cur:
             cur.execute(query)
 
-    def update(self, row_id: int, table: str, values: dict):
+    def update(self, row_id: str, table: str, values: dict):
         """returns last row id inserted"""
         query = f'''
         UPDATE {self.tbl_name(table)}
         SET
             {", ".join(f'{x} = ?' for x in values.keys())}
-        WHERE id = {row_id}
+        WHERE id = "{row_id}"
         '''
-
+        
         with cm(self.connection) as cur:
             res = cur.execute(query, list(values.values()))
             return res.rowcount
 
     def insert(self, table: str, values: List[str], *, fields=None) -> int:
         """returns last row id inserted"""
-        values.insert(0, uuid.uuid4().hex)
+        row_uuid = uuid.uuid4().hex
+        values.insert(0, row_uuid)
         if fields:
             fields.insert(0,"id")
         query = f'''
@@ -97,7 +98,7 @@ class _DB:
 
         with cm(self.connection) as cur:
             res = cur.execute(query, values)
-            return res.lastrowid
+            return row_uuid
 
     def fetch_one(self, query: str, values: list = None) -> tuple:
 

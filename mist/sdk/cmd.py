@@ -171,7 +171,7 @@ class LocalExecutor(Executor):
 
         command = shlex.split(new_command)
 
-        row_id: int = self.__add_to_database__(new_command, start_time)
+        row_id: str = self.__add_to_database__(new_command, start_time)
 
         process = subprocess.Popen(command,
                                    env=run_env,
