@@ -4,7 +4,7 @@ from mist.action_exec import execute_from_text
 
 EXAMPLE_FILE = "runPlaybook.mist"
 
-def test_exec_example(examples_path):
+def test_runPlaybook_example(examples_path):
     with open(os.path.join(examples_path, EXAMPLE_FILE), "r") as f:
         content = f.read()
 

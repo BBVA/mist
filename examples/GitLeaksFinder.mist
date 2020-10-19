@@ -1,4 +1,4 @@
-GitLeaksFinder {
+gitLeaksFinder {
     input {
         git_path <= %gitPath
     }
@@ -9,10 +9,10 @@ GitLeaksFinder {
         console
     }
     then {
-        _load_mist_model_ result is Error {
-            Abort "Issues detected!"
+        check result is Error {
+            abort "Issues detected!"
         }
-        _load_mist_model_ result is Success {
+        check result is Success {
             print "Code is clean and safe"
         }
     }

@@ -61,4 +61,5 @@ def watchedInsert(table: str, values: List[str], *, fields=None):
             stack.pop()
 
 def get_param(params, key):
-    return [x for x in params if x.key == key][0].value
+    t = [x for x in params if x.key == key]
+    return t[0].value if len(t)>0 else None
