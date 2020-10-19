@@ -1,4 +1,4 @@
-PythonCodeAnalysis {
+pythonCodeAnalysis {
     input {
         sources <= %sourcesPath
     }
