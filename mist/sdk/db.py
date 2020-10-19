@@ -1,6 +1,7 @@
 import sqlite3
 import hashlib
 import json
+import uuid
 
 from typing import List
 from functools import lru_cache
@@ -56,7 +57,7 @@ class _DB:
 
         query = f'''
         CREATE TABLE {self.tbl_name(table_name)} 
-        (id integer PRIMARY KEY AUTOINCREMENT, {', '.join(table_fields)})
+        (id blob(16) PRIMARY KEY NOT NULL, {', '.join(table_fields)})
         '''
 
         with cm(self.connection) as cur:
@@ -85,10 +86,13 @@ class _DB:
 
     def insert(self, table: str, values: List[str], *, fields=None) -> int:
         """returns last row id inserted"""
+        values.insert(0, uuid.uuid4().hex)
+        if fields:
+            fields.insert(0,"id")
         query = f'''
         INSERT INTO {self.tbl_name(table)}
         {f"({', '.join(fields)})" if fields else ''}
-        VALUES ({'' if fields else 'null,'} {', '.join(['?' for _ in range(len(values))])})
+        VALUES ({', '.join(['?' for _ in range(len(values))])})
         '''
 
         with cm(self.connection) as cur:
