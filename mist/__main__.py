@@ -2,13 +2,13 @@ import os
 import sys
 import argparse
 import platform
-from pathlib import Path
-
 import pkg_resources
+
+from pathlib import Path
 
 from http.server import HTTPServer
 
-from mist.catalog import CORE_CATALOG
+from mist.catalog import CORE_CATALOG, Catalog
 from mist.sdk import config, db, params, MistMissingBinaryException, \
     MistAbortException, MistInputDataException
 
@@ -248,7 +248,7 @@ def main():
         home.joinpath("catalog").mkdir(parents=True)
 
     if not home.joinpath("catalog").joinpath("catalog.db").exists():
-        catalog_add(CORE_CATALOG)
+        Catalog.add_catalog(CORE_CATALOG)
 
     Mist()
 

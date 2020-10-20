@@ -1,12 +1,12 @@
+import json
 import sqlite3
 import hashlib
-import json
-import uuid
 
 from typing import List
 from functools import lru_cache
 from contextlib import contextmanager
 
+from ..guuid import guuid
 from .config import config
 
 @contextmanager
@@ -79,26 +79,36 @@ class _DB:
             {", ".join(f'{x} = ?' for x in values.keys())}
         WHERE id = "{row_id}"
         '''
-        
+
         with cm(self.connection) as cur:
             res = cur.execute(query, list(values.values()))
             return res.rowcount
 
-    def insert(self, table: str, values: List[str], *, fields=None) -> int:
+    def insert(self,
+               table: str,
+               values: List[str],
+               *,
+               fields: List[str] = None) -> str:
         """returns last row id inserted"""
-        row_uuid = uuid.uuid4().hex
-        values.insert(0, row_uuid)
+        row_id = guuid()
+
         if fields:
-            fields.insert(0,"id")
+            fields = ["id", *fields]
+            sql_fields = f"({', '.join(fields)})" if fields else ''
+
+        else:
+            sql_fields = ""
+
+        values = [row_id, *values]
+
         query = f'''
-        INSERT INTO {self.tbl_name(table)}
-        {f"({', '.join(fields)})" if fields else ''}
+        INSERT INTO {self.tbl_name(table)} {sql_fields}
         VALUES ({', '.join(['?' for _ in range(len(values))])})
         '''
 
         with cm(self.connection) as cur:
             res = cur.execute(query, values)
-            return row_uuid
+            return row_id
 
     def fetch_one(self, query: str, values: list = None) -> tuple:
 
