@@ -1,5 +1,5 @@
 BuiltIn:
-    BuiltPrint | BuiltAbort | BuiltExec | BuiltSearchInText | BuiltSearchInXML | BuiltSearchInJSON
+    BuiltPrint | BuiltAbort | BuiltExec | BuiltSearchInText | BuiltSearchInXML | BuiltSearchInJSON | CSVdumpCommand | CSVputCommand
 ;
 
 BuiltPrint:
