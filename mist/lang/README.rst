@@ -84,10 +84,10 @@ And now, we are going to run a ping over all my hosts and leave the result in ou
                 console
             }
             then {
-                _load_mist_model_ result is Success {
+                check result is Success {
                     put ip 'Up' => myHostsStatus
                 }
-                _load_mist_model_ result is Error {
+                check result is Error {
                     put ip 'Down' => myHostsStatus
                 }
             }
@@ -132,10 +132,10 @@ Finally this is all the code together:
                 console
             }
             then {
-                _load_mist_model_ result is Success {
+                check result is Success {
                     put ip 'Up' => myHostsStatus
                 }
-                _load_mist_model_ result is Error {
+                check result is Error {
                     put ip 'Down' => myHostsStatus
                 }
             }
@@ -282,20 +282,20 @@ Examples
         print host.ip
     }
 
-**_load_mist_model_** command
+**check** command
 =================
 
 Description
 -----------
 
-This command _load_mist_model_ the value of a variable and execute commands if match.
+This command check the value of a variable and execute commands if match.
 
 Syntax
 ------
 
 .. code-block:: console
 
-    _load_mist_model_ id is value {
+    check id is value {
         ...
     }
 
@@ -308,7 +308,7 @@ Parameters
 Examples
 --------
 
-This example define the structure myHosys, put 1 instance, _load_mist_model_ the ip value and then print some log.
+This example define the structure myHosys, put 1 instance, check the ip value and then print some log.
 
 .. code-block:: console
 
@@ -319,7 +319,7 @@ This example define the structure myHosys, put 1 instance, _load_mist_model_ the
 
     put "127.0.0.1" "linux" => myHosts
 
-    _load_mist_model_ myHosts.ip "127.0.0.1" {
+    check myHosts.ip "127.0.0.1" {
         print "My IP is the same!"
     }
 
@@ -483,7 +483,7 @@ Find a name in a phrase.
             found
         }
         then {
-            _load_mist_model_ found is True {
+            check found is True {
                 print "Peter found"
             }
         }

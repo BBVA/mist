@@ -1,15 +1,14 @@
 from io import StringIO
-from argparse import Namespace
 from contextlib import redirect_stdout
 
 from mist.sdk import db, config, params
+
 from .language_tools import get_mist_model, load_mist_language
 
+def execute():
+    mist_model = get_mist_model()
 
-def execute(parsed_args: Namespace):
-    mist_model = get_mist_model(parsed_args)
-
-    if parsed_args.simulate:
+    if config.simulate:
         print("[*] File loaded successfully")
     else:
         # Run user program!

@@ -62,4 +62,4 @@ def watchedInsert(table: str, values: List[str], *, fields=None):
 
 def get_param(params, key):
     t = [x for x in params if x.key == key]
-    return t[0].value if len(t)>0 else None
+    return t[0].value if t else None

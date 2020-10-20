@@ -309,7 +309,7 @@ searchInText "Peter" myData.text {
         found
     }
     then {
-        _load_mist_model_ found is True {
+        check found is True {
             print "Peter found"
         }
     }
@@ -445,10 +445,10 @@ ping {
         console
     }
     then {
-        _load_mist_model_ result is Success {
+        check result is Success {
             put ip 'Up' => myHosts
         }
-        _load_mist_model_ result is Error {
+        check result is Error {
             put ip 'Down' => myHosts(Host Status)
         }
     }

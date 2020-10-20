@@ -1,0 +1,21 @@
+# Name: exec
+# Version: 1.0.0
+# Description: executes a custom user shell command
+# Tags: command, exec, shell
+exec "bash -c 'ls --sadfasdf'" {
+    input {
+        filter <= "*"
+        hidden <= "-a"
+    }
+    output {
+        result
+        resultCode
+        consoleOutput
+        consoleError
+    }
+    then {
+        check result is Error {
+            abort
+        }
+    }
+}
