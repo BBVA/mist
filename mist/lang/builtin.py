@@ -126,9 +126,9 @@ class BuiltSearchInJSON:
             "value": found[0].value if found else None
         }
 
+@dataclass
 class CSVdumpCommand:
     parent: object
-    version: str
     fileName: str
     source: str
 
@@ -142,16 +142,18 @@ class CSVdumpCommand:
                                    delimiter=',',
                                    quotechar='"',
                                    quoting=csv.QUOTE_MINIMAL)
-            headers = db.fetch_table_headers(self.source)
+            headers = db.fetch_table_headers(self.source)[1:]
             csvWriter.writerow(headers)
-            csvWriter.writerows({
+            for row in items:
+                row.pop('id', None)
+            csvWriter.writerows([
                 row.values()
                 for row in items
-            })
+            ])
 
+@dataclass
 class CSVputCommand:
     parent: object
-    version: str
     fileName: str
     target: str
 
