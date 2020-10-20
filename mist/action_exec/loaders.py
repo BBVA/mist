@@ -7,8 +7,8 @@ import importlib.util
 from typing import Set, List
 from functools import lru_cache
 
+from mist.sdk import MistInputDataException
 from mist.finders import find_commands_folders
-from mist.validators import validate_command_meta
 
 from .helpers import command_name_to_class
 from ..catalog import Catalog
@@ -54,11 +54,12 @@ def _ensure_class_is_command(cmd_obj, modules_entries: Set) -> bool:
 
 
 def _find_command_version(base_path: str,
+                          modules_entries: set,
                           index_content: dict,
                           restrictions: dict) \
         -> None or object:
 
-    command_name = command_name_to_class(index_content["name"])
+    command_name = index_content["name"]
 
     if command_name in restrictions:
         command_version = restrictions[command_name]
@@ -68,14 +69,18 @@ def _find_command_version(base_path: str,
     #
     # Find location of command implementation
     #
-    location = Catalog.find_command(command_name, command_version)
+    if not(location := Catalog.find_command(command_name, command_version)):
+        raise MistInputDataException(
+            f"Can't find command '{command_name}' with "
+            f"version '{command_version}'"
+        )
 
     #
     # Load command at this path
     #
     module_path = op.join(location, "exports.py")
     module_name = _file_to_module_(
-        base_path.replace(module_path , "")
+        module_path.replace(op.sep.join(base_path.split(op.sep)[:-1]), "")
     )
 
     spec = importlib.util.spec_from_file_location(
@@ -92,20 +97,13 @@ def _find_command_version(base_path: str,
             if not _ensure_class_is_command(klass, modules_entries):
                 continue
 
-            # Ensure command loaded command is the correct version
-            if not (klass_version := restrictions.get(klass, None)):
-                klass_version = latest_version
-
-            if klass_version != meta_content["version"]:
-                continue
-
-            klass.meta = meta_content
+            klass.meta = index_content
 
             return klass
 
 
 def find_catalog_exports(path: str,
-                         modules_entries: Set[str],
+                         modules_entries: List[str],
                          restrictions: dict = None) -> List[str]:
 
 
@@ -116,7 +114,7 @@ def find_catalog_exports(path: str,
         # Finding command set by user
         if klass := _find_command_version(
                 command_path,
-                # modules_entries,
+                modules_entries,
                 index_content,
                 restrictions
             ):

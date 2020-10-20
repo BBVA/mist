@@ -1,0 +1,18 @@
+# Name: searchDomains
+# Version: 1.0.0
+# Description: Use dnsrecon to find related domains
+# Tags: dnsrecon, dns, network
+
+searchDomains {
+    input {
+        domain <= %domain
+    }
+    output {
+        result
+        domains
+        console
+    }
+    then {
+        print domains
+    }
+}

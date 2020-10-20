@@ -8,13 +8,12 @@ import pkg_resources
 
 from http.server import HTTPServer
 
-from mist.action_catalog.repositories import CORE_CATALOG
+from mist.catalog import CORE_CATALOG
 from mist.sdk import config, db, params, MistMissingBinaryException, \
     MistAbortException, MistInputDataException
 
 from mist.action_log import CliLog
 from mist.editor import EditorServer
-from mist.action_catalog import CliCatalog, catalog_add
 from mist.action_exec import load_cli_exec_values, execute
 
 HERE = os.path.dirname(__file__)
@@ -190,8 +189,8 @@ _
     def log(self):
         CliLog()
 
-    def catalog(self):
-        CliCatalog()
+    # def catalog(self):
+    #     CliCatalog()
 
     def editor(self):
 

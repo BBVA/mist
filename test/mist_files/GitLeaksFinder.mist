@@ -1,0 +1,19 @@
+gitLeaksFinder {
+    input {
+        git_path <= %gitPath
+    }
+    output {
+        hasVulnerabilities
+        issues
+        result
+        console
+    }
+    then {
+        check result is Error {
+            abort "Issues detected!"
+        }
+        check result is Success {
+            print "Code is clean and safe"
+        }
+    }
+}

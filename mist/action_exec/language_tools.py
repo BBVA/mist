@@ -1,6 +1,6 @@
-import os
 import re
 import shutil
+import hashlib
 import os.path as op
 
 from pathlib import Path
@@ -89,7 +89,7 @@ def get_core_grammar() -> str:
 
 
 @lru_cache(128)
-def load_catalog(path: str) -> Tuple[List[str], Set[str]]:
+def load_catalog(path: str) -> Tuple[List[str], List[str]]:
     """
     This function walk catalog and try to discover Catalog commands Classes
     definitions and their .tx (grammar file)
@@ -98,7 +98,9 @@ def load_catalog(path: str) -> Tuple[List[str], Set[str]]:
     """
 
     catalog_grammar = []
-    modules_entries = set()
+
+    # This must be a list because order is very important!
+    modules_entries = []
 
     for (command_path, index_content) in find_commands_folders(path):
 
@@ -113,7 +115,8 @@ def load_catalog(path: str) -> Tuple[List[str], Set[str]]:
 
                 # Extract Command name from grammar
                 if entry := extract_modules_grammar_entry(content):
-                    modules_entries.add(entry)
+                    if entry not in modules_entries:
+                        modules_entries.append(entry)
 
         else:
 
@@ -132,12 +135,12 @@ def load_catalog(path: str) -> Tuple[List[str], Set[str]]:
             )
 
             catalog_grammar.append(on_the_fly_grammar)
-            modules_entries.add(command_class)
+            modules_entries.append(command_class)
 
     return catalog_grammar, modules_entries
 
 def build_grammar(core_grammar: str,
-                  modules_entries: set,
+                  modules_entries: list,
                   catalog_grammar) -> str:
     # Include catalog grammar into core grammar
     core_grammar = core_grammar.replace(
@@ -217,7 +220,13 @@ def _find_commands_versions(mist_content,
         use_regexp_group=True
     )
 
-    model = mist_meta_model.model_from_str(mist_content)
+    try:
+        model = mist_meta_model.model_from_str(mist_content)
+    except Exception as e:
+        print(hashlib.sha256(grammar.encode()).hexdigest())
+        print(e)
+        print(mist_content)
+        exit(1)
 
     versions = _find_versions(model.commands)
 

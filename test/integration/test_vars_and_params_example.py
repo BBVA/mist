@@ -2,7 +2,7 @@ import os
 
 from mist.action_exec import execute_from_text
 
-PING_EXAMPLE_FILE = "vars and params.mist"
+PING_EXAMPLE_FILE = "vars_and_params.mist"
 
 def test_vars_and_params(examples_path):
     with open(os.path.join(examples_path, PING_EXAMPLE_FILE), "r") as f:

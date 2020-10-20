@@ -34,14 +34,13 @@ def find_commands_folders(path: str) -> Iterator[Tuple[str, dict]]:
         yield root, index_content
 
 
-def find_catalog_metas(base_command_path: str) -> dict:
+def find_catalog_metas(base_command_path: str) -> Iterator[Tuple[str, dict]]:
     """
     this functions find all command versions and return a dict as format
 
-    {
-        "version0001": "/path/to/command1"
-        "version0002": "/path/to/command2"
-    }
+    Iterate format:
+
+    (path: str, meta_content:dict)
     """
     found_metas = {}
 
@@ -61,7 +60,7 @@ def find_catalog_metas(base_command_path: str) -> dict:
         if not (meta_content := validate_command_meta(meta_file)):
             continue
 
-        yield meta_content
+        yield root, meta_content
 
     return found_metas
 

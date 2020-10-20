@@ -1,0 +1,46 @@
+# Name: searchInText
+# Description: Search some regex in a text
+# Tags: search, find
+
+print "Running Example 1"
+data myDataSearchText {
+    text
+}
+put "Hello, my name is Peter and I like Mist!" => myDataSearchText
+searchInText "Peter" myDataSearchText.text {
+    output {
+        result
+        found
+    }
+    then {
+        check found is True {
+            print "Peter found"
+        }
+    }
+}
+
+print "Running Example 2"
+exec "bash -c ls -1 {filter}" {
+    input {
+        filter <= "*"
+    }
+    output {
+        result
+        resultCode
+        consoleOutput
+        consoleError
+    }
+    then {
+        searchInText "build_doc.py" consoleOutput {
+            output {
+                result
+                found
+            }
+            then {
+                check found is True {
+                    print "File found"
+                }
+            }
+        }
+    }
+}

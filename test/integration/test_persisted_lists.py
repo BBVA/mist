@@ -2,7 +2,7 @@ import os
 
 from mist.action_exec import execute_from_text
 
-EXAMPLE_FILE = "persisted lists.mist"
+EXAMPLE_FILE = "persisted_lists.mist"
 
 def test_persisted_lists(examples_path):
     with open(os.path.join(examples_path, EXAMPLE_FILE), "r") as f:
