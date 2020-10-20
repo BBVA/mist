@@ -50,7 +50,7 @@ def watchedInsert(table: str, values: List[str], *, fields=None):
         print(f"-> watchedInsert {table}")
     db.insert(table, values, fields=fields)
     if not fields:
-        fields=db.fetch_table_headers(table)[1:]
+        fields=db.fetch_table_headers(table)
     item = dict(zip(fields, values))
 
     for watcher in watchers:
