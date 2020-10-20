@@ -71,8 +71,10 @@ def _find_command_version(base_path: str,
     #
     if not(location := Catalog.find_command(command_name, command_version)):
         raise MistInputDataException(
+            f"Error while loading catalog commands. "
             f"Can't find command '{command_name}' with "
-            f"version '{command_version}'"
+            f"version '{command_version}'. "
+            f"Try to fix then re-indexing them writing: mist catalog reindex"
         )
 
     #
