@@ -10,14 +10,15 @@ def test_persisted_lists(examples_path):
 
     console = execute_from_text(content)
 
-    assert """[{'id': 1, 'Name': 'Letters', 'Objects': ['A', 'B']}, {'id': 2, 'Name': 'Numbers', 'Objects': ['1', '2']}]
-{'id': 1, 'Name': 'Letters', 'Objects': ['A', 'B']}
-['A', 'B']
-A
-B
-{'id': 2, 'Name': 'Numbers', 'Objects': ['1', '2']}
-['1', '2']
-1
-2
-""" == console
+    assert ", 'Name': 'Letters', 'Objects': ['A', 'B']},"
+    assert ", 'Name': 'Numbers', 'Objects': ['1', '2']}]"
+    assert "'Name': 'Letters', 'Objects': ['A', 'B']}\n"
+    assert "'Name': 'Numbers', 'Objects': ['1', '2']}\n"
+    assert "['A', 'B']\n" in console
+    assert "A\n" in console
+    assert "B\n" in console
+    assert "['1', '2']\n" in console
+    assert "1\n" in console 
+    assert "2\n" in console
+
 

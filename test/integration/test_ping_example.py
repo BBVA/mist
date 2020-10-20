@@ -11,4 +11,4 @@ def test_ping_example(examples_path):
     console = execute_from_text(content)
 
     assert "PING 127.0.0.1 (127.0.0.1): 56 data bytes" in console
-    assert "[{'id': 1, 'Host': '127.0.0.1', 'Status': 'Up'}]" in console
+    assert "'Host': '127.0.0.1', 'Status': 'Up'}]" in console

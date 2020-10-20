@@ -68,3 +68,11 @@ BuiltSearchInJSON:
     '}'
   '}'
 ;
+
+CSVdumpCommand:
+  'CSVdump' source=ID '=>' fileName=STRING
+;
+
+CSVputCommand:
+  'CSVput' fileName=STRING '=>' target=ID
+;
