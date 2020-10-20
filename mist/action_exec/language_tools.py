@@ -1,7 +1,7 @@
 import os
 import re
 import shutil
-from collections import namedtuple
+import os.path as op
 
 from pathlib import Path
 from typing import List, Set, Tuple
@@ -11,18 +11,35 @@ from functools import lru_cache
 from textx import metamodel_from_str
 
 from mist.sdk import params, MistMissingBinaryException, \
-    MistInputDataException
+    MistInputDataException, config, db
 
 from mist.lang.classes import exports as core_exports
 from mist.lang.builtin import exports as builtin_exports
 
-from .helpers import get_or_download_mist_file
-from .finders import find_catalog_exports, find_grammars, \
+from .helpers import get_or_download_mist_file, get_mist_filename, command_name_to_class
+from .loaders import find_catalog_exports, find_grammars, \
     extract_modules_grammar_entry
+from ..finders import find_commands_folders, find_catalog_metas
 
 REGEX_FIND_PARAMS = re.compile(r'''(\%[\w\_\-]+)''')
-HERE = os.path.dirname(__file__)
+HERE = op.dirname(__file__)
+GRAMMAR_TEMPLATE = """
+##COMMAND_CLASS##:
+  '##COMMAND##' args*=IDorSTRING[eolterm] ('{'
+    ('version' '<=' version=STRING)?
+    ('input' '{'
+      params+=Param
+    '}')?
+    ('output' '{'
+      outputs+=ID
+    '}')?
+    ('then' '{'
+      commands+=Command
+    '}')?
+  '}')?
+;
 
+"""
 
 # -------------------------------------------------------------------------
 # Grammar helpers
@@ -62,8 +79,8 @@ def get_core_grammar() -> str:
     _core_grammar = []
 
     for core_grammar_file in [
-        os.path.join(HERE, "..", "lang", "core.tx"),
-        os.path.join(HERE, "..", "lang", "builtin.tx")
+        op.join(HERE, "..", "lang", "core.tx"),
+        op.join(HERE, "..", "lang", "builtin.tx")
     ]:
         with open(core_grammar_file, "r") as f:
             _core_grammar.append(f.read())
@@ -72,25 +89,50 @@ def get_core_grammar() -> str:
 
 
 @lru_cache(128)
-def load_catalog_grammar(path: str) -> Tuple[List[str], Set[str]]:
+def load_catalog(path: str) -> Tuple[List[str], Set[str]]:
     """
-    load grammar from a catalog path
+    This function walk catalog and try to discover Catalog commands Classes
+    definitions and their .tx (grammar file)
 
     Returns: Tuple(Catalog Grammar as List, Modules entries as Set)
     """
 
     catalog_grammar = []
     modules_entries = set()
-    catalog_grammar_files = find_grammars(path)
-    for module_grammar_file in catalog_grammar_files:
-        with open(module_grammar_file, "r") as f:
-            content = f.read()
 
-            catalog_grammar.append(content)
+    for (command_path, index_content) in find_commands_folders(path):
 
-            # Extract catalog modules entries
-            if entry := extract_modules_grammar_entry(content):
-                modules_entries.add(entry)
+        #
+        # If command defines their own grammar then load it
+        #
+        grammar_file = op.join(command_path, "grammar.tx")
+        if op.exists(grammar_file):
+            with open(grammar_file, "r") as f:
+                content = f.read()
+                catalog_grammar.append(content)
+
+                # Extract Command name from grammar
+                if entry := extract_modules_grammar_entry(content):
+                    modules_entries.add(entry)
+
+        else:
+
+            command_name = index_content["name"]
+            command_class = command_name_to_class(command_name)
+            #
+            # Otherwise use grammar template and and INDEX meta data to build
+            # an on-the-fly grammar
+            #
+            on_the_fly_grammar = GRAMMAR_TEMPLATE.replace(
+                "##COMMAND_CLASS##",
+                command_class
+            ).replace(
+                "##COMMAND##",
+                command_name
+            )
+
+            catalog_grammar.append(on_the_fly_grammar)
+            modules_entries.add(command_class)
 
     return catalog_grammar, modules_entries
 
@@ -99,8 +141,7 @@ def build_grammar(core_grammar: str,
                   catalog_grammar) -> str:
     # Include catalog grammar into core grammar
     core_grammar = core_grammar.replace(
-        "##MODULES##",
-        " | ".join(modules_entries)
+        "##MODULES##", " | ".join(modules_entries)
     )
 
     #
@@ -154,9 +195,9 @@ def _find_commands_versions(mist_content,
                 if ret := _find_versions(c):
                     meta.update(ret)
 
-        elif hasattr(command, "version"):
-                # TODO: resolver version
-                meta[command.__class__.__name__] = command.version
+        elif cmd_version := getattr(command, "version", None):
+            # TODO: resolver version
+            meta[command.__class__.__name__] = cmd_version
 
         try:
             for c in command.commands:
@@ -190,13 +231,18 @@ def _find_commands_versions(mist_content,
 @lru_cache(128)
 def load_mist_language(mist_file_or_content: str):
 
-    if os.path.exists(mist_file_or_content):
+    #
+    # Read user .mist file
+    #
+    if op.exists(mist_file_or_content):
         content = open(mist_file_or_content, "r").read()
     else:
         content = mist_file_or_content
 
+    # Load core.tx and buildin.tx files
     core_grammar = get_core_grammar()
-    catalog_grammar, modules_entries = load_catalog_grammar(
+
+    catalog_grammar, modules_entries = load_catalog(
         mist_catalog_path()
     )
 
@@ -281,17 +327,23 @@ def _find_params_in_mist_file(mist_file_path: str) -> Set[str]:
     return params
 
 
-def get_mist_model(parsed_args: Namespace) \
+def get_mist_model() \
         -> object or MistMissingBinaryException:
     """
     This function checks model, language and that all binaries are available
     """
 
-    #
-    # Check model and language
-    #
+    def store_file_in_db(mist_file: str):
+        mist_content = open(mist_file, "r").read()
 
-    with get_or_download_mist_file(parsed_args) as mist_file:
+        db.create_table("mist_file", ("file_name", "file_content"))
+        db.insert("mist_file", (mist_file, mist_content))
+
+    with get_or_download_mist_file(get_mist_filename()) as mist_file:
+
+        # Store mist content in database
+        store_file_in_db(mist_file)
+
         mist_meta_model = load_mist_language(mist_file)
 
         mist_model = mist_meta_model.model_from_file(
@@ -301,14 +353,14 @@ def get_mist_model(parsed_args: Namespace) \
         #
         # Check that binaries needed to execute a command are installed
         #
-        if not parsed_args.no_check_tools:
+        if not config.no_check_tools:
             if metas := _find_command_metadata(mist_model.commands):
 
                 for command_name, m in metas:
                     if bin := m.get("default", {}).get("cmd", None):
                         if not shutil.which(bin):
                             cmd_name = m.get("default", {}).get("name", None)
-                            cmd_message = m.get("default", {}).get("cmd-message", None)
+                            cmd_message = m.get("default", {}).get("cmd-error", None)
                             raise MistMissingBinaryException(
                                 f"Command '{command_name}' need '{bin}' to be "
                                 f"executed. Please install them. \n\nExtra "

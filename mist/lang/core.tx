@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand ##MODULES##
 ;
 
 DataCommand:
@@ -31,7 +31,7 @@ WatchCommand:
 ;
 
 CheckCommand:
-  '_load_mist_model_' var=IDorSTRING 'is' result=IDorSTRING '{'
+  'check' var=IDorSTRING 'is' result=IDorSTRING '{'
     commands*=Command
   '}'
 ;

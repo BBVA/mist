@@ -8,13 +8,13 @@ import pkg_resources
 
 from http.server import HTTPServer
 
-from mist.helpers import git_clone
+from mist.action_catalog.repositories import CORE_CATALOG
 from mist.sdk import config, db, params, MistMissingBinaryException, \
     MistAbortException, MistInputDataException
 
 from mist.action_log import CliLog
 from mist.editor import EditorServer
-from mist.action_catalog import CliCatalog
+from mist.action_catalog import CliCatalog, catalog_add
 from mist.action_exec import load_cli_exec_values, execute
 
 HERE = os.path.dirname(__file__)
@@ -87,9 +87,9 @@ _
         parser.add_argument('OPTIONS',
                             help="MIST - FILE[param1 = value1 param2 = value2...]",
                             metavar="OPTIONS", nargs="+")
-        parser.add_argument('-N', '--no-_load_mist_model_-tools',
+        parser.add_argument('-N', '--no-check-tools',
                             action="store_true",
-                            help="do not _load_mist_model_ if tools are installed",
+                            help="do not check if tools are installed",
                             default=False)
         parser.add_argument('-C', '--console-output',
                             action="store_false",
@@ -148,7 +148,7 @@ _
                 db.setup(f"sqlite3://{config.MIST_FILE}.db")
 
         try:
-            execute(parsed_args)
+            execute()
         except MistMissingBinaryException as e:
             print()
             print("[!] ", e)
@@ -222,44 +222,18 @@ def main():
         exit(1)
 
     #
-    # Checks if ~/.mist is created and download core catalog and core playbooks
+    # Checks if ~/.mist is created and download core catalog
     #
     home = Path().home().joinpath(".mist")
 
     if not home.exists():
         home.mkdir()
 
-    catalog_path = home.joinpath("catalog")
-    if not catalog_path.exists():
-        catalog_path.mkdir()
+    if not home.joinpath("catalog").exists():
+        home.joinpath("catalog").mkdir(parents=True)
 
-        #
-        # Download core catalog
-        #
-        print("[*] Downloading core catalog...", end='', flush=True)
-
-        git_clone("https://github.com/cr0hn/mist-catalog",
-                  str(catalog_path.joinpath("core-catalog")))
-
-        print("Done", flush=True)
-
-        # TODO: index catalog
-
-    playbooks = home.joinpath("playbooks")
-    if not playbooks.exists():
-        playbooks.mkdir()
-
-        #
-        # Download core playbooks
-        #
-        print("[*] Downloading core playbooks...", end='', flush=True)
-
-        git_clone("https://github.com/cr0hn/mist-playbooks",
-                      str(playbooks.joinpath("core-playbooks")))
-
-        print("Done", flush=True)
-
-        # TODO: index catalog
+    if not home.joinpath("catalog").joinpath("catalog.db").exists():
+        catalog_add(CORE_CATALOG)
 
     Mist()
 

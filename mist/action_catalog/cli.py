@@ -1,22 +1,13 @@
-import os
 import sys
-import shutil
-import json
-import hashlib
-import datetime
 import argparse
-from collections import namedtuple
-from pathlib import Path
-from textwrap import wrap
 
-import pygit2
+from mist.sdk import config, MistException
 
-from terminaltables import SingleTable
-
-from mist.helpers import download, file_uri_to_path
-from mist.sdk import db, config, MistException
-from mist.sdk.cmd import _DB_TABLE_NAME, _DB_TABLE_FIELDS
-
+from .catalog_add import *
+from .catalog_list import catalog_list
+from .catalog_index import index_catalog
+from .catalog_delete import catalog_delete
+from .catalog_search import catalog_search
 
 def load_cli_catalog_values(d, parsed: argparse.Namespace):
     d.update(parsed.__dict__)
@@ -36,6 +27,7 @@ Available commands are:
    add         Add new catalog
    delete      Delete existing catalog
    search      Search in catalog
+   reindex     Re-index catalog database
    help        Displays help menu
 _
 ''')
@@ -131,78 +123,8 @@ _
         catalog_search(parsed_args)
 
 
-def catalog_path() -> Path:
-    mist_home = Path().home().joinpath(".mist")
 
-    if not mist_home.exists():
-        mist_home.mkdir()
-
-    return mist_home.joinpath("catalog")
-
-def catalog_add(parsed: argparse.Namespace):
-    catalog = parsed.CATALOG
-    mist_catalog = catalog_path()
-
-    git_providers = {
-        "https://github.com",
-        "https://gitlab.com",
-        "https://bitbucket.org",
-    }
-
-    #
-    # Import remote catalog
-    #
-
-    # Check if is a git repository
-    if catalog.startswith("http"):
-        if any(p in catalog for p in git_providers):
-            if not catalog.endswith("git"):
-                catalog = f"{catalog}.git"
-            else:
-                dst = str(file_uri_to_path(catalog)).replace(".git", "")[1:]
-
-            dst = mist_catalog.joinpath(dst)
-
-            if not dst.exists():
-                dst.mkdir(parents=True)
-
-            try:
-                pygit2.clone_repository(catalog, str(dst))
-            except ValueError:
-                raise MistException("Catalog already exits")
-
-        # Check if is a remote web
-        else:
-            dst = str(file_uri_to_path(catalog)).replace(".git", "")[1:]
-
-            try:
-                download(catalog, dst)
-            except Exception as e:
-                MistException(
-                    f"Error while try to download catalog: '{catalog}'"
-                )
-
-    # Checks if is pa existing path
-    elif os.path.exists(catalog):
-        shutil.copy(catalog, mist_catalog)
-
-    else:
-        raise MistException(
-            "Can't find catalog. If you are trying to add a remote catalog"
-            "it must starts as 'http://' or 'https://'"
-        )
-
-    #
-    # Parse and indexing catalog
-    #
-
-def catalog_delete(parsed: argparse.Namespace):
-    pass
-
-def catalog_search(parsed: argparse.Namespace):
-    pass
-
-def catalog_list(parsed: argparse.Namespace):
-    pass
+    def reindex(self):
+        index_catalog()
 
 

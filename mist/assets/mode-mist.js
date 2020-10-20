@@ -10,7 +10,7 @@ define("ace/mode/mist_highlight_rules",["require","exports","module","ace/lib/oo
 
     var MistHighlightRules = function() {
         var keywords = (
-            "data|=>|<=|input|output|_load_mist_model_|then|is|\."
+            "data|=>|<=|input|output|check|then|is|\."
         );
         var builtinFunctions = (
             "print|findOpenPorts|CSVdump|CSVput|put|ping|parallel|exec|searchInJSON|searchInText|searchInXML"
