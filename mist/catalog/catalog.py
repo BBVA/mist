@@ -219,52 +219,52 @@ class _Catalog():
             for version_path, meta_content in find_catalog_metas(command_path):
                 versions[meta_content["version"]] = version_path
 
-                #
-                # Insert catalog indexes
-                #
-                try:
-                    cmd_name = meta_content["name"]
-                except KeyError:
-                    raise ValueError("Command INDEX file must has 'name' property")
+            #
+            # Insert catalog indexes
+            #
+            try:
+                cmd_name = index_content["name"]
+            except KeyError:
+                raise ValueError("Command INDEX file must has 'name' property")
 
-                try:
-                    cmd_latest = meta_content["latest"]
-                except:
-                    raise ValueError(
-                        "Command INDEX file must has 'latest' property")
+            try:
+                cmd_latest = index_content["latest"]
+            except:
+                raise ValueError(
+                    "Command INDEX file must has 'latest' property")
 
-                try:
-                    cmd_description = meta_content["description"]
-                except:
-                    raise ValueError(
-                        "Command INDEX file must has 'description' property")
+            try:
+                cmd_description = index_content["description"]
+            except:
+                raise ValueError(
+                    "Command INDEX file must has 'description' property")
 
-                if tags := meta_content.get("tags", None):
-                    cmd_tags = json.dumps([
-                        x.strip()
-                        for x in tags.split(",")
-                    ])
-                else:
-                    cmd_tags = json.dumps([])
+            if tags := index_content.get("tags", None):
+                cmd_tags = json.dumps([
+                    x.strip()
+                    for x in tags.split(",")
+                ])
+            else:
+                cmd_tags = json.dumps([])
 
-                if not catalog_origin:
-                    catalog_origin = "local"
+            if not catalog_origin:
+                catalog_origin = "local"
 
-                command_id = self.store_command(
-                    cmd_name,
-                    cmd_description,
-                    cmd_tags,
-                    cmd_latest,
-                    catalog_origin
+            command_id = self.store_command(
+                cmd_name,
+                cmd_description,
+                cmd_tags,
+                cmd_latest,
+                catalog_origin
+            )
+
+            #
+            # Insert catalog versions
+            #
+            for version, path in versions.items():
+                self.store_command_version(
+                    command_id, version, path
                 )
-
-                #
-                # Insert catalog versions
-                #
-                for version, path in versions.items():
-                    self.store_command_version(
-                        command_id, version, path
-                    )
 
 
 Catalog = _Catalog()

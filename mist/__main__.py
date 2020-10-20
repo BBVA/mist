@@ -248,7 +248,8 @@ def main():
         home.joinpath("catalog").mkdir(parents=True)
 
     if not home.joinpath("catalog").joinpath("catalog.db").exists():
-        Catalog.add_catalog(CORE_CATALOG)
+        catalog_path = Catalog.add_catalog(CORE_CATALOG)
+        Catalog.index_catalog(catalog_path, CORE_CATALOG)
 
     Mist()
 
