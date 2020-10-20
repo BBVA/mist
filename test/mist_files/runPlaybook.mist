@@ -2,9 +2,9 @@
 # Description: Run a playbook from another playbook
 # Tags: playbook
 
-runPlaybook './ping.mist'
+runPlaybook './test/mist_files/ping.mist'
 
-runPlaybook 'examples/vars and params.mist' {
+runPlaybook './test/mist_files/vars_and_params.mist' {
     input {
         p1 <= "adios"
     }
