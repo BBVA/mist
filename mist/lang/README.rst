@@ -646,3 +646,86 @@ Find an item name in a json document.
             print value
         }
     }
+
+*CSVdump* command
+=================
+
+Description
+-----------
+ 
+This command write a data structure of the knowledge base into a CSV file
+
+Syntax
+------
+
+.. code-block:: console
+
+    CSVdump data => "targetFile.csv"
+
+Parameters
+----------
+
+- data: An id with the name of the source data structure in the knowledge base
+- "targetFile.csv": An string with the path and name of the target CSV file
+
+Examples
+--------
+
+Define a data structure, fill it with some content, and dump it to a CSV file.
+
+.. code-block:: console
+
+    data myHosts {
+        ip
+        so
+    }
+
+    put "127.0.0.1" "linux" => myHosts
+    put "192.168.1.23" "windows" => myHosts
+    put "8.8.8.8" "unknown" => myHosts
+
+    CSVdump myHosts => "myHosts.csv"
+
+
+*CSVput* command
+================
+
+Description
+-----------
+
+This command reads a CSV file and put all the data into the knowledge base
+
+Syntax
+------
+
+.. code-block:: console
+
+    CSVput "sourceFile.csv" => target
+
+
+Parameters
+----------
+
+- "sourceFile.csv": An string with the path and name of the source CSV file
+  (CSV header is mandatory, and delimiter must be a comma)
+- target: An id with the target name in the knowledge base
+
+Examples
+--------
+
+Read a csvFile and iterate over it printing some of its content.
+
+.. csv-table::
+   :header: "IP", "SO"
+
+    "127.0.0.1", "linux"
+    "192.168.1.23", "windows"
+    "8.8.8.8", "unknown"
+
+.. code-block:: console
+
+    CSVput "examples/nmap/myhosts.csv" => myHosts
+
+    iterate myHosts => host {
+        print host.ip
+    }

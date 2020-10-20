@@ -1,13 +1,13 @@
 import re
 import json
+import csv
 import xml.etree.ElementTree as ET
 
 from dataclasses import dataclass
 
 from jsonpath_ng import parse
 
-from mist.sdk import get_id, stack, config, execution
-
+from mist.sdk import db, get_id, stack, config, execution, watchedInsert
 
 @dataclass
 class BuiltExec:
@@ -126,4 +126,51 @@ class BuiltSearchInJSON:
             "value": found[0].value if found else None
         }
 
-exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON]
+class CSVdumpCommand:
+    parent: object
+    version: str
+    fileName: str
+    source: str
+
+    def run(self):
+        if config.debug:
+            print(f"-> Writing {self.source} => '{self.fileName}'")
+
+        items = get_id(self.source)
+        with open(self.fileName, mode='w') as csvFile:
+            csvWriter = csv.writer(csvFile,
+                                   delimiter=',',
+                                   quotechar='"',
+                                   quoting=csv.QUOTE_MINIMAL)
+            headers = db.fetch_table_headers(self.source)
+            csvWriter.writerow(headers)
+            csvWriter.writerows({
+                row.values()
+                for row in items
+            })
+
+class CSVputCommand:
+    parent: object
+    version: str
+    fileName: str
+    target: str
+
+    def run(self):
+        if config.debug:
+            print(f"-> Reading CSV '{self.fileName}' => {self.target}")
+
+        with open(self.fileName) as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            # TODO: ADD CSV HEADER?
+            headers = next(reader)
+
+            try:
+                db.create_table(self.target, headers)
+
+                for row in reader:
+                    watchedInsert(self.target, row)
+
+            except Exception as e:
+                print(f"Error while creating database: {self.target}")
+
+exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON, CSVdumpCommand, CSVputCommand]
