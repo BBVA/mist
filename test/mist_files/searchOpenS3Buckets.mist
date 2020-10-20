@@ -1,0 +1,18 @@
+# Name: searchOpenS3Buckets
+# Version: 1.0.0
+# Description: Find open S3 buckets from given domain
+# Tags: festin, dns, s3, network
+
+searchOpenS3Buckets {
+    input {
+        inputDomains <= %domain
+    }
+    output {
+        result
+        itemsFound
+        console
+    }
+    then {
+        print itemsFound
+    }
+}
