@@ -180,6 +180,32 @@ class _DB:
 
         return hash.hexdigest()
 
+    def get_tables(self, cur, master):
+        cur.execute(f"SELECT name FROM {master} WHERE type='table';")
+        new_tables = []
+        for table_item in cur.fetchall():
+            new_tables.append(table_item[0])
+        return new_tables
+
+    def merge(self, dbfile):
+        with cm(self.connection) as cur:
+            cur.execute("ATTACH DATABASE ? AS newdb", (dbfile,))
+            new_tables = self.get_tables(cur, "newdb.sqlite_master")
+            old_tables = self.get_tables(cur, "sqlite_master")
+            for table in new_tables:
+                if table in old_tables:
+                    cur.execute(f"INSERT INTO {table} SELECT * FROM newdb.{table};")
+                    self._connection.commit()
+                    # for row in cur.execute(f"SELECT * FROM newdb.{table}"):        
+                    #     q = f"INSERT INTO {table} VALUES ({','.join(["?" for i in row])});"
+                    #     cur.execute(q,row)
+                    #     self._connection.commit()    
+                else:
+                    cur.execute(f"CREATE TABLE IF NOT EXISTS {table} AS SELECT * FROM newdb.{table}")
+                    self._connection.commit()
+            cur.execute("DETACH newdb")
+
+
 db = _DB()
 
 __all__ = ("db")
