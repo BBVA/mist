@@ -12,3 +12,4 @@ def test_runPlaybook_example(examples_path):
 
     assert "127.0.0.1" in console
     assert "adios" in console
+    assert console.endswith("./test/mist_files/ping.mist\n./test/mist_files/vars_and_params.mist\n")
