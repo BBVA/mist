@@ -23,6 +23,19 @@ After clone the repository, you can urn `MIST` without install them:
 
 ![Image of editor](docs/source/_static/images/MIST_Editor.png)
 
+# Docker
+
+## Local build
+
+```bash
+docker build -t mist-lang .
+```
+
+## Docker run
+
+```bash
+docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang examples/ping.mist
+```
 
 # License
 
