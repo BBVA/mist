@@ -1,6 +1,6 @@
 import os
 
-from mist.action_exec import execute_from_text
+from mist.action_run import execute_from_text
 
 EXAMPLE_FILE = "persisted_lists.mist"
 
@@ -18,7 +18,7 @@ def test_persisted_lists(examples_path):
     assert "A\n" in console
     assert "B\n" in console
     assert "['1', '2']\n" in console
-    assert "1\n" in console 
+    assert "1\n" in console
     assert "2\n" in console
 
 

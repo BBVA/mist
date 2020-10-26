@@ -1,6 +1,6 @@
 import os
 
-from mist.action_exec import execute_from_text
+from mist.action_run import execute_from_text
 
 EXAMPLE_FILE = "searchInText.mist"
 

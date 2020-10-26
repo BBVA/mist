@@ -1,6 +1,6 @@
 import os
 
-from mist.action_exec import execute_from_text
+from mist.action_run import execute_from_text
 
 PING_EXAMPLE_FILE = "vars_and_params.mist"
 
