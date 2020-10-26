@@ -50,7 +50,7 @@ def run_editor(listen_port: int, listen_addr: str):
     print(f"[*] Starting editor at port {listen_port}")
     print(f'''
 
-    Open in your browser: http://localhot:{listen_port}
+    Open in your browser: http://localhost:{listen_port}
 
     BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'
 

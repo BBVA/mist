@@ -8,6 +8,24 @@
 > pip install mist-lang
 ```
 
+# Screenshots
+
+![Image of editor](docs/source/_static/images/MIST_Editor.png)
+
+# Local usage
+
+## Run a mist file
+
+```bash
+mist run examples/ping.mist
+```
+
+## Launch editor
+
+```bash
+mist editor
+```
+
 # Developers
 
 After clone the repository, you can urn `MIST` without install them:
@@ -19,26 +37,26 @@ After clone the repository, you can urn `MIST` without install them:
 > python3 -m mist -h
 ```
 
-# Screenshots
+# Docker usage
 
-![Image of editor](docs/source/_static/images/MIST_Editor.png)
-
-# Docker
-
-## Local build
+## Image build
 
 ```bash
 docker build -t mist-lang .
 ```
 
-## Docker run
+## Run a mist file with Docker
 
 ```bash
-docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang examples/ping.mist
+docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang run examples/ping.mist
+```
+
+## Launch editor with Docker
+
+```bash
+docker run -p 9000:9000 -t mist-lang editor -l 0.0.0.0
 ```
 
 # License
 
 This project is distributed under `BSD license <https://github.com/cr0hn/mist/blob/master/LICENSE>`_
-
-
