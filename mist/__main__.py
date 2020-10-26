@@ -1,18 +1,27 @@
 import os
 import argparse
 import platform
+import pkg_resources
 
 from pathlib import Path
 
 from mist.action_run import cli_run
 from mist.action_log import cli_log
 from mist.action_editor import cli_editor
+from mist.action_catalog import cli_catalog
 from mist.action_catalog import CORE_CATALOG, Catalog
 
 
 HERE = os.path.dirname(__file__)
 
 def build_cli() -> argparse.ArgumentParser:
+
+    def handler_version(parsed: argparse.Namespace):
+        print()
+        print(f"MIST version: "
+              f"{pkg_resources.get_distribution('mist-lang').version}")
+        print()
+        exit()
 
     def _show_help(arg):
         print('''usage: mist <command> [<args>]
@@ -36,14 +45,26 @@ optional arguments:
         description='MIST - programing language for security made easy',
         add_help=False)
     parser.add_argument('-h', '--help',
-                      action="store_true",
-                      help="show this help message and exit")
+                        action="store_true",
+                        help="show this help message and exit")
     parser.set_defaults(func=_show_help)
     subparsers = parser.add_subparsers()
+
+    #
+    # Small top level actions
+    #
+    help_action = subparsers.add_parser("version",
+                                        prog="mist vesion",)
+    help_action.set_defaults(func=handler_version)
+
+    help_action = subparsers.add_parser("help",
+                                        prog="mist help",)
+    help_action.set_defaults(func=handler_version)
 
     cli_run(subparsers)
     cli_log(subparsers)
     cli_editor(subparsers)
+    cli_catalog(subparsers)
 
     return parser
 
@@ -73,7 +94,6 @@ def main():
 
     if not home.joinpath("catalog").joinpath("catalog.db").exists():
         catalog_path = Catalog.add_catalog(CORE_CATALOG)
-        Catalog.index_catalog(catalog_path, CORE_CATALOG)
 
     main_parser = build_cli()
 

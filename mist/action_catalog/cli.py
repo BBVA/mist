@@ -1,130 +1,129 @@
-# import sys
-# import argparse
-#
-# from mist.sdk import config, MistException
-#
-# from .catalog_add import *
-# from .catalog_list import catalog_list
-# from .catalog_index import index_catalog
-# from .catalog_delete import catalog_delete
-# from .catalog_search import catalog_search
-#
-# def load_cli_catalog_values(d, parsed: argparse.Namespace):
-#     d.update(parsed.__dict__)
-#
-#
-# class CliCatalog(object):
-#
-#     def __init__(self):
-#         self._default_action = False
-#
-#         parser = argparse.ArgumentParser(
-#             description='MIST catalog manager',
-#             usage='''mist catalog <command> [<args>]
-#
-# Available commands are:
-#    list        Displays installed catalogs (default option)
-#    add         Add new catalog
-#    delete      Delete existing catalog
-#    search      Search in catalog
-#    reindex     Re-index catalog database
-#    help        Displays help menu
-# _
-# ''')
-#         parser.add_argument('command', help='Subcommand to run', nargs="*")
-#
-#         if len(sys.argv) < 3:
-#             parser.print_usage()
-#             exit(0)
-#
-#         actions = [*[x for x in dir(self) if not x.startswith("_")], "help"]
-#
-#         if sys.argv[2] not in actions:
-#             self._default_action = True
-#             self.summary()
-#         else:
-#             parsed_args = parser.parse_args(sys.argv[2:3])
-#             if parsed_args.command[0] == "help":
-#                 parser.print_usage()
-#                 exit(0)
-#             else:
-#                 # use dispatch pattern to invoke method with same name
-#                 getattr(self, parsed_args.command[0])()
-#
-#     def __parse__(self, parser) -> argparse.Namespace:
-#
-#         if self._default_action:
-#             parsed_args = parser.parse_args(sys.argv[2:])
-#         else:
-#             parsed_args = parser.parse_args(sys.argv[3:])
-#
-#         load_cli_catalog_values(config, parsed_args)
-#
-#         return parsed_args
-#
-#
-#     def list(self):
-#         parser = argparse.ArgumentParser(
-#             description='Displays executions summary')
-#         parser.add_argument('MIST_DB')
-#         parser.add_argument('-i', '--row-id',
-#                             required=True,
-#                             help="register ID which get details")
-#
-#         parsed_args = self.__parse__(parser)
-#
-#         catalog_list(parsed_args)
-#
-#     def add(self):
-#
-#         parser = argparse.ArgumentParser(description='Add new catalog')
-#         parser.add_argument('CATALOG')
-#
-#         parsed_args = self.__parse__(parser)
-#
-#         try:
-#             catalog_add(parsed_args)
-#         except MistException as e:
-#             print("")
-#             print("[!]", str(e))
-#             print("")
-#
-#     def delete(self):
-#
-#         parser = argparse.ArgumentParser(
-#             description='Displays executions consoled for a execution')
-#         parser.add_argument('MIST_DB')
-#         parser.add_argument('-i', '--row-id',
-#                             required=True,
-#                             help="register ID which get details")
-#
-#         parsed_args = self.__parse__(parser)
-#
-#         catalog_delete(parsed_args)
-#
-#     def search(self):
-#
-#         parser = argparse.ArgumentParser(
-#             description='Checks console and database signatures')
-#         parser.add_argument('MIST_DB')
-#         parser.add_argument('-s', '--signature-file',
-#                             default=None,
-#                             help="signature file. usuallyy with .db.signature")
-#         parser.add_argument('-q', '--quiet',
-#                             action="store_true",
-#                             default=False,
-#                             help="hide log. Only summary message")
-#
-#         parsed_args = self.__parse__(parser)
-#
-#         #
-#         # Setup database
-#         #
-#         catalog_search(parsed_args)
-#
-#
-#
-#     def reindex(self):
-#         index_catalog()
-#
-#
+import json
+import argparse
+
+from terminaltables import SingleTable
+
+from .catalog import Catalog
+
+def show_help(args):
+    print('''usage: mist catalog <command> [<args>]
+
+Available commands:
+   list      List available catalog
+   add       Add new catalog
+   delete    Delete exiting catalog
+   search    Search command in installed catalogs
+
+MIST catalog manager
+
+optional arguments:
+  -h, --help            show this help message and exit
+''')
+
+def handler_list(parsed: argparse.Namespace):
+
+    table_content = [
+        ["ID", "URL", "Local Path"]
+    ]
+
+    for cat in Catalog.find_catalog():
+        table_content.append(
+            [
+                cat["id"],
+                cat["uri"],
+                cat["local_path"]
+            ]
+        )
+
+    table = SingleTable(table_content,
+                        title="Available catalogs ")
+    table.inner_row_border = True
+
+    print("")
+    print(table.table)
+    print("")
+
+def handler_add(parsed: argparse.Namespace):
+    catalog_uri = parsed.CATALOG_URI
+
+    catalog_path = Catalog.add_catalog(catalog_uri)
+    Catalog.index_catalog(catalog_path, catalog_uri)
+
+def handler_delete(parsed: argparse.Namespace):
+    pass
+
+def handler_search(parsed: argparse.Namespace):
+
+    query = parsed.QUERY
+
+    table_content = [
+        ["Command", "Description", "tags"]
+    ]
+
+    for cat in Catalog.search(query):
+        if tags := cat["tags"]:
+            tags = json.loads(tags)
+
+        table_content.append(
+            [
+                cat["command"],
+                cat["description"],
+                ", ".join(tags)
+            ]
+        )
+
+    table = SingleTable(table_content,
+                        title="Found commands in catalogs")
+    table.inner_row_border = True
+
+    print("")
+    print(table.table)
+    print("")
+
+
+def cli_catalog(parser: argparse._SubParsersAction):
+    temp = parser.add_parser(
+        "catalog",
+        prog='mist catalog',
+        description='MIST catalog manager',
+        add_help=False,
+    )
+    temp.set_defaults(func=show_help)
+    temp.add_argument('-h', '--help',
+                      action="store_true",
+                      help="show this help message and exit")
+    temp.set_defaults(func=show_help)
+    subparsers = temp.add_subparsers()
+
+    # action -> list
+    log_parser_details = subparsers.add_parser(
+        "list",
+        description='Displays available catalogs')
+    log_parser_details.set_defaults(func=handler_list)
+
+    # action -> ADD
+    log_parser_summary = subparsers.add_parser(
+        "add",
+        description='Add a new catalog')
+    log_parser_summary.add_argument('CATALOG_URI')
+    log_parser_summary.set_defaults(func=handler_add)
+
+    # action -> DELETE
+    log_parser_console = subparsers.add_parser(
+        "delete",
+        description='Removes existing catalog')
+    log_parser_console.add_argument('CATALOG_NAME')
+    log_parser_console.set_defaults(func=handler_delete)
+
+    # action -> SEARCH
+    log_parser_signatures = subparsers.add_parser(
+        "search",
+        description='Search in a catalog')
+    log_parser_signatures.add_argument('QUERY')
+    log_parser_signatures.set_defaults(func=handler_search)
+
+    # # action -> RE-INDEX
+    # log_parser_signatures = subparsers.add_parser(
+    #     "reindex",
+    #     description='Re-index installed catalogs')
+    # log_parser_signatures.set_defaults(func=handler_reindex)

@@ -80,7 +80,7 @@ def _find_command_version(base_path: str,
     #
     # Load command at this path
     #
-    module_path = op.join(location, "exports.py")
+    module_path = op.join(location["command_path"], "exports.py")
     module_name = _file_to_module_(
         module_path.replace(op.sep.join(base_path.split(op.sep)[:-1]), "")
     )
