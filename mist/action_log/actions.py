@@ -133,6 +133,15 @@ _
 
 
 def log_console(parsed: argparse.Namespace):
+    #
+    # Load console config
+    #
+    config.load_cli_exec_values(parsed)
+
+    #
+    # Setup database
+    #
+    db.setup(f"sqlite3://{config.MIST_DB}")
 
     row_id = parsed.row_id
     db_query = f"select stdout, stderr, command from {_DB_TABLE_NAME} where ID = ?"
@@ -164,6 +173,16 @@ def log_signature(parsed: argparse.Namespace):
 
     def msg(message: str, ok: bool):
         print(f"[{'*' if ok else '!INVALID SIGNATURE!'}] {message}")
+
+    #
+    # Load console config
+    #
+    config.load_cli_exec_values(parsed)
+
+    #
+    # Setup database
+    #
+    db.setup(f"sqlite3://{config.MIST_DB}")
 
     quiet = parsed.quiet
     signature_file = parsed.signature_file
@@ -205,6 +224,15 @@ def log_signature(parsed: argparse.Namespace):
         exit(1)
 
 def log_details(parsed: argparse.Namespace):
+    #
+    # Load console config
+    #
+    config.load_cli_exec_values(parsed)
+
+    #
+    # Setup database
+    #
+    db.setup(f"sqlite3://{config.MIST_DB}")
 
     db_name = os.path.basename(parsed.MIST_DB)
 
@@ -255,6 +283,15 @@ def log_details(parsed: argparse.Namespace):
 
 
 def log_summary(parsed: argparse.Namespace):
+    #
+    # Load console config
+    #
+    config.load_cli_exec_values(parsed)
+
+    #
+    # Setup database
+    #
+    db.setup(f"sqlite3://{config.MIST_DB}")
 
     db_name = os.path.basename(parsed.MIST_DB)
 

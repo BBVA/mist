@@ -3,9 +3,9 @@ import json
 import socketserver
 
 from typing import Tuple
-from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from .action_exec import execute_from_text
+from ..action_run import execute_from_text
 
 
 class EditorServer(BaseHTTPRequestHandler):
@@ -45,3 +45,18 @@ class EditorServer(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response.encode("utf-8"))
 
+
+def run_editor(listen_port: int, listen_addr: str):
+    print(f"[*] Starting editor at port {listen_port}")
+    print(f'''
+
+    Open in your browser: http://localhot:{listen_port}
+
+    BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'
+
+    ''')
+    httpd = HTTPServer((listen_addr, listen_port), EditorServer)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass

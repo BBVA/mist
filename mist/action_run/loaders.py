@@ -11,7 +11,7 @@ from mist.sdk import MistInputDataException
 from mist.finders import find_commands_folders
 
 from .helpers import command_name_to_class
-from ..catalog import Catalog
+from ..action_catalog import Catalog
 
 EXTRACT_MODULE_REGEX = re.compile(r'''^(.*Command)(:)''')
 
