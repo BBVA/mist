@@ -50,7 +50,17 @@ def handler_add(parsed: argparse.Namespace):
     Catalog.index_catalog(catalog_path, catalog_uri)
 
 def handler_delete(parsed: argparse.Namespace):
-    pass
+    catalog_id = parsed.CATALOG_ID
+
+    print()
+
+    if Catalog.delete_catalog(catalog_id):
+        print("[*] Catalog removed from database")
+    else:
+        print("[!] Catalog not found in database")
+
+    print()
+
 
 def handler_search(parsed: argparse.Namespace):
 
@@ -112,7 +122,7 @@ def cli_catalog(parser: argparse._SubParsersAction):
     log_parser_console = subparsers.add_parser(
         "delete",
         description='Removes existing catalog')
-    log_parser_console.add_argument('CATALOG_NAME')
+    log_parser_console.add_argument('CATALOG_ID')
     log_parser_console.set_defaults(func=handler_delete)
 
     # action -> SEARCH

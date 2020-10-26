@@ -59,7 +59,7 @@ class _Catalog():
         
         UNIQUE(command),
         
-        FOREIGN KEY(catalog_id) REFERENCES CATALOG(id)
+        FOREIGN KEY(catalog_id) REFERENCES CATALOG(id) ON DELETE CASCADE
     ); 
     CREATE INDEX IF NOT EXISTS idx_catalog_name ON COMMANDS (command);
     CREATE INDEX IF NOT EXISTS idx_catalog_description ON COMMANDS (description);
@@ -71,7 +71,7 @@ class _Catalog():
         command_path text,
         command_id TEXT,
         
-        FOREIGN KEY(command_id) REFERENCES COMMANDS(id)
+        FOREIGN KEY(command_id) REFERENCES COMMANDS(id) ON DELETE CASCADE
     ); 
     CREATE INDEX IF NOT EXISTS idx_catalog_commands_version ON COMMANDS_VERSIONS (version);
     """
@@ -364,6 +364,18 @@ class _Catalog():
             cursor.execute(q, (params, params))
 
             return [dict(x) for x in cursor.fetchall()]
+
+    def delete_catalog(self, catalog_id: str) -> int:
+
+        q = """
+        DELETE FROM CATALOG 
+        WHERE CATALOG.id = ?
+        """
+
+        with cm(self.connection) as cursor:
+            cursor.execute(q, (catalog_id,))
+
+            return cursor.rowcount
 
 
 Catalog = _Catalog()
