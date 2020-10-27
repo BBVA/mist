@@ -11,7 +11,7 @@ def cli_server(parser: argparse._SubParsersAction):
                             help="editor listen port (default: 9000)",
                             type=int,
                             default=9000)
-    run_parser.add_argument('-l', '--listen-addwr',
+    run_parser.add_argument('-l', '--listen-addr',
                             help="listen address (default: localhost)",
                             default="localhost")
     run_parser.add_argument('-E', '--enable-editor',

@@ -20,10 +20,10 @@
 mist run examples/ping.mist
 ```
 
-## Launch editor
+## Launch server with editor
 
 ```bash
-mist editor
+mist server -E
 ```
 
 # Developers
@@ -51,10 +51,10 @@ docker build -t mist-lang .
 docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang run examples/ping.mist
 ```
 
-## Launch editor with Docker
+## Launch server with editor with Docker
 
 ```bash
-docker run -p 9000:9000 -t mist-lang editor -l 0.0.0.0
+docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
 ```
 
 # License

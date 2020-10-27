@@ -93,14 +93,8 @@ def run_server(parsed_args: argparse.Namespace):
     if enable_editor:
         setup_editor(app)
 
-        print(f"[*] Starting editor at port {listen_port}")
-        print(f'''
-    
-        Open in your browser: http://localhost:{listen_port}
-    
-        BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'
-    
-        ''')
+        print(f" * Starting editor at: http://localhost:{listen_port}/editor")
+        print(f"   BE CAREFUL: YOU MUST USE 'localhost' NOT '127.0.0.1'")
 
     #
     # Some config
