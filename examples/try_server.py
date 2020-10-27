@@ -1,7 +1,6 @@
-import json
-import urllib.request
+from mist.sdk import run_in_mist_server
 
-content = """
+playbook = """
 # Name: Ping
 # Tags: ping, network
 # Description: Ping some host
@@ -27,18 +26,13 @@ ping {
 """
 
 def main():
-    req = urllib.request.Request("http://localhost:9000/run")
-    req.add_header('Content-Type', 'application/json')
-
-    response = urllib.request.urlopen(
-        req,
-        data=json.dumps({
-            "content": content,
-            "parameters": {"target": "127.0.0.1"}
-        }).encode()
+    ret = run_in_mist_server(
+        "http://localhost:9000",
+        playbook,
+        {"target": "127.0.0.1"}
     )
 
-    print(json.loads(response.read().decode()))
+    print(ret)
 
 
 if __name__ == '__main__':
