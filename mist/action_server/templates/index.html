@@ -676,30 +676,29 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
 
         const jsonRunResponse = await status.json();
 
-        return jsonRunResponse.status;
+        return jsonRunResponse.message;
     }
 
     async function runAsync() {
         const jobId = await launchJob();
 
         if (jobId === null) {
-            return {"results": ""}
+            return ""
         }
 
-        const status = await waitForResults(checkStatus, jobId)
-        console.log(status);
-        // if (status === "finished") {
-            // status.
-        // }
-
-            // const jsonRunResponse = await run.json();
+        var output = "job already running"
+        while (output == "job already running") {
+            console.log("wait for results")
+            output = await waitForResults(checkStatus, jobId)
+        }
+        return output
     }
 
     function runCode() {
 
-        runAsync().then((results) => {
-            console.log(results);
-            // results.setValue(json.console);
+        runAsync().then((output) => {
+            console.log(output);
+            results.setValue(output);
         }).catch(err => {
             console.log(err);
         });
