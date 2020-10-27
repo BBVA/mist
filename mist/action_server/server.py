@@ -82,7 +82,6 @@ def run_command():
     return jsonify({"jobId": job_id})
 
 @app.route("/assets/mode-mist.js", methods=["POST"])
-@cache
 def build():
     pass
 
