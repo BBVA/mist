@@ -7,7 +7,7 @@ from pathlib import Path
 
 from mist.action_run import cli_run
 from mist.action_log import cli_log
-from mist.action_editor import cli_editor
+from mist.action_server import cli_server
 from mist.action_catalog import cli_catalog
 from mist.action_catalog import CORE_CATALOG, Catalog
 
@@ -27,10 +27,10 @@ def build_cli() -> argparse.ArgumentParser:
         print('''usage: mist <command> [<args>]
 
 Available commands:
-   run        Run a .mist file (default option)
+   run        Run a .mist file
    log        Manage execution log of MIST database
    help       Displays help menu
-   editor     Run live editor on browser
+   server     Run live editor on browser
    version    Displays installed MIST version
    catalog    Manage MIST catalogs
 
@@ -63,7 +63,7 @@ optional arguments:
 
     cli_run(subparsers)
     cli_log(subparsers)
-    cli_editor(subparsers)
+    cli_server(subparsers)
     cli_catalog(subparsers)
 
     return parser

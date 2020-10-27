@@ -2,3 +2,7 @@ textx
 pygit2
 jsonpath-ng
 terminaltables
+
+flask
+redis
+flask-executor

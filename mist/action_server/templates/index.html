@@ -624,7 +624,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="mode-mist.js" type="text/javascript" charset="utf-8"></script>
+<script src="/assets/mode-mist.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
     var editor = ace.edit("editor");
@@ -641,22 +641,65 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     const resultsObject = document.getElementById("resultsConsole");
     const btn = document.getElementById("execute");
 
-    function runCode(){
+    function waitForResults (fn, jobId) {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(fn(jobId)), 1000)
+      })
+    }
 
-        fetch(
-            "http://localhost:9000",
+    async function launchJob() {
+
+        const run = await fetch(
+            "http://localhost:9000/run",
             {
                 method: "POST",
-                body: editor.getValue(),
+                body: JSON.stringify({content: editor.getValue()}),
+                cache: 'no-cache',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        const jsonRunResponse = await run.json();
+
+        return jsonRunResponse.jobId;
+    }
+    async function checkStatus(jobId) {
+        const status = await fetch(
+            `http://localhost:9000/run/${jobId}`,
+            {
+                method: "GET",
                 cache: 'no-cache',
             }
-        ).then(response => {
-            if (!response.ok) {
-                throw new Error("HTTP error " + response.status);
-            }
-            return response.json();
-        }).then(json => {
-            results.setValue(json.console);
+        );
+
+        const jsonRunResponse = await status.json();
+
+        return jsonRunResponse.status;
+    }
+
+    async function runAsync() {
+        const jobId = await launchJob();
+
+        if (jobId === null) {
+            return {"results": ""}
+        }
+
+        const status = await waitForResults(checkStatus, jobId)
+        console.log(status);
+        // if (status === "finished") {
+            // status.
+        // }
+
+            // const jsonRunResponse = await run.json();
+    }
+
+    function runCode() {
+
+        runAsync().then((results) => {
+            console.log(results);
+            // results.setValue(json.console);
         }).catch(err => {
             console.log(err);
         });

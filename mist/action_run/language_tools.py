@@ -322,18 +322,44 @@ def _find_command_metadata(command: List[object]):
     return meta
 
 
-def _find_params_in_mist_file(mist_file_path: str) -> Set[str]:
-    with open(mist_file_path, "r") as f:
-        content = f.read()
+def check_mist_parameters(mist_file_path: str) -> None or MistInputDataException:
 
-    params = set()
+    if type(mist_file_path) is str and op.exists(mist_file_path):
+        with open(mist_file_path, "r") as f:
+            content = f.read()
+    else:
+        content = mist_file_path
+
+    input_params = set()
 
     if found := REGEX_FIND_PARAMS.findall(content):
-        params.update({
+        input_params.update({
             x[1:] for x in found
         })
 
-    return params
+    if missing_params := input_params.difference(params.keys()):
+        _param_texts = "\n".join(f"- {x}" for x in missing_params)
+        raise MistInputDataException(
+            f"This .mist file requires params for running. "
+            f"This params was not provided, but are necessary: \n\n"
+            f"{_param_texts}"
+            f"\n\n* REMEMBER that params are case sensitive"
+        )
+
+
+def check_installed_binaries(mist_model) -> None or MistMissingBinaryException:
+    if metas := _find_command_metadata(mist_model.commands):
+
+        for command_name, m in metas:
+            if bin := m.get("default", {}).get("cmd", None):
+                if not shutil.which(bin):
+                    cmd_name = m.get("default", {}).get("name", None)
+                    cmd_message = m.get("default", {}).get("cmd-error", None)
+                    raise MistMissingBinaryException(
+                        f"Command '{command_name}' need '{bin}' to be "
+                        f"executed. Please install them. \n\nExtra "
+                        f"help: {cmd_message}"
+                    )
 
 
 def get_mist_model() \
@@ -363,31 +389,12 @@ def get_mist_model() \
         # Check that binaries needed to execute a command are installed
         #
         if not config.no_check_tools:
-            if metas := _find_command_metadata(mist_model.commands):
-
-                for command_name, m in metas:
-                    if bin := m.get("default", {}).get("cmd", None):
-                        if not shutil.which(bin):
-                            cmd_name = m.get("default", {}).get("name", None)
-                            cmd_message = m.get("default", {}).get("cmd-error", None)
-                            raise MistMissingBinaryException(
-                                f"Command '{command_name}' need '{bin}' to be "
-                                f"executed. Please install them. \n\nExtra "
-                                f"help: {cmd_message}"
-                            )
+            check_installed_binaries(mist_model)
 
         #
         # Check that params in .mist file matches with available params
         #
-        if input_params := _find_params_in_mist_file(mist_file):
-            if missing_params := input_params.difference(params.keys()):
-                _param_texts = "\n".join(f"- {x}" for x in missing_params)
-                raise MistInputDataException(
-                    f"This .mist file requires params for running. "
-                    f"This params was not provided, but are necessary: \n\n"
-                    f"{_param_texts}"
-                    f"\n\n* REMEMBER that params are case sensitive"
-                )
+        check_mist_parameters(mist_file)
 
         return mist_model
 

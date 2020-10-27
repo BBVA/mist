@@ -1,6 +1,7 @@
 include requirements.txt README.rst VERSION
 
-include mist/assets/*
+include mist/action_server/assets/*
+include mist/action_server/templates/*
 
 recursive-include * *.tx
 recursive-include mist/ META
