@@ -29,4 +29,8 @@ RUN git clone https://github.com/darkoperator/dnsrecon
 RUN cd dnsrecon && pip install -r requirements.txt
 RUN ln -s /dnsrecon/dnsrecon.py /usr/bin/dnsrecon.py
 
+RUN mist
+ADD ./mist/action_editor/assets/ /usr/local/lib/python3.8/site-packages/mist/action_editor/assets
+
+EXPOSE 9000
 ENTRYPOINT ["mist"]
