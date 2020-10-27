@@ -13,6 +13,7 @@ Available commands:
    add       Add new catalog
    delete    Delete exiting catalog
    search    Search command in installed catalogs
+   reindex   Update catalog database
 
 MIST catalog manager
 
@@ -47,7 +48,12 @@ def handler_add(parsed: argparse.Namespace):
     catalog_uri = parsed.CATALOG_URI
 
     catalog_path = Catalog.add_catalog(catalog_uri)
-    Catalog.index_catalog(catalog_path, catalog_uri)
+
+def handler_reindex(parsed: argparse.Namespace):
+
+    print("[*] Re-indexing catalog...", end='', flush=True)
+    Catalog.reindex()
+    print("done", flush=True)
 
 def handler_delete(parsed: argparse.Namespace):
     catalog_id = parsed.CATALOG_ID
@@ -133,7 +139,7 @@ def cli_catalog(parser: argparse._SubParsersAction):
     log_parser_signatures.set_defaults(func=handler_search)
 
     # # action -> RE-INDEX
-    # log_parser_signatures = subparsers.add_parser(
-    #     "reindex",
-    #     description='Re-index installed catalogs')
-    # log_parser_signatures.set_defaults(func=handler_reindex)
+    log_parser_signatures = subparsers.add_parser(
+        "reindex",
+        description='Re-index installed catalogs')
+    log_parser_signatures.set_defaults(func=handler_reindex)

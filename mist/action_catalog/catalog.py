@@ -103,8 +103,10 @@ class _Catalog():
                 ))
 
         except sqlite3.IntegrityError:
-            print(f"Catalog {uri} already exits")
-            pass
+            q = "SELECT id from CATALOG WHERE uri = ?"
+            with cm(self.connection) as cursor:
+                cursor.execute(q, (uri,))
+                catalog_id = cursor.fetchone()["id"]
 
         return catalog_id
 
@@ -134,8 +136,11 @@ class _Catalog():
                 ))
 
         except sqlite3.IntegrityError:
-            print(f"command {cmd_name} already exits")
-            pass
+            q = "SELECT id from COMMANDS WHERE command = ?"
+            with cm(self.connection) as cursor:
+                cursor.execute(q, (cmd_name,))
+                command_id = cursor.fetchone()["id"]
+
 
         return command_id
 
@@ -162,7 +167,10 @@ class _Catalog():
         return version_id
 
 
-    def _index_catalog(self, new_catalog_path: str, catalog_uri: str):
+    def _index_catalog(self, new_catalog_path: str, catalog_uri: str = None):
+
+        if not catalog_uri:
+            catalog_uri = new_catalog_path
 
         catalog_id = self._store_catalog(catalog_uri, str(new_catalog_path))
 
@@ -349,6 +357,16 @@ class _Catalog():
             )
 
         self._index_catalog(catalog_dst, catalog_uri)
+
+    def reindex(self):
+        for catalog in os.listdir(catalog_path()):
+
+            _path = str(catalog_path().joinpath(catalog))
+
+            if not os.path.isdir(_path):
+                continue
+
+            self._index_catalog(_path)
 
     def search(self, query: str):
 

@@ -11,9 +11,7 @@ def validate_command_meta(meta_path: str) -> None or dict:
 
     meta_default = meta_content["default"]
 
-    if not all(x in meta_default for x in (
-            "version", "cmd", "cmd-error"
-    )):
+    if "version" not in meta_default:
         return None
 
     return meta_default
