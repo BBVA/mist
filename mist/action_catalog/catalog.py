@@ -231,6 +231,12 @@ class _Catalog():
         if commands := self.find_all_commands(name, version):
             return commands[0]
 
+    def find_all_command_names(self):
+        q = "SELECT command FROM COMMANDS"
+        with cm(self.connection) as cursor:
+            cursor.execute(q)
+            return [x["command"] for x in cursor.fetchall()]
+
     def find_all_commands(self, name: str = None, version: str = None) -> List[dict] or None:
         """
         If we want to get all latest version of commands we must set version to

@@ -81,10 +81,6 @@ def run_command():
 
     return jsonify({"jobId": job_id})
 
-@app.route("/assets/mode-mist.js", methods=["POST"])
-def build():
-    pass
-
 def run_server(parsed_args: argparse.Namespace):
     listen_port = parsed_args.port
     listen_addr = parsed_args.listen_addr
