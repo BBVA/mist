@@ -13,7 +13,7 @@ define("ace/mode/mist_highlight_rules",["require","exports","module","ace/lib/oo
             "data|=>|<=|input|output|check|then|is|iterate\."
         );
         var builtinFunctions = (
-            "print|abort|runPlaybook|CSVdump|CSVput|put|watch|exec|searchInJSON|searchInText|searchInXML|findOpenPorts|searchDomains|gitLeaksFinder|pythonCodeAnalysis|searchOpenS3Buckets|ping"
+            "print|abort|put|CSVdump|CSVput|watch|exec|searchInJSON|searchInText|searchInXML|{{commands}}"
         );
         var builtinConstants = ("True|False|Success|Ok|Error");
 

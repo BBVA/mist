@@ -49,6 +49,9 @@
                     <h2>Interactive IDE:</h2>
                     <div class="col" >
                         <div id="editor" class="rounded-lg"></div>
+                        <div id="waiting" class="spinner-border" role="status" style="float: right; margin-top: 20px; margin-right: 20px; visibility: hidden;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                         <a id="execute" class="btn btn-success mt-2 my-2">Execute!</a><br>
                         <small>(Use <kbd> ctrl+Enter</kbd> as execution shortcut)</small>
                     </div>
@@ -624,7 +627,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="/assets/mode-mist.js" type="text/javascript" charset="utf-8"></script>
+<script src="mode-mist.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
     var editor = ace.edit("editor");
@@ -640,6 +643,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
 
     const resultsObject = document.getElementById("resultsConsole");
     const btn = document.getElementById("execute");
+    const waiting = document.getElementById("waiting");
 
     function waitForResults (fn, jobId) {
       return new Promise((resolve) => {
@@ -679,29 +683,48 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
         return jsonRunResponse.message;
     }
 
+    var jobId = null
+
     async function runAsync() {
-        const jobId = await launchJob();
+        jobId = await launchJob();
 
         if (jobId === null) {
-            return ""
+            return "Error launching job"
         }
 
         var output = "job already running"
         while (output == "job already running") {
             console.log("wait for results")
+            if (btn.innerText == "Execute!") return "Job cancelled"
             output = await waitForResults(checkStatus, jobId)
         }
         return output
     }
 
-    function runCode() {
+    function showExecute() {
+        btn.innerText = "Execute!"
+        waiting.style.visibility = "hidden"
+    }
 
-        runAsync().then((output) => {
-            console.log(output);
-            results.setValue(output);
-        }).catch(err => {
-            console.log(err);
-        });
+    function showCancel() {
+        btn.innerText = "Cancel"
+        waiting.style.visibility = "visible"
+    }
+
+    function runCode() {
+        if (btn.innerText == "Execute!") {
+            showCancel()
+            runAsync().then((output) => {
+                console.log(output);
+                results.setValue(output.error ? output.error : output);
+            }).catch(err => {
+                console.log(err);
+            }).finally( () => showExecute());
+        }
+        else { // Cancel
+            showExecute()
+            console.log("TODO cancel job", jobId)
+        }
     }
 
     btn.addEventListener("click", function (event) {

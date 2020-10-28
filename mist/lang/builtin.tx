@@ -15,20 +15,20 @@ Param:
 ;
 
 BuiltExec:
-  'exec' command=STRING '{'
-    'input' '{'
+  'exec' command=STRING ('{'
+    ('input' '{'
       params+=Param
-    '}'
+    '}')?
     ('output' '{'
       'result'
       'resultCode'
       'consoleOutput'
       'consoleError'
     '}')?
-    'then' '{'
+    ('then' '{'
       commands*=Command
-    '}'
-  '}'
+    '}')?
+  '}')?
 ;
 
 BuiltSearchInText:
