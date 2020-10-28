@@ -1,6 +1,9 @@
 class MistException(Exception):
     pass
 
+class MistParseErrorException(Exception):
+    pass
+
 class MistMissingBinaryException(Exception):
     pass
 

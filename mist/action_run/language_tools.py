@@ -1,17 +1,15 @@
 import re
 import shutil
-import hashlib
 import os.path as op
 
 from pathlib import Path
 from typing import List, Set, Tuple
-from argparse import Namespace
 from functools import lru_cache
 
 from textx import metamodel_from_str
 
 from mist.sdk import params, MistMissingBinaryException, \
-    MistInputDataException, config, db
+    MistInputDataException, config, db, MistParseErrorException
 
 from mist.lang.classes import exports as core_exports
 from mist.lang.builtin import exports as builtin_exports
@@ -223,10 +221,7 @@ def _find_commands_versions(mist_content,
     try:
         model = mist_meta_model.model_from_str(mist_content)
     except Exception as e:
-        print(hashlib.sha256(grammar.encode()).hexdigest())
-        print(e)
-        print(mist_content)
-        exit(1)
+        raise MistParseErrorException from e
 
     versions = _find_versions(model.commands)
 
