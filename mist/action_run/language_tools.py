@@ -221,7 +221,7 @@ def _find_commands_versions(mist_content,
     try:
         model = mist_meta_model.model_from_str(mist_content)
     except Exception as e:
-        raise MistParseErrorException from e
+        raise MistParseErrorException(str(e))
 
     versions = _find_versions(model.commands)
 
