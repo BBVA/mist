@@ -337,7 +337,7 @@ def check_mist_parameters(mist_file_path: str) -> None or MistInputDataException
             x[1:] for x in found
         })
 
-    if missing_params := input_params.difference(params.keys()):
+    if missing_params := input_params - set(params.keys()):
         _param_texts = "\n".join(f"- {x}" for x in missing_params)
         raise MistInputDataException(
             f"This .mist file requires params for running. "

@@ -7,7 +7,7 @@ from flask_executor import Executor
 from mist.action_run import execute_from_text
 
 from ..guuid import guuid
-from .storage import Memory, set_storage
+from .storage import set_storage
 from .editor import setup_editor
 from .helpers import ensure_json, setup_custom_errors
 
