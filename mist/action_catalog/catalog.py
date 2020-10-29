@@ -1,6 +1,5 @@
-import json
 import os
-import shutil
+import json
 
 import sqlite3
 from functools import lru_cache
@@ -231,20 +230,6 @@ class _Catalog():
         if commands := self.find_all_commands(name, version):
             return commands[0]
 
-    def find_all_command_names(self) -> List[str]:
-        q = "SELECT command FROM COMMANDS"
-        with cm(self.connection) as cursor:
-            cursor.execute(q)
-            return [x["command"] for x in cursor.fetchall()]
-
-    def get_cheatsheet(self) -> List[str]:
-        q = """
-        SELECT COMMANDS.id,command,description,tags,latest_version,catalog_id,uri FROM COMMANDS
-        INNER JOIN CATALOG ON COMMANDS.catalog_id = CATALOG.id
-        """
-        with cm(self.connection) as cursor:
-            cursor.execute(q)
-            return [dict(x) for x in cursor.fetchall()]
 
     def find_all_commands(self, name: str = None, version: str = None) -> List[dict] or None:
         """

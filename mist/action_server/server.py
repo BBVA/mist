@@ -9,12 +9,13 @@ from flask import Flask, request, jsonify, abort, current_app
 from mist.action_run import execute_from_text
 
 from ..guuid import guuid
+
 from .storage import setup_storage
 from .editor import setup_editor
 from .helpers import ensure_json, setup_custom_errors
 from .realtime import setup_realtime
+from .server_catalog import get_server_catalog
 
-from ..action_catalog import Catalog
 
 here = op.dirname(__file__)
 
@@ -55,7 +56,6 @@ def bg_run(job_id: str, mist_content: str, parameters: dict):
                 )
             except Exception as e:
                 jobs.store_job_result(job_id, {"error": str(e)})
-
 
 @app.route("/run/<job_id>/status", methods=["GET"])
 def get_status(job_id):
@@ -128,7 +128,6 @@ def run_server(parsed_args: argparse.Namespace):
 
     executor.init_app(app)
 
-    app.commands = Catalog.find_all_command_names()
-    app.cheatsheet = Catalog.get_cheatsheet()
+    app.commands, app.cheatsheet = get_server_catalog()
 
     app.run(host=listen_addr, port=listen_port, debug=False)
