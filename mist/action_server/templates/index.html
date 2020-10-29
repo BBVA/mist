@@ -712,6 +712,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     }
 
     function runCode() {
+        results.setValue("")
         if (btn.innerText == "Execute!") {
             showCancel()
             runAsync().then((output) => {
