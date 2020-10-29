@@ -1,6 +1,7 @@
 import abc
-import argparse
+import base64
 import pickle
+import argparse
 import urllib.parse as ps
 
 from redis import Redis as RedisServer
@@ -15,7 +16,7 @@ class _Storage(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def store_job_result(self, job_id: str, data: str):
+    def store_job_result(self, job_id: str, console: str, database_path: str):
         pass
 
     @abc.abstractmethod
@@ -27,19 +28,35 @@ class _Storage(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_job_data(self, job_id: str):
+    def get_job_console(self, job_id: str) -> str or None:
         pass
+
+    @abc.abstractmethod
+    def get_job_database(self, job_id: str) -> bytes or None:
+        pass
+
+    def load_database_from_path(self, path: str) -> str:
+        """Read sqlite database and return it as binary encoded in base 64"""
+        with open(path, "rb") as db_path:
+            content = db_path.read()
+
+        return base64.encodebytes(content).decode()
+
+    def dump_database_from_bytes(self, content: bytes) -> bytes:
+        return base64.decodebytes(content)
+
 
 
 class Memory(_Storage):
 
     def __init__(self, config: argparse.Namespace):
-        self._data = {}
+        self._console = {}
         self._job_status = {}
+        self._databases = {}
 
     def create_job(self, job_id: str):
         self._job_status[job_id] = "created"
-        self._data[job_id] = None
+        self._console[job_id] = None
 
     def job_status(self, job_id: str) -> str:
         try:
@@ -50,12 +67,22 @@ class Memory(_Storage):
     def set_job_running(self, job_id: str):
         self._job_status[job_id] = "running"
 
-    def store_job_result(self, job_id: str, data: str):
+    def store_job_result(self, job_id: str, console: str, database_path: str):
         self._job_status[job_id] = "finished"
-        self._data[job_id] = data
+        self._console[job_id] = console
+        self._databases[job_id] = self.load_database_from_path(database_path)
 
-    def get_job_data(self, job_id: str):
-        return self._data[job_id]
+    def get_job_console(self, job_id: str) -> str or None:
+        try:
+            return self._console[job_id]
+        except KeyError:
+            return None
+
+    def get_job_database(self, job_id: str) -> bytes or None:
+        try:
+            return self._databases[job_id]
+        except KeyError:
+            return None
 
 
 class Redis(_Storage):
@@ -87,7 +114,11 @@ class Redis(_Storage):
 
     @staticmethod
     def result_prefix(job_id: str):
-        return f"mist:server:job-results:{job_id}"
+        return f"mist:server:job-console:{job_id}"
+
+    @staticmethod
+    def result_database(job_id: str):
+        return f"mist:server:job-database:{job_id}"
 
     def create_job(self, job_id: str):
         self._connection.set(
@@ -106,7 +137,7 @@ class Redis(_Storage):
             "running"
         )
 
-    def store_job_result(self, job_id: str, data: str):
+    def store_job_result(self, job_id: str, console: str, database_path: str):
         self._connection.set(
             Redis.status_prefix(job_id),
             "finished"
@@ -114,20 +145,28 @@ class Redis(_Storage):
 
         self._connection.set(
             Redis.result_prefix(job_id),
-            pickle.dumps(
-                data,
-                protocol=pickle.HIGHEST_PROTOCOL
-            )
+            console
         )
 
-    def get_job_data(self, job_id: str):
+        self._connection.set(
+            Redis.result_database(job_id),
+            self.load_database_from_path(database_path)
+        )
+
+    def get_job_console(self, job_id: str) -> str or None:
         if k := self._connection.get(Redis.result_prefix(job_id)):
-            return pickle.loads(k)
+            return k.decode()
+        else:
+            return None
+
+    def get_job_database(self, job_id: str) -> str or None:
+        if k := self._connection.get(Redis.result_database(job_id)):
+            return k.decode()
         else:
             return None
 
 
-def set_storage(_app: Flask, parsed: argparse.Namespace):
+def setup_storage(_app: Flask, parsed: argparse.Namespace):
 
     _app.config["EXECUTOR_MAX_WORKERS"] = parsed.concurrency
 

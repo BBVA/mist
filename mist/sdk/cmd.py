@@ -253,7 +253,6 @@ def main():
     command = "nmap -p 80,90,1028 -v -oN {outfile-1} 127.0.0.1"
     with execution(command) as (executor, in_files, out_files):
 
-
         with executor as lines:
             for x in lines:
                 print(x)

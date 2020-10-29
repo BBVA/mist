@@ -1,15 +1,18 @@
 import argparse
+import tempfile
 import os.path as op
 
-from flask import Flask, request, jsonify, abort, current_app
+from flask_sse import sse
 from flask_executor import Executor
+from flask import Flask, request, jsonify, abort, current_app
 
 from mist.action_run import execute_from_text
 
 from ..guuid import guuid
-from .storage import set_storage
+from .storage import setup_storage
 from .editor import setup_editor
 from .helpers import ensure_json, setup_custom_errors
+from .realtime import setup_realtime
 
 here = op.dirname(__file__)
 
@@ -23,21 +26,33 @@ setup_custom_errors(app)
 
 def bg_run(job_id: str, mist_content: str, parameters: dict):
 
+    def realtime_callback(msg: str):
+        sse.publish({"message": msg}, channel=job_id)
+
     #
     # Change status to run
     #
-    with current_app.app_context():
-        jobs = current_app.jobs
-        jobs.set_job_running(job_id)
+    with tempfile.NamedTemporaryFile(prefix="mist-db-server") as db:
 
-        try:
-            results = execute_from_text(mist_content, parameters)
-            jobs.store_job_result(
-                job_id,
-                results
-            )
-        except Exception as e:
-            jobs.store_job_result(job_id, {"error": str(e)})
+        with current_app.app_context():
+            jobs = current_app.jobs
+            jobs.set_job_running(job_id)
+
+            try:
+                results = execute_from_text(
+                    text=mist_content,
+                    fn_params=parameters,
+                    realtime_fn=realtime_callback,
+                    database_path=db.name
+                )
+
+                jobs.store_job_result(
+                    job_id,
+                    results,
+                    db.name
+                )
+            except Exception as e:
+                jobs.store_job_result(job_id, {"error": str(e)})
 
 
 @app.route("/run/<job_id>/status", methods=["GET"])
@@ -56,7 +71,18 @@ def get_results(job_id):
     if status != "finished":
         return jsonify({"message": "job already running"})
     else:
-        return jsonify({"message": app.jobs.get_job_data(job_id)})
+        return jsonify({"message": app.jobs.get_job_console(job_id)})
+
+@app.route("/run/<job_id>/db", methods=["GET"])
+def get_db_results(job_id):
+
+    if not (status := app.jobs.job_status(job_id)):
+        return jsonify({"error": "job doesn't exits"})
+
+    if status != "finished":
+        return jsonify({"message": "job already running"})
+    else:
+        return jsonify({"message": app.jobs.get_job_database(job_id)})
 
 @app.route("/run", methods=["POST"])
 @ensure_json
@@ -95,7 +121,8 @@ def run_server(parsed_args: argparse.Namespace):
     #
     # Some config
     #
-    set_storage(app, parsed_args)
+    setup_storage(app, parsed_args)
+    setup_realtime(app, parsed_args)
 
     executor.init_app(app)
 

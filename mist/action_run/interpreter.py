@@ -1,5 +1,9 @@
+import sys
+import builtins
+
 from io import StringIO
 from contextlib import redirect_stdout
+from typing import Callable
 
 from mist.sdk import db, config, params
 
@@ -17,7 +21,10 @@ def execute():
         for c in mist_model.commands:
             c.launch()
 
-def execute_from_text(text: str, fn_params: dict = None, **kwargs) -> str:
+def execute_from_text(text: str,
+                      fn_params: dict = None,
+                      realtime_fn: Callable = None,
+                      **kwargs) -> str:
     if fn_params:
         params.update(fn_params)
 
@@ -29,13 +36,37 @@ def execute_from_text(text: str, fn_params: dict = None, **kwargs) -> str:
         "console_output": True,
         "real_time": True,
         "debug": False,
-        "persist": False,
         "database_path": None,
         "simulate": False,
         "no_check_tools": False
     }
 
-    if need_config := set(default_configs.keys()).difference(kwargs.keys()):
+    if db_path := kwargs.get("database_path", None):
+        db.setup(f"sqlite3://{db_path}")
+
+    #
+    # Overwrite print buildin function to send each print(...) line to
+    # callback too
+    #
+    if realtime_fn:
+        def real_time_print(*args, **kwargs):
+            sep = kwargs.get("sep", " ")
+            end = kwargs.get("end", "\n")
+            _file = kwargs.get("file", sys.stdout)
+
+            msg = f"{sep.join(str(x) for x in args)}{end}"
+            try:
+                realtime_fn(msg)
+            except:
+                pass
+
+            _file.write(msg)
+            _file.flush()
+
+        builtins.print = real_time_print
+
+
+    if need_config := set(default_configs.keys()) - set(kwargs.keys()):
         for c in need_config:
             config[c] = default_configs[c]
 
@@ -55,9 +86,6 @@ def execute_from_text(text: str, fn_params: dict = None, **kwargs) -> str:
 
         for c in mist_model.commands:
             c.launch()
-
-    # Clean database
-    db.clean_database()
 
     return stream_stdout.getvalue()
 

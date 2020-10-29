@@ -5,4 +5,5 @@ terminaltables
 
 flask
 redis
+flask_sse
 flask-executor

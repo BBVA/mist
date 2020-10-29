@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-from ..action_catalog import Catalog
+
+from mist.action_catalog import Catalog
 
 def setup_editor(_app: Flask):
 
