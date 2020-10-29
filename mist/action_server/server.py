@@ -14,6 +14,8 @@ from .editor import setup_editor
 from .helpers import ensure_json, setup_custom_errors
 from .realtime import setup_realtime
 
+from ..action_catalog import Catalog
+
 here = op.dirname(__file__)
 
 app = Flask("mist",
@@ -125,5 +127,8 @@ def run_server(parsed_args: argparse.Namespace):
     setup_realtime(app, parsed_args)
 
     executor.init_app(app)
+
+    app.commands = Catalog.find_all_command_names()
+    app.cheatsheet = Catalog.get_cheatsheet()
 
     app.run(host=listen_addr, port=listen_port, debug=False)
