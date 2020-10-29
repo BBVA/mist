@@ -231,7 +231,7 @@ class _Catalog():
         if commands := self.find_all_commands(name, version):
             return commands[0]
 
-    def find_all_command_names(self):
+    def find_all_command_names(self) -> List[str]:
         q = "SELECT command FROM COMMANDS"
         with cm(self.connection) as cursor:
             cursor.execute(q)
