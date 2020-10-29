@@ -28,7 +28,7 @@
         }
         .scroll {
             overflow: scroll;
-            height: 300px;
+            height: 354px;
             overflow-y: auto;
             scroll-behavior: smooth;
         }
@@ -399,146 +399,8 @@ searchInXML "./book[2]/title" myData.XMLtext {
                         </li>
                         <!-- END searchInXML Command -->
 
-                    </ul>
-                </div>
-            </div>
-            <hr class="hr my-4">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted">Commands Cheatsheet</span>
-                <span class="badge badge-secondary badge-pill">3</span>
-            </h4>
-            <div class="row">
-                <div class="col scroll">
-                    <ul class="list-group mb-3">
-
-                        <!-- Ping Command -->
-                        <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <h6 class="my-0">ping</h6>
-                                        </div>
-                                        <div class="col-8">
-                                            <span class="text-muted float-right">Ping some host and save result</span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <code>ping {...}</code>
-                                        </div>
-                                    </div>
-                                    <div class="row my-2">
-                                        <div class="col">
-                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#pingExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="collapse my-2" id="pingExample">
-                                                <code><pre>
-
-data myHosts {
-    Host
-    Status
-}
-
-ping {
-    input {
-        ip <= "127.0.0.1"
-    }
-    output {
-        result
-        console
-    }
-    then {
-        check result is Success {
-            put ip 'Up' => myHosts
-        }
-        check result is Error {
-            put ip 'Down' => myHosts(Host Status)
-        }
-    }
-}
-
-print myHosts
-</pre></code>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <!-- END Ping Command -->
-
-                        <!-- findOpenPorts Command -->
-                        <li class="list-group-item d-flex justify-content-between lh-condensed">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <h6 class="my-0">findOpenPorts</h6>
-                                        </div>
-                                        <div class="col-8">
-                                            <span class="text-muted float-right">Find open ports at some specific host</span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <code>findOpenPorts {...}</code>
-                                        </div>
-                                    </div>
-                                    <div class="row my-2">
-                                        <div class="col">
-                                            <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#findOpenPortsExample" aria-expanded="false" aria-controls="collapseExample">Example &rarr;</button>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="collapse my-2" id="findOpenPortsExample">
-                                                <code><pre>
-
-data myHostsChecked {
-    Host
-    OpenPorts
-}
-
-CSVput "examples/myhosts.csv" => myHosts
-
-print myHosts
-iterate myHosts => host {
-    print host.ip
-    findOpenPorts {
-        input {
-            ip <= host.ip
-            ports <= "80,5432,1000,9000"
-        }
-        output {
-            result
-            openPorts
-            console
-        }
-        then {
-            print openPorts
-            put ip openPorts => myHostsChecked
-        }
-    }
-}
-
-print myHosts
-print myHostsChecked
-CSVdump myHostsChecked => "myHostsChecked.csv"
-</pre></code>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <!-- END findOpenPorts Command -->
-
-                        <!-- CSVPut Command -->
-                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                         <!-- CSVPut Command -->
+                         <li class="list-group-item d-flex justify-content-between lh-condensed">
                             <div class="row">
                                 <div class="col">
                                     <div class="row">
@@ -619,9 +481,48 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
                                 </div>
                             </div>
                         </li>
-                        <!-- END CSVdump Command -->
+                        <!-- END CSVdump Command -->                        
 
-
+                    </ul>
+                </div>
+            </div>
+            <hr class="hr my-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Commands Cheatsheet</span>
+                <span class="badge badge-secondary badge-pill">3</span>
+            </h4>
+            <div class="row">
+                <div class="col scroll">
+                    <ul class="list-group mb-3">
+                        {% for c in cheatsheet: %}
+                        <!-- Begin Command -->
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div style="overflow: auto;" class="col-4">
+                                            <h6 class="my-0">{{c.command}}</h6>
+                                            <code>{{c.latest_version}}</code>
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="text-muted float-right">{{c.description}}</span>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col">
+                                            <code>{{c.latest_version}}</code>
+                                        </div>
+                                    </div> -->
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <a href="{{c.uri}}/tree/master/{{c.command}}" class="btn btn-sm btn-secondary" role="button" target="_blank" >Open documentation page &rarr;</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- End Command -->
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

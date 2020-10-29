@@ -237,6 +237,15 @@ class _Catalog():
             cursor.execute(q)
             return [x["command"] for x in cursor.fetchall()]
 
+    def get_cheatsheet(self) -> List[str]:
+        q = """
+        SELECT COMMANDS.id,command,description,tags,latest_version,catalog_id,uri FROM COMMANDS
+        INNER JOIN CATALOG ON COMMANDS.catalog_id = CATALOG.id
+        """
+        with cm(self.connection) as cursor:
+            cursor.execute(q)
+            return [dict(x) for x in cursor.fetchall()]
+
     def find_all_commands(self, name: str = None, version: str = None) -> List[dict] or None:
         """
         If we want to get all latest version of commands we must set version to
