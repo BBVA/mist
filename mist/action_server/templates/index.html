@@ -37,9 +37,13 @@
 <body>
 
 <div class="container">
-    <div class="text-center">
+    <div class="text-center" style="width: 70%; display: inline-block;">
         <img class="d-block mx-auto" src="https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png" alt="" width="72" height="72">
         <p class="lead">Online editor for MIST</p>
+    </div>
+    <div style="float:right; margin-top: 30px; width: 30%">
+        Server:</br>
+        <input id="serverBox" type="text" value="Loading..." style="width: 100%">
     </div>
 
     <div class="row">
@@ -644,6 +648,9 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     const resultsObject = document.getElementById("resultsConsole");
     const btn = document.getElementById("execute");
     const waiting = document.getElementById("waiting");
+    const server = document.getElementById("serverBox");
+
+    server.value = window.location.origin
 
     function waitForResults (fn, jobId) {
       return new Promise((resolve) => {
@@ -654,7 +661,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     async function launchJob() {
 
         const run = await fetch(
-            "http://localhost:9000/run",
+            server.value + "/run",
             {
                 method: "POST",
                 body: JSON.stringify({content: editor.getValue()}),
@@ -671,7 +678,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     }
     async function checkStatus(jobId) {
         const status = await fetch(
-            `http://localhost:9000/run/${jobId}`,
+            `${server.value}/run/${jobId}`,
             {
                 method: "GET",
                 cache: 'no-cache',
