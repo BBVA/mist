@@ -37,13 +37,18 @@
 <body>
 
 <div class="container">
-    <div class="text-center" style="width: 70%; display: inline-block;">
-        <img class="d-block mx-auto" src="https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png" alt="" width="72" height="72">
-        <p class="lead">Online editor for MIST</p>
-    </div>
-    <div style="float:right; margin-top: 30px; width: 30%">
-        Server:</br>
-        <input id="serverBox" type="text" value="Loading..." style="width: 100%">
+    <div class="row">
+        <div class="col-8">
+            <div class="text-center" style="width: 70%; display: inline-block;">
+                <img class="d-block mx-auto" src="https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png" alt="" width="72" height="72">
+                <p class="lead">Online editor for MIST</p>
+            </div>
+
+        </div>
+        <div class="col mt-4 mb-4">
+            <h4><label for="serverBox" class="form-label text-muted">Server</label></h4>
+            <input class="form-control" id="serverBox" type="text" value="Loading...">
+        </div>
     </div>
 
     <div class="row">
@@ -481,7 +486,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
                                 </div>
                             </div>
                         </li>
-                        <!-- END CSVdump Command -->                        
+                        <!-- END CSVdump Command -->
 
                     </ul>
                 </div>
