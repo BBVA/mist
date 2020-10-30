@@ -31,6 +31,8 @@ def cli_handler(parsed_args: argparse.Namespace):
             db.setup(f"sqlite3://{config.database_path}")
         else:
             db.setup(f"sqlite3://{config.MIST_FILE}.db")
+    else:
+        db.setup()
 
     try:
         execute()

@@ -21,7 +21,6 @@ def cm(connection) -> sqlite3.Cursor:
 class _DB:
 
     def __init__(self):
-        # self._connection = None
         self.connection = None
         self._connection_string: str = ""
         self.db_path: str = None
@@ -31,7 +30,7 @@ class _DB:
         self._connection_string = connection_string
 
         if not self._connection_string:
-            self._connection = sqlite3.connect(":memory:")
+            self.connection = sqlite3.connect(":memory:")
 
         elif self._connection_string.startswith("sqlite3://"):
             self.db_path = self._connection_string.replace(
