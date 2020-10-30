@@ -19,6 +19,7 @@ def cli_server(parser: argparse._SubParsersAction):
                             action="store_true",
                             default=False)
     run_parser.add_argument('-R', '--redis-server',
+                            required=True,
                             help="redis server for storage backend. I.e: redis://127.0.0.1:6379",
                             default=None)
     run_parser.add_argument('-c', '--concurrency',

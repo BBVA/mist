@@ -57,7 +57,7 @@ def execute_from_text(text: str,
             msg = f"{sep.join(str(x) for x in args)}{end}"
             try:
                 realtime_fn(msg)
-            except:
+            except Exception as e:
                 pass
 
             _file.write(msg)

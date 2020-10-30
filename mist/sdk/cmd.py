@@ -41,8 +41,6 @@ extract_output_files = lambda x: _extract_files(x, "output")
 
 class Executor(object):
 
-    __db_created__ = False
-
     def __init__(self,
                  command: str,
                  environment: dict,
@@ -59,13 +57,11 @@ class Executor(object):
         self.__create_database__()
 
     def __create_database__(self):
-        if not Executor.__db_created__:
-            db.create_table(
-                _DB_TABLE_NAME,
-                _DB_TABLE_FIELDS
-            )
+        db.create_table(
+            _DB_TABLE_NAME,
+            _DB_TABLE_FIELDS
+        )
 
-            Executor.__db_created__ = True
 
     def __update_with_results__(self, row_id, end_time):
         if self.stderr_output():

@@ -230,7 +230,6 @@ class _Catalog():
         if commands := self.find_all_commands(name, version):
             return commands[0]
 
-
     def find_all_commands(self, name: str = None, version: str = None) -> List[dict] or None:
         """
         If we want to get all latest version of commands we must set version to

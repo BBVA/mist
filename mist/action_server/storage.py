@@ -1,12 +1,11 @@
 import abc
 import base64
-import pickle
-import argparse
 import urllib.parse as ps
 
 from redis import Redis as RedisServer
 
-from flask import Flask
+from flask import g, current_app
+from werkzeug.local import LocalProxy
 
 
 class _Storage(metaclass=abc.ABCMeta):
@@ -49,7 +48,7 @@ class _Storage(metaclass=abc.ABCMeta):
 
 class Memory(_Storage):
 
-    def __init__(self, config: argparse.Namespace):
+    def __init__(self):
         self._console = {}
         self._job_status = {}
         self._databases = {}
@@ -70,7 +69,11 @@ class Memory(_Storage):
     def store_job_result(self, job_id: str, console: str, database_path: str):
         self._job_status[job_id] = "finished"
         self._console[job_id] = console
-        self._databases[job_id] = self.load_database_from_path(database_path)
+
+        if database_path:
+            self._databases[job_id] = self.load_database_from_path(
+                database_path
+            )
 
     def get_job_console(self, job_id: str) -> str or None:
         try:
@@ -87,8 +90,8 @@ class Memory(_Storage):
 
 class Redis(_Storage):
 
-    def __init__(self, config: argparse.Namespace):
-        parsed = ps.urlparse(config.redis_server)
+    def __init__(self, connection_string: str):
+        parsed = ps.urlparse(connection_string)
 
         if parsed.scheme != "redis":
             raise ValueError(
@@ -148,10 +151,12 @@ class Redis(_Storage):
             console
         )
 
-        self._connection.set(
-            Redis.result_database(job_id),
-            self.load_database_from_path(database_path)
-        )
+        if database_path:
+            if db_content := self.load_database_from_path(database_path):
+                self._connection.set(
+                    Redis.result_database(job_id),
+                    db_content
+                )
 
     def get_job_console(self, job_id: str) -> str or None:
         if k := self._connection.get(Redis.result_prefix(job_id)):
@@ -166,11 +171,15 @@ class Redis(_Storage):
             return None
 
 
-def setup_storage(_app: Flask, parsed: argparse.Namespace):
+def _setup_storage() -> _Storage:
+    if 'jobs' not in g:
+        if current_app.config["STORAGE"] is None:
+            storage = Memory()
+        else:
+            storage = Redis(current_app.config["STORAGE"])
 
-    _app.config["EXECUTOR_MAX_WORKERS"] = parsed.concurrency
+        g.jobs = storage
 
-    if parsed.redis_server:
-        _app.jobs = Redis(parsed)
-    else:
-        _app.jobs = Memory(parsed)
+    return g.jobs
+
+current_jobs: _Storage = LocalProxy(_setup_storage)

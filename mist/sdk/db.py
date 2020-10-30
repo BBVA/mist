@@ -21,30 +21,29 @@ def cm(connection) -> sqlite3.Cursor:
 class _DB:
 
     def __init__(self):
-        self._connection = None
+        # self._connection = None
+        self.connection = None
         self._connection_string: str = ""
         self.db_path: str = None
         self.database_type: str = "sqlite"
 
-    @property
-    def connection(self):
-        if not self._connection:
-            if not self._connection_string:
-                self._connection = sqlite3.connect(":memory:")
-
-            elif self._connection_string.startswith("sqlite3://"):
-                self.db_path = self._connection_string.replace(
-                    "sqlite3://", ""
-                )
-                self._connection = sqlite3.connect(self.db_path)
-
-            else:
-                raise ValueError("Invalid database connection string")
-
-        return self._connection
-
-    def setup(self, connection_string: str):
+    def setup(self, connection_string: str = None):
         self._connection_string = connection_string
+
+        if not self._connection_string:
+            self._connection = sqlite3.connect(":memory:")
+
+        elif self._connection_string.startswith("sqlite3://"):
+            self.db_path = self._connection_string.replace(
+                "sqlite3://", ""
+            )
+            self.connection = sqlite3.connect(
+                self.db_path,
+                check_same_thread=False
+            )
+
+        else:
+            raise ValueError("Invalid database connection string")
 
     @lru_cache(50)
     def tbl_name(self, name: str) -> str:
