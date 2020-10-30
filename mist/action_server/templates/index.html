@@ -597,6 +597,20 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     }
 
     var jobId = null
+    var source = null
+
+    function getRealTime(jobid) {
+        source = new EventSource(server.value + "/stream?channel=" + jobid);
+        source.addEventListener("message", function(event) {
+            console.log(event)
+            var data = JSON.parse(event.data);
+            console.log("The server says " + data.message);
+            results.setValue(results.getValue() + data.message)
+        }, false);
+        source.addEventListener('error', function(event) {
+            console.log("Failed to connect to event stream");
+        }, false);
+    }
 
     async function runAsync() {
         jobId = await launchJob();
@@ -604,6 +618,8 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
         if (jobId === null) {
             return "Error launching job"
         }
+
+        getRealTime(jobId)
 
         var output = "job already running"
         while (output == "job already running") {
@@ -629,8 +645,9 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
         if (btn.innerText == "Execute!") {
             showCancel()
             runAsync().then((output) => {
-                console.log(output);
-                results.setValue(output.error ? output.error : output);
+                console.log("Execution finished");
+                source.close()
+                //results.setValue(output.error ? output.error : output);
             }).catch(err => {
                 console.log(err);
             }).finally( () => showExecute());
