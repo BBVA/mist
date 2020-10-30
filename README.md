@@ -1,4 +1,4 @@
-![MIST LOGO](content/assets/images/logo-250x250.png)
+![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png)
 
 
 `MIST`, a high level programming language focussed in security testing.
@@ -11,7 +11,7 @@ $ pip install mist
 
 # Screenshots
 
-![Image of editor](content/assets/images/MIST_Editor.png)
+![Image of editor](https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/MIST_Editor.png)
 
 # Local usage
 
