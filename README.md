@@ -6,7 +6,7 @@
 # Installing
 
 ```bash
-$ pip install mist
+$ pip install mist-lang
 ```
 
 # Screenshots
@@ -26,8 +26,18 @@ $ mist run examples/ping.mist
 
 ## Launch server with editor
 
+### Starting Redis Server
+
+MIST Server need Redis to work. So, we must launch it:
+
 ```bash
-$ mist server -E
+> docker run --rm -d -p 6379:6379 redis 
+```
+
+### Starting MIST Server with Editor
+
+```bash
+$ mist server -E -R redis://127.0.0.1:6379
 ```
 
 # Developers
