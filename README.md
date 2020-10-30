@@ -6,7 +6,7 @@
 # Installing
 
 ```bash
-$ pip install mist-lang
+> pip install mist-lang
 ```
 
 # Screenshots
@@ -21,7 +21,7 @@ web editor to write your own playbooks.
 ## Running a mist file
 
 ```bash
-$ mist run examples/ping.mist
+> mist run examples/ping.mist
 ```
 
 ## Launch server with editor
@@ -37,7 +37,7 @@ MIST Server need Redis to work. So, we must launch it:
 ### Starting MIST Server with Editor
 
 ```bash
-$ mist server -E -R redis://127.0.0.1:6379
+> mist server -E -R redis://127.0.0.1:6379
 ```
 
 # Developers
@@ -45,10 +45,10 @@ $ mist server -E -R redis://127.0.0.1:6379
 After cloning the repository, you can run `MIST` without install it:
 
 ```bash
-$ git clone https://github.com/cr0hn/mist
-$ cd mist
-$ python3 -m pip install -r requirements.txt
-$ python3 -m mist -h
+> git clone https://github.com/cr0hn/mist
+> cd mist
+> python3 -m pip install -r requirements.txt
+> python3 -m mist -h
 ```
 
 # Docker usage
@@ -56,19 +56,19 @@ $ python3 -m mist -h
 ## Image build
 
 ```bash
-$ docker build -t mist-lang .
+> docker build -t mist-lang .
 ```
 
 ## Run a mist file with Docker
 
 ```bash
-$ docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang run examples/ping.mist
+> docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang run examples/ping.mist
 ```
 
 ## Launch server with editor with Docker
 
 ```bash
-$ docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
+> docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
 ```
 
 # License
