@@ -1,32 +1,28 @@
-name: github pages
+name: Generate docs for github pages
 
 on:
   push:
     branches:
       - master
     paths:
-      - "docs/**"
-      - "mist/catalog/**/README.md"
-      - "mist/lang/**/README.md"
-#
+      - "README.md"
+      - "mist/lang/*.md"
+      - ".github/workflows/gh-pages.yml"
+      - ".github/build_doc.sh"
+
 jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1  # v2 does not have submodules option now
 
-      - name: Build Doc
-        run: python3 build_doc.py
+      - name: Build Documentation
+        run: ./.github/build_doc.sh
 
-      - name: Run Sphinx
-        run: |
-          python3 -m pip install -r requirements-doc.txt
-          python3 -m sphinx docs/source docs/build
-
-      - name: Deploy
+      - name: Deploy documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build
-          keep_files: false
-          enable_jekyll: false
+          publish_dir: ./generated_docs
+          destination_dir: contents
+          enable_jekyll: true
