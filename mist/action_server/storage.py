@@ -173,10 +173,10 @@ class Redis(_Storage):
 
 def _setup_storage() -> _Storage:
     if 'jobs' not in g:
-        if current_app.config["STORAGE"] is None:
+        if current_app.config["REDIS_CONNECTION_STRING"] is None:
             storage = Memory()
         else:
-            storage = Redis(current_app.config["STORAGE"])
+            storage = Redis(current_app.config["REDIS_CONNECTION_STRING"])
 
         g.jobs = storage
 

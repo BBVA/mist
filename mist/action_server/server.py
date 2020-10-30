@@ -141,12 +141,7 @@ def run_server(parsed_args: argparse.Namespace):
     app.config["EXECUTOR_MAX_WORKERS"] = concurrency
     app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 
-
-    # executor.init_app(app)
-
     app.commands, app.cheatsheet = get_server_catalog()
     executor.init_app(app)
-    # setup_run_bp(app, redis_enabled, executor)
-    # mini_huey.start()
 
     app.run(host=listen_addr, port=listen_port, debug=False)
