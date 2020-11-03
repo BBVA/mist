@@ -12,131 +12,16 @@ from terminaltables import SingleTable
 from mist.sdk import db, config, MistInputDataException
 from mist.sdk.cmd import _DB_TABLE_NAME, _DB_TABLE_FIELDS
 
+def load_cli_values(d, parsed: argparse.Namespace):
+    d.update(parsed.__dict__)
 
-class CliLog(object):
-
-    def __init__(self):
-        self._default_action = False
-
-        parser = argparse.ArgumentParser(
-            description='MIST Log manager',
-            usage='''mist log <command> [<args>]
-
-Available commands are:
-   summary     Displays executions summary (default option)
-   details     Display details for specific register
-   console     Displays console execution for a register
-   signatures  Checks database and console output signatures
-   help        Displays help menu
-_
-''')
-        parser.add_argument('command', help='Subcommand to run', nargs="*")
-
-        if len(sys.argv) < 3:
-            parser.print_usage()
-            exit(0)
-
-        actions = [*[x for x in dir(self) if not x.startswith("_")], "help"]
-
-        if sys.argv[2] not in actions:
-            self._default_action = True
-            self.summary()
-        else:
-            parsed_args = parser.parse_args(sys.argv[2:3])
-            if parsed_args.command[0] == "help":
-                parser.print_usage()
-                exit(0)
-            else:
-                # use dispatch pattern to invoke method with same name
-                getattr(self, parsed_args.command[0])()
-
-    def __parse__(self, parser) -> argparse.Namespace:
-
-        if self._default_action:
-            parsed_args = parser.parse_args(sys.argv[2:])
-        else:
-            parsed_args = parser.parse_args(sys.argv[3:])
-
-        #
-        # Load console config
-        #
-        config.load_cli_exec_values(parsed_args)
-
-        #
-        # Setup database
-        #
-        db.setup(f"sqlite3://{config.MIST_DB}")
-
-        return parsed_args
-
-
-    def details(self):
-        parser = argparse.ArgumentParser(
-            description='Displays executions summary')
-        parser.add_argument('MIST_DB')
-        parser.add_argument('-i', '--row-id',
-                            required=True,
-                            help="register ID which get details")
-
-        parsed_args = self.__parse__(parser)
-
-        log_details(parsed_args)
-
-    def summary(self):
-
-        parser = argparse.ArgumentParser(
-            description='Displays executions summary')
-        parser.add_argument('MIST_DB')
-
-        parsed_args = self.__parse__(parser)
-
-        #
-        # Setup database
-        #
-        log_summary(parsed_args)
-
-    def console(self):
-
-        parser = argparse.ArgumentParser(
-            description='Displays executions consoled for a execution')
-        parser.add_argument('MIST_DB')
-        parser.add_argument('-i', '--row-id',
-                            required=True,
-                            help="register ID which get details")
-
-        parsed_args = self.__parse__(parser)
-
-        #
-        # Setup database
-        #
-        log_console(parsed_args)
-
-    def signatures(self):
-
-        parser = argparse.ArgumentParser(
-            description='Checks console and database signatures')
-        parser.add_argument('MIST_DB')
-        parser.add_argument('-s', '--signature-file',
-                            default=None,
-                            help="signature file. usuallyy with .db.signature")
-        parser.add_argument('-q', '--quiet',
-                            action="store_true",
-                            default=False,
-                            help="hide log. Only summary message")
-
-        parsed_args = self.__parse__(parser)
-
-        #
-        # Setup database
-        #
-        log_signature(parsed_args)
 
 
 def log_console(parsed: argparse.Namespace):
     #
     # Load console config
     #
-    config.load_cli_exec_values(parsed)
+    load_cli_values(config, parsed)
 
     #
     # Setup database
@@ -149,13 +34,17 @@ def log_console(parsed: argparse.Namespace):
     if not(execution_details := db.fetch_one(db_query, (row_id,))):
         raise MistInputDataException(f"Row Id '{row_id}' doesn't exits")
 
-    print("")
-    print(f"> {execution_details[2]}")
+    msg = " Original Console Output "
+    print()
+    print("-" * 30, msg , "-" * 30)
+    print()
+    print(f"$ {execution_details[2]}")
     print(execution_details[0])
 
     if execution_details[1]:
         print(execution_details[1])
     print("")
+    print("-" * (62 + len(msg)))
 
 def log_signature(parsed: argparse.Namespace):
 
@@ -177,7 +66,7 @@ def log_signature(parsed: argparse.Namespace):
     #
     # Load console config
     #
-    config.load_cli_exec_values(parsed)
+    load_cli_values(config, parsed)
 
     #
     # Setup database
@@ -227,7 +116,7 @@ def log_details(parsed: argparse.Namespace):
     #
     # Load console config
     #
-    config.load_cli_exec_values(parsed)
+    load_cli_values(config, parsed)
 
     #
     # Setup database
@@ -286,7 +175,7 @@ def log_summary(parsed: argparse.Namespace):
     #
     # Load console config
     #
-    config.load_cli_exec_values(parsed)
+    load_cli_values(config, parsed)
 
     #
     # Setup database

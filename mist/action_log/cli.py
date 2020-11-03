@@ -1,5 +1,7 @@
 import argparse
 
+from .actions import log_console, log_summary, log_details, log_signature
+
 def show_help(args):
     print('''usage: mist log <command> [<args>]
 
@@ -38,14 +40,14 @@ def cli_log(parser: argparse._SubParsersAction):
     log_parser_details.add_argument('-i', '--row-id',
                         required=True,
                         help="register ID which get details")
-    log_parser_details.set_defaults(func=log_parser_details)
+    log_parser_details.set_defaults(func=log_details)
 
     # action -> SUMMARY
     log_parser_summary = subparsers.add_parser(
         "summary",
         description='Displays executions summary')
     log_parser_summary.add_argument('MIST_DB')
-    log_parser_summary.set_defaults(func=log_parser_summary)
+    log_parser_summary.set_defaults(func=log_summary)
 
     # action -> CONSOLE
     log_parser_console = subparsers.add_parser(
@@ -55,7 +57,7 @@ def cli_log(parser: argparse._SubParsersAction):
     log_parser_console.add_argument('-i', '--row-id',
                         required=True,
                         help="register ID which get details")
-    log_parser_console.set_defaults(func=log_parser_console)
+    log_parser_console.set_defaults(func=log_console)
 
     # action -> SIGNATURES
     log_parser_signatures = subparsers.add_parser(
@@ -70,4 +72,4 @@ def cli_log(parser: argparse._SubParsersAction):
                         default=False,
                         help="hide log. Only summary message")
 
-    log_parser_signatures.set_defaults(func=log_parser_signatures)
+    log_parser_signatures.set_defaults(func=log_signature)
