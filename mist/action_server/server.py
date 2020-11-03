@@ -40,13 +40,14 @@ def bg_run(redis_con: str, job_id: str, mist_content: str, parameters: dict):
     with tempfile.NamedTemporaryFile(prefix="mist-db-server") as db:
 
         storage.set_job_running(job_id)
-        results = execute_from_text(
-            text=mist_content,
-            fn_params=parameters,
-            realtime_fn=realtime_callback,
-            database_path=db.name
-        )
         try:
+            results = execute_from_text(
+                text=mist_content,
+                fn_params=parameters,
+                realtime_fn=realtime_callback,
+                database_path=db.name
+            )
+
             storage.store_job_result(
                 job_id,
                 results,
