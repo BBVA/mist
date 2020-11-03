@@ -43,6 +43,8 @@ def execute_from_text(text: str,
 
     if db_path := kwargs.get("database_path", None):
         db.setup(f"sqlite3://{db_path}")
+    else:
+        db.setup()
 
     #
     # Overwrite print buildin function to send each print(...) line to
