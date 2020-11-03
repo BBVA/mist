@@ -545,15 +545,29 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/mist");
-    document.getElementById('editor').style.fontSize='15px';
+    editorHTML = document.getElementById('editor')
+    editorHTML.style.fontSize='15px';
 
     var results = ace.edit("resultsConsole");
     results.setTheme("ace/theme/monokai");
     results.session.setMode("ace/mode/python");
     results.setReadOnly(true);
-    document.getElementById('resultsConsole').style.fontSize='15px';
+    resultsHTML = document.getElementById('resultsConsole')
+    resultsHTML.style.fontSize='15px';
 
-    const resultsObject = document.getElementById("resultsConsole");
+    lastEditorHeight = editorHTML.offsetHeight
+    lastResustHeight = resultsHTML.offsetHeight
+    function resizeCheck(last, current, ace) {
+        if (last != current) {
+            ace.resize(true)
+        }
+        return current
+    }
+    editorHTML.onmouseup = () => { lastEditorHeight = resizeCheck(lastEditorHeight, editorHTML.offsetHeight, editor)}
+    editorHTML.onmousedown = () => { lastEditorHeight = resizeCheck(lastEditorHeight, editorHTML.offsetHeight, editor)}
+    resultsHTML.onmouseup = () => { lastResustHeight = resizeCheck(lastResustHeight, resultsHTML.offsetHeight, results)}
+    resultsHTML.onmousedown = () => { lastResustHeight = resizeCheck(lastResustHeight, resultsHTML.offsetHeight, results)}
+
     const btn = document.getElementById("execute");
     const waiting = document.getElementById("waiting");
     const server = document.getElementById("serverBox");
@@ -604,10 +618,10 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
     function getRealTime(jobid) {
         source = new EventSource(server.value + "/stream?channel=" + jobid);
         source.addEventListener("message", function(event) {
-            console.log(event)
+            //console.log(event)
             var data = JSON.parse(event.data);
-            console.log("The server says " + data.message);
             results.setValue(results.getValue() + data.message)
+            results.scrollPageDown()
         }, false);
         source.addEventListener('error', function(event) {
             console.log("Failed to connect to event stream");
@@ -649,7 +663,7 @@ CSVdump myHostsChecked => "myHostsChecked.csv"
             runAsync().then((output) => {
                 console.log("Execution finished");
                 source.close()
-                //results.setValue(output.error ? output.error : output);
+                results.setValue(output.error ? output.error : output);
             }).catch(err => {
                 console.log(err);
             }).finally( () => showExecute());
