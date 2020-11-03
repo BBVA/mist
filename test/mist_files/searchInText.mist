@@ -31,7 +31,7 @@ exec "bash -c ls -1 {filter}" {
         consoleError
     }
     then {
-        searchInText "build_doc.py" consoleOutput {
+        searchInText "README.md" consoleOutput {
             output {
                 result
                 found
