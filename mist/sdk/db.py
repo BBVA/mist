@@ -193,14 +193,14 @@ class _DB:
             for table in new_tables:
                 if table in old_tables:
                     cur.execute(f"INSERT INTO {table} SELECT * FROM newdb.{table};")
-                    self._connection.commit()
+                    self.connection.commit()
                     # for row in cur.execute(f"SELECT * FROM newdb.{table}"):
                     #     q = f"INSERT INTO {table} VALUES ({','.join(["?" for i in row])});"
                     #     cur.execute(q,row)
                     #     self._connection.commit()
                 else:
                     cur.execute(f"CREATE TABLE IF NOT EXISTS {table} AS SELECT * FROM newdb.{table}")
-                    self._connection.commit()
+                    self.connection.commit()
             cur.execute("DETACH newdb")
 
 
