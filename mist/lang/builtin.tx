@@ -20,10 +20,7 @@ BuiltExec:
       params+=Param
     '}')?
     ('output' '{'
-      'result'
-      'resultCode'
-      'consoleOutput'
-      'consoleError'
+      outputs+=OutputId
     '}')?
     ('then' '{'
       commands*=Command
@@ -34,8 +31,7 @@ BuiltExec:
 BuiltSearchInText:
     'searchInText' regex=STRING text=IDorSTRING '{'
     ('output' '{'
-      'result'
-      'found'
+      outputs+=OutputId
     '}')?
     'then' '{'
       commands*=Command
@@ -46,9 +42,7 @@ BuiltSearchInText:
 BuiltSearchInXML:
     'searchInXML' xpath=STRING text=IDorSTRING '{'
     ('output' '{'
-      'result'
-      'found'
-      'value'
+      outputs+=OutputId
     '}')?
     'then' '{'
       commands*=Command
@@ -59,9 +53,7 @@ BuiltSearchInXML:
 BuiltSearchInJSON:
     'searchInJSON' jsonpath=STRING text=IDorSTRING '{'
     ('output' '{'
-      'result'
-      'found'
-      'value'
+      outputs+=OutputId
     '}')?
     'then' '{'
       commands*=Command

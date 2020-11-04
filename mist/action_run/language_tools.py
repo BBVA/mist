@@ -29,7 +29,7 @@ GRAMMAR_TEMPLATE = """
       params+=Param
     '}')?
     ('output' '{'
-      outputs+=ID
+      outputs+=OutputId
     '}')?
     ('then' '{'
       commands+=Command

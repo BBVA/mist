@@ -14,6 +14,7 @@ class BuiltExec:
     parent: object
     command: str
     params: list
+    outputs: list
     commands: list
 
     def run(self):
@@ -45,6 +46,7 @@ class BuiltSearchInText:
     parent: object
     regex: str
     text: str
+    outputs: list
     commands: list
 
     def run(self):
@@ -75,6 +77,7 @@ class BuiltSearchInXML:
     parent: object
     xpath: str
     text: str
+    outputs: list
     commands: list
 
     def run(self):
@@ -102,6 +105,7 @@ class BuiltSearchInJSON:
     parent: object
     jsonpath: str
     text: str
+    outputs: list
     commands: list
 
     def run(self):
