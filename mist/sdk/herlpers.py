@@ -63,3 +63,18 @@ def watchedInsert(table: str, values: List[str], *, fields=None):
 def get_param(params, key):
     t = [x for x in params if x.key == key]
     return t[0].value if t else None
+
+def get_key(key):
+    if key[0]=='%':
+        return params[key[1:]]
+    if key[0]=='$':
+        return environment[key[1:]]
+    elif '.' in key:
+        id = key.split('.')[0]
+        child = key.split('.')[1]
+        t = get_var(id)
+        if type(t) is list:
+            return t[len(t)-1][child]
+        else:
+            return t[child]
+    return get_var(key)

@@ -1,8 +1,9 @@
+from string import Formatter
 import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, watchers, config, watchedInsert, MistAbortException
+from mist.sdk import db, get_id, get_key, watchers, config, watchedInsert, MistAbortException
 
 @dataclass
 class DataCommand:
@@ -59,11 +60,17 @@ class BuiltPrint:
     def run(self):
         if config.debug:
             print(f"-> BuiltPrint")
-        t = [
-            get_id(t)
-            for t in self.texts
-        ]
-        print(*t)
+
+        def proc(s):
+            s = get_id(s)
+            if type(s) != str:
+               return s
+            pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+            for k,v in pairs: 
+                s = s.replace('{' + k + '}',str(v),1)
+            return s
+
+        print(*([proc(s) for s in self.texts]))
 
 @dataclass
 class BuiltAbort:
