@@ -3,7 +3,8 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, get_key, watchers, config, watchedInsert, MistAbortException
+from mist.sdk import db, get_id, get_key, watchers, functions, config, watchedInsert, MistAbortException
+from mist.sdk.stack import stack
 
 @dataclass
 class DataCommand:
@@ -128,5 +129,40 @@ class IDorSTRING:
     # TODO: check var and params
 
 
+@dataclass
+class FunctionDefinition:
+    parent: object
+    var: str
+    params: list
+    commands: list
+
+    def run(self):
+        if config.debug:
+            print(f"-> FunctionDefinition {self.var}")
+        functions.append({"var": self.var, "params": self.params, "commands": self.commands})
+
+
+@dataclass
+class FunctionCall:
+    parent: object
+    var: str
+    params: list
+
+    def run(self):
+        if config.debug:
+            print(f"-> FunctionCall {self.var}")
+        for f in functions:
+            if f["var"] == self.var:
+                d = {}
+                for i,k in enumerate(f["params"]):
+                    d[k] = get_id(self.params[i])
+                #dict(zip(fields, values))
+                stack.append(d)
+                for c in f["commands"]:
+                    c.run()
+                stack.pop()
+                
+
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
-           IterateCommand, WatchCommand, IDorSTRING, BuiltAbort]
+           IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
+           FunctionDefinition, FunctionCall]

@@ -4,6 +4,7 @@ from .environment import environment
 from .herlpers import get_id, get_param, get_key, watchedInsert
 from .stack import stack
 from .watchers import watchers
+from .functions import functions
 from .cmd import execution
 from .config import config
 from .exceptions import *

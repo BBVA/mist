@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -45,6 +45,17 @@ IterateCommand:
     commands*=Command
   '}'
 ;
+
+FunctionDefinition:
+  'function' var=ID ('(' params*=ID ')')? '{'
+    commands*=Command
+  '}'
+;
+
+FunctionCall:
+  'call' var=ID ('(' params+=IDorSTRING ')')?
+;
+
 
 Comment:
   /#.*$/

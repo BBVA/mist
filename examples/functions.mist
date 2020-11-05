@@ -1,0 +1,6 @@
+function hello (name) {
+    print "Hola {name}"
+}
+
+call hello ("Pepe")
+call hello ("world")
