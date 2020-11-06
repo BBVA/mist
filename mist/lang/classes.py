@@ -46,12 +46,16 @@ class CheckCommand:
     var: str
     result: list
     commands: list
+    elseCommands: list
 
     def run(self):
         if config.debug:
             print(f"-> Check that {self.var} is {self.result}")
-        if get_id(self.var) == get_id(self.result):
-            return True
+
+        # If condition is not met we substitute the check command list with the else command list.
+        if get_id(self.var) != get_id(self.result):
+            self.commands = self.elseCommands
+        return True
 
 @dataclass
 class BuiltPrint:

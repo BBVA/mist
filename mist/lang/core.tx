@@ -36,8 +36,8 @@ WatchCommand:
 
 CheckCommand:
   'check' var=IDorSTRING 'is' result=IDorSTRING '{'
-    commands*=Command
-  '}'
+    commands+=Command
+  '}' ('else' '{' elseCommands+=Command '}')?
 ;
 
 IterateCommand:

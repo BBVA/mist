@@ -1,0 +1,21 @@
+# Name: exec
+# Version: 1.0.0
+# Description: executes a custom user shell command
+# Tags: command, exec, shell
+
+exec "/bin/bash -c {command}" {
+  input {
+    command <= %param
+  }
+  output {
+    result
+    resultCode
+    consoleOutput
+    consoleError
+  }
+  then {
+    check result is Success {
+      print "FOO"
+    }
+  }
+}
