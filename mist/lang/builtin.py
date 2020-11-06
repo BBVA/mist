@@ -19,7 +19,7 @@ class BuiltExec:
 
     def run(self):
         command = self.command.format(**{
-            p.key: p.value
+            p.key: get_id(p.value)
             for p in self.params
         })
 
