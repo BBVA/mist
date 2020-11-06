@@ -57,7 +57,7 @@ def watchedInsert(table: str, values: List[str], *, fields=None):
         if watcher["var"] == table:
             stack.append({watcher["name"]: item})
             for c in watcher["commands"]:
-                c.run()
+                c.launch()
             stack.pop()
 
 def get_param(params, key):

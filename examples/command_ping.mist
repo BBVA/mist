@@ -1,0 +1,20 @@
+command ping (ip) {
+    exec "ping -c 1 {ip}" {
+        input {
+            ip <= ip
+        }
+        then {
+            print "exec result is" result
+            setback result <= result
+        }
+    }
+}
+
+call ping {
+    input {
+        ip <= "127.0.0.1"
+    }
+    then {
+        print "ping result is" result
+    }
+}

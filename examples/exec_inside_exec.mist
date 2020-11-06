@@ -1,0 +1,10 @@
+exec "echo 1" {
+    then {
+        print "hola"
+        exec "echo 2" {
+            then {
+                print "adios"
+            }
+        }
+    }
+}

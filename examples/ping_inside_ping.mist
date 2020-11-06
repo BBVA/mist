@@ -1,0 +1,16 @@
+ping {
+    input {
+        ip <= "127.0.0.1"
+    }
+    then {
+        print "hola"
+        ping {
+            input {
+                ip <= "127.0.0.1"
+            }
+            then {
+                print "adios"
+            }
+        }
+    }
+}

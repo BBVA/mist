@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | FunctionCall | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | SetCommand | SetbackCommand | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -47,15 +47,32 @@ IterateCommand:
 ;
 
 FunctionDefinition:
-  'function' var=ID ('(' params*=ID ')')? '{'
+  'command' command=ID ('(' params*=ID ')')? '{'
     commands*=Command
   '}'
 ;
 
-FunctionCall:
-  'call' var=ID params*=IDorSTRING[eolterm]
+SetCommand:
+  'set' key=ID '<=' value=IDorSTRING
 ;
 
+SetbackCommand:
+  'setback' key=ID '<=' value=IDorSTRING
+;
+
+FunctionCall:
+  'call' command=ID ('{'
+    ('input' '{'
+      params+=Param
+    '}')?
+    ('output' '{'
+      outputs+=OutputId
+    '}')?
+    ('then' '{'
+      commands*=Command
+    '}')?
+  '}')?
+;
 
 Comment:
   /#.*$/

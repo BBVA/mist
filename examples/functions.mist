@@ -1,8 +1,0 @@
-function hello (name) {
-    print "Hola {name}"
-    return "adios"
-}
-
-call hello "Pepe"
-call hello "world"
-call hello %param

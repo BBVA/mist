@@ -1,0 +1,15 @@
+command hello (name) {
+    print "Hola {name}"
+    set result <= Success
+}
+
+call hello {
+    input {
+        name <= "Pepe"
+    }
+    then {
+        print result
+        print "END"
+    }
+}
+

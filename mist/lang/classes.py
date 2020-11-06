@@ -136,36 +136,62 @@ class IDorSTRING:
 @dataclass
 class FunctionDefinition:
     parent: object
-    var: str
+    command: str
     params: list
     commands: list
 
     def run(self):
         if config.debug:
-            print(f"-> FunctionDefinition {self.var}")
-        functions.append({"var": self.var, "params": self.params, "commands": self.commands})
+            print(f"-> FunctionDefinition {self.command}")
+        functions.append({"command": self.command, "params": self.params, "commands": self.commands})
+
+@dataclass
+class SetCommand:
+    parent: object
+    key: str
+    value: str
+
+    def run(self):
+        if config.debug:
+            print(f"-> SetCommand {self.key}")
+        stack[len(stack)-1][self.key] = get_id(self.value)
+
+@dataclass
+class SetbackCommand:
+    parent: object
+    key: str
+    value: str
+
+    def run(self):
+        if config.debug:
+            print(f"-> SetbackCommand {self.key}")
+        stack[len(stack)-2][self.key] = get_id(self.value)
 
 
 @dataclass
 class FunctionCall:
     parent: object
-    var: str
+    command: str
     params: list
+    outputs: list
+    commands: list
 
     def run(self):
         if config.debug:
-            print(f"-> FunctionCall {self.var}")
+            print(f"-> FunctionCall {self.command}")
         for f in functions:
-            if f["var"] == self.var:
+            if f["command"] == self.command:
                 d = {}
-                for i,k in enumerate(f["params"]):
-                    d[k] = get_id(self.params[i])
+                for p in self.params:
+                    d[p.key] = get_id(p.value)
+                #TODO: check that all params defined in f["params"] are present in self.params
                 stack.append(d)
                 for c in f["commands"]:
-                    c.run()
+                    c.launch()
+                for c in self.commands:
+                    c.launch()
                 stack.pop()
-                
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
            IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
-           FunctionDefinition, FunctionCall]
+           FunctionDefinition, SetCommand, SetbackCommand, FunctionCall]
