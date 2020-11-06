@@ -53,7 +53,7 @@ FunctionDefinition:
 ;
 
 FunctionCall:
-  'call' var=ID ('(' params+=IDorSTRING ')')?
+  'call' var=ID params*=IDorSTRING[eolterm]
 ;
 
 

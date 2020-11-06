@@ -156,7 +156,6 @@ class FunctionCall:
                 d = {}
                 for i,k in enumerate(f["params"]):
                     d[k] = get_id(self.params[i])
-                #dict(zip(fields, values))
                 stack.append(d)
                 for c in f["commands"]:
                     c.run()
