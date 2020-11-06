@@ -1,7 +1,3 @@
-# Name: exec
-# Version: 1.0.0
-# Description: executes a custom user shell command
-# Tags: command, exec, shell
 exec "bash -c ls {hidden} -1 {filter}" {
     input {
         filter <= "*"
@@ -14,6 +10,21 @@ exec "bash -c ls {hidden} -1 {filter}" {
         consoleError
     }
     then {
-        print resultCode
+        print "First exec result is {result}"
+    }
+}
+
+exec "echo {message}" {
+    input {
+        message <= %param
+    }
+    then {
+        print "Second exec result is {result} and console output is {consoleOutput}"
+    }
+}
+
+exec "bash -c fjfklasjfklñafjdasklñfj" {
+    then {
+        print "Thrid exec result is {result}"
     }
 }
