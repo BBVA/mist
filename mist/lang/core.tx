@@ -3,7 +3,8 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | SetCommand | SetbackCommand | FunctionCall | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | SetCommand |
+  SetbackCommand | EndCommand | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -58,6 +59,10 @@ SetCommand:
 
 SetbackCommand:
   'setback' key=ID '<=' value=IDorSTRING
+;
+
+EndCommand:
+  'done'
 ;
 
 FunctionCall:

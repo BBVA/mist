@@ -5,7 +5,7 @@ from io import StringIO
 from contextlib import redirect_stdout
 from typing import Callable
 
-from mist.sdk import db, config, params
+from mist.sdk import db, config, params, command_runner
 
 from .language_tools import get_mist_model, load_mist_language, \
     check_mist_parameters, check_installed_binaries
@@ -18,8 +18,7 @@ def execute():
         print("[*] File loaded successfully")
     else:
         # Run user program!
-        for c in mist_model.commands:
-            c.launch()
+        command_runner(mist_model.commands)
 
 def execute_from_text(text: str,
                       fn_params: dict = None,
@@ -86,8 +85,7 @@ def execute_from_text(text: str,
         # Check needed parameters for .mist
         check_mist_parameters(text)
 
-        for c in mist_model.commands:
-            c.launch()
+        command_runner(mist_model.commands)
 
     return stream_stdout.getvalue()
 

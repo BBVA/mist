@@ -78,3 +78,9 @@ def get_key(key):
         else:
             return t[child]
     return get_var(key)
+
+def command_runner(commands: list):
+    for c in commands:
+        if c == "done":
+            break
+        c.launch()

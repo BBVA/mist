@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, get_key, watchers, functions, config, watchedInsert, MistAbortException
+from mist.sdk import db, get_id, get_key, watchers, functions, config, watchedInsert, MistAbortException, command_runner
 from mist.sdk.stack import stack
 
 @dataclass
@@ -167,7 +167,6 @@ class SetbackCommand:
             print(f"-> SetbackCommand {self.key}")
         stack[len(stack)-2][self.key] = get_id(self.value)
 
-
 @dataclass
 class FunctionCall:
     parent: object
@@ -186,12 +185,11 @@ class FunctionCall:
                     d[p.key] = get_id(p.value)
                 #TODO: check that all params defined in f["params"] are present in self.params
                 stack.append(d)
-                for c in f["commands"]:
-                    c.launch()
-                for c in self.commands:
-                    c.launch()
+                command_runner(f["commands"])
+                command_runner(self.commands)
                 stack.pop()
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
            IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
-           FunctionDefinition, SetCommand, SetbackCommand, FunctionCall]
+           FunctionDefinition, SetCommand, SetbackCommand,
+           FunctionCall]

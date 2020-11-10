@@ -9,7 +9,7 @@ from functools import lru_cache
 from textx import metamodel_from_str
 
 from mist.sdk import params, MistMissingBinaryException, \
-    MistInputDataException, config, db, MistParseErrorException
+    MistInputDataException, config, db, MistParseErrorException, command_runner
 
 from mist.lang.classes import exports as core_exports
 from mist.lang.builtin import exports as builtin_exports
@@ -62,9 +62,7 @@ def launch_hook(self):
                 stack.append(results)
 
             if self.commands:
-                for c in self.commands:
-                    c.launch()
-
+                command_runner(self.commands)
                 if type(results) is dict:
                     stack.pop()
 
