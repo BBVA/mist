@@ -44,6 +44,7 @@ class SaveCommand:
 class CheckCommand:
     parent: object
     var: str
+    operator: str
     result: list
     commands: list
     elseCommands: list
@@ -53,7 +54,9 @@ class CheckCommand:
             print(f"-> Check that {self.var} is {self.result}")
 
         # If condition is not met we substitute the check command list with the else command list.
-        if get_id(self.var) != get_id(self.result):
+        if (self.operator == 'is') and (get_id(self.var) != get_id(self.result)):
+            self.commands = self.elseCommands
+        elif (self.operator == 'is not') and (get_id(self.var) == get_id(self.result)):
             self.commands = self.elseCommands
         return True
 
@@ -71,7 +74,7 @@ class BuiltPrint:
             if type(s) != str:
                return s
             pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
-            for k,v in pairs: 
+            for k,v in pairs:
                 s = s.replace('{' + k + '}',str(v),1)
             return s
 

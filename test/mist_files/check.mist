@@ -1,7 +1,7 @@
-# Name: exec
+# Name: check
 # Version: 1.0.0
-# Description: executes a custom user shell command
-# Tags: command, exec, shell
+# Description: executes a branch or not based on check result using 'is' operator
+# Tags: command, check
 
 exec "/bin/bash -c {command}" {
   input {

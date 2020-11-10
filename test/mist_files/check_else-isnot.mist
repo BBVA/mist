@@ -1,6 +1,6 @@
 # Name: check
 # Version: 1.0.0
-# Description: executes a branch or another based on check result using 'is' operator
+# Description: executes a branch or another based on check result using 'is not' operator
 # Tags: command, check
 
 exec "/bin/bash -c {command}" {
@@ -14,7 +14,7 @@ exec "/bin/bash -c {command}" {
     consoleError
   }
   then {
-    check result is Success {
+    check result is not Success {
       print "FOO"
     } else {
       print "BAR"
