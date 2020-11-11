@@ -12,3 +12,6 @@ class MistAbortException(Exception):
 
 class MistInputDataException(Exception):
     pass
+
+class MistUndefinedVariableException(Exception):
+    pass

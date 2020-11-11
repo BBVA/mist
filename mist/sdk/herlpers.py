@@ -13,9 +13,9 @@ def get_var(var):
         return True
     elif var in ("False", "Error"):
         return False
-    if stack and var in stack[len(stack)-1]:
-        v = stack[len(stack)-1][var]
-        return v
+    for s in reversed(stack):
+        if var in s:
+            return s[var] 
     return db.fetch_table_as_dict(var)
 
 def get_id(id):

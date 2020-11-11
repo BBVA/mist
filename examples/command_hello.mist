@@ -1,6 +1,7 @@
 command hello (name) {
     print "Hola {name}"
     set result <= Success
+    expose result
 }
 
 call hello {

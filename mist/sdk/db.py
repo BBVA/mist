@@ -8,6 +8,7 @@ from contextlib import contextmanager
 
 from ..guuid import guuid
 from .config import config
+from .exceptions import MistUndefinedVariableException
 
 @contextmanager
 def cm(connection) -> sqlite3.Cursor:
@@ -137,8 +138,11 @@ class _DB:
         ]
 
     def fetch_table_as_dict(self, table: str) -> List[dict]:
-        table_headers = self.fetch_table_headers(self.tbl_name(table))
-        table_data = self.fetch_many(f"SELECT * FROM {self.tbl_name(table)}")
+        try:
+            table_headers = self.fetch_table_headers(self.tbl_name(table))
+            table_data = self.fetch_many(f"SELECT * FROM {self.tbl_name(table)}")
+        except sqlite3.OperationalError:
+            raise MistUndefinedVariableException(table)
         transformed_table_data = []
         for t in table_data:
             row = []

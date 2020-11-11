@@ -4,7 +4,7 @@ Program:
 
 Command:
   BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | SetCommand |
-  SetbackCommand | EndCommand | FunctionCall | ##MODULES##
+  ExposeCommand | EndCommand | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -61,8 +61,8 @@ SetCommand:
   'set' key=ID '<=' value=IDorSTRING
 ;
 
-SetbackCommand:
-  'setback' key=ID '<=' value=IDorSTRING
+ExposeCommand:
+  'expose' value=ID
 ;
 
 EndCommand:

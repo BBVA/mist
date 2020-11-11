@@ -157,18 +157,21 @@ class SetCommand:
     def run(self):
         if config.debug:
             print(f"-> SetCommand {self.key}")
-        stack[len(stack)-1][self.key] = get_id(self.value)
+        for s in reversed(stack):
+            if "MistBaseNamespace" in s:
+                s[self.key] = get_id(self.value)
 
 @dataclass
-class SetbackCommand:
+class ExposeCommand:
     parent: object
-    key: str
     value: str
 
     def run(self):
         if config.debug:
-            print(f"-> SetbackCommand {self.key}")
-        stack[len(stack)-2][self.key] = get_id(self.value)
+            print(f"-> ExposeCommand {self.value}")
+        for i in range(len(stack)-1,0,-1):
+            if "MistBaseNamespace" in stack[i]:
+                stack[i-1][self.value] = get_key(self.value)
 
 @dataclass
 class FunctionCall:
@@ -186,13 +189,16 @@ class FunctionCall:
                 d = {}
                 for p in self.params:
                     d[p.key] = get_id(p.value)
+                d["MistBaseNamespace"] = True
                 #TODO: check that all params defined in f["params"] are present in self.params
+                stack.append({})
                 stack.append(d)
                 command_runner(f["commands"])
+                stack.pop()
                 command_runner(self.commands)
                 stack.pop()
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
            IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
-           FunctionDefinition, SetCommand, SetbackCommand,
+           FunctionDefinition, SetCommand, ExposeCommand,
            FunctionCall]

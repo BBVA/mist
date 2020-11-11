@@ -1,7 +1,7 @@
 import argparse
 
 from mist.sdk import config, params, db, MistMissingBinaryException, \
-    MistInputDataException, MistAbortException
+    MistInputDataException, MistAbortException, MistUndefinedVariableException
 
 from .interpreter import execute
 from .helpers import load_cli_exec_values
@@ -43,6 +43,10 @@ def cli_handler(parsed_args: argparse.Namespace):
     except MistInputDataException as e:
         print()
         print(str(e))
+        print()
+    except MistUndefinedVariableException as e:
+        print()
+        print("[!] Undefined variable: " + str(e))
         print()
 
     except MistAbortException as e:

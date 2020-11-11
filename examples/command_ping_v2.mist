@@ -5,9 +5,13 @@ command ping (ip) {
         }
         then {
             print "exec result is" result
-            setback result <= result
+            expose result
+            expose console
         }
-    }
+    } as miexecution
+    expose ip
+    expose result <= miexecution.result
+    expose console <= miexecution.console
 }
 
 call ping {
