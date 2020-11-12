@@ -4,7 +4,7 @@ from mist.action_run import execute_from_text
 
 EXAMPLE_FILE = "set.mist"
 
-def test_print(examples_path):
+def test_set(examples_path):
     with open(os.path.join(examples_path, EXAMPLE_FILE), "r") as f:
         content = f.read()
     

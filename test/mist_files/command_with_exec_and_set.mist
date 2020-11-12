@@ -1,5 +1,5 @@
-command ping (ip) {
-    exec "ping -c 1 {ip}" {
+command foo (ip) {
+    exec "echo -n {ip}" {
         input {
             ip <= ip
         }
@@ -14,7 +14,7 @@ command ping (ip) {
     expose consoleOutput
 }
 
-call ping {
+call foo {
     input {
         ip <= "127.0.0.1"
     }
