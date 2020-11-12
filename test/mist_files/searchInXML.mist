@@ -27,12 +27,12 @@ searchInXML "./book[2]/title" myDataSearchInXML.XMLtext {
     output {
         result
         found
-        value
     }
     then {
         print result
         print found
-        print value
+        print found.text
+        print found.attributes
     }
 }
 

@@ -87,7 +87,7 @@ class BuiltSearchInXML:
 
         try:
             root = ET.fromstring(text)
-            found = root.find(self.xpath)
+            found = root.findall(self.xpath)
         except Exception as e:
             found = None
             print(f" Error in 'BuiltSearchInXML' -> {e}")
@@ -96,8 +96,7 @@ class BuiltSearchInXML:
             "xpath": self.xpath,
             "text": text,
             "result": found is not None,
-            "found": found is not None,
-            "value": found.text if found is not None else None
+            "found": [ {"text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
         }
 
 @dataclass
