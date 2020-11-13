@@ -1,6 +1,9 @@
 import json
 import sqlite3
 import hashlib
+import os
+import sys
+from datetime import datetime, timezone
 
 from typing import List
 from functools import lru_cache
@@ -9,6 +12,10 @@ from contextlib import contextmanager
 from ..guuid import guuid
 from .config import config
 from .exceptions import MistUndefinedVariableException
+
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding, utils
+from cryptography.hazmat.primitives.serialization import pkcs12
 
 @contextmanager
 def cm(connection) -> sqlite3.Cursor:
@@ -55,7 +62,7 @@ class _DB:
                      table_fields: tuple):
 
         query = f'''
-        CREATE TABLE {self.tbl_name(table_name)} 
+        CREATE TABLE {self.tbl_name(table_name)}
         (id blob(16) PRIMARY KEY NOT NULL, {', '.join(table_fields)})
         '''
 
@@ -176,11 +183,60 @@ class _DB:
     @lru_cache(1)
     def signature(self):
         hash = hashlib.sha512()
-
         with open(self.db_path, "rb") as f:
             hash.update(f.read())
 
         return hash.hexdigest()
+
+    def sign(self, pkcs12_path=None, passphrase=None):
+        timestamp = datetime.now(timezone.utc).isoformat()
+
+        if not self.db_path:
+            return None
+
+        if not os.path.isfile(self.db_path):
+            raise Exception(f"Database file not found: {self.db_path}")
+
+        if pkcs12_path is not None and not os.path.isfile(pkcs12_path):
+            raise Exception(f"PKCS#12 file not found: {pkcs12_path}")
+
+        hAlg = hashes.SHA256()
+        hasher = hashes.Hash(hAlg)
+        with open(self.db_path, "rb") as f:
+            hasher.update(f.read())
+
+        digest = hasher.finalize()
+
+        document = {"URI": self.db_path, "tsDoc": {"ts": timestamp, "digest": digest.hex()}, "signCert": None, "signAlg": None, "signature": None}
+
+        if pkcs12_path is not None:
+            # Generate signature for tsDoc document
+            # First open pkcs file and load certificate and private key
+            if passphrase is None:
+                bPass = None
+            else :
+                bPass = bytes(passphrase, "utf-8")
+
+            with open(pkcs12_path, "rb") as f:
+                p12 = pkcs12.load_key_and_certificates(f.read(), bPass)
+
+            priv_key = p12[0]       # Private key
+            certificate = p12[1]    # Certificate
+            msg = json.dumps(document["tsDoc"])
+
+            signature = priv_key.sign(bytes(msg, "utf-8"),
+                                        padding.PSS(
+                                                    mgf=padding.MGF1(hAlg),
+                                                    salt_length=padding.PSS.MAX_LENGTH
+                                        ),
+                                        hAlg
+                                     )
+
+            document["signAlg"] = "SHA256WithRSASignature"
+            document["signature"] = signature.hex()
+            document["signCert"] = ""
+
+        return json.dumps(document)
 
     def get_tables(self, cur, master):
         cur.execute(f"SELECT name FROM {master} WHERE type='table';")

@@ -77,6 +77,7 @@ def cli_handler(parsed_args: argparse.Namespace):
 
             with open(signature_path, "w") as f:
                 f.write(db.signature())
+            #   f.write(db.sign())
 
 def cli_run(parser: argparse._SubParsersAction):
     run_parser = parser.add_parser('run',
