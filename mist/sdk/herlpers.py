@@ -18,8 +18,17 @@ def get_var(var):
             return s[var] 
     return db.fetch_table_as_dict(var)
 
+def getFromDict(d, childs):
+    return d[childs[0]] if len(childs) == 1 else getFromDict(d[childs[0]], childs[1:])
+
+def getChildFromVar(t, childs):
+    if type(t) is list:
+        return getFromDict(t[0], childs)
+    else:
+        return getFromDict(t, childs)
+
 def get_id(id):
-    # print(f"get_id id={id.id} string={id.string} child={id.child} var={id.var} param={id.param}")
+    # print(f"get_id id={id.id} string={id.string} childs={id.childs} var={id.var} param={id.param}")
     if id == None:
         return None
     if not hasattr(id, "string"):
@@ -37,12 +46,8 @@ def get_id(id):
         return id.string
     elif id.data:
         return id.data
-    elif id.child:
-        t = get_var(id.id)
-        if type(t) is list:
-            return t[len(t)-1][id.child]
-        else:
-            return t[id.child]
+    elif id.childs:
+        return getChildFromVar(get_var(id.id), id.childs)
     return get_var(id.id)
 
 def watchedInsert(table: str, values: List[str], *, fields=None):
@@ -70,13 +75,8 @@ def get_key(key):
     if key[0]=='$':
         return environment[key[1:]]
     elif '.' in key:
-        id = key.split('.')[0]
-        child = key.split('.')[1]
-        t = get_var(id)
-        if type(t) is list:
-            return t[len(t)-1][child]
-        else:
-            return t[child]
+        t = key.split('.')
+        return getChildFromVar(get_var(t[0]), t[1:])
     return get_var(key)
 
 def command_runner(commands: list):

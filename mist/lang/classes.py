@@ -129,7 +129,7 @@ class IDorSTRING:
     data: str
     id: str
     string: str
-    child: str
+    childs: str
     var: str
     param: str
     customList: list

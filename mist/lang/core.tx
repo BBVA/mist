@@ -18,7 +18,7 @@ CustomList:
 ;
 
 IDorSTRING:
-  customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | id=ID(('.'child=ID))? | string=STRING | ('%')?param=ID | ('$')?var=ID
+  customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID | ('$')?var=ID
 ;
 
 OutputId:

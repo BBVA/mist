@@ -42,11 +42,11 @@ command findOpenPorts (ip ports) {
                     value
                 }
                 then {
-                    #print result
+                    #print found.attributes.portid
                     iterate found => p {
-                        print p.attributes
-                        # ATASCADO: aqui tendria que poder acceder a p.attributes.portid y añadirlo a una variable de tipo lista para montar el resuldado
-                        # FALTA: Soporte para acceder a diccionarios anidados mas de 1 nivel
+                        print p.attributes.portid
+                        print "Puerto abierto {p.attributes.portid}"
+                        # ATASCADO: aqui tendria que añadirlo a una variable de tipo lista para montar el resuldado
                         # FALTA: Soporte para crear variables de tipo lista y añadir elementos uno a unas.
                         # ATERNATIVA: comando o funcion de filtrado
                     } 
