@@ -13,6 +13,7 @@ command readFile (file) {
 command findOpenPorts (ip ports) {
     set file <= "/tmp/findOpenPortsOutput.xml"
     set result <= True
+    set openPorts <= []
     exec "nmap -p {ports} --open {ip} -oX {file}" {
         input {
             ip <= ip
@@ -42,20 +43,15 @@ command findOpenPorts (ip ports) {
                     value
                 }
                 then {
-                    #print found.attributes.portid
                     iterate found => p {
-                        print p.attributes.portid
-                        print "Puerto abierto {p.attributes.portid}"
-                        # ATASCADO: aqui tendria que añadirlo a una variable de tipo lista para montar el resuldado
-                        # FALTA: Soporte para crear variables de tipo lista y añadir elementos uno a unas.
-                        # ATERNATIVA: comando o funcion de filtrado
+                        append openPorts <= p.attributes.portid
                     } 
                 }
             }
         }
     }
     expose result
-    #expose openPorts
+    expose openPorts
     expose console
 }
 
@@ -67,11 +63,10 @@ call findOpenPorts {
     output {
         result
         openPorts
-        console
+        console 
     }
     then {
-        #print result
-        #print console
-        print "END"
+        print "Result if {result}"
+        print "Open ports: {openPorts}"
     }
 }

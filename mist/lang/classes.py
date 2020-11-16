@@ -149,6 +149,19 @@ class FunctionDefinition:
         functions.append({"command": self.command, "params": self.params, "commands": self.commands})
 
 @dataclass
+class AppendCommand:
+    parent: object
+    target: str
+    value: str
+
+    def run(self):
+        if config.debug:
+            print(f"-> AppendCommand {self.target}")
+        for s in reversed(stack):
+            if "MistBaseNamespace" in s:
+                s[self.target].append(get_id(self.value))
+
+@dataclass
 class SetCommand:
     parent: object
     key: str
@@ -201,4 +214,4 @@ class FunctionCall:
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
            IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
            FunctionDefinition, SetCommand, ExposeCommand,
-           FunctionCall]
+           FunctionCall, AppendCommand]

@@ -4,7 +4,7 @@ Program:
 
 Command:
   BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | SetCommand |
-  ExposeCommand | EndCommand | FunctionCall | ##MODULES##
+  ExposeCommand | EndCommand | FunctionCall | AppendCommand | ##MODULES##
 ;
 
 DataCommand:
@@ -15,6 +15,10 @@ DataCommand:
 
 CustomList:
   '['(components+=IDorSTRING[','])? ']'
+;
+
+AppendCommand:
+  'append' target=ID '<=' value=IDorSTRING
 ;
 
 IDorSTRING:
