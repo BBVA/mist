@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from jsonpath_ng import parse
 
-from mist.sdk import db, get_id, stack, config, execution, watchedInsert
+from mist.sdk import db, get_id, get_param, stack, config, execution, watchedInsert
 
 @dataclass
 class BuiltExec:
@@ -18,6 +18,9 @@ class BuiltExec:
     commands: list
 
     def run(self):
+        printOutputParam = get_param(self.params, "printOutput")
+        printOutput = get_id(printOutputParam) if printOutputParam else True
+
         command = self.command.format(**{
             p.key: get_id(p.value)
             for p in self.params
@@ -29,8 +32,8 @@ class BuiltExec:
         with execution(command) as (executor, in_files, out_files):
 
             with executor as console_lines:
-                if config.real_time and config.console_output:
-                    for line in console_lines:
+                for line in console_lines:
+                    if config.real_time and config.console_output and printOutput:
                         print(line)
 
             return {

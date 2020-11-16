@@ -2,6 +2,7 @@ command readFile (file) {
     exec "cat {file}" {
         input {
             file <= file
+            printOutput <= False
         }
         then {
             set content <= consoleOutput
@@ -19,6 +20,7 @@ command findOpenPorts (ip ports) {
             ip <= ip
             ports <= ports
             file <= file
+            printOutput <= False
         }
         then {
             set result <= result
@@ -26,7 +28,7 @@ command findOpenPorts (ip ports) {
             check result is Error {
                 print "ERROR RUNNING NMAP"
                 print consoleError
-                done
+                abort
             }
         }
     }
