@@ -7,3 +7,5 @@ flask
 redis
 flask_sse
 flask-executor
+
+cryptography
