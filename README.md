@@ -71,6 +71,39 @@ After cloning the repository, you can run `MIST` without install it:
 > docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
 ```
 
+# TODO
+
+[ ] Nueva gramatica simplificada
+[ ] Generador de nombres aleatorios para ficheros
+[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print
+[ ] Hacer que el put itere listas automaticamente si coincide el numero de campos
+[ ] Leer ficheros
+[ ] Que los comandos de busqueda de text, XML (hecho) y JSON devuelvan listas con todas las coincidencias
+[ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
+[ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
+[ ] Que los comandos de busqueda de text, XML y JSON sean funciones
+[ ] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
+
+# Possible new grammar
+
+```mist
+watch myhosts => m {
+    findOpenPorts m.ip m.ports => result openPorts console {
+        put openports => targetHosts
+    }
+}
+
+call foo => result openPorts console {
+    print openPorts
+    targetHosts <= ddsad
+    taget2 <= cdsfsgfsa 
+} to targetHosts, target2
+
+call findOpenPort ip="127.0.0.1" ports:=targetHosts => result openPorts console {
+    print openPorts
+}
+```
+
 # License
 
 This project is distributed under `BSD license <https://github.com/cr0hn/mist/blob/master/LICENSE>`_
