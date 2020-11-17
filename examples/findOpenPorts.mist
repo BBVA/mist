@@ -6,7 +6,7 @@ findOpenPorts {
     version <= "1.0.0"
     input {
         ip <= "127.0.0.1"
-        ports <= "80,5432,1000,9000"
+        ports <= "80,631,9050"
     }
     output {
         result

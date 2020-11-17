@@ -6,6 +6,7 @@ from mist.sdk.config import config
 from mist.sdk.watchers import watchers
 from mist.sdk.environment import environment
 from mist.sdk.params import params
+from mist.sdk.functions import functions
 
 def get_var(var):
     #print(f"get_var {var}")
@@ -27,12 +28,22 @@ def getChildFromVar(t, childs):
     else:
         return getFromDict(t, childs)
 
+def runFunction(name, args):
+    for f in functions:
+        if f["name"] == name :
+            if "native" in f and f["native"]:
+                return f["commands"](*args)
+            else:
+                print("TODO")
+
 def get_id(id):
     # print(f"get_id id={id.id} string={id.string} childs={id.childs} var={id.var} param={id.param}")
     if id == None:
         return None
     if not hasattr(id, "string"):
         return get_var(id)
+    if id.function:
+       return runFunction(id.function.name, [get_id(a) for a in id.function.args])
     if id.customList:
         return [
             get_id(c)
@@ -70,10 +81,15 @@ def get_param(params, key):
     return t[0].value if t else None
 
 def get_key(key):
+    if key[0]=="'" and key[-1]=="'":
+        return key[1:-1]
     if key[0]=='%':
         return params[key[1:]]
     if key[0]=='$':
         return environment[key[1:]]
+    if key[-1]==')':
+        t = key.split('(')
+        return runFunction(t[0], [get_key(a) for a in t[1][:-1].split(' ')] if len(t[1])>1 else [])
     elif '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0]), t[1:])

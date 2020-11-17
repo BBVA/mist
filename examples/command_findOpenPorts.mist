@@ -12,7 +12,7 @@ command readFile (file) {
 }
 
 command findOpenPorts (ip ports) {
-    set file <= "/tmp/findOpenPortsOutput.xml"
+    set file <= tmpFile()
     set result <= True
     set openPorts <= []
     exec "nmap -p {ports} --open {ip} -oX {file}" {

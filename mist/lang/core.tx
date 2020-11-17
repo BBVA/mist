@@ -21,8 +21,12 @@ CustomList:
   '['(components+=IDorSTRING[','])? ']'
 ;
 
+FunctionCall:
+  name=ID '(' args*=IDorSTRING ')'
+;
+
 IDorSTRING:
-  customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID |
+  function=FunctionCall | customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID |
   ('$')?var=ID
 ;
 

@@ -124,19 +124,6 @@ class WatchCommand:
         watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
 
 @dataclass
-class IDorSTRING:
-    parent: object
-    data: str
-    id: str
-    string: str
-    childs: str
-    var: str
-    param: str
-    customList: list
-    # TODO: check var and params
-
-
-@dataclass
 class CommandDefinition:
     parent: object
     command: str
@@ -212,6 +199,6 @@ class CommandCall:
                 stack.pop()
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
-           IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
+           IterateCommand, WatchCommand, BuiltAbort,
            CommandDefinition, SetCommand, ExposeCommand,
            CommandCall, AppendCommand]
