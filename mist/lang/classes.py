@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, get_key, watchers, commands, config, watchedInsert, MistAbortException, command_runner
+from mist.sdk import db, get_id, get_key, watchers, commands, config, watchedInsert, MistAbortException, command_runner, function_runner
 from mist.sdk.stack import stack
 
 @dataclass
@@ -198,7 +198,18 @@ class CommandCall:
                 command_runner(self.commands)
                 stack.pop()
 
+@dataclass
+class FunctionCall:
+    parent: object
+    name: str
+    args: list
+
+    def run(self):
+        if config.debug:
+            print(f"-> FunctionCall {self.name}")
+        function_runner(self.name, [get_id(a) for a in self.args])
+
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
            IterateCommand, WatchCommand, BuiltAbort,
            CommandDefinition, SetCommand, ExposeCommand,
-           CommandCall, AppendCommand]
+           CommandCall, AppendCommand, FunctionCall]

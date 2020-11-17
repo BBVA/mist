@@ -74,10 +74,13 @@ After cloning the repository, you can run `MIST` without install it:
 # TODO
 
 [ ] Nueva gramatica simplificada
-[ ] Generador de nombres aleatorios para ficheros
+[X] Funcion para generador de nombres de ficheros temporales
+[X] Soporte completo para funciones escritas en Python
+[ ] Soporte completo para funciones escritas en Mist (DOING German)
 [ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print
 [ ] Hacer que el put itere listas automaticamente si coincide el numero de campos
-[ ] Leer ficheros
+[ ] Funcion para leer ficheros
+[X] Soporte para crear listas y añadir elementos a una lista creada
 [ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [ ] Que los comandos de busqueda de text, XML y JSON sean funciones

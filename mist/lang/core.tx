@@ -4,7 +4,7 @@ Program:
 
 Command:
   BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | SetCommand |
-  ExposeCommand | EndCommand | CommandCall | AppendCommand | ##MODULES##
+  ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -21,12 +21,12 @@ CustomList:
   '['(components+=IDorSTRING[','])? ']'
 ;
 
-FunctionCall:
+FunctionInlineCall:
   name=ID '(' args*=IDorSTRING ')'
 ;
 
 IDorSTRING:
-  function=FunctionCall | customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID |
+  function=FunctionInlineCall | customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID |
   ('$')?var=ID
 ;
 
@@ -90,6 +90,10 @@ CommandCall:
       commands*=Command
     '}')?
   '}')?
+;
+
+FunctionCall:
+  name=ID '(' args*=IDorSTRING ')'
 ;
 
 Comment:

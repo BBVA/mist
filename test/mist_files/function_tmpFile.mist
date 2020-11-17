@@ -1,2 +1,3 @@
+tmpFile()
 print tmpFile()
 print "The file is {tmpFile()}"

@@ -28,7 +28,7 @@ def getChildFromVar(t, childs):
     else:
         return getFromDict(t, childs)
 
-def runFunction(name, args):
+def function_runner(name, args):
     for f in functions:
         if f["name"] == name :
             if "native" in f and f["native"]:
@@ -43,7 +43,7 @@ def get_id(id):
     if not hasattr(id, "string"):
         return get_var(id)
     if id.function:
-       return runFunction(id.function.name, [get_id(a) for a in id.function.args])
+       return function_runner(id.function.name, [get_id(a) for a in id.function.args])
     if id.customList:
         return [
             get_id(c)
@@ -89,7 +89,7 @@ def get_key(key):
         return environment[key[1:]]
     if key[-1]==')':
         t = key.split('(')
-        return runFunction(t[0], [get_key(a) for a in t[1][:-1].split(' ')] if len(t[1])>1 else [])
+        return function_runner(t[0], [get_key(a) for a in t[1][:-1].split(' ')] if len(t[1])>1 else [])
     elif '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0]), t[1:])
