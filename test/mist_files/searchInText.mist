@@ -6,7 +6,7 @@ print "Running Example 1"
 data myDataSearchText {
     text
 }
-put "Hello, my name is Peter and I like Mist!" => myDataSearchText
+put "Hello, my name is Peter and I like Mist!, Peter dixit" => myDataSearchText
 searchInText "Peter" myDataSearchText.text {
     output {
         result

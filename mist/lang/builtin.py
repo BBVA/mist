@@ -60,7 +60,7 @@ class BuiltSearchInText:
 
         found = False
         try:
-            if re.search(self.regex, text):
+            if re.findall(self.regex, text):
                 found = True
 
             result = True
@@ -128,8 +128,7 @@ class BuiltSearchInJSON:
             "xpath": self.jsonpath,
             "text": text,
             "result": found is not None,
-            "found": found is not None and len(found) > 0,
-            "value": found[0].value if found else None
+            "found": [ e.value for e in found ] if found is not None else []
         }
 
 @dataclass

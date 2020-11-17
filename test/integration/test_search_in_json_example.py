@@ -10,4 +10,4 @@ def test_search_in_json_example(examples_path):
 
     console = execute_from_text(content)
 
-    assert 'True\nTrue\nDavid\n' in console
+    assert "True\n['Pankaj', 'David', 'David', 'Jim']\n" in console

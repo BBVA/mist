@@ -12,18 +12,32 @@ put '''
     {
       "id": 1,
       "name": "Pankaj",
+      "surname": "Vadrikyt",
       "salary": "10000"
     },
     {
       "name": "David",
+      "surname": "Palmer",
       "salary": "5000",
       "id": 2
+    },
+    {
+      "name": "David",
+      "surname": "Crockett",
+      "salary": "50",
+      "id": 3
+    },
+    {
+      "name": "Jim",
+      "surname": "Bowie",
+      "salary": "60",
+      "id": 4
     }
   ]
 }
 ''' => myJsonData
 
-searchInJSON "employees[1].name" myJsonData.JSONtext {
+searchInJSON "employees[*].name" myJsonData.JSONtext {
     output {
         result
         found
@@ -32,7 +46,5 @@ searchInJSON "employees[1].name" myJsonData.JSONtext {
     then {
         print result
         print found
-        print value
     }
 }
-
