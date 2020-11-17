@@ -3,8 +3,8 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | SetCommand |
-  ExposeCommand | EndCommand | FunctionCall | AppendCommand | ##MODULES##
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | SetCommand |
+  ExposeCommand | EndCommand | CommandCall | AppendCommand | ##MODULES##
 ;
 
 DataCommand:
@@ -13,16 +13,17 @@ DataCommand:
   '}'
 ;
 
-CustomList:
-  '['(components+=IDorSTRING[','])? ']'
-;
-
 AppendCommand:
   'append' target=ID '<=' value=IDorSTRING
 ;
 
+CustomList:
+  '['(components+=IDorSTRING[','])? ']'
+;
+
 IDorSTRING:
-  customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID | ('$')?var=ID
+  customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID |
+  ('$')?var=ID
 ;
 
 OutputId:
@@ -55,7 +56,7 @@ IterateCommand:
   '}'
 ;
 
-FunctionDefinition:
+CommandDefinition:
   'command' command=ID ('(' params*=ID ')')? '{'
     commands*=Command
   '}'
@@ -73,7 +74,7 @@ EndCommand:
   'done'
 ;
 
-FunctionCall:
+CommandCall:
   'call' command=ID ('{'
     ('input' '{'
       params+=Param

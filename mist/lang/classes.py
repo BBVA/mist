@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, get_key, watchers, functions, config, watchedInsert, MistAbortException, command_runner
+from mist.sdk import db, get_id, get_key, watchers, commands, config, watchedInsert, MistAbortException, command_runner
 from mist.sdk.stack import stack
 
 @dataclass
@@ -137,7 +137,7 @@ class IDorSTRING:
 
 
 @dataclass
-class FunctionDefinition:
+class CommandDefinition:
     parent: object
     command: str
     params: list
@@ -145,8 +145,8 @@ class FunctionDefinition:
 
     def run(self):
         if config.debug:
-            print(f"-> FunctionDefinition {self.command}")
-        functions.append({"command": self.command, "params": self.params, "commands": self.commands})
+            print(f"-> CommandDefinition {self.command}")
+        commands.append({"command": self.command, "params": self.params, "commands": self.commands})
 
 @dataclass
 class AppendCommand:
@@ -187,7 +187,7 @@ class ExposeCommand:
                 stack[i-1][self.value] = get_key(self.value)
 
 @dataclass
-class FunctionCall:
+class CommandCall:
     parent: object
     command: str
     params: list
@@ -196,8 +196,8 @@ class FunctionCall:
 
     def run(self):
         if config.debug:
-            print(f"-> FunctionCall {self.command}")
-        for f in functions:
+            print(f"-> CommandCall {self.command}")
+        for f in commands:
             if f["command"] == self.command:
                 d = {}
                 for p in self.params:
@@ -213,5 +213,5 @@ class FunctionCall:
 
 exports = [DataCommand, SaveCommand, CheckCommand, BuiltPrint,
            IterateCommand, WatchCommand, IDorSTRING, BuiltAbort,
-           FunctionDefinition, SetCommand, ExposeCommand,
-           FunctionCall, AppendCommand]
+           CommandDefinition, SetCommand, ExposeCommand,
+           CommandCall, AppendCommand]
