@@ -84,7 +84,7 @@ After cloning the repository, you can run `MIST` without install it:
 [ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [ ] Que los comandos de busqueda de text, XML y JSON sean funciones
-[ ] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
+[X] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
 
 # Possible new grammar
 
