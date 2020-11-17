@@ -31,7 +31,7 @@ web editor to write your own playbooks.
 MIST Server need Redis to work. So, we must launch it:
 
 ```bash
-> docker run --rm -d -p 6379:6379 redis 
+> docker run --rm -d -p 6379:6379 redis
 ```
 
 ### Starting MIST Server with Editor
@@ -78,7 +78,6 @@ After cloning the repository, you can run `MIST` without install it:
 [ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print
 [ ] Hacer que el put itere listas automaticamente si coincide el numero de campos
 [ ] Leer ficheros
-[ ] Que los comandos de busqueda de text, XML (hecho) y JSON devuelvan listas con todas las coincidencias
 [ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [ ] Que los comandos de busqueda de text, XML y JSON sean funciones
@@ -96,7 +95,7 @@ watch myhosts => m {
 call foo => result openPorts console {
     print openPorts
     targetHosts <= ddsad
-    taget2 <= cdsfsgfsa 
+    taget2 <= cdsfsgfsa
 } to targetHosts, target2
 
 call findOpenPort ip="127.0.0.1" ports:=targetHosts => result openPorts console {
