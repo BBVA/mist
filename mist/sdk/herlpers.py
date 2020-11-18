@@ -34,7 +34,7 @@ def function_runner(name, args):
             if "native" in f and f["native"]:
                 return f["commands"](*args)
             else:
-                d = dict(zip(f["args"], args)) 
+                d = dict(zip(f["args"], args))
                 d["MistBaseNamespace"] = True
                 stack.append(d)
                 command_runner(f["commands"])
@@ -63,8 +63,6 @@ def get_id(id):
         return id.data
     elif id.childs:
         return getChildFromVar(get_var(id.id), id.childs)
-    elif id.intVal is not None:
-        return id.intVal
     return get_var(id.id)
 
 def watchedInsert(table: str, values: List[str], *, fields=None):

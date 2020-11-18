@@ -41,43 +41,6 @@ class SaveCommand:
         watchedInsert(self.target, values, fields=fields)
 
 @dataclass
-class SaveListCommand:
-    parent: object
-    list: list
-    sources: list
-    selectors: list
-    target: str
-    columns: list
-
-    def run(self):
-        if config.debug:
-            print(f"->Put to {self.target}")
-
-        cols = [c for c in self.columns] if self.columns else None
-        sels = [s for s in self.selectors] if self.selectors else None
-
-        # If first source is a list then it will have dictionaries as elements.
-        # For each element we extract the values, with selectors if exist, or
-        # iterating over values and call watchedInsert
-        if self.sources[0].customList or type(get_id(self.sources[0])) is list:
-            elements = get_id(self.sources[0])
-            addValues = [ str(get_id(it)) for it in self.sources[1:] ] if len(self.sources[0]) > 1 else None
-            for el in elements:
-                values = [ v for v in el.values() ] if sels is None else [ el[sel] for sel in sels ]
-                if addValues is not None:
-                    values.extends(addValues)
-
-                watchedInsert(self.target, values, fields=cols)
-
-        else:
-            values = [ str(get_id(it)) for it in self.sources ]
-            watchedInsert(self.target, values, fields=cols)
-
-
-
-
-
-@dataclass
 class CheckCommand:
     parent: object
     var: str
@@ -259,7 +222,7 @@ class FunctionDefinition:
             print(f"-> Function Definition {self.name}")
         functions.append({"name": self.name, "native": False, "commands": self.commands, "args": self.args, "result": self.result})
 
-exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
+exports = [DataCommand, SaveCommand, CheckCommand,
            BuiltPrint, IterateCommand, WatchCommand, BuiltAbort,
            CommandDefinition, SetCommand, ExposeCommand, CommandCall,
            AppendCommand, FunctionCall, FunctionDefinition]
