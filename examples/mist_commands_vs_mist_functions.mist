@@ -1,0 +1,35 @@
+command mistReadFile (file) {
+    exec "cat {file}" {
+        input {
+            file <= file
+            printOutput <= False
+        }
+        then {
+            set content <= consoleOutput
+        }
+    }
+    expose content
+}
+
+function mistReadFile (file) => content {
+    exec "cat {file}" {
+        input {
+            file <= file
+            printOutput <= False
+        }
+        then {
+            set content <= consoleOutput
+        }
+    }
+}
+
+call mistReadFile {
+    input {
+        file <= "VERSION"
+    }
+    then {
+        print "mistReadFile with command:  {content}"        
+    }
+}
+
+print "mistReadFile with function: {mistReadFile('VERSION')}"

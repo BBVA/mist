@@ -34,7 +34,11 @@ def function_runner(name, args):
             if "native" in f and f["native"]:
                 return f["commands"](*args)
             else:
-                print("TODO")
+                d = dict(zip(f["args"], args)) 
+                d["MistBaseNamespace"] = True
+                stack.append(d)
+                command_runner(f["commands"])
+                return stack.pop()[f["result"]]
 
 def get_id(id):
     # print(f"get_id id={id.id} string={id.string} childs={id.childs} var={id.var} param={id.param}")

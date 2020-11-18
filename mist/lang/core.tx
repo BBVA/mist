@@ -4,7 +4,7 @@ Program:
 
 Command:
   BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | SetCommand |
-  ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
+  ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionDefinition | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -94,6 +94,12 @@ CommandCall:
 
 FunctionCall:
   name=ID '(' args*=IDorSTRING ')'
+;
+
+FunctionDefinition:
+  'function' name=ID '(' args*=ID ')' '=>' result=ID '{'
+    commands*=Command
+  '}'
 ;
 
 Comment:
