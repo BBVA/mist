@@ -16,7 +16,7 @@ def get_var(var):
         return False
     for s in reversed(stack):
         if var in s:
-            return s[var] 
+            return s[var]
     return db.fetch_table_as_dict(var)
 
 def getFromDict(d, childs):
@@ -41,7 +41,7 @@ def function_runner(name, args):
                 return stack.pop()[f["result"]]
 
 def get_id(id):
-    # print(f"get_id id={id.id} string={id.string} childs={id.childs} var={id.var} param={id.param}")
+    # print(f"get_id id={id.id} string={id.string} childs={id.childs} var={id.var} param={id.param} intVal= {id.intVal}")
     if id == None:
         return None
     if not hasattr(id, "string"):
@@ -63,6 +63,8 @@ def get_id(id):
         return id.data
     elif id.childs:
         return getChildFromVar(get_var(id.id), id.childs)
+    elif id.intVal is not None:
+        return id.intVal
     return get_var(id.id)
 
 def watchedInsert(table: str, values: List[str], *, fields=None):

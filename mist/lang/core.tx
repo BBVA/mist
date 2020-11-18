@@ -3,8 +3,8 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | SetCommand |
-  ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionDefinition | FunctionCall | ##MODULES##
+  BuiltIn | SaveCommand | SaveListCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | SetCommand |
+  ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -26,12 +26,16 @@ FunctionInlineCall:
 ;
 
 IDorSTRING:
-  function=FunctionInlineCall | customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | ('%')?param=ID |
+  function=FunctionInlineCall | customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | intVal=INT | ('%')?param=ID |
   ('$')?var=ID
 ;
 
 OutputId:
   source=ID ('(' fields+=ID ')' '=>' target=ID)?
+;
+
+SaveListCommand:
+  'putlist' list=IDorSTRING ('(' selectors+=ID ')')?   sources*=IDorSTRING  '=>' target=ID ('(' params*=ID ')')?
 ;
 
 SaveCommand:
