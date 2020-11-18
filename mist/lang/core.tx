@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | SetCommand |
+  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | FunctionDefinition | SetCommand |
   ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
 ;
 
