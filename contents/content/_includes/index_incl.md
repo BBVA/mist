@@ -73,17 +73,17 @@ After cloning the repository, you can run `MIST` without install it:
 
 # TODO
 
-[ ] Nueva gramatica simplificada
-[X] Funcion para generador de nombres de ficheros temporales
+[ ] Nueva gramatica simplificada (GERMAN)
+[X] Funcion nativa para generar de nombres de ficheros temporales y actualizar ejemplo "command_findOpenPorts.mist"
 [X] Soporte completo para funciones escritas en Python
-[ ] Soporte completo para funciones escritas en Mist (DOING German)
-[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print
+[X] Soporte completo para funciones escritas en Mist
+[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print (GERMAN)
 [ ] Hacer que el put itere listas automaticamente si coincide el numero de campos
-[ ] Funcion para leer ficheros
+[ ] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist" (HECTOR?)
 [X] Soporte para crear listas y añadir elementos a una lista creada
-[ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
+[ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc. (HECTOR?)
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
-[ ] Que los comandos de busqueda de text, XML y JSON sean funciones
+[ ] Que los comandos de busqueda de text, XML y JSON sean funciones (HECTOR?)
 [X] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
 
 # Possible new grammar
