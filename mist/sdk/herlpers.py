@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 from mist.sdk.stack import stack
@@ -9,7 +10,7 @@ from mist.sdk.params import params
 from mist.sdk.functions import functions
 
 def get_var(var):
-    #print(f"get_var {var}")
+    #print(f"get_var {var}", file=sys.stderr, flush=True)
     if var in ("True", "Success"):
         return True
     elif var in ("False", "Error"):
@@ -41,7 +42,7 @@ def function_runner(name, args):
                 return stack.pop()[f["result"]]
 
 def get_id(id):
-    # print(f"get_id id={id.id} string={id.string} childs={id.childs} var={id.var} param={id.param} intVal= {id.intVal}")
+    #print(f"get_id id={id.id} hasAttrString={hasattr(id, 'string')} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}", file=sys.stderr, flush=True)
     if id == None:
         return None
     if not hasattr(id, "string"):
@@ -63,7 +64,11 @@ def get_id(id):
         return id.data
     elif id.childs:
         return getChildFromVar(get_var(id.id), id.childs)
-    return get_var(id.id)
+
+    if id.id == "":
+        return id.intVal
+    else:
+        return get_var(id.id)
 
 def watchedInsert(table: str, values: List[str], *, fields=None):
     if config.debug:
