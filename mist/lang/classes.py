@@ -41,6 +41,39 @@ class SaveCommand:
         watchedInsert(self.target, values, fields=fields)
 
 @dataclass
+class SaveListCommand:
+    parent: object
+    list: str
+    selectors: list
+    sources: list
+    target: str
+    params: list
+
+    def run(self):
+        if config.debug:
+            print(f"->Put to {self.target}")
+
+        cols = [c for c in self.params] if self.params else None
+        sels = [s for s in self.selectors] if self.selectors else None
+
+        elements = get_id(self.list)
+        if type(elements) is not list:
+            raise MistException(f"{self.list} is not a list")
+
+        commons = [ str(get_id(it)) for it in self.sources ] if len(self.sources) > 0 else None
+
+        for el in elements:
+            if type(el) is dict:
+                values = [ v for v in el.values() ] if sels is None else [ el[sel] for sel in sels ]
+            else:
+                values = list(str(el))
+
+            if commons is not None:
+                values.extend(commons)
+
+            watchedInsert(self.target, values, fields=cols)
+
+@dataclass
 class CheckCommand:
     parent: object
     var: str
@@ -222,7 +255,7 @@ class FunctionDefinition:
             print(f"-> Function Definition {self.name}")
         functions.append({"name": self.name, "native": False, "commands": self.commands, "args": self.args, "result": self.result})
 
-exports = [DataCommand, SaveCommand, CheckCommand,
+exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            BuiltPrint, IterateCommand, WatchCommand, BuiltAbort,
            CommandDefinition, SetCommand, ExposeCommand, CommandCall,
            AppendCommand, FunctionCall, FunctionDefinition]

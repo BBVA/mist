@@ -1,0 +1,34 @@
+data myTable {
+    key1
+    key3
+}
+
+set myList <= listGenerator(%listKind)
+
+check %insertType is "as_is" {
+    putlist myList => myTable
+}
+
+check %insertType is "selInv" {
+    putlist myList(key02 key01) => myTable
+}
+
+check %insertType is "selColInv" {
+    putlist myList(key02 key01) => myTable(key3 key1)
+}
+
+check %insertType is "colInv" {
+    putlist myList => myTable(key3 key1)
+}
+
+check %insertType is "oneSel" {
+    putlist myList(key02) => myTable(key1)
+}
+
+check %insertType is "oneSelConst" {
+    putlist myList(key02) "key00" => myTable
+}
+
+iterate myTable => t {
+    print "Saved key1: {t.key1}, key3: {t.key3}"
+}

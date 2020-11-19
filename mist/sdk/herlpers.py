@@ -1,4 +1,3 @@
-import sys
 from typing import List
 
 from mist.sdk.stack import stack
@@ -42,7 +41,7 @@ def function_runner(name, args):
                 return stack.pop()[f["result"]]
 
 def get_id(id):
-    #print(f"get_id id={id.id} hasAttrString={hasattr(id, 'string')} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}", file=sys.stderr, flush=True)
+    #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
     if id == None:
         return None
     if not hasattr(id, "string"):

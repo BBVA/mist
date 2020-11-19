@@ -3,8 +3,8 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition | FunctionDefinition | SetCommand |
-  ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
+  BuiltIn | SaveListCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition |
+  FunctionDefinition | SetCommand | ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
 ;
 
 DataCommand:
@@ -32,6 +32,10 @@ IDorSTRING:
 
 OutputId:
   source=ID ('(' fields+=ID ')' '=>' target=ID)?
+;
+
+SaveListCommand:
+  'putlist' list=ID ('(' selectors+=ID ')')? sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
 ;
 
 SaveCommand:
