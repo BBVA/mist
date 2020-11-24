@@ -236,7 +236,7 @@ class FunctionCall:
     parent: object
     name: str
     args: list
-    params: list
+    namedArgs: list
     result: str
     commands: list
     targets: list
@@ -244,7 +244,7 @@ class FunctionCall:
     def run(self):
         if config.debug:
             print(f"-> FunctionCall {self.name}")
-        result = function_runner(self.name, [get_id(a) for a in self.args])
+        result = function_runner(self.name, self.args, self.namedArgs)
         if self.commands:
             stack.append({self.result: result})
             command_runner(self.commands)

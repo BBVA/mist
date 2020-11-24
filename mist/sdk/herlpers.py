@@ -28,15 +28,27 @@ def getChildFromVar(t, childs):
     else:
         return getFromDict(t, childs)
 
-def function_runner(name, args):
+def function_runner(name, args, namedArgs=None):
+    namedArgsDict = {}
+    if args:
+        args = [get_id(a) for a in args]
+    elif namedArgs:
+        for i in namedArgs:
+            namedArgsDict[i.key] = get_id(i.value)
     for f in functions:
         if f["name"] == name :
             if "native" in f and f["native"]:
-                return f["commands"](*args)
+                if args:
+                    return f["commands"](*args)
+                elif namedArgs:
+                    return f["commands"](**namedArgsDict)
+                else:
+                    return f["commands"]()
             else:
-                d = dict(zip(f["args"], args))
-                d["MistBaseNamespace"] = True
-                stack.append(d)
+                if args:
+                    namedArgsDict = dict(zip(f["args"], args))
+                namedArgsDict["MistBaseNamespace"] = True
+                stack.append(namedArgsDict)
                 command_runner(f["commands"])
                 return stack.pop()[f["result"]]
 
@@ -44,10 +56,12 @@ def get_id(id):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
     if id == None:
         return None
+    if isinstance(id, int):
+        return id
     if not hasattr(id, "string"):
         return get_var(id)
     if id.function:
-       return function_runner(id.function.name, [get_id(a) for a in id.function.args])
+       return function_runner(id.function.name, id.function.args, id.function.namedArgs )
     if id.customList:
         return [
             get_id(c)
@@ -97,8 +111,13 @@ def get_key(key):
         return environment[key[1:]]
     if key[-1]==')':
         t = key.split('(')
+        # TODO work with namedArgs
         return function_runner(t[0], [get_key(a) for a in t[1][:-1].split(' ')] if len(t[1])>1 else [])
-    elif '.' in key:
+    try:
+        return int(key)
+    except ValueError:
+        pass
+    if '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0]), t[1:])
     return get_var(key)

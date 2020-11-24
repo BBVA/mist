@@ -25,8 +25,12 @@ CustomList:
   '['(components+=IDorSTRING[','])? ']'
 ;
 
+NamedArg:
+    key=ID '=' value=IDorSTRING
+;
+
 FunctionInlineCall:
-  name=ID '(' (args*=IDorSTRING | params*=Param) ')'
+  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')')
 ;
 
 IDorSTRING:
@@ -35,7 +39,7 @@ IDorSTRING:
 ;
 
 FunctionCall:
-  name=ID '(' (args*=IDorSTRING | params*=Param) ')' ('=>' result=ID '{'
+  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') ('=>' result=ID '{'
       commands*=Command
     '}' ('to' targets+=ID[eolterm])? )?
 ;
