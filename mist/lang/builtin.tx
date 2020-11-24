@@ -10,10 +10,6 @@ BuiltAbort:
     'abort' (reason=STRING)?
 ;
 
-Param:
-    key=ID '<=' value=IDorSTRING
-;
-
 BuiltExec:
   'exec' command=STRING ('{'
     ('input' '{'

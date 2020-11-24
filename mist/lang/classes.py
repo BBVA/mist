@@ -236,11 +236,20 @@ class FunctionCall:
     parent: object
     name: str
     args: list
+    params: list
+    result: str
+    commands: list
+    targets: list
 
     def run(self):
         if config.debug:
             print(f"-> FunctionCall {self.name}")
-        function_runner(self.name, [get_id(a) for a in self.args])
+        result = function_runner(self.name, [get_id(a) for a in self.args])
+        if self.commands:
+            stack.append({self.result: result})
+            command_runner(self.commands)
+            stack.pop()
+        #TODO: handle stream targets
 
 @dataclass
 class FunctionDefinition:

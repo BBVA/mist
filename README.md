@@ -73,7 +73,7 @@ After cloning the repository, you can run `MIST` without install it:
 
 # TODO
 
-[ ] Nueva gramatica simplificada (GERMAN)
+[ ] Nueva gramatica simplificada y convertir todo a funciones (DOING GERMAN)
 [X] Funcion nativa para generar de nombres de ficheros temporales y actualizar ejemplo "command_findOpenPorts.mist"
 [X] Soporte completo para funciones escritas en Python
 [X] Soporte completo para funciones escritas en Mist
@@ -89,21 +89,22 @@ After cloning the repository, you can run `MIST` without install it:
 # Possible new grammar
 
 ```mist
+# Current
 watch myhosts => m {
-    findOpenPorts m.ip m.ports => result openPorts console {
+    findOpenPorts m.ip m.ports => openPorts {
         put openports => targetHosts
     }
 }
 
-call foo => result openPorts console {
-    print openPorts
+# New proposal
+
+call findOpenPort(ip="127.0.0.1" ports:=targetHosts) => result {
+    print result
     targetHosts <= ddsad
     taget2 <= cdsfsgfsa
 } to targetHosts, target2
 
-call findOpenPort ip="127.0.0.1" ports:=targetHosts => result openPorts console {
-    print openPorts
-}
+print findOpenPort(ip="127.0.0.1" ports:=targetHosts)
 ```
 
 # License
