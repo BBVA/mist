@@ -14,4 +14,5 @@ def test_function_with_named_args(examples_path):
 Peter
 John
 The range is [1, 2, 3]
+The range is [1, 2, 3, 4]
 The file is /""" in console

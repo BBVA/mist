@@ -2,10 +2,11 @@ function saySomething(name) => something {
     set something <= name
 }
 
-print range (1 4 1)
-print range (begin=1 end=5 step=1)
+print range(1 4 1)
+print range (begin=1 end=5  step=1)
 print saySomething("Peter")
 print saySomething(name="John")
-print "The range is {range(1 4 1)}"
-print "The file is {tmpFile()}"
-#print "The range is {range(begin=1 end=5 step=1)}"
+print "The range is { range(1   4 1)}"
+print "The range is {range (begin=1 end=5  step=1)}"
+print "The file is {tmpFile() }"
+

@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 from mist.sdk.stack import stack
@@ -12,8 +13,12 @@ def get_var(var):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
     if var in ("True", "Success"):
         return True
-    elif var in ("False", "Error"):
+    if var in ("False", "Error"):
         return False
+    try:
+        return int(var)
+    except ValueError:
+        pass
     for s in reversed(stack):
         if var in s:
             return s[var]
@@ -103,6 +108,7 @@ def get_param(params, key):
     return t[0].value if t else None
 
 def get_key(key):
+    key=key.strip()
     if key[0]=="'" and key[-1]=="'":
         return key[1:-1]
     if key[0]=='%':
@@ -110,13 +116,16 @@ def get_key(key):
     if key[0]=='$':
         return environment[key[1:]]
     if key[-1]==')':
-        t = key.split('(')
-        # TODO work with namedArgs
-        return function_runner(t[0], [get_key(a) for a in t[1][:-1].split(' ')] if len(t[1])>1 else [])
-    try:
-        return int(key)
-    except ValueError:
-        pass
+        function = key.split('(')[0].strip()
+        args = re.sub(' +', ' ', key.split('(')[1]).split(')')[0].split(' ')
+        if '=' in args[0]:
+            class NamedArg:
+                def __init__(self, key, value):
+                    self.key = key
+                    self.value = value
+            namedArgs=[ NamedArg(i.split('=')[0], i.split('=')[1]) for i in args]
+            return function_runner(function, None, namedArgs )
+        return function_runner(function, [] if args[0]=='' else args)
     if '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0]), t[1:])
