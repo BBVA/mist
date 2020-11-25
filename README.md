@@ -73,18 +73,20 @@ After cloning the repository, you can run `MIST` without install it:
 
 # TODO
 
-[ ] Nueva gramatica simplificada y convertir todo a funciones (DOING GERMAN)
+[X] Nueva gramatica simplificada y convertir todo a funciones
 [X] Funcion nativa para generar de nombres de ficheros temporales y actualizar ejemplo "command_findOpenPorts.mist"
 [X] Soporte completo para funciones escritas en Python
 [X] Soporte completo para funciones escritas en Mist
-[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print (GERMAN)
+[X] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
 [X] Hacer que el put itere listas automaticamente si coincide el numero de campos
-[ ] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist" (HECTOR?)
 [X] Soporte para crear listas y añadir elementos a una lista creada
+[ ] Que los comandos de busqueda de text, XML y JSON sean funciones
+[ ] Refactor comando exec como función (GERMAN)
+[ ] Integración del nuevo codigo multihilo y flujos
+[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print (GERMAN)
+[ ] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist" (HECTOR?)
 [ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc. (HECTOR?)
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
-[ ] Que los comandos de busqueda de text, XML y JSON sean funciones (HECTOR?)
-[X] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
 
 # Possible new grammar
 
@@ -98,13 +100,13 @@ watch myhosts => m {
 
 # New proposal
 
-call findOpenPort(ip="127.0.0.1" ports:=targetHosts) => result {
+call findOpenPort(ip="127.0.0.1" ports=:targetHosts) => result {
     print result
     targetHosts <= ddsad
     taget2 <= cdsfsgfsa
 } to targetHosts, target2
 
-print findOpenPort(ip="127.0.0.1" ports:=targetHosts)
+print findOpenPort(ip="127.0.0.1" ports=:targetHosts)
 ```
 
 # License

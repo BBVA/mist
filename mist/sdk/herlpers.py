@@ -76,6 +76,9 @@ def get_id(id):
         return environment[id.var]
     if id.param:
         return params[id.param]
+    if id.source:
+        #TODO source
+        return None
     if id.string:
         return id.string
     elif id.data:
@@ -115,6 +118,9 @@ def get_key(key):
         return params[key[1:]]
     if key[0]=='$':
         return environment[key[1:]]
+    if key[0]==':':
+        #TODO source
+        return None
     if key[-1]==')':
         function = key.split('(')[0].strip()
         args = re.sub(' +', ' ', key.split('(')[1]).split(')')[0].split(' ')
