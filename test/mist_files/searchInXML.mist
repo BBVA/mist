@@ -2,11 +2,7 @@
 # Description: Search some xpath in a XML string
 # Tags: search, find, XML
 
-data myDataSearchInXML {
-    XMLtext
-}
-
-put '''<?xml version="1.0" encoding="UTF-8"?>
+set XMLtext <= '''<?xml version="1.0" encoding="UTF-8"?>
 <bookstore>
     <book category="cooking">
         <title lang="en">Everyday Italian</title>
@@ -21,18 +17,11 @@ put '''<?xml version="1.0" encoding="UTF-8"?>
         <price>29.99</price>
     </book>
 </bookstore>
-''' => myDataSearchInXML
+'''
 
-searchInXML "./book[2]/title" myDataSearchInXML.XMLtext {
-    output {
-        result
-        found
-    }
-    then {
-        print result
-        print found
-        print found.text
-        print found.attributes
-    }
+searchInXML ("./book[2]/title" XMLtext) => found {
+    print found
+    print found.text
+    print found.attributes
 }
 

@@ -10,8 +10,7 @@ def test_search_in_xml_example(examples_path):
 
     console = execute_from_text(content)
 
-    assert console == """True
-[{'text': 'Harry Potter', 'attributes': {'lang': 'en'}}]
+    assert console == """[{'text': 'Harry Potter', 'attributes': {'lang': 'en'}}]
 Harry Potter
 {'lang': 'en'}
 """

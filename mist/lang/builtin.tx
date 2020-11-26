@@ -1,5 +1,5 @@
 BuiltIn:
-    BuiltPrint | BuiltAbort | BuiltExec | BuiltSearchInXML | BuiltSearchInJSON | CSVdumpCommand | CSVputCommand
+    BuiltPrint | BuiltAbort | BuiltExec | BuiltSearchInJSON | CSVdumpCommand | CSVputCommand
 ;
 
 BuiltPrint:
@@ -22,17 +22,6 @@ BuiltExec:
       commands*=Command
     '}')?
   '}')?
-;
-
-BuiltSearchInXML:
-    'searchInXML' xpath=STRING text=IDorSTRING '{'
-    ('output' '{'
-      outputs+=OutputId
-    '}')?
-    'then' '{'
-      commands*=Command
-    '}'
-  '}'
 ;
 
 BuiltSearchInJSON:
