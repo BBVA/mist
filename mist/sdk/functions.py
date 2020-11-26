@@ -1,6 +1,8 @@
 import tempfile
 import re
 import xml.etree.ElementTree as ET
+import json
+from jsonpath_ng import parse
 
 from mist.sdk.config import config
 
@@ -27,6 +29,16 @@ def searchInXML(xpath: str, text: str):
         return False
     return [ {"text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
 
+def searchInJSON(jsonpath: str, text: str):
+    try:
+        json_data = json.loads(text)
+        jsonpath_expression = parse(jsonpath)
+        found = jsonpath_expression.find(json_data)
+    except Exception as e:
+        print(f" Error in 'BuiltSearchInJSON' -> {e}")
+        return False
+    return [ e.value for e in found ] if found is not None else []
+
 class _Functions(dict):
 
     def __init__(self):
@@ -35,6 +47,7 @@ class _Functions(dict):
         self["range"] = {"native": True, "commands": rangeFunction}
         self["searchInText"] = {"native": True, "commands": searchInText}
         self["searchInXML"] = {"native": True, "commands": searchInXML}
+        self["searchInJSON"] = {"native": True, "commands": searchInJSON}
 
 functions = _Functions()
 

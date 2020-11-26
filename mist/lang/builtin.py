@@ -44,35 +44,6 @@ class BuiltExec:
             }
 
 @dataclass
-class BuiltSearchInJSON:
-    parent: object
-    jsonpath: str
-    text: str
-    outputs: list
-    commands: list
-
-    def run(self):
-        text = get_id(self.text)
-
-        if config.debug:
-            print( f"-> SearchInJSON '{self.jsonpath}'")
-
-        try:
-            json_data = json.loads(text)
-            jsonpath_expression = parse(self.jsonpath)
-            found = jsonpath_expression.find(json_data)
-        except Exception as e:
-            found = None
-            print(f" Error in 'BuiltSearchInJSON' -> {e}")
-
-        return {
-            "xpath": self.jsonpath,
-            "text": text,
-            "result": found is not None,
-            "found": [ e.value for e in found ] if found is not None else []
-        }
-
-@dataclass
 class CSVdumpCommand:
     parent: object
     fileName: str
@@ -121,4 +92,4 @@ class CSVputCommand:
             except Exception as e:
                 print(f"Error while creating database: {self.target}")
 
-exports = [BuiltExec, BuiltSearchInJSON, CSVdumpCommand, CSVputCommand]
+exports = [BuiltExec, CSVdumpCommand, CSVputCommand]
