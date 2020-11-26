@@ -7,16 +7,9 @@ data myTable {
     result
 }
 
-ping {
-    input {
-        ip <= "127.0.0.1"
-    }
-    then {
-        print "The result of ping to {ip} is {result}"
-        put ip result => myTable
-    }
-}
+put "127.0.0.1" Success => myTable
 
+print "The result of ping to {myTable.ip} is {myTable.result}"
 iterate myTable => t {
     print t.ip
     print "Saved result of ping to {t.ip} is {t.result}"
