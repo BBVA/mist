@@ -43,38 +43,6 @@ class BuiltExec:
                 "consoleError": executor.stderr_output()
             }
 
-
-@dataclass
-class BuiltSearchInText:
-    parent: object
-    regex: str
-    text: str
-    outputs: list
-    commands: list
-
-    def run(self):
-        text = get_id(self.text)
-
-        if config.debug:
-            print( f"-> SearchInText '{self.regex}'")
-
-        found = False
-        try:
-            if re.findall(self.regex, text):
-                found = True
-
-            result = True
-        except Exception as e:
-            print(f" Error in 'BuiltSearchInText' -> {e}")
-            result = False
-
-        return {
-            "regex": self.regex,
-            "text": text,
-            "result": result,
-            "found": found
-        }
-
 @dataclass
 class BuiltSearchInXML:
     parent: object
@@ -180,4 +148,4 @@ class CSVputCommand:
             except Exception as e:
                 print(f"Error while creating database: {self.target}")
 
-exports = [BuiltExec, BuiltSearchInText, BuiltSearchInXML, BuiltSearchInJSON, CSVdumpCommand, CSVputCommand]
+exports = [BuiltExec, BuiltSearchInXML, BuiltSearchInJSON, CSVdumpCommand, CSVputCommand]

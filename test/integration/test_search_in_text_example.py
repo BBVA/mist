@@ -11,5 +11,3 @@ def test_search_in_text_example(examples_path):
     console = execute_from_text(content)
 
     assert 'Peter found' in console
-    assert 'test' in console
-    assert 'File found' in console
