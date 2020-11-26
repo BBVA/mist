@@ -2,7 +2,7 @@
 # Description: Read a CSV file and write another
 # Tags:  csv
 
-CSVput "test/myHosts.csv" => myHosts
+CSVput ("test/myHosts.csv" "myHosts")
 
 data myNewHosts {
     ip
@@ -14,8 +14,8 @@ iterate myHosts => host {
     put host.ip host.so "up" => myNewHosts
 }
 
-CSVdump myNewHosts => "test/myNewHosts.csv"
+CSVdump ("myNewHosts" "test/myNewHosts.csv")
 
-CSVput "test/myNewHosts.csv" => myNewReadedHosts
+CSVput ("test/myNewHosts.csv" "myNewReadedHosts")
 
 print myNewReadedHosts

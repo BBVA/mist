@@ -3,8 +3,9 @@ Program:
 ;
 
 Command:
-  BuiltIn | PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition |
-  FunctionDefinition | SetCommand | ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall
+  BuiltIn | PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | 
+  IterateCommand | WatchCommand | CommandDefinition | FunctionDefinition | SetCommand | ExposeCommand | 
+  EndCommand | CommandCall | AppendCommand | FunctionCall
 ;
 
 PrintCommand:

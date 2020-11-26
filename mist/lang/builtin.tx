@@ -1,5 +1,5 @@
 BuiltIn:
-  BuiltExec | CSVdumpCommand | CSVputCommand
+  BuiltExec
 ;
 
 BuiltExec:
@@ -14,12 +14,4 @@ BuiltExec:
       commands*=Command
     '}')?
   '}')?
-;
-
-CSVdumpCommand:
-  'CSVdump' source=ID '=>' fileName=STRING
-;
-
-CSVputCommand:
-  'CSVput' fileName=STRING '=>' target=ID
 ;

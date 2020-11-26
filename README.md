@@ -80,7 +80,8 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
 [X] Hacer que el put itere listas automaticamente si coincide el numero de campos
 [X] Soporte para crear listas y añadir elementos a una lista creada
-[ ] Que los comandos de busqueda de text, XML y JSON sean funciones
+[X] Migrar comandos de busqueda de text, XML y JSON a funciones
+[X] Migrar CSV dump y load a funciones
 [ ] Refactor comando exec como función (GERMAN)
 [ ] Integración del nuevo codigo multihilo y flujos
 [ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print (GERMAN)
