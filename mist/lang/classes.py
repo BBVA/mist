@@ -262,7 +262,7 @@ class FunctionDefinition:
     def run(self):
         if config.debug:
             print(f"-> Function Definition {self.name}")
-        functions.append({"name": self.name, "native": False, "commands": self.commands, "args": self.args, "result": self.result})
+        functions[self.name] = {"native": False, "commands": self.commands, "args": self.args, "result": self.result}
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            BuiltPrint, IterateCommand, WatchCommand, BuiltAbort,

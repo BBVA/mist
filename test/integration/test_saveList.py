@@ -13,7 +13,7 @@ def listGeneratorFunction(kind):
     elif kind == "intList":
         return [ 0, 1 ]
 
-functions.append({"name": "listGenerator", "native": True, "commands": listGeneratorFunction})
+functions["listGenerator"] = {"native": True, "commands": listGeneratorFunction}
 
 def test_saveList_insert_as_is(examples_path):
 

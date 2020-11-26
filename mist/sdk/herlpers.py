@@ -40,22 +40,21 @@ def function_runner(name, args, namedArgs=None):
     elif namedArgs:
         for i in namedArgs:
             namedArgsDict[i.key] = get_id(i.value)
-    for f in functions:
-        if f["name"] == name :
-            if "native" in f and f["native"]:
-                if args:
-                    return f["commands"](*args)
-                elif namedArgs:
-                    return f["commands"](**namedArgsDict)
-                else:
-                    return f["commands"]()
-            else:
-                if args:
-                    namedArgsDict = dict(zip(f["args"], args))
-                namedArgsDict["MistBaseNamespace"] = True
-                stack.append(namedArgsDict)
-                command_runner(f["commands"])
-                return stack.pop()[f["result"]]
+    f = functions[name]
+    if "native" in f and f["native"]:
+        if args:
+            return f["commands"](*args)
+        elif namedArgs:
+            return f["commands"](**namedArgsDict)
+        else:
+            return f["commands"]()
+    else:
+        if args:
+            namedArgsDict = dict(zip(f["args"], args))
+        namedArgsDict["MistBaseNamespace"] = True
+        stack.append(namedArgsDict)
+        command_runner(f["commands"])
+        return stack.pop()[f["result"]]
 
 def get_id(id):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
