@@ -3,8 +3,16 @@ Program:
 ;
 
 Command:
-  BuiltIn | SaveListCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition |
+  BuiltIn | PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition |
   FunctionDefinition | SetCommand | ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall
+;
+
+PrintCommand:
+    'print' texts+=IDorSTRING[eolterm]
+;
+
+AbortCommand:
+    'abort' (reason=STRING)?
 ;
 
 DataCommand:

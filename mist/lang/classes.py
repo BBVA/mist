@@ -95,7 +95,7 @@ class CheckCommand:
         return True
 
 @dataclass
-class BuiltPrint:
+class PrintCommand:
     parent: object
     texts: list
 
@@ -115,7 +115,7 @@ class BuiltPrint:
         print(*([proc(s) for s in self.texts]))
 
 @dataclass
-class BuiltAbort:
+class AbortCommand:
     parent: object
     reason: str
 
@@ -266,6 +266,6 @@ class FunctionDefinition:
         functions[self.name] = {"native": False, "commands": self.commands, "args": self.args, "result": self.result}
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
-           BuiltPrint, IterateCommand, WatchCommand, BuiltAbort,
+           PrintCommand, IterateCommand, WatchCommand, AbortCommand,
            CommandDefinition, SetCommand, ExposeCommand, CommandCall,
            AppendCommand, FunctionCall, FunctionDefinition]

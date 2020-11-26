@@ -1,13 +1,5 @@
 BuiltIn:
-    BuiltPrint | BuiltAbort | BuiltExec | CSVdumpCommand | CSVputCommand
-;
-
-BuiltPrint:
-    'print' texts+=IDorSTRING[eolterm]
-;
-
-BuiltAbort:
-    'abort' (reason=STRING)?
+  BuiltExec | CSVdumpCommand | CSVputCommand
 ;
 
 BuiltExec:
