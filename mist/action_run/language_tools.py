@@ -249,11 +249,15 @@ def load_mist_language(mist_file_or_content: str):
     )
 
     grammar = build_grammar(core_grammar, modules_entries, catalog_grammar)
+    # grammar = catalog_grammar
 
     base_exports = []
     base_exports.extend(core_exports)
+
+    # TODO: FIX ON MOVE
     base_exports.extend(builtin_exports)
 
+    # TODO: REMOVE CATALOG
     #
     # First load round.
     #
@@ -261,21 +265,23 @@ def load_mist_language(mist_file_or_content: str):
     # each command. This round will load dummy classes. The purpose of them
     # is to get the "version" property for each Command loaded.
     #
-    commands_and_versions_restrictions = _find_commands_versions(
-        content, modules_entries, grammar, base_exports
-    )
+    # commands_and_versions_restrictions = _find_commands_versions(
+    #     content, modules_entries, grammar, base_exports
+    # )
 
     #
     # Locate exports
     #
     exports = [*base_exports]
-    exports.extend(
-        find_catalog_exports(
-            mist_catalog_path(),
-            modules_entries,
-            commands_and_versions_restrictions
-        )
-    )
+
+    # TODO: REMOVE CATALOG
+    # exports.extend(
+    #     find_catalog_exports(
+    #         mist_catalog_path(),
+    #         modules_entries,
+    #         commands_and_versions_restrictions
+    #     )
+    # )
 
     #
     # Add some "magic"...
@@ -284,6 +290,7 @@ def load_mist_language(mist_file_or_content: str):
         e.launch = launch_hook
 
     # Load MIST language definition
+    # open("grammar.tx", "w").write(grammar)
     mist_meta_model = metamodel_from_str(
         grammar,
         classes=exports,
@@ -381,8 +388,8 @@ def get_mist_model() \
         #
         # Check that binaries needed to execute a command are installed
         #
-        if not config.no_check_tools:
-            check_installed_binaries(mist_model)
+        # if not config.no_check_tools:
+        #     check_installed_binaries(mist_model)
 
         #
         # Check that params in .mist file matches with available params

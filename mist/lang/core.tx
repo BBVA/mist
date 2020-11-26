@@ -4,7 +4,7 @@ Program:
 
 Command:
   BuiltIn | SaveListCommand | SaveCommand | DataCommand | CheckCommand | IterateCommand | WatchCommand | CommandDefinition |
-  FunctionDefinition | SetCommand | ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall | ##MODULES##
+  FunctionDefinition | SetCommand | ExposeCommand | EndCommand | CommandCall | AppendCommand | FunctionCall
 ;
 
 DataCommand:

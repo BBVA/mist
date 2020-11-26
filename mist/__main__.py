@@ -89,11 +89,11 @@ def main():
     if not home.exists():
         home.mkdir()
 
-    if not home.joinpath("catalog").exists():
-        home.joinpath("catalog").mkdir(parents=True)
-
-    if not home.joinpath("catalog").joinpath("catalog.db").exists():
-        catalog_path = Catalog.add_catalog(CORE_CATALOG)
+    # if not home.joinpath("catalog").exists():
+    #     home.joinpath("catalog").mkdir(parents=True)
+    #
+    # if not home.joinpath("catalog").joinpath("catalog.db").exists():
+    #     catalog_path = Catalog.add_catalog(CORE_CATALOG)
 
     main_parser = build_cli()
 
