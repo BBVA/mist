@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from mist.sdk import db, get_id, get_key, watchers, commands, functions, config, watchedInsert, MistAbortException, command_runner, function_runner
+from mist.sdk.exceptions import MistException
 from mist.sdk.stack import stack
 
 @dataclass
@@ -51,7 +52,7 @@ class SaveListCommand:
 
     def run(self):
         if config.debug:
-            print(f"->Put to {self.target}")
+            print(f"->Put list to {self.target}")
 
         cols = [c for c in self.params] if self.params else None
         sels = [s for s in self.selectors] if self.selectors else None
@@ -60,7 +61,7 @@ class SaveListCommand:
         if type(elements) is not list:
             raise MistException(f"{self.list} is not a list")
 
-        commons = [ str(get_id(it)) for it in self.sources ] if len(self.sources) > 0 else None
+        commons = [ str(get_id(it)) for it in self.sources ] if self.sources else None
 
         for el in elements:
             if type(el) is dict:
