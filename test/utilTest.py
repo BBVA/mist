@@ -15,7 +15,8 @@ class MistObj(object):
                             'data': None,
                             'childs': None,
                             'customList': None,
-                            'function': None}
+                            'function': None,
+                            'source': None}
         self.__dict__.update(d)
 
 def init_mist(mistConfig={'debug': True}, mistEnvironment=None, mistParams=None):
