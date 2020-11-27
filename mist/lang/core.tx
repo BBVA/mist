@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  BuiltIn | PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | 
+  ExecCommand | PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | 
   IterateCommand | WatchCommand | CommandDefinition | FunctionDefinition | SetCommand | ExposeCommand | 
   EndCommand | CommandCall | AppendCommand | FunctionCall
 ;
@@ -113,6 +113,20 @@ EndCommand:
 
 CommandCall:
   'call' command=ID ('{'
+    ('input' '{'
+      params+=Param
+    '}')?
+    ('output' '{'
+      outputs+=OutputId
+    '}')?
+    ('then' '{'
+      commands*=Command
+    '}')?
+  '}')?
+;
+
+ExecCommand:
+  'exec' command=STRING ('{'
     ('input' '{'
       params+=Param
     '}')?
