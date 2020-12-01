@@ -1,7 +1,7 @@
-command mistReadFile (file) {
-    exec "cat {file}" {
+command mistReadFile (path) {
+    exec "cat {path}" {
         input {
-            file <= file
+            path <= path
             printOutput <= False
         }
         then {
@@ -11,10 +11,10 @@ command mistReadFile (file) {
     expose content
 }
 
-function mistReadFile (file) => content {
-    exec "cat {file}" {
+function mistReadFile (path) => content {
+    exec "cat {path}" {
         input {
-            file <= file
+            path <= path
             printOutput <= False
         }
         then {
@@ -25,7 +25,7 @@ function mistReadFile (file) => content {
 
 call mistReadFile {
     input {
-        file <= "VERSION"
+        path <= "VERSION"
     }
     then {
         print "mistReadFile with command:  {content}"
@@ -33,6 +33,6 @@ call mistReadFile {
 }
 
 print "mistReadFile with function: {mistReadFile('VERSION')}"
-
-# See mist.sfk.functions.readFile for the native version
+print "mistReadFile with function and name param: {mistReadFile(path='VERSION')}"
 print "mistReadFile with native function: {readFile('VERSION')}"
+print "mistReadFile with native function and name param: {readFile(path='VERSION')}"

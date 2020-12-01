@@ -36,10 +36,10 @@ def getChildFromVar(t, childs):
 def function_runner(name, args, namedArgs=None):
     namedArgsDict = {}
     if args:
-        args = [get_id(a) for a in args]
+        args = [get_key(a) if isinstance(a, str) else get_id(a) for a in args]
     elif namedArgs:
         for i in namedArgs:
-            namedArgsDict[i.key] = get_id(i.value)
+            namedArgsDict[i.key] = get_key(i.value) if isinstance(i.value, str) else get_id(i.value)
     f = functions[name]
     if "native" in f and f["native"]:
         if args:
@@ -107,7 +107,7 @@ def get_key(key):
         return None
     if key[-1]==')':
         function = key.split('(')[0].strip()
-        args = re.sub(' +', ' ', key.split('(')[1]).split(')')[0].split(' ')
+        args = re.sub(' +', ' ', key.split('(')[1]).split(')')[0].strip().split(' ')
         if '=' in args[0]:
             class NamedArg:
                 def __init__(self, key, value):

@@ -84,7 +84,7 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Migrar CSV dump y load a funciones
 [ ] Refactor comando exec como función (GERMAN)
 [ ] Integración del nuevo codigo multihilo y flujos (DANI + GERMAN)
-[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print (GERMAN)
+[ ] Que el templating de strings {} funcione en todos los sitios, y no solo en el print (DOING GERMAN)
 [X] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist"
 [ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc. (HECTOR?)
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.

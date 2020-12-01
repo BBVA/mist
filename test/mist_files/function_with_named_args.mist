@@ -8,5 +8,6 @@ print saySomething("Peter")
 print saySomething(name="John")
 print "The range is { range(1   4 1)}"
 print "The range is {range (begin=1 end=5  step=1)}"
+print "Hello {saySomething( 'Peter')}"
+print "Hello {saySomething( name='John' )}"
 print "The file is {tmpFile() }"
-

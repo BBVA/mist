@@ -15,4 +15,6 @@ Peter
 John
 The range is [1, 2, 3]
 The range is [1, 2, 3, 4]
+Hello Peter
+Hello John
 The file is /""" in console
