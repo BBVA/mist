@@ -28,8 +28,11 @@ call mistReadFile {
         file <= "VERSION"
     }
     then {
-        print "mistReadFile with command:  {content}"        
+        print "mistReadFile with command:  {content}"
     }
 }
 
 print "mistReadFile with function: {mistReadFile('VERSION')}"
+
+# See mist.sfk.functions.readFile for the native version
+print "mistReadFile with native function: {readFile('VERSION')}"
