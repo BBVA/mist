@@ -1,11 +1,13 @@
+import os
 import tempfile
 import re
 import xml.etree.ElementTree as ET
 import json
-from jsonpath_ng import parse
+from jsonpath_ng.ext import parse
 import csv
 
 from mist.sdk import db
+from mist.sdk.exceptions import MistException
 from mist.sdk.config import config
 from mist.sdk.common import watchedInsert
 
@@ -16,43 +18,54 @@ def rangeFunction(begin, end, step):
     return list(range(begin, end, step))
 
 def searchInText(regex: str, text: str):
+    found = []
+
     try:
-        if re.findall(regex, text):
-            return True
+        found = re.findall(regex, text)
     except Exception as e:
         print(f" Error in 'BuiltSearchInText' -> {e}")
-    return False
+    finally:
+        return found
 
 def searchInXML(xpath: str, text: str):
+    found = None
+
     try:
         root = ET.fromstring(text)
         found = root.findall(xpath)
     except Exception as e:
         print(f" Error in 'BuiltSearchInXML' -> {e}")
-        return False
-    return [ {"text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
+    finally:
+        return [ {"tag": e.tag, "text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
 
 def searchInJSON(jsonpath: str, text: str):
+    found = None
+
     try:
         json_data = json.loads(text)
         jsonpath_expression = parse(jsonpath)
         found = jsonpath_expression.find(json_data)
     except Exception as e:
         print(f" Error in 'BuiltSearchInJSON' -> {e}")
-        return False
-    return [ e.value for e in found ] if found is not None else []
+    finally:
+        return [ e.value for e in found ] if found is not None else []
 
 
 def CSVput(fileName: str, target: str):
     with open(fileName) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
-        # TODO: ADD CSV HEADER?
-        headers = next(reader)
+
         try:
+            # TODO: ADD CSV HEADER?
+            headers = next(reader)
+
             db.create_table(target, headers)
             for row in reader:
                 watchedInsert(target, row)
             return True
+        except StopIteration:
+            raise MistException(f"Empty file: {fileName}")
+            return False
         except Exception as e:
             print(f"Error while creating database: {target}: {e}")
             return False
@@ -73,6 +86,26 @@ def CSVdump(source: str, fileName: str):
             for row in items
         ])
 
+def readFile(path:str):
+    if not os.path.isfile(path):
+        raise MistException(f"File not found: {path}")
+
+    with open(path, 'r') as f:
+        fContent = f.read()
+
+    return fContent
+
+def readFileAsLines(path:str):
+    if not os.path.isfile(path):
+        raise MistException(f"File not found: {path}")
+
+    fContent = []
+    with open(path, 'r') as f:
+        for l in f:
+            fContent.append(l)
+
+    return fContent
+
 class _Functions(dict):
 
     def __init__(self):
@@ -84,6 +117,8 @@ class _Functions(dict):
         self["searchInJSON"] = {"native": True, "commands": searchInJSON}
         self["CSVput"] = {"native": True, "commands": CSVput}
         self["CSVdump"] = {"native": True, "commands": CSVdump}
+        self["readFile"] = {"native": True, "commands": readFile}
+        self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
 
 functions = _Functions()
 
