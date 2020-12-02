@@ -3,8 +3,10 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+import sqlite3
+
 from mist.sdk.exceptions import MistException
-from mist.sdk.functions import (tmpFileFunction, rangeFunction, searchInText,
+from mist.sdk.function import (tmpFileFunction, rangeFunction, searchInText,
 searchInXML, searchInJSON, CSVput, CSVdump, readFile, readFileAsLines, db)
 
 class NativeFunctionsTest(unittest.TestCase):
@@ -17,6 +19,8 @@ class NativeFunctionsTest(unittest.TestCase):
             os.remove(self.readFile)
         if hasattr(self, 'CSVPutFile'):
             os.remove(self.CSVPutFile)
+        if hasattr(self, 'CSVdumpFile'):
+            os.remove(self.CSVdumpFile)
 
     def test_tmpFile(self):
         self.tmpFile = tmpFileFunction()
@@ -97,27 +101,15 @@ class NativeFunctionsTest(unittest.TestCase):
         {
             "name": "BAR",
             "grandsons": [
-                {
-                    "name": "BAR",
-                    "age": 12
-                },
-                {
-                    "name": "FOOBAR",
-                    "age": 9
-                }
+                { "name": "BAR", "age": 12 },
+                { "name": "FOOBAR", "age": 9 }
             ]
         },
         {
             "name": "FOO",
             "grandsons": [
-                {
-                    "name": "BAR",
-                    "age": 16
-                },
-                {
-                    "name": "FOOFOO",
-                    "age": 14
-                }
+                { "name": "BAR", "age": 16 },
+                { "name": "FOOFOO", "age": 14 }
             ]
         }
     ]
@@ -165,29 +157,74 @@ class NativeFunctionsTest(unittest.TestCase):
         self.assertTrue(ret)
         mock_create_table.assert_called_once_with(table, expected)
 
-##    @patch.object(db, 'create_table')
-##    @patch('mist.sdk.common.watchedInsert')
-##    def test_CSVPut_creates_target_and_insert_content(self, mock_watchedInsert, mock_create_table):
-##        header = "col01,col02"
-##        expectedHeader = header.split(',')
-##        data = "value01,value02"
-##        expectedData = data.split(',')
-##        table = "myTable"
-##        self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
-##        with open(self.CSVPutFile,'w') as f:
-##            f.write(header)
-##            f.write('\n')
-##            f.write(data)
-##
-##        ret = CSVput(self.CSVPutFile, table)
-##        self.assertTrue(ret)
-##        mock_create_table.assert_called_once_with(table, expectedHeader)
-##        mock_watchedInsert.assert_called_with(table, expectedData, fields=None)
-##
-##    @unittest.skip("Pending implementation")
-##    def test_CSVDump_(self):
-##        self.fail("Pending implementation")
-##
+    @patch.object(db, 'create_table')
+    @patch('mist.sdk.function.watchedInsert')
+    def test_CSVPut_creates_target_and_insert_content(self, mock_watchedInsert, mock_create_table):
+        header = "col01,col02"
+        expectedHeader = header.split(',')
+        data = "value01,value02"
+        expectedData = data.split(',')
+        table = "myTable"
+        self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
+        with open(self.CSVPutFile,'w') as f:
+            f.write(header)
+            f.write('\n')
+            f.write(data)
+
+        ret = CSVput(self.CSVPutFile, table)
+        self.assertTrue(ret)
+        mock_create_table.assert_called_once_with(table, expectedHeader)
+        mock_watchedInsert.assert_called_with(table, expectedData)
+
+    def test_CSVdump_fails_if_non_writable_file(self):
+        with self.assertRaisesRegex(PermissionError, r"\[Errno 13\] Permission denied: '/imagine'"):
+            CSVdump('BAR','/imagine')
+
+    @patch.object(db, 'fetch_table_headers')
+    def test_CSVdump_fails_if_source_doesnt_exists(self, mock_fetch_table_headers):
+        mock_fetch_table_headers.side_effect = sqlite3.OperationalError("no such table: BAR")
+        self.CSVdumpFile = tempfile.NamedTemporaryFile(delete=False).name
+
+        with self.assertRaisesRegex(sqlite3.OperationalError, "no such table: BAR"):
+            CSVdump('BAR',self.CSVdumpFile)
+
+        mock_fetch_table_headers.assert_called_once_with('BAR')
+
+    @patch.object(db, 'fetch_table_headers')
+    @patch.object(db, 'fetch_table_as_dict')
+    def test_CSVdump_writes_only_headers_in_no_data_exists(self, mock_fetch_table_as_dict, mock_fetch_table_headers):
+        expected = "col01,col02,col03\n"
+        mock_fetch_table_headers.return_value = ["id", "col01", "col02", "col03"]
+        mock_fetch_table_as_dict.return_value = []
+        self.CSVdumpFile = tempfile.NamedTemporaryFile(delete=False).name
+
+        CSVdump("myTable",self.CSVdumpFile)
+
+        mock_fetch_table_headers.assert_called_with("myTable")
+        mock_fetch_table_as_dict.assert_called_once_with("myTable")
+        with open(self.CSVdumpFile, 'r') as f:
+            content = f.read()
+        self.assertEqual(expected, content)
+
+    @patch.object(db, 'fetch_table_headers')
+    @patch.object(db, 'fetch_table_as_dict')
+    def test_CSVdump_writes_all_data(self, mock_fetch_table_as_dict, mock_fetch_table_headers):
+        expected = "col01,col02,col03\nval01,val02,val03\nval11,val12,val13\nval21,val22,val23\n"
+        mock_fetch_table_headers.return_value = ["id", "col01", "col02", "col03"]
+        mock_fetch_table_as_dict.return_value = [
+            {"id": "", "col01": "val01", "col02": "val02", "col03": "val03"},
+            {"id": "", "col01": "val11", "col02": "val12", "col03": "val13"},
+            {"id": "", "col01": "val21", "col02": "val22", "col03": "val23"}]
+        self.CSVdumpFile = tempfile.NamedTemporaryFile(delete=False).name
+
+        CSVdump("myTable",self.CSVdumpFile)
+
+        mock_fetch_table_headers.assert_called_with("myTable")
+        mock_fetch_table_as_dict.assert_called_once_with("myTable")
+        with open(self.CSVdumpFile, 'r') as f:
+            content = f.read()
+        self.assertEqual(expected, content)
+
     def test_readFile_fails_if_file_doesnt_exists(self):
         with self.assertRaisesRegex(MistException, "File not found: /imagine"):
             readFile("/imagine")

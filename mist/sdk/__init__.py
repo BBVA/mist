@@ -1,10 +1,13 @@
+# WARNINIG!!!! We're overwritting module names with objects so we won't be able
+# to mock objects or functions inside those modules for unit testing
 from .db import db
 from .params import params
 from .environment import environment
 from .herlpers import get_id, get_param, get_key, command_runner, function_runner
 from .stack import stack
 from .watchers import watchers
-from .functions import functions
+from .commands import commands
+from .function import functions
 from .cmd import execution
 from .config import config
 from .exceptions import *

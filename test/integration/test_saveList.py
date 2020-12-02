@@ -1,7 +1,7 @@
 import os
 
 from mist.action_run import execute_from_text
-from mist.sdk.functions import functions
+from mist.sdk.function import functions
 
 MIST_FILE = "saveList.mist"
 

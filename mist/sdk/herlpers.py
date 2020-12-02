@@ -8,7 +8,7 @@ from mist.sdk.config import config
 from mist.sdk.watchers import watchers
 from mist.sdk.environment import environment
 from mist.sdk.params import params
-from mist.sdk.functions import functions
+from mist.sdk.function import functions
 
 def get_var(var):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
@@ -131,4 +131,3 @@ def command_runner(commands: list):
         if c == "done":
             break
         c.launch()
-
