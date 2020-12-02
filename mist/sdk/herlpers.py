@@ -1,5 +1,6 @@
 import re
 from typing import List
+from string import Formatter
 
 from mist.sdk.stack import stack
 from mist.sdk.db import db
@@ -54,7 +55,8 @@ def function_runner(name, args, namedArgs=None):
         namedArgsDict["MistBaseNamespace"] = True
         stack.append(namedArgsDict)
         command_runner(f["commands"])
-        return stack.pop()[f["result"]]
+        lastStack = stack.pop()
+        return lastStack[f["result"]] if f["result"]!='' else None 
 
 def get_id(id):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
@@ -79,12 +81,15 @@ def get_id(id):
         #TODO source
         return None
     if id.string:
-        return id.string
+        s=id.string
+        pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+        for k,v in pairs:
+            s = s.replace('{' + k + '}',str(v),1)
+        return s
     elif id.data:
         return id.data
     elif id.childs:
         return getChildFromVar(get_var(id.id), id.childs)
-
     if id.id == "":
         return id.intVal
     else:

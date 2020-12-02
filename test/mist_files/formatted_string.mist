@@ -1,0 +1,9 @@
+function repeat(s) {
+    print s
+}
+
+repeat(repeat("hola"))  
+
+set foo <= "Hi {repeat('John')}. The range is {range(1 4 1)}"
+print foo
+print "Again," foo

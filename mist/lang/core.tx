@@ -54,7 +54,7 @@ FunctionCall:
 ;
 
 FunctionDefinition:
-  'function' name=ID '(' args*=ID ')' '=>' result=ID '{'
+  'function' name=ID '(' args*=ID ')' ('=>' result=ID)? '{'
     commands*=Command
   '}'
 ;

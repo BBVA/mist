@@ -103,16 +103,7 @@ class PrintCommand:
         if config.debug:
             print(f"-> BuiltPrint")
 
-        def proc(s):
-            s = get_id(s)
-            if type(s) != str:
-               return s
-            pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
-            for k,v in pairs:
-                s = s.replace('{' + k + '}',str(v),1)
-            return s
-
-        print(*([proc(s) for s in self.texts]))
+        print(*([get_id(s) for s in self.texts]))
 
 @dataclass
 class AbortCommand:
