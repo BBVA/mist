@@ -1,0 +1,17 @@
+function saySomething(name) => something {
+    set something <= name
+    print "."
+}
+
+print saySomething(saySomething('Foo'))
+print "Hello {saySomething(saySomething('Bar'))}"
+
+print saySomething(name=saySomething(name='Foo2'))
+print "Hello {saySomething(name=saySomething(name='Bar2'))}"
+
+function return1() => n {
+    set n <= 1
+}
+
+print range(1 4 return1())
+print "My range is {range(1 4 return1())}"

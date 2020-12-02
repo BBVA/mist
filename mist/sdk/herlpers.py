@@ -107,13 +107,13 @@ def get_key(key):
         return None
     if key[-1]==')':
         function = key.split('(')[0].strip()
-        args = re.sub(' +', ' ', key.split('(')[1]).split(')')[0].strip().split(' ')
+        args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(' ')
         if '=' in args[0]:
             class NamedArg:
                 def __init__(self, key, value):
                     self.key = key
                     self.value = value
-            namedArgs=[ NamedArg(i.split('=')[0], i.split('=')[1]) for i in args]
+            namedArgs=[ NamedArg(i.split('=',1)[0], i.split('=',1)[1]) for i in args]
             return function_runner(function, None, namedArgs )
         return function_runner(function, [] if args[0]=='' else args)
     if '.' in key:
