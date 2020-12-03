@@ -120,6 +120,103 @@ def exec(command:str, printOutput=True):
             "consoleError": executor.stderr_output()
         }
 
+def listLen(l:list):
+    """ Returns the length of the given list """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+
+    return len(l)
+
+def listClear(l:list):
+    """ Removes all elements from the given list """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+
+    l.clear()
+    return l
+
+def listSort(l:list):
+    """ Sorts the given list in ascending order """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+
+    l.sort()
+    return l
+
+def listReverse(l:list):
+    """ Reverses the elements of the given list """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+
+    l.reverse()
+    return l
+
+def listAppend(l:list, *elements):
+    """ Appends all the elements to the given list """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+    if len(elements) == 0:
+        raise MistException("No elements received")
+
+    for e in elements:
+        l.append(e)
+
+    return l
+
+def listRemove(l:list, e):
+    """ Removes the element from the given list if it exists """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+
+    try:
+        l.remove(e)
+    except ValueError:
+        pass
+
+    return l
+
+def listMap(l:list, mapFunc):
+    """ Replace the elements of the given list by aplying the map function to each of them. mapFunc must be defined as mapFunc(val) => val """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+    if not callable(mapFunc):
+        raise MistException("Not a function")
+
+    for i, val in enumerate(l):
+        l[i] = mapFunc(val)
+
+    return l
+
+def listReduce(l:list, reduceFunc):
+    """ Returns the value produced by reduceFunc after applyng it to all the elements of the given list. reduceFunc must be defined as reduceFunc(base, val) => val """
+    if l is None:
+        raise MistException("No list received")
+    if not isinstance(l, list):
+        raise MistException("Not a list")
+    if not callable(reduceFunc):
+        raise MistException("Not a function")
+
+    base = None
+    for val in l:
+        base = reduceFunc(base, val)
+
+    return base
+
+
 class _Functions(dict):
 
     def __init__(self):
@@ -134,6 +231,14 @@ class _Functions(dict):
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
         self["exec"] = {"native": True, "commands": exec}
+        self["len"] = {"native": True, "commands": listLen}
+        self["clear"] = {"native": True, "commands": listClear}
+        self["sort"] = {"native": True, "commands": listSort}
+        self["reverse"] = {"native": True, "commands": listReverse}
+        self["append"] = {"native": True, "commands": listAppend}
+        self["remove"] = {"native": True, "commands": listRemove}
+        self["map"] = {"native": True, "commands": listMap}
+        self["reduce"] = {"native": True, "commands": listReduce}
 
 functions = _Functions()
 
