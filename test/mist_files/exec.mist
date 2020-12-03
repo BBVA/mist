@@ -1,30 +1,22 @@
-exec "bash -c ls {hidden} -1 {filter}" {
-    input {
-        filter <= "*"
-        hidden <= "-a"
-    }
-    output {
-        result
-        resultCode
-        consoleOutput
-        consoleError
-    }
-    then {
-        print "First exec result is {result}"
-    }
+set hidden <= "*"
+set filter <= "-a"
+exec("bash -c ls {hidden} -1 {filter}" False) => r {
+    print "First exec result is {r.result}"
 }
 
-exec "echo {message}" {
-    input {
-        message <= %param
-    }
-    then {
-        print "Second exec result is {result} and console output is {consoleOutput}"
-    }
+exec("echo {%param}") => r {
+    print "Second exec result is {r.result} and console output is {r.consoleOutput}"
 }
 
-exec "bash -c fjfklasjfklñafjdasklñfj" {
-    then {
-        print "Thrid exec result is {result}"
+exec ("bash -c fjfklasjfklñafjdasklñfj") => r {
+    print "Thrid exec result is {r.result}"
+}
+
+exec("echo Last execution without commands")
+
+exec ("echo 1") {
+    print "hola"
+    exec ("echo 2") {
+        print "adios"
     }
 }

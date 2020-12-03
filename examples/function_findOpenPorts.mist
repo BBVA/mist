@@ -1,0 +1,25 @@
+function findOpenPorts (ip ports) => openPorts {
+    set file <= tmpFile()
+    set result <= True
+    set openPorts <= []
+    exec ("nmap -p {ports} --open {ip} -oX {file}" False) => r {
+        set result <= r.result
+        set console <= r.consoleOutput
+        check result is Error {
+            print "ERROR RUNNING NMAP"
+            print r.consoleError
+            abort
+        }
+    }
+    set content <= readFile(file)
+    set ports <= searchInXML(".//*[@portid]" content)
+    iterate ports => p {
+        append openPorts <= p.attributes.portid
+    }
+    #TODO: return a dictionary with result, openPorts, console
+}
+
+findOpenPorts(ip="127.0.0.1" ports="80,631,9050") => openPorts {
+#    print "Result if {r.result}"
+    print "Open ports: {openPorts}"
+}

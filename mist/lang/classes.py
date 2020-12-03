@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, get_key, get_param, watchers, commands, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution
+from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution
 from mist.sdk.exceptions import MistException
 from mist.sdk.stack import stack
 
@@ -149,18 +149,6 @@ class WatchCommand:
         watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
 
 @dataclass
-class CommandDefinition:
-    parent: object
-    command: str
-    params: list
-    commands: list
-
-    def run(self):
-        if config.debug:
-            print(f"-> CommandDefinition {self.command}")
-        commands.append({"command": self.command, "params": self.params, "commands": self.commands})
-
-@dataclass
 class AppendCommand:
     parent: object
     target: str
@@ -199,31 +187,6 @@ class ExposeCommand:
                 stack[i-1][self.value] = get_key(self.value)
 
 @dataclass
-class CommandCall:
-    parent: object
-    command: str
-    params: list
-    outputs: list
-    commands: list
-
-    def run(self):
-        if config.debug:
-            print(f"-> CommandCall {self.command}")
-        for f in commands:
-            if f["command"] == self.command:
-                d = {}
-                for p in self.params:
-                    d[p.key] = get_id(p.value)
-                d["MistBaseNamespace"] = True
-                #TODO: check that all params defined in f["params"] are present in self.params
-                stack.append({})
-                stack.append(d)
-                command_runner(f["commands"])
-                stack.pop()
-                command_runner(self.commands)
-                stack.pop()
-
-@dataclass
 class FunctionCall:
     parent: object
     name: str
@@ -238,7 +201,7 @@ class FunctionCall:
             print(f"-> FunctionCall {self.name}")
         result = function_runner(self.name, self.args, self.namedArgs)
         if self.commands:
-            stack.append({self.result: result})
+            stack.append({self.result: result} if self.result else {})
             command_runner(self.commands)
             stack.pop()
         #TODO: handle stream targets
@@ -256,41 +219,7 @@ class FunctionDefinition:
             print(f"-> Function Definition {self.name}")
         functions[self.name] = {"native": False, "commands": self.commands, "args": self.args, "result": self.result}
 
-@dataclass
-class ExecCommand:
-    parent: object
-    command: str
-    params: list
-    outputs: list
-    commands: list
-
-    def run(self):
-        printOutputParam = get_param(self.params, "printOutput")
-        printOutput = get_id(printOutputParam) if printOutputParam else True
-
-        command = self.command.format(**{
-            p.key: get_id(p.value)
-            for p in self.params
-        })
-
-        if config.debug:
-            print( f"-> Exec '{command}'")
-
-        with execution(command) as (executor, in_files, out_files):
-
-            with executor as console_lines:
-                for line in console_lines:
-                    if config.real_time and config.console_output and printOutput:
-                        print(line)
-
-            return {
-                "result": executor.status_text(),
-                "resultCode": executor.status(),
-                "consoleOutput": executor.console_output(),
-                "consoleError": executor.stderr_output()
-            }
-
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,
-           CommandDefinition, SetCommand, ExposeCommand, CommandCall,
-           AppendCommand, FunctionCall, FunctionDefinition, ExecCommand]
+           SetCommand, ExposeCommand, AppendCommand, FunctionCall,
+           FunctionDefinition]

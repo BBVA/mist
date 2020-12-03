@@ -3,9 +3,9 @@ Program:
 ;
 
 Command:
-  ExecCommand | PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | 
-  IterateCommand | WatchCommand | CommandDefinition | FunctionDefinition | SetCommand | ExposeCommand | 
-  EndCommand | CommandCall | AppendCommand | FunctionCall
+  PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | 
+  IterateCommand | WatchCommand | FunctionDefinition | SetCommand | ExposeCommand | 
+  EndCommand | AppendCommand | FunctionCall
 ;
 
 PrintCommand:
@@ -48,7 +48,7 @@ IDorSTRING:
 ;
 
 FunctionCall:
-  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') ('=>' result=ID '{'
+  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') (('=>' result=ID)? '{'
       commands*=Command
     '}' ('to' targets+=ID[eolterm])? )?
 ;
@@ -93,12 +93,6 @@ IterateCommand:
   '}'
 ;
 
-CommandDefinition:
-  'command' command=ID ('(' params*=ID ')')? '{'
-    commands*=Command
-  '}'
-;
-
 SetCommand:
   'set' key=ID '<=' value=IDorSTRING
 ;
@@ -109,34 +103,6 @@ ExposeCommand:
 
 EndCommand:
   'done'
-;
-
-CommandCall:
-  'call' command=ID ('{'
-    ('input' '{'
-      params+=Param
-    '}')?
-    ('output' '{'
-      outputs+=OutputId
-    '}')?
-    ('then' '{'
-      commands*=Command
-    '}')?
-  '}')?
-;
-
-ExecCommand:
-  'exec' command=STRING ('{'
-    ('input' '{'
-      params+=Param
-    '}')?
-    ('output' '{'
-      outputs+=OutputId
-    '}')?
-    ('then' '{'
-      commands*=Command
-    '}')?
-  '}')?
 ;
 
 Comment:

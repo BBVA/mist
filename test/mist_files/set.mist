@@ -1,18 +1,14 @@
 set A <= "Hello"
 print "Simon says" A
 
-exec "echo -n Goodbye" {
-    then {
-        print "Simon says" A "again"
-        set B <= "Bye"
-        exec "echo -n Hey" {
-            then {
-                print "Simon says" A "again and again"
-                set C <= consoleOutput
-            }
-        }
-        print "Simon says" C
+exec ("echo -n Goodbye") => r {
+    print "Simon says" A "again"
+    set B <= "Bye"
+    exec ("echo -n Hey") => r {
+        print "Simon says" A "again and again"
+        set C <= r.consoleOutput
     }
+    print "Simon says" C
 }
 print "Simon says" B
 print "Simon says" C

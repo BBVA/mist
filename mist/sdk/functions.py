@@ -10,6 +10,7 @@ from mist.sdk import db
 from mist.sdk.exceptions import MistException
 from mist.sdk.config import config
 from mist.sdk.common import watchedInsert
+from mist.sdk.cmd import execution
 
 def tmpFileFunction():
     return tempfile.NamedTemporaryFile(delete=False).name
@@ -106,6 +107,19 @@ def readFileAsLines(path:str):
 
     return fContent
 
+def exec(command:str, printOutput=True):
+    with execution(command) as (executor, in_files, out_files):
+        with executor as console_lines:
+            for line in console_lines:
+                if config.real_time and config.console_output and printOutput:
+                    print(line)
+        return {
+            "result": executor.status_text(),
+            "resultCode": executor.status(),
+            "consoleOutput": executor.console_output(),
+            "consoleError": executor.stderr_output()
+        }
+
 class _Functions(dict):
 
     def __init__(self):
@@ -119,6 +133,7 @@ class _Functions(dict):
         self["CSVdump"] = {"native": True, "commands": CSVdump}
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
+        self["exec"] = {"native": True, "commands": exec}
 
 functions = _Functions()
 

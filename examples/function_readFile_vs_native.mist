@@ -1,16 +1,3 @@
-command mistReadFile (path) {
-    exec "cat {path}" {
-        input {
-            path <= path
-            printOutput <= False
-        }
-        then {
-            set content <= consoleOutput
-        }
-    }
-    expose content
-}
-
 function mistReadFile (path) => content {
     exec "cat {path}" {
         input {
@@ -20,15 +7,6 @@ function mistReadFile (path) => content {
         then {
             set content <= consoleOutput
         }
-    }
-}
-
-call mistReadFile {
-    input {
-        path <= "VERSION"
-    }
-    then {
-        print "mistReadFile with command:  {content}"
     }
 }
 

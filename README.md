@@ -82,13 +82,17 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Soporte para crear listas y añadir elementos a una lista creada
 [X] Migrar comandos de busqueda de text, XML y JSON a funciones
 [X] Migrar CSV dump y load a funciones
-[ ] Refactor comando exec como función (DOING GERMAN)
+[X] Refactor comando exec como función
+[X] Eliminar soporte para definir comandos y usar solo funciones
 [ ] Integración del nuevo codigo multihilo y flujos (DANI + GERMAN)
 [X] Que el templating de strings {} funcione en todos los sitios, y no solo en el print
 [X] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist"
+[ ] Comando para importar (o llamar) otros ficheros de mist. Antiguo runPlaybook ha desaparecido. (DOING GERMAN)
 [ ] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc. (HECTOR?)
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
-[ ] Convertir todos los comandos core posibles (print?) en funciones y simplificar más la gramática
+[ ] Soporte para CREAR y MODIFICAR dicionarios
+[ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática
+[ ] Migrar los antiguos playbooks a funciones (en lenguage mist preferiblemente)
 
 # Possible new grammar
 
