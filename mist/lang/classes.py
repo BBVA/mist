@@ -3,9 +3,10 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
-from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution
+from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution, environment
 from mist.sdk.exceptions import MistException
 from mist.sdk.stack import stack
+import mist.action_run
 
 @dataclass
 class DataCommand:
@@ -219,7 +220,21 @@ class FunctionDefinition:
             print(f"-> Function Definition {self.name}")
         functions[self.name] = {"native": False, "commands": self.commands, "args": self.args, "result": self.result}
 
+@dataclass
+class IncludeCommand:
+    parent: object
+    files: list
+
+    def run(self):
+        if config.debug:
+            print(f"-> Include {self.files}")
+        for f in self.files:
+            with open(f, "r") as f:
+                content = f.read()
+                print(mist.action_run.execute_from_text(content, environment))
+        
+
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
-           FunctionDefinition]
+           FunctionDefinition, IncludeCommand]

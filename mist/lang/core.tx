@@ -3,9 +3,13 @@ Program:
 ;
 
 Command:
-  PrintCommand | AbortCommand | SaveListCommand | SaveCommand | DataCommand | CheckCommand | 
-  IterateCommand | WatchCommand | FunctionDefinition | SetCommand | ExposeCommand | 
-  EndCommand | AppendCommand | FunctionCall
+  IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand | 
+  DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | 
+  SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall
+;
+
+IncludeCommand:
+    'include' files+=STRING[eolterm]
 ;
 
 PrintCommand:
