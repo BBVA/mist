@@ -1,0 +1,20 @@
+data myTable {
+  key
+  value
+}
+
+set key_1 <= 'k1'
+
+set val_1 <= tmpFile()
+
+put key_1 val_1 => myTable
+
+set myList <= ["one","two","three","four"]
+
+iterate myList => v {
+  put v 'value' => myTable
+}
+
+iterate myTable => row {
+  print row.key row.value
+}

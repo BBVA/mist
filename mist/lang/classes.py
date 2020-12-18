@@ -40,7 +40,7 @@ class SaveCommand:
         if self.params:
             fields = [p for p in self.params]
         values = [
-            json.dumps(await get_id(i, stack)) if i.customList or type(await get_id(i, stack)) is list else str(await get_id(i, stack))
+            json.dumps(await get_id(i, stack)) if i.value.__class__.__name__ == 'CustomList' or type(await get_id(i, stack)) is list else str(await get_id(i, stack))
             for i in self.sources
         ]
         await watchedInsert(self.target, stack, values, fields=fields)
@@ -231,7 +231,7 @@ class FunctionCall:
                 break
         for arg in self.namedArgs:
             if arg.value.source:
-                sourceStream = arg.value.source        
+                sourceStream = arg.value.source
 
         if sourceStream or self.targetStream:
             t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
@@ -241,7 +241,7 @@ class FunctionCall:
             if self.targetStream:
                 streams.createIfNotExists(self.targetStream)
                 producers.append(t)
-        else:    
+        else:
             result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
             if self.key:
                 for s in reversed(stack):
@@ -285,7 +285,7 @@ class IncludeCommand:
                 content = f.read()
                 # TODO: pass stack
                 print(await mist.action_run.execute_from_text(content, environment))
-        
+
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,

@@ -136,6 +136,46 @@ async def get_id(id, stack):
     else:
         return get_var(id.id, stack)
 
+def get_id(id):
+
+    if id == None:
+        return None
+
+    if isinstance(id.value, str):
+        if id.value in ("True", "Success"):
+            return True
+        elif id.value in ("False", "Error"):
+            return False
+        else:
+            s = id.value
+            pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+            for k,v in pairs:
+                s = s.replace('{' + k + '}',str(v),1)
+            return s
+    elif isinstance(id.value, int):
+        return id.value
+    elif id.value.__class__.__name__ == "StringData":
+        return id.value.data
+    elif id.value.__class__.__name__ == "ExtParameter":
+        return params[id.value.param]
+    elif id.value.__class__.__name__ == "EnvVariable":
+        return environment[id.value.var]
+    elif id.value.__class__.__name__ == "FunctionInlineCall":
+        return function_runner(id.value.name, id.value.args, id.value.namedArgs )
+    elif id.value.__class__.__name__ == "CustomList":
+        return [ get_id(c) for c in id.value.components ]
+    elif id.value.__class__.__name__ == "VarReference":
+        if id.value.childs:
+            return getChildFromVar(get_var(id.value.id), id.value.childs)
+        else:
+            return get_var(id.value.id)
+    elif id.value.__class__.__name__ == "Source":
+        return environment[id.value.source]
+    else: # type(id.value is boolean, float, ....)
+        pass
+
+
+
 def get_param(params, key):
     t = [x for x in params if x.key == key]
     return t[0].value if t else None

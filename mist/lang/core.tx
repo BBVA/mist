@@ -47,9 +47,29 @@ FunctionInlineCall:
   name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')')
 ;
 
+StringData:
+  data=/(?ms)\'{3}(.*?)\'{3}/
+;
+
+VarReference:
+  id=ID('.'childs+=ID['.'])?
+;
+
+ExtParameter:
+  '%' param=ID
+;
+
+EnvVariable:
+  '$' var=ID
+;
+
+Source:
+  ':' source=ID
+;
+
 IDorSTRING:
-  function=FunctionInlineCall | customList=CustomList | data=/(?ms)\'{3}(.*?)\'{3}/ | (id=ID('.'childs+=ID['.'])?) | string=STRING | intVal=INT | '%'param=ID |
-  '$'var=ID | ':'source=ID
+  value=FunctionInlineCall | value=CustomList | value=StringData | value=VarReference |
+  value=STRING | value=INT | value=ExtParameter | value=EnvVariable | value=Source
 ;
 
 FunctionCall:
