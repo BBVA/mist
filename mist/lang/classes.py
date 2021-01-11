@@ -3,10 +3,14 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
+from .streams import streams
+
+import mist.action_run
+
 from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution, environment
 from mist.sdk.exceptions import MistException
 from mist.sdk.stack import stack
-import mist.action_run
+
 
 @dataclass
 class DataCommand:
@@ -14,7 +18,7 @@ class DataCommand:
     name: str
     params: list = field(default_factory=list)
 
-    def run(self):
+    async def run(self):
 
         table_params = [
             f"{param} text"
@@ -30,17 +34,17 @@ class SaveCommand:
     target: str
     params: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> Put to {self.target}")
         fields = None
         if self.params:
             fields = [p for p in self.params]
         values = [
-            json.dumps(get_id(i)) if i.customList or type(get_id(i)) is list else str(get_id(i))
+            json.dumps(await get_id(i)) if i.customList or type(await get_id(i)) is list else str(await get_id(i))
             for i in self.sources
         ]
-        watchedInsert(self.target, values, fields=fields)
+        await watchedInsert(self.target, values, fields=fields)
 
 @dataclass
 class SaveListCommand:
@@ -51,18 +55,18 @@ class SaveListCommand:
     target: str
     params: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"->Put list to {self.target}")
 
         cols = [c for c in self.params] if self.params else None
         sels = [s for s in self.selectors] if self.selectors else None
 
-        elements = get_id(self.list)
+        elements = await get_id(self.list)
         if type(elements) is not list:
             raise MistException(f"{self.list} is not a list")
 
-        commons = [ str(get_id(it)) for it in self.sources ] if self.sources else None
+        commons = [ str(await get_id(it)) for it in self.sources ] if self.sources else None
 
         for el in elements:
             if type(el) is dict:
@@ -73,7 +77,7 @@ class SaveListCommand:
             if commons is not None:
                 values.extend(commons)
 
-            watchedInsert(self.target, values, fields=cols)
+            await watchedInsert(self.target, values, fields=cols)
 
 @dataclass
 class CheckCommand:
@@ -84,14 +88,14 @@ class CheckCommand:
     commands: list
     elseCommands: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> Check that {self.var} is {self.result}")
 
         # If condition is not met we substitute the check command list with the else command list.
-        if (self.operator == 'is') and (get_id(self.var) != get_id(self.result)):
+        if (self.operator == 'is') and (await get_id(self.var) != await get_id(self.result)):
             self.commands = self.elseCommands
-        elif (self.operator == 'is not') and (get_id(self.var) == get_id(self.result)):
+        elif (self.operator == 'is not') and (await get_id(self.var) == await get_id(self.result)):
             self.commands = self.elseCommands
         return True
 
@@ -100,18 +104,18 @@ class PrintCommand:
     parent: object
     texts: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> BuiltPrint")
 
-        print(*([get_id(s) for s in self.texts]))
+        print(*([await get_id(s) for s in self.texts]))
 
 @dataclass
 class AbortCommand:
     parent: object
     reason: str
 
-    def run(self):
+    async def run(self):
         if self.reason:
             reason = self.reason
         else:
@@ -126,13 +130,13 @@ class IterateCommand:
     name: str
     commands: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> Iterate {self.var}")
 
         res = []
 
-        for index, item in enumerate(get_id(self.var)):
+        for index, item in enumerate(await get_id(self.var)):
             res.append({self.name: item, "index": index})
 
         return res
@@ -144,7 +148,7 @@ class WatchCommand:
     name: str
     commands: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> Watch {self.var}")
         watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
@@ -155,12 +159,12 @@ class AppendCommand:
     target: str
     value: str
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> AppendCommand {self.target}")
         for s in reversed(stack):
             if "MistBaseNamespace" in s:
-                s[self.target].append(get_id(self.value))
+                s[self.target].append(await get_id(self.value))
 
 @dataclass
 class SetCommand:
@@ -168,24 +172,36 @@ class SetCommand:
     key: str
     value: str
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> SetCommand {self.key}")
         for s in reversed(stack):
             if "MistBaseNamespace" in s:
-                s[self.key] = get_id(self.value)
+                s[self.key] = await get_id(self.value)
+
+@dataclass
+class SendCommand:
+    parent: object
+    value: str
+
+    async def run(self):
+        targetStream = await get_key("targetStream")
+        value = await get_id(self.value)
+        if config.debug:
+            print(f"-> SendCommand {targetStream} <= {value}")
+        streams.send(targetStream, value)
 
 @dataclass
 class ExposeCommand:
     parent: object
     value: str
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> ExposeCommand {self.value}")
         for i in range(len(stack)-1,0,-1):
             if "MistBaseNamespace" in stack[i]:
-                stack[i-1][self.value] = get_key(self.value)
+                stack[i-1][self.value] = await get_key(self.value)
 
 @dataclass
 class FunctionCall:
@@ -195,17 +211,21 @@ class FunctionCall:
     namedArgs: list
     result: str
     commands: list
-    targets: list
+    targetStream: str
+    sourceStream: str
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> FunctionCall {self.name}")
-        result = function_runner(self.name, self.args, self.namedArgs)
+        result = await function_runner(self.name, self.targetStream, self.args, self.namedArgs)
+        # TODO: handle sourceStream
+        # if self.sourceStream:
+        #     async for i in streams[self.sourceStream].iterate():
+        #         print(i)
         if self.commands:
             stack.append({self.result: result} if self.result else {})
-            command_runner(self.commands)
+            await command_runner(self.commands)
             stack.pop()
-        #TODO: handle stream targets
 
 @dataclass
 class FunctionDefinition:
@@ -215,7 +235,7 @@ class FunctionDefinition:
     result: str
     commands: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> Function Definition {self.name}")
         functions[self.name] = {"native": False, "commands": self.commands, "args": self.args, "result": self.result}
@@ -225,16 +245,16 @@ class IncludeCommand:
     parent: object
     files: list
 
-    def run(self):
+    async def run(self):
         if config.debug:
             print(f"-> Include {self.files}")
         for f in self.files:
             with open(f, "r") as f:
                 content = f.read()
-                print(mist.action_run.execute_from_text(content, environment))
+                print(await mist.action_run.execute_from_text(content, environment))
         
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
-           FunctionDefinition, IncludeCommand]
+           FunctionDefinition, IncludeCommand, SendCommand]

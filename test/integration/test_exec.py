@@ -1,14 +1,16 @@
 import os
+import pytest
 
 from mist.action_run import execute_from_text
 
 EXAMPLE_FILE = "exec.mist"
 
-def test_exec(examples_path):
+@pytest.mark.asyncio
+async def test_exec(examples_path):
     with open(os.path.join(examples_path, EXAMPLE_FILE), "r") as f:
         content = f.read()
 
-    console = execute_from_text(content, {"param": "hola"})
+    console = await execute_from_text(content, {"param": "hola"})
 
     assert console == """First exec result is True
 hola

@@ -1,5 +1,6 @@
 import os
 import platform
+import pytest
 
 from mist.action_run import execute_from_text
 
@@ -17,58 +18,66 @@ if (platform.system() == 'Darwin'):
 
 # Who the hell uses 'Windows'
 
-def test_check_success(examples_path):
+@pytest.mark.asyncio
+async def test_check_success(examples_path):
     with open(os.path.join(examples_path, CHECK_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/true"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/true"})
     assert "FOO\n" == output
 
-def test_check_fail(examples_path):
+@pytest.mark.asyncio
+async def test_check_fail(examples_path):
     with open(os.path.join(examples_path, CHECK_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/false"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/false"})
     assert "" == output
 
-def test_check_else_branch_1(examples_path):
+@pytest.mark.asyncio
+async def test_check_else_branch_1(examples_path):
     with open(os.path.join(examples_path, CHECK_ELSE_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/true"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/true"})
     assert "FOO\n" == output
 
-def test_check_else_branch_2(examples_path):
+@pytest.mark.asyncio
+async def test_check_else_branch_2(examples_path):
     with open(os.path.join(examples_path, CHECK_ELSE_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/false"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/false"})
     assert "BAR\n" == output
 
-def test_check_success_isnot(examples_path):
+@pytest.mark.asyncio
+async def test_check_success_isnot(examples_path):
     with open(os.path.join(examples_path, CHECK_ISNOT_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/false"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/false"})
     assert "FOO\n" == output
 
-def test_check_fail_isnot(examples_path):
+@pytest.mark.asyncio
+async def test_check_fail_isnot(examples_path):
     with open(os.path.join(examples_path, CHECK_ISNOT_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/true"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/true"})
     assert "" == output
 
-def test_check_else_branch_1_ifnot(examples_path):
+@pytest.mark.asyncio
+async def test_check_else_branch_1_ifnot(examples_path):
     with open(os.path.join(examples_path, CHECK_ELSE_ISNOT_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/false"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/false"})
     assert "FOO\n" == output
 
-def test_check_else_branch_2_ifnot(examples_path):
+@pytest.mark.asyncio
+async def test_check_else_branch_2_ifnot(examples_path):
     with open(os.path.join(examples_path, CHECK_ELSE_ISNOT_FILE), "r") as f:
         content = f.read()
 
-    output = execute_from_text(content, {"param": f"{paramPath}/true"})
+    output = await execute_from_text(content, {"param": f"{paramPath}/true"})
     assert "BAR\n" == output

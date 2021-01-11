@@ -2,6 +2,7 @@ import os
 import tempfile
 import unittest
 from unittest.mock import patch
+from unittest import IsolatedAsyncioTestCase
 
 import sqlite3
 
@@ -11,7 +12,7 @@ from mist.sdk.function import (tmpFileFunction, rangeFunction, searchInText,
 searchInXML, searchInJSON, CSVput, CSVdump, readFile, readFileAsLines, listLen,
 listClear, listSort, listReverse, listAppend, listRemove, listMap, listReduce)
 
-class NativeFunctionsTest(unittest.TestCase):
+class NativeFunctionsTest(IsolatedAsyncioTestCase):
 
     def tearDown(self):
         ### For tmpFileFunction tests
@@ -158,19 +159,19 @@ class NativeFunctionsTest(unittest.TestCase):
 ######
 ###### Tests for CSVPut
 ######
-    def test_CSVPut_fails_if_file_doesnt_exists(self):
+    async def test_CSVPut_fails_if_file_doesnt_exists(self):
         with self.assertRaisesRegex(FileNotFoundError, r"\[Errno 2\] No such file or directory: '/imagine'"):
-            CSVput("/imagine", "BAR")
+            await CSVput("/imagine", "BAR")
 
-    def test_CSVPut_fails_on_empty_file(self):
+    async def test_CSVPut_fails_on_empty_file(self):
         self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
 
         with self.assertRaisesRegex(MistException, f"Empty file: {self.CSVPutFile}"):
-            ret = CSVput(self.CSVPutFile, "BAR")
+            ret = await CSVput(self.CSVPutFile, "BAR")
             self.assertFalse(ret)
 
     @patch.object(db, 'create_table')
-    def test_CSVPut_creates_target(self,mock_create_table):
+    async def test_CSVPut_creates_target(self,mock_create_table):
         header = "col01,col02"
         expected = header.split(',')
         table = "myTable"
@@ -178,13 +179,13 @@ class NativeFunctionsTest(unittest.TestCase):
         with open(self.CSVPutFile,'w') as f:
             f.write(header)
 
-        ret = CSVput(self.CSVPutFile, table)
+        ret = await CSVput(self.CSVPutFile, table)
         self.assertTrue(ret)
         mock_create_table.assert_called_once_with(table, expected)
 
     @patch.object(db, 'create_table')
     @patch('mist.sdk.function.watchedInsert')
-    def test_CSVPut_creates_target_and_insert_content(self, mock_watchedInsert, mock_create_table):
+    async def test_CSVPut_creates_target_and_insert_content(self, mock_watchedInsert, mock_create_table):
         header = "col01,col02"
         expectedHeader = header.split(',')
         data = "value01,value02"
@@ -196,7 +197,7 @@ class NativeFunctionsTest(unittest.TestCase):
             f.write('\n')
             f.write(data)
 
-        ret = CSVput(self.CSVPutFile, table)
+        ret = await CSVput(self.CSVPutFile, table)
         self.assertTrue(ret)
         mock_create_table.assert_called_once_with(table, expectedHeader)
         mock_watchedInsert.assert_called_with(table, expectedData)

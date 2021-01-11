@@ -4,7 +4,7 @@ from mist.sdk.watchers import watchers
 from mist.sdk.stack import stack
 from mist.sdk.config import config
 
-def watchedInsert(table: str, values: List[str], *, fields=None):
+async def watchedInsert(table: str, values: List[str], *, fields=None):
     if config.debug:
         print(f"-> watchedInsert {table}")
     db.insert(table, values, fields=fields)
@@ -16,5 +16,5 @@ def watchedInsert(table: str, values: List[str], *, fields=None):
         if watcher["var"] == table:
             stack.append({watcher["name"]: item})
             for c in watcher["commands"]:
-                c.launch()
+                await c.launch()
             stack.pop()

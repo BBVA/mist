@@ -11,16 +11,16 @@ from .language_tools import get_mist_model, load_mist_language, \
     check_mist_parameters, check_installed_binaries
 
 
-def execute():
+async def execute():
     mist_model = get_mist_model()
 
     if config.simulate:
         print("[*] File loaded successfully")
     else:
         # Run user program!
-        command_runner(mist_model.commands)
+        await command_runner(mist_model.commands)
 
-def execute_from_text(text: str,
+async def execute_from_text(text: str,
                       fn_params: dict = None,
                       realtime_fn: Callable = None,
                       **kwargs) -> str:
@@ -85,7 +85,7 @@ def execute_from_text(text: str,
         # Check needed parameters for .mist
         check_mist_parameters(text)
 
-        command_runner(mist_model.commands)
+        await command_runner(mist_model.commands)
 
     return stream_stdout.getvalue()
 

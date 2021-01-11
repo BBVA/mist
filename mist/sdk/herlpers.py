@@ -34,31 +34,47 @@ def getChildFromVar(t, childs):
     else:
         return getFromDict(t, childs)
 
-def function_runner(name, args, namedArgs=None):
+async def checkArg(v):
+    if isinstance(v, str):
+        return await get_key(v)
+    else:
+        return await get_id(v)
+
+async def function_runner(name, targetStream, args, namedArgs=None):
     namedArgsDict = {}
     if args:
-        args = [get_key(a) if isinstance(a, str) else get_id(a) for a in args]
+        args = [await checkArg(a) for a in args]
     elif namedArgs:
         for i in namedArgs:
-            namedArgsDict[i.key] = get_key(i.value) if isinstance(i.value, str) else get_id(i.value)
+            namedArgsDict[i.key] = await checkArg(i.value)
+    if targetStream:
+        namedArgsDict["targetStream"] = targetStream
     f = functions[name]
     if "native" in f and f["native"]:
-        if args:
-            return f["commands"](*args)
-        elif namedArgs:
-            return f["commands"](**namedArgsDict)
+        if "async" in f and f["async"]:
+            if args:
+                return await f["commands"](*args)
+            elif namedArgs:
+                return await f["commands"](**namedArgsDict)
+            else:
+                return await f["commands"]()    
         else:
-            return f["commands"]()
+            if args:
+                return f["commands"](*args)
+            elif namedArgs:
+                return f["commands"](**namedArgsDict)
+            else:
+                return f["commands"]()
     else:
         if args:
             namedArgsDict = dict(zip(f["args"], args))
         namedArgsDict["MistBaseNamespace"] = True
         stack.append(namedArgsDict)
-        command_runner(f["commands"])
+        await command_runner(f["commands"])
         lastStack = stack.pop()
-        return lastStack[f["result"]] if f["result"]!='' else None 
+        return lastStack[f["result"]] if f["result"]!='' and f["result"] in lastStack else None 
 
-def get_id(id):
+async def get_id(id):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
     if id == None:
         return None
@@ -67,10 +83,10 @@ def get_id(id):
     if not hasattr(id, "string"):
         return get_var(id)
     if id.function:
-       return function_runner(id.function.name, id.function.args, id.function.namedArgs )
+       return await function_runner(id.function.name, None, id.function.args, id.function.namedArgs )
     if id.customList:
         return [
-            get_id(c)
+            await get_id(c)
             for c in id.customList.components
         ]
     if id.var:
@@ -79,10 +95,10 @@ def get_id(id):
         return params[id.param]
     if id.source:
         #TODO source
-        return None
+        return 
     if id.string:
         s=id.string
-        pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+        pairs = [(i[1],await get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
         for k,v in pairs:
             s = s.replace('{' + k + '}',str(v),1)
         return s
@@ -99,7 +115,7 @@ def get_param(params, key):
     t = [x for x in params if x.key == key]
     return t[0].value if t else None
 
-def get_key(key):
+async def get_key(key):
     key=key.strip()
     if key[0]=="'" and key[-1]=="'":
         return key[1:-1]
@@ -119,15 +135,15 @@ def get_key(key):
                     self.key = key
                     self.value = value
             namedArgs=[ NamedArg(i.split('=',1)[0], i.split('=',1)[1]) for i in args]
-            return function_runner(function, None, namedArgs )
-        return function_runner(function, [] if args[0]=='' else args)
+            return await function_runner(function, None, None, namedArgs )
+        return await function_runner(function, None, [] if args[0]=='' else args)
     if '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0]), t[1:])
     return get_var(key)
 
-def command_runner(commands: list):
+async def command_runner(commands: list):
     for c in commands:
         if c == "done":
             break
-        c.launch()
+        await c.launch()

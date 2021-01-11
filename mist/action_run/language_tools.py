@@ -12,7 +12,6 @@ from mist.sdk import params, MistMissingBinaryException, \
     MistInputDataException, config, db, MistParseErrorException, command_runner
 
 from mist.lang.classes import exports as core_exports
-from mist.lang.builtin import exports as builtin_exports
 
 from .helpers import get_or_download_mist_file, get_mist_filename, command_name_to_class
 from .loaders import find_catalog_exports, find_grammars, \
@@ -42,10 +41,10 @@ GRAMMAR_TEMPLATE = """
 # -------------------------------------------------------------------------
 # Grammar helpers
 # -------------------------------------------------------------------------
-def launch_hook(self):
+async def launch_hook(self):
     from mist.sdk import stack
 
-    if results := self.run():
+    if results := await self.run():
         if type(results) is list:
 
             for r in results:
@@ -53,7 +52,7 @@ def launch_hook(self):
 
                 if self.commands:
                     for c in self.commands:
-                        c.launch()
+                        await c.launch()
                     stack.pop()
 
         else:
@@ -62,7 +61,7 @@ def launch_hook(self):
                 stack.append(results)
 
             if self.commands:
-                command_runner(self.commands)
+                await command_runner(self.commands)
                 if type(results) is dict:
                     stack.pop()
 
@@ -76,7 +75,6 @@ def get_core_grammar() -> str:
 
     for core_grammar_file in [
         op.join(HERE, "..", "lang", "core.tx"),
-        op.join(HERE, "..", "lang", "builtin.tx")
     ]:
         with open(core_grammar_file, "r") as f:
             _core_grammar.append(f.read())
@@ -253,9 +251,6 @@ def load_mist_language(mist_file_or_content: str):
 
     base_exports = []
     base_exports.extend(core_exports)
-
-    # TODO: FIX ON MOVE
-    base_exports.extend(builtin_exports)
 
     # TODO: REMOVE CATALOG
     #

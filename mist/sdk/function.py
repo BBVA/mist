@@ -52,7 +52,7 @@ def searchInJSON(jsonpath: str, text: str):
         return [ e.value for e in found ] if found is not None else []
 
 
-def CSVput(fileName: str, target: str):
+async def CSVput(fileName: str, target: str):
     with open(fileName) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
 
@@ -62,7 +62,7 @@ def CSVput(fileName: str, target: str):
 
             db.create_table(target, headers)
             for row in reader:
-                watchedInsert(target, row)
+                await watchedInsert(target, row)
             return True
         except StopIteration:
             raise MistException(f"Empty file: {fileName}")
@@ -226,7 +226,7 @@ class _Functions(dict):
         self["searchInText"] = {"native": True, "commands": searchInText}
         self["searchInXML"] = {"native": True, "commands": searchInXML}
         self["searchInJSON"] = {"native": True, "commands": searchInJSON}
-        self["CSVput"] = {"native": True, "commands": CSVput}
+        self["CSVput"] = {"native": True, "async": True, "commands": CSVput}
         self["CSVdump"] = {"native": True, "commands": CSVdump}
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}

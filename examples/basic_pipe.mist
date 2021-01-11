@@ -1,0 +1,13 @@
+function producer () => result {   
+    send "1"
+    send "2"
+}
+
+function consumer(n) {
+    print n
+}
+
+producer() to numbers
+producer() to numbers2
+
+consumer(:n) from numbers

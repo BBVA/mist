@@ -5,7 +5,7 @@ Program:
 Command:
   IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand | 
   DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | 
-  SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall
+  SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand
 ;
 
 IncludeCommand:
@@ -54,7 +54,7 @@ IDorSTRING:
 FunctionCall:
   name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') (('=>' result=ID)? '{'
       commands*=Command
-    '}' ('to' targets+=ID[eolterm])? )?
+    '}')? ('to' targetStream=ID)? ('from' sourceStream=ID)? 
 ;
 
 FunctionDefinition:
@@ -99,6 +99,10 @@ IterateCommand:
 
 SetCommand:
   'set' key=ID '<=' value=IDorSTRING
+;
+
+SendCommand:
+  'send' value=IDorSTRING
 ;
 
 ExposeCommand:
