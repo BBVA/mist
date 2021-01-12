@@ -83,5 +83,6 @@ class _Streams(dict):
         await self[name].put(value)
 
 streams = _Streams()
+workers = []
 
-__all__ = ("streams", )
+__all__ = ("streams", "workers",)

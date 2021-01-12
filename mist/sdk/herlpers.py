@@ -10,6 +10,8 @@ from mist.sdk.environment import environment
 from mist.sdk.params import params
 from mist.sdk.function import functions
 
+from mist.lang.streams import streams
+
 def get_var(var):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
     if var in ("True", "Success"):
@@ -40,17 +42,16 @@ async def checkArg(v):
     else:
         return await get_id(v)
 
-async def function_runner(name, targetStream, args, namedArgs=None):
+async def function_runner(name, sourceStream, targetStream, args, namedArgs=None):
     namedArgsDict = {}
     if args:
         args = [await checkArg(a) for a in args]
     elif namedArgs:
         for i in namedArgs:
             namedArgsDict[i.key] = await checkArg(i.value)
-    if targetStream:
-        namedArgsDict["targetStream"] = targetStream
     f = functions[name]
     if "native" in f and f["native"]:
+        #TODO: handle targetStream and sourceStream if needed
         if "async" in f and f["async"]:
             if args:
                 return await f["commands"](*args)
@@ -69,8 +70,15 @@ async def function_runner(name, targetStream, args, namedArgs=None):
         if args:
             namedArgsDict = dict(zip(f["args"], args))
         namedArgsDict["MistBaseNamespace"] = True
+        if targetStream:
+            namedArgsDict["targetStream"] = targetStream
         stack.append(namedArgsDict)
-        await command_runner(f["commands"])
+        if sourceStream:
+            async for s in streams[sourceStream].iterate():
+                namedArgsDict["received"] = s
+                await command_runner(f["commands"])
+        else:
+            await command_runner(f["commands"])
         lastStack = stack.pop()
         return lastStack[f["result"]] if f["result"]!='' and f["result"] in lastStack else None 
 
@@ -83,7 +91,7 @@ async def get_id(id):
     if not hasattr(id, "string"):
         return get_var(id)
     if id.function:
-       return await function_runner(id.function.name, None, id.function.args, id.function.namedArgs )
+       return await function_runner(id.function.name, None, None, id.function.args, id.function.namedArgs )
     if id.customList:
         return [
             await get_id(c)
@@ -135,8 +143,8 @@ async def get_key(key):
                     self.key = key
                     self.value = value
             namedArgs=[ NamedArg(i.split('=',1)[0], i.split('=',1)[1]) for i in args]
-            return await function_runner(function, None, None, namedArgs )
-        return await function_runner(function, None, [] if args[0]=='' else args)
+            return await function_runner(function, None, None, None, namedArgs )
+        return await function_runner(function, None, None, [] if args[0]=='' else args)
     if '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0]), t[1:])

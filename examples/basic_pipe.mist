@@ -1,13 +1,18 @@
-function producer () => result {   
-    send "1"
-    send "2"
+function producer (i) => result {
+    print "Producer" i  
+    send i
 }
 
-function consumer(n) {
-    print n
+function consumer(i) {
+    print "Consumer" i ":" received
 }
 
-producer() to numbers
-producer() to numbers2
+producer(1) to numbers
 
-consumer(:n) from numbers
+consumer(1) from numbers
+
+producer(2) to numbers
+producer(3) to numbers
+producer(4) to numbers
+producer(5) to numbers
+producer(6) to numbers

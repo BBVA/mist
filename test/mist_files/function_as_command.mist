@@ -1,12 +1,12 @@
 range(1 4 1) => result {
     print result
     print "foo"
-} to names
+}
 
 range(4 1 -1) => result {
     print result
     print "bar"
-} to names
+}
 
 function saySomething(name) => something {
     set something <= name

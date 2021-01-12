@@ -2,8 +2,9 @@ from string import Formatter
 import json
 from dataclasses import dataclass, field
 from typing import List
+import asyncio
 
-from .streams import streams
+from .streams import streams, workers
 
 import mist.action_run
 
@@ -189,7 +190,7 @@ class SendCommand:
         value = await get_id(self.value)
         if config.debug:
             print(f"-> SendCommand {targetStream} <= {value}")
-        streams.send(targetStream, value)
+        await streams.send(targetStream, value)
 
 @dataclass
 class ExposeCommand:
@@ -217,15 +218,15 @@ class FunctionCall:
     async def run(self):
         if config.debug:
             print(f"-> FunctionCall {self.name}")
-        result = await function_runner(self.name, self.targetStream, self.args, self.namedArgs)
-        # TODO: handle sourceStream
-        # if self.sourceStream:
-        #     async for i in streams[self.sourceStream].iterate():
-        #         print(i)
-        if self.commands:
-            stack.append({self.result: result} if self.result else {})
-            await command_runner(self.commands)
-            stack.pop()
+        if self.sourceStream or self.targetStream:
+            t = asyncio.create_task(function_runner(self.name, self.sourceStream, self.targetStream, self.args, self.namedArgs))
+            workers.append(t)
+        else:    
+            result = await function_runner(self.name, self.sourceStream, self.targetStream, self.args, self.namedArgs)
+            if self.commands:
+                stack.append({self.result: result} if self.result else {})
+                await command_runner(self.commands)
+                stack.pop()
 
 @dataclass
 class FunctionDefinition:
