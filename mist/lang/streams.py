@@ -28,7 +28,13 @@ class MemoryStreamQueue(asyncio.Queue):
                 getter = self._loop.create_future()
                 self._getters.append(getter)
                 try:
-                    await getter
+                    #await getter
+
+                    await asyncio.wait_for(getter, 2)
+                except asyncio.exceptions.TimeoutError:
+                    if all(t.done() for t in producers): # and self.empty():
+                        return
+
                 except:
                     getter.cancel()  # Just in case getter is not done yet.
                     try:
@@ -83,6 +89,7 @@ class _Streams(dict):
         await self[name].put(value)
 
 streams = _Streams()
-workers = []
+consumers = []
+producers = []
 
-__all__ = ("streams", "workers",)
+__all__ = ("streams", "consumers", "producers",)

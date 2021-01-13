@@ -13,6 +13,9 @@ consumer(1) from numbers
 
 producer(2) to numbers
 producer(3) to numbers
+
+consumer(2) from numbers
+
 producer(4) to numbers
 producer(5) to numbers
 producer(6) to numbers

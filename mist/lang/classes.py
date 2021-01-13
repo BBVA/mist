@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import List
 import asyncio
 
-from .streams import streams, workers
+from .streams import streams, consumers, producers
 
 import mist.action_run
 
@@ -220,7 +220,10 @@ class FunctionCall:
             print(f"-> FunctionCall {self.name}")
         if self.sourceStream or self.targetStream:
             t = asyncio.create_task(function_runner(self.name, self.sourceStream, self.targetStream, self.args, self.namedArgs))
-            workers.append(t)
+            if self.sourceStream:
+                consumers.append(t)
+            else:
+                producers.append(t)
         else:    
             result = await function_runner(self.name, self.sourceStream, self.targetStream, self.args, self.namedArgs)
             if self.commands:
