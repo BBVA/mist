@@ -105,8 +105,10 @@ async def async_main():
     if "func" in parsed_args:
         await parsed_args.func(parsed_args)
         
-    await asyncio.wait(producers)
-    await asyncio.wait(consumers)
+    if len(producers)>0:
+        await asyncio.wait(producers)
+    if len(consumers)>0:
+        await asyncio.wait(consumers)
 
 def main():
     try:

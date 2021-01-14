@@ -1,7 +1,6 @@
 from mist.sdk.config import config
 from mist.sdk.environment import environment
 from mist.sdk.params import params
-from mist.sdk.stack import stack
 from mist.sdk.db import db
 
 
@@ -30,22 +29,22 @@ def init_mist(mistConfig={'debug': True}, mistEnvironment=None, mistParams=None)
         params.update(mistParams)
 
 
-def create_variable(name, val):
+def create_variable(stack, name, val):
     stack.append({name: val})
 
-def remove_variable(name):
+def remove_variable(stack, name):
     for d in stack:
         if name in d:
             del d[name]
 
-def clean_variables():
+def clean_variables(stack):
     stack.clear()
     stack.append({"MistBaseNamespace": True})
 
-def create_env_var(name, val):
+def create_env_var(stack, name, val):
     environment[name] = val
 
-def remove_env_var(name):
+def remove_env_var(stack, name):
     del environment[name]
 
 def clean_env_vars():

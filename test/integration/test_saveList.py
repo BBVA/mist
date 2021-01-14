@@ -6,7 +6,7 @@ from mist.sdk.function import functions
 
 MIST_FILE = "saveList.mist"
 
-def listGeneratorFunction(kind):
+def listGeneratorFunction(kind, stack):
     if kind == "dict":
         return [ {"key01": "val01", "key02": "val02"}, {"key01": "val11", "key02": "val12"} ]
     elif kind == "strList":

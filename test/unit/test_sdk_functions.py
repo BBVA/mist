@@ -161,13 +161,13 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
 ######
     async def test_CSVPut_fails_if_file_doesnt_exists(self):
         with self.assertRaisesRegex(FileNotFoundError, r"\[Errno 2\] No such file or directory: '/imagine'"):
-            await CSVput("/imagine", "BAR")
+            await CSVput("/imagine", "BAR", [])
 
     async def test_CSVPut_fails_on_empty_file(self):
         self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
 
         with self.assertRaisesRegex(MistException, f"Empty file: {self.CSVPutFile}"):
-            ret = await CSVput(self.CSVPutFile, "BAR")
+            ret = await CSVput(self.CSVPutFile, "BAR", [])
             self.assertFalse(ret)
 
     @patch.object(db, 'create_table')
@@ -179,7 +179,7 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         with open(self.CSVPutFile,'w') as f:
             f.write(header)
 
-        ret = await CSVput(self.CSVPutFile, table)
+        ret = await CSVput(self.CSVPutFile, table, [])
         self.assertTrue(ret)
         mock_create_table.assert_called_once_with(table, expected)
 
@@ -197,10 +197,10 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
             f.write('\n')
             f.write(data)
 
-        ret = await CSVput(self.CSVPutFile, table)
+        ret = await CSVput(self.CSVPutFile, table, [])
         self.assertTrue(ret)
         mock_create_table.assert_called_once_with(table, expectedHeader)
-        mock_watchedInsert.assert_called_with(table, expectedData)
+        mock_watchedInsert.assert_called_with(table, [], expectedData)
 
 ######
 ###### Tests for CSVdump

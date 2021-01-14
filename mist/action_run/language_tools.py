@@ -41,10 +41,8 @@ GRAMMAR_TEMPLATE = """
 # -------------------------------------------------------------------------
 # Grammar helpers
 # -------------------------------------------------------------------------
-async def launch_hook(self):
-    from mist.sdk import stack
-
-    if results := await self.run():
+async def launch_hook(self, stack):
+    if results := await self.run(stack):
         if type(results) is list:
 
             for r in results:
@@ -52,7 +50,7 @@ async def launch_hook(self):
 
                 if self.commands:
                     for c in self.commands:
-                        await c.launch()
+                        await c.launch(stack)
                     stack.pop()
 
         else:
@@ -61,7 +59,7 @@ async def launch_hook(self):
                 stack.append(results)
 
             if self.commands:
-                await command_runner(self.commands)
+                await command_runner(self.commands, stack)
                 if type(results) is dict:
                     stack.pop()
 

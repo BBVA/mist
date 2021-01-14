@@ -18,12 +18,14 @@ async def execute():
         print("[*] File loaded successfully")
     else:
         # Run user program!
-        await command_runner(mist_model.commands)
+        stack = [{"MistBaseNamespace": True}]
+        await command_runner(mist_model.commands, stack)
 
 async def execute_from_text(text: str,
                       fn_params: dict = None,
                       realtime_fn: Callable = None,
                       **kwargs) -> str:
+    stack = [{"MistBaseNamespace": True}]
     if fn_params:
         params.update(fn_params)
 
@@ -85,7 +87,7 @@ async def execute_from_text(text: str,
         # Check needed parameters for .mist
         check_mist_parameters(text)
 
-        await command_runner(mist_model.commands)
+        await command_runner(mist_model.commands, stack)
 
     return stream_stdout.getvalue()
 

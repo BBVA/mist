@@ -2,7 +2,6 @@ import re
 from typing import List
 from string import Formatter
 
-from mist.sdk.stack import stack
 from mist.sdk.db import db
 from mist.sdk.config import config
 from mist.sdk.watchers import watchers
@@ -12,7 +11,7 @@ from mist.sdk.function import functions
 
 from mist.lang.streams import streams
 
-def get_var(var):
+def get_var(var, stack):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
     if var in ("True", "Success"):
         return True
@@ -36,36 +35,38 @@ def getChildFromVar(t, childs):
     else:
         return getFromDict(t, childs)
 
-async def checkArg(v):
+async def checkArg(v, stack):
     if isinstance(v, str):
-        return await get_key(v)
+        return await get_key(v, stack)
     else:
-        return await get_id(v)
+        return await get_id(v, stack)
 
-async def function_runner(name, sourceStream, targetStream, args, namedArgs=None):
+async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None):
     namedArgsDict = {}
     if args:
-        args = [await checkArg(a) for a in args]
+        args = [await checkArg(a, stack) for a in args]
     elif namedArgs:
         for i in namedArgs:
-            namedArgsDict[i.key] = await checkArg(i.value)
+            namedArgsDict[i.key] = await checkArg(i.value, stack)
     f = functions[name]
     if "native" in f and f["native"]:
         #TODO: handle targetStream and sourceStream if needed
         if "async" in f and f["async"]:
             if args:
-                return await f["commands"](*args)
+                return await f["commands"](*args, stack=stack)
             elif namedArgs:
+                namedArgsDict["stack"]=stack
                 return await f["commands"](**namedArgsDict)
             else:
-                return await f["commands"]()    
+                return await f["commands"](stack=stack)
         else:
             if args:
-                return f["commands"](*args)
+                return f["commands"](*args, stack=stack)
             elif namedArgs:
+                namedArgsDict["stack"]=stack
                 return f["commands"](**namedArgsDict)
             else:
-                return f["commands"]()
+                return f["commands"](stack=stack)
     else:
         if args:
             namedArgsDict = dict(zip(f["args"], args))
@@ -76,25 +77,25 @@ async def function_runner(name, sourceStream, targetStream, args, namedArgs=None
         if sourceStream:
             async for s in streams[sourceStream].iterate():
                 namedArgsDict["received"] = s
-                await command_runner(f["commands"])
+                await command_runner(f["commands"], stack)
         else:
-            await command_runner(f["commands"])
+            await command_runner(f["commands"], stack)
         lastStack = stack.pop()
         return lastStack[f["result"]] if f["result"]!='' and f["result"] in lastStack else None 
 
-async def get_id(id):
+async def get_id(id, stack):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
     if id == None:
         return None
     if isinstance(id, int):
         return id
     if not hasattr(id, "string"):
-        return get_var(id)
+        return get_var(id, stack)
     if id.function:
-       return await function_runner(id.function.name, None, None, id.function.args, id.function.namedArgs )
+       return await function_runner(id.function.name, stack, None, None, id.function.args, id.function.namedArgs )
     if id.customList:
         return [
-            await get_id(c)
+            await get_id(c, stack)
             for c in id.customList.components
         ]
     if id.var:
@@ -102,28 +103,28 @@ async def get_id(id):
     if id.param:
         return params[id.param]
     if id.source:
-        #TODO source
+        #TODO source. May be remove this.
         return 
     if id.string:
         s=id.string
-        pairs = [(i[1],await get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+        pairs = [(i[1],await get_key(i[1], stack)) for i in Formatter().parse(s) if i[1] is not None]
         for k,v in pairs:
             s = s.replace('{' + k + '}',str(v),1)
         return s
     elif id.data:
         return id.data
     elif id.childs:
-        return getChildFromVar(get_var(id.id), id.childs)
+        return getChildFromVar(get_var(id.id, stack), id.childs)
     if id.id == "":
         return id.intVal
     else:
-        return get_var(id.id)
+        return get_var(id.id, stack)
 
 def get_param(params, key):
     t = [x for x in params if x.key == key]
     return t[0].value if t else None
 
-async def get_key(key):
+async def get_key(key, stack):
     key=key.strip()
     if key[0]=="'" and key[-1]=="'":
         return key[1:-1]
@@ -132,7 +133,7 @@ async def get_key(key):
     if key[0]=='$':
         return environment[key[1:]]
     if key[0]==':':
-        #TODO source
+        #TODO source. May be remove this.
         return None
     if key[-1]==')':
         function = key.split('(')[0].strip()
@@ -143,15 +144,15 @@ async def get_key(key):
                     self.key = key
                     self.value = value
             namedArgs=[ NamedArg(i.split('=',1)[0], i.split('=',1)[1]) for i in args]
-            return await function_runner(function, None, None, None, namedArgs )
-        return await function_runner(function, None, None, [] if args[0]=='' else args)
+            return await function_runner(function, stack, None, None, None, namedArgs )
+        return await function_runner(function, stack, None, None, [] if args[0]=='' else args)
     if '.' in key:
         t = key.split('.')
-        return getChildFromVar(get_var(t[0]), t[1:])
-    return get_var(key)
+        return getChildFromVar(get_var(t[0], stack), t[1:])
+    return get_var(key, stack)
 
-async def command_runner(commands: list):
+async def command_runner(commands: list, stack):
     for c in commands:
         if c == "done":
             break
-        await c.launch()
+        await c.launch(stack)

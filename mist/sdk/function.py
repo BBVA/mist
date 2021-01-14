@@ -12,13 +12,13 @@ from mist.sdk.config import config
 from mist.sdk.common import watchedInsert
 from mist.sdk.cmd import execution
 
-def tmpFileFunction():
+def tmpFileFunction(stack: list = None):
     return tempfile.NamedTemporaryFile(delete=False).name
 
-def rangeFunction(begin, end, step):
+def rangeFunction(begin, end, step, stack: list = None):
     return list(range(begin, end, step))
 
-def searchInText(regex: str, text: str):
+def searchInText(regex: str, text: str, stack: list = None):
     found = []
 
     try:
@@ -28,7 +28,7 @@ def searchInText(regex: str, text: str):
     finally:
         return found
 
-def searchInXML(xpath: str, text: str):
+def searchInXML(xpath: str, text: str, stack: list = None):
     found = None
 
     try:
@@ -39,7 +39,7 @@ def searchInXML(xpath: str, text: str):
     finally:
         return [ {"tag": e.tag, "text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
 
-def searchInJSON(jsonpath: str, text: str):
+def searchInJSON(jsonpath: str, text: str, stack: list = None):
     found = None
 
     try:
@@ -52,7 +52,7 @@ def searchInJSON(jsonpath: str, text: str):
         return [ e.value for e in found ] if found is not None else []
 
 
-async def CSVput(fileName: str, target: str):
+async def CSVput(fileName: str, target: str, stack: list = None):
     with open(fileName) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
 
@@ -62,7 +62,7 @@ async def CSVput(fileName: str, target: str):
 
             db.create_table(target, headers)
             for row in reader:
-                await watchedInsert(target, row)
+                await watchedInsert(target, stack, row)
             return True
         except StopIteration:
             raise MistException(f"Empty file: {fileName}")
@@ -71,7 +71,7 @@ async def CSVput(fileName: str, target: str):
             print(f"Error while creating database: {target}: {e}")
             return False
 
-def CSVdump(source: str, fileName: str):
+def CSVdump(source: str, fileName: str, stack: list = None):
     with open(fileName, mode='w') as csvFile:
         csvWriter = csv.writer(csvFile,
                                 delimiter=',',
@@ -87,7 +87,7 @@ def CSVdump(source: str, fileName: str):
             for row in items
         ])
 
-def readFile(path:str):
+def readFile(path:str, stack: list = None):
     if not os.path.isfile(path):
         raise MistException(f"File not found: {path}")
 
@@ -96,7 +96,7 @@ def readFile(path:str):
 
     return fContent
 
-def readFileAsLines(path:str):
+def readFileAsLines(path:str, stack: list = None):
     if not os.path.isfile(path):
         raise MistException(f"File not found: {path}")
 
@@ -107,7 +107,7 @@ def readFileAsLines(path:str):
 
     return fContent
 
-def exec(command:str, printOutput=True):
+def exec(command:str, printOutput=True, stack: list = None):
     with execution(command) as (executor, in_files, out_files):
         with executor as console_lines:
             for line in console_lines:
@@ -120,7 +120,7 @@ def exec(command:str, printOutput=True):
             "consoleError": executor.stderr_output()
         }
 
-def listLen(l:list):
+def listLen(l:list, stack: list = None):
     """ Returns the length of the given list """
     if l is None:
         raise MistException("No list received")
@@ -129,7 +129,7 @@ def listLen(l:list):
 
     return len(l)
 
-def listClear(l:list):
+def listClear(l:list, stack: list = None):
     """ Removes all elements from the given list """
     if l is None:
         raise MistException("No list received")
@@ -139,7 +139,7 @@ def listClear(l:list):
     l.clear()
     return l
 
-def listSort(l:list):
+def listSort(l:list, stack: list = None):
     """ Sorts the given list in ascending order """
     if l is None:
         raise MistException("No list received")
@@ -149,7 +149,7 @@ def listSort(l:list):
     l.sort()
     return l
 
-def listReverse(l:list):
+def listReverse(l:list, stack: list = None):
     """ Reverses the elements of the given list """
     if l is None:
         raise MistException("No list received")
@@ -159,7 +159,7 @@ def listReverse(l:list):
     l.reverse()
     return l
 
-def listAppend(l:list, *elements):
+def listAppend(l:list, *elements, stack: list = None):
     """ Appends all the elements to the given list """
     if l is None:
         raise MistException("No list received")
@@ -173,7 +173,7 @@ def listAppend(l:list, *elements):
 
     return l
 
-def listRemove(l:list, e):
+def listRemove(l:list, e, stack: list = None):
     """ Removes the element from the given list if it exists """
     if l is None:
         raise MistException("No list received")
@@ -187,7 +187,7 @@ def listRemove(l:list, e):
 
     return l
 
-def listMap(l:list, mapFunc):
+def listMap(l:list, mapFunc, stack: list = None):
     """ Replace the elements of the given list by aplying the map function to each of them. mapFunc must be defined as mapFunc(val) => val """
     if l is None:
         raise MistException("No list received")
@@ -201,7 +201,7 @@ def listMap(l:list, mapFunc):
 
     return l
 
-def listReduce(l:list, reduceFunc):
+def listReduce(l:list, reduceFunc, stack: list = None):
     """ Returns the value produced by reduceFunc after applyng it to all the elements of the given list. reduceFunc must be defined as reduceFunc(base, val) => val """
     if l is None:
         raise MistException("No list received")
