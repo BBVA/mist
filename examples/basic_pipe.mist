@@ -4,6 +4,7 @@ function producer (i) => result {
 }
 
 function consumer(i) {
+    sleep(i)
     print "Consumer" i ":" received
 }
 

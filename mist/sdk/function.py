@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import json
 from jsonpath_ng.ext import parse
 import csv
+import asyncio
 
 from mist.sdk import db
 from mist.sdk.exceptions import MistException
@@ -216,6 +217,8 @@ def listReduce(l:list, reduceFunc, stack: list = None):
 
     return base
 
+async def sleep(n:int, stack: list = None):
+    await asyncio.sleep(n)
 
 class _Functions(dict):
 
@@ -226,7 +229,7 @@ class _Functions(dict):
         self["searchInText"] = {"native": True, "commands": searchInText}
         self["searchInXML"] = {"native": True, "commands": searchInXML}
         self["searchInJSON"] = {"native": True, "commands": searchInJSON}
-        self["CSVput"] = {"native": True, "async": True, "commands": CSVput}
+        self["CSVput"] = {"native": True, "commands": CSVput, "async": True}
         self["CSVdump"] = {"native": True, "commands": CSVdump}
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
@@ -239,6 +242,7 @@ class _Functions(dict):
         self["remove"] = {"native": True, "commands": listRemove}
         self["map"] = {"native": True, "commands": listMap}
         self["reduce"] = {"native": True, "commands": listReduce}
+        self["sleep"] = {"native": True, "commands": sleep, "async": True}
 
 functions = _Functions()
 

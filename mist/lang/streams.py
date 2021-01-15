@@ -28,8 +28,6 @@ class MemoryStreamQueue(asyncio.Queue):
                 getter = self._loop.create_future()
                 self._getters.append(getter)
                 try:
-                    #await getter
-
                     await asyncio.wait_for(getter, 2)
                 except asyncio.exceptions.TimeoutError:
                     if all(t.done() for t in producers): # and self.empty():

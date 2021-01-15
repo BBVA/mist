@@ -94,6 +94,7 @@ After cloning the repository, you can run `MIST` without install it:
 [ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática
 [ ] Migrar los antiguos playbooks a funciones (en lenguage mist preferiblemente)
 [ ] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR)
+[ ] Crear binario único
 
 # Possible new grammar
 

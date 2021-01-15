@@ -217,8 +217,7 @@ class FunctionCall:
         if config.debug:
             print(f"-> FunctionCall {self.name}")
         if self.sourceStream or self.targetStream:
-            #TODO: clone stack
-            t = asyncio.create_task(function_runner(self.name, stack, self.sourceStream, self.targetStream, self.args, self.namedArgs))
+            t = asyncio.create_task(function_runner(self.name, stack[:], self.sourceStream, self.targetStream, self.args, self.namedArgs))
             if self.sourceStream:
                 consumers.append(t)
             else:
