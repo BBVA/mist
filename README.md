@@ -88,7 +88,8 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist"
 [X] Comando para importar (o llamar) otros ficheros de mist.
 [X] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
-[ ] Integración del nuevo codigo multihilo y flujos (DANI + GERMAN)
+[X] Integración del nuevo codigo multihilo y flujos (DANI + GERMAN)
+[ ] Comando exec proporciona salida linea a linea (each) (GERMAN)
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [ ] Soporte para CREAR y MODIFICAR dicionarios
 [ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática

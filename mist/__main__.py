@@ -13,8 +13,6 @@ from mist.action_server import cli_server
 from mist.action_catalog import cli_catalog
 from mist.action_catalog import CORE_CATALOG, Catalog
 
-from mist.lang.streams import consumers, producers
-
 
 HERE = os.path.dirname(__file__)
 
@@ -105,11 +103,6 @@ async def async_main():
     if "func" in parsed_args:
         await parsed_args.func(parsed_args)
         
-    if len(producers)>0:
-        await asyncio.wait(producers)
-    if len(consumers)>0:
-        await asyncio.wait(consumers)
-
 def main():
     try:
         asyncio.run(async_main())

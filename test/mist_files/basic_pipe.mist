@@ -4,13 +4,13 @@ function producer (i) => result {
 }
 
 function consumer(i) {
-    sleep(i)
+    #sleep(i)
     print "Consumer" i ":" received
 }
 
 producer(1) to numbers
 
-consumer(3) from numbers
+consumer(1) from numbers
 
 producer(2) to numbers
 producer(3) to numbers
