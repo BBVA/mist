@@ -100,80 +100,31 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         lastStack = stack.pop()
         return lastStack["result"] if "result" in lastStack else None
 
-async def get_id(id, stack):
-    #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
-    if id == None:
-        return None
-    if isinstance(id, int):
-        return id
-    if not hasattr(id, "string"):
-        return get_var(id, stack)
-    if id.function:
-       return await function_runner(id.function.name, stack, None, None, id.function.args, id.function.namedArgs )
-    if id.customList:
-        return [
-            await get_id(c, stack)
-            for c in id.customList.components
-        ]
-    if id.var:
-        return environment[id.var]
-    if id.param:
-        return params[id.param]
-    if id.source:
-        return ":" + id.source
-    if id.string:
-        s=id.string
-        pairs = [(i[1],await get_key(i[1], stack)) for i in Formatter().parse(s) if i[1] is not None]
-        for k,v in pairs:
-            s = s.replace('{' + k + '}',str(v),1)
-        return s
-    elif id.data:
-        return id.data
-    elif id.childs:
-        return getChildFromVar(get_var(id.id, stack), id.childs)
-    if id.id == "":
-        return id.intVal
-    else:
-        return get_var(id.id, stack)
+# Define interface for ValueContainer with a getValue() method for classes that
+# hold a left-side value
+class ValueContainer:
+    def getValue(self):
+        pass
 
 def get_id(id):
 
     if id == None:
         return None
 
-    if isinstance(id.value, str):
-        if id.value in ("True", "Success"):
-            return True
-        elif id.value in ("False", "Error"):
-            return False
-        else:
-            s = id.value
-            pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
-            for k,v in pairs:
-                s = s.replace('{' + k + '}',str(v),1)
-            return s
+    if isinstance(id, str):
+        return get_var(id)
+    elif isinstance(id.value, str):
+        s = id.value
+        pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+        for k,v in pairs:
+            s = s.replace('{' + k + '}',str(v),1)
+        return s
     elif isinstance(id.value, int):
         return id.value
-    elif id.value.__class__.__name__ == "StringData":
-        return id.value.data
-    elif id.value.__class__.__name__ == "ExtParameter":
-        return params[id.value.param]
-    elif id.value.__class__.__name__ == "EnvVariable":
-        return environment[id.value.var]
-    elif id.value.__class__.__name__ == "FunctionInlineCall":
-        return function_runner(id.value.name, id.value.args, id.value.namedArgs )
-    elif id.value.__class__.__name__ == "CustomList":
-        return [ get_id(c) for c in id.value.components ]
-    elif id.value.__class__.__name__ == "VarReference":
-        if id.value.childs:
-            return getChildFromVar(get_var(id.value.id), id.value.childs)
-        else:
-            return get_var(id.value.id)
-    elif id.value.__class__.__name__ == "Source":
-        return environment[id.value.source]
+    elif isinstance(id.value, ValueContainer):
+        return id.value.getValue()
     else: # type(id.value is boolean, float, ....)
         pass
-
 
 
 def get_param(params, key):

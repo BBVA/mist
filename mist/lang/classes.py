@@ -286,8 +286,72 @@ class IncludeCommand:
                 # TODO: pass stack
                 print(await mist.action_run.execute_from_text(content, environment))
 
+# Create the classes StringData, ExtParameter, EnvVariable, FunctionInlineCall, CustomList, VarReference and Source, all implementing ValueContainer and containing the corresponding code in herlpers.get_id
+@dataclass
+class StringData(ValueContainer):
+    parent: object
+    data: str
+
+    def getValue(self):
+        return self.data
+
+@dataclass
+class ExtParameter(ValueContainer):
+    parent: object
+    param: str
+
+    def getValue(self):
+        return params[self.param]
+
+@dataclass
+class EnvVariable(ValueContainer):
+    parent: object
+    var: str
+
+    def getValue(self):
+        return environment[self.var]
+
+@dataclass
+class FunctionInlineCall(ValueContainer):
+    parent: object
+    name: str
+    namedArgs: list
+    args: list
+
+    def getValue(self):
+        return function_runner(self.name, self.args, self.namedArgs )
+
+@dataclass
+class CustomList(ValueContainer):
+    parent: object
+    components: list
+
+    def getValue(self):
+        return [ get_id(c) for c in self.components ]
+
+@dataclass
+class VarReference(ValueContainer):
+    parent: object
+    id: str
+    childs: list
+
+    def getValue(self):
+        if self.childs:
+            return getChildFromVar(get_var(self.id), self.childs)
+        else:
+            return get_var(self.id)
+
+@dataclass
+class Source(ValueContainer):
+    parent: object
+    source: str
+
+    def getValue(self):
+        return environment[self.source]
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
-           FunctionDefinition, IncludeCommand, SendCommand, ReturnCommand]
+           FunctionDefinition, IncludeCommand, StringData, ExtParameter,
+           EnvVariable, FunctionInlineCall, CustomList, VarReference, Source,
+           SendCommand, ReturnCommand]

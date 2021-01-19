@@ -6,16 +6,7 @@ from mist.sdk.db import db
 
 class MistObj(object):
     def __init__(self, d):
-        self.__dict__ = {
-                            'id': None,
-                            'string': None,
-                            'var': None,
-                            'param': None,
-                            'data': None,
-                            'childs': None,
-                            'customList': None,
-                            'function': None,
-                            'source': None}
+        self.__dict__ = { 'value': None }
         self.__dict__.update(d)
 
 def init_mist(mistConfig={'debug': True}, mistEnvironment=None, mistParams=None):

@@ -136,7 +136,7 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
                     parent=None,
                     list="myList",
                     selectors=["key02"],
-                    sources=[MistObj({'string': "fix01"})],
+                    sources=[MistObj({'value': "fix01"})],
                     target="MyTable",
                     params=None)
         await cmd.run(stack)
@@ -155,7 +155,7 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
                     parent=None,
                     list="myList",
                     selectors=["key02"],
-                    sources=[MistObj({'string': "fix01"})],
+                    sources=[MistObj({'value': "fix01"})],
                     target="MyTable",
                     params=["Col2", "Col1"])
         await cmd.run(stack)
