@@ -68,8 +68,6 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
         mock_watchedInsert.assert_called_once()
         mock_watchedInsert.assert_called_with("MyTable", [{'MistBaseNamespace': True}, {'myList': [{'key01': 'value01', 'key02': 'value02'}]}], ["value01", "value02"], fields=None)
 
-        clean_variables(stack)
-
     @patch('mist.lang.classes.watchedInsert')
     async def test_put_with_selectors(self, mock_watchedInsert):
 
@@ -86,8 +84,6 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
 
         mock_watchedInsert.assert_called_once()
         mock_watchedInsert.assert_called_with("MyTable", [{'MistBaseNamespace': True}, {'myList': [{'key01': 'value01', 'key02': 'value02'}]}], ["value02"], fields=None)
-
-        clean_variables(stack)
 
     @patch('mist.lang.classes.watchedInsert')
     async def test_put_with_columns(self, mock_watchedInsert):
@@ -106,8 +102,6 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
         mock_watchedInsert.assert_called_once()
         mock_watchedInsert.assert_called_with("MyTable", [{'MistBaseNamespace': True}, {'myList': [{'key01': 'value01', 'key02': 'value02'}]}], ["value01", "value02"], fields=["Col1", "Col1"])
 
-        clean_variables(stack)
-
     @patch('mist.lang.classes.watchedInsert')
     async def test_put_with_columns_and_selectors(self, mock_watchedInsert):
 
@@ -124,8 +118,6 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
 
         mock_watchedInsert.assert_called_once()
         mock_watchedInsert.assert_called_with("MyTable", [{'MistBaseNamespace': True}, {'myList': [{'key01': 'value01', 'key02': 'value02'}]}], ["value02", "value01"], fields=["Col2", "Col1"])
-
-        clean_variables(stack)
 
     @patch('mist.lang.classes.watchedInsert')
     async def test_put_with_selectors_and_values(self, mock_watchedInsert):
@@ -144,8 +136,6 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
         mock_watchedInsert.assert_called_once()
         mock_watchedInsert.assert_called_with("MyTable", [{'MistBaseNamespace': True}, {'myList': [{'key01': 'value01', 'key02': 'value02'}]}], ["value02", "fix01"], fields=None)
 
-        clean_variables(stack)
-
     @patch('mist.lang.classes.watchedInsert')
     async def test_put_with_selectors_columns_and_values(self, mock_watchedInsert):
 
@@ -162,5 +152,3 @@ class SaveCommandTest(IsolatedAsyncioTestCase):
 
         mock_watchedInsert.assert_called_once()
         mock_watchedInsert.assert_called_with("MyTable", [{'MistBaseNamespace': True}, {'myList': [{'key01': 'value01', 'key02': 'value02'}]}], ["value02", "fix01"], fields=["Col2", "Col1"])
-
-        clean_variables(stack)
