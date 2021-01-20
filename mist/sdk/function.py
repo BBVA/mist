@@ -108,10 +108,10 @@ def readFileAsLines(path:str, stack: list = None):
 
     return fContent
 
-def exec(command:str, printOutput=True, stack: list = None):
+async def exec(command:str, printOutput=True, stack: list = None):
     with execution(command) as (executor, in_files, out_files):
         with executor as console_lines:
-            for line in console_lines:
+            async for line in console_lines:
                 if config.real_time and config.console_output and printOutput:
                     print(line)
         return {
@@ -233,7 +233,7 @@ class _Functions(dict):
         self["CSVdump"] = {"native": True, "commands": CSVdump}
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
-        self["exec"] = {"native": True, "commands": exec}
+        self["exec"] = {"native": True, "commands": exec, "async": True}
         self["len"] = {"native": True, "commands": listLen}
         self["clear"] = {"native": True, "commands": listClear}
         self["sort"] = {"native": True, "commands": listSort}

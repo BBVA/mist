@@ -8,6 +8,7 @@ import shlex
 import hashlib
 import tempfile
 import subprocess
+import asyncio
 
 from typing import Tuple
 from functools import lru_cache
@@ -123,8 +124,8 @@ class Executor(object):
     def run_ctx(self):
         pass
 
-    def run(self):
-        ctx = self.run_ctx()
+    async def run(self):
+        ctx = await self.run_ctx()
         while 1:
             try:
                 next(ctx)
@@ -156,7 +157,7 @@ class LocalExecutor(Executor):
     def _replace_files_in_command_(self) -> str:
         return self.command.format(**{**self.output_files, **self.input_files})
 
-    def run_ctx(self):
+    async def run_ctx(self):
 
         start_time = time.time()
 
@@ -168,18 +169,24 @@ class LocalExecutor(Executor):
         command = shlex.split(new_command)
 
         row_id: str = self.__add_to_database__(new_command, start_time)
-
-        process = subprocess.Popen(command,
+        
+        # process = await asyncio.create_subprocess_shell(new_command,
+        #                            env=run_env,
+        #                            stdout=asyncio.subprocess.PIPE,
+        #                            stderr=asyncio.subprocess.PIPE,
+        #                            universal_newlines=False)
+        process = await asyncio.create_subprocess_exec(command[0],
+                                   *command[1:],
                                    env=run_env,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE,
-                                   universal_newlines=True)
+                                   stdout=asyncio.subprocess.PIPE,
+                                   stderr=asyncio.subprocess.PIPE,
+                                   universal_newlines=False)
 
         while True:
-            output = process.stdout.readline()
+            output = await process.stdout.readline()
+            output = output.decode('utf-8')
 
-            if (error_code := process.poll()) is not None and output == '':
-                self.error_code = error_code
+            if output == '':
                 break
 
             line = output.strip()
@@ -187,7 +194,16 @@ class LocalExecutor(Executor):
 
             yield line
 
-        self._console_stderr.extend(process.stderr.readlines())
+        while True:
+            output = await process.stderr.readline()
+            output = output.decode('utf-8')
+            if output == '':
+                break
+            line = output.strip()
+            self._console_stderr.append(output.strip())
+
+        await process.communicate()
+        self.error_code = process.returncode
 
         end_time = time.time()
 
@@ -234,7 +250,6 @@ class execution(object):
             self.input_files,
             self.output_files
         )
-
         return executor, self.input_files, self.output_files
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -244,24 +259,5 @@ class execution(object):
         # Destructor
         for f in self._tmp_files:
             f.close()
-
-def main():
-    command = "nmap -p 80,90,1028 -v -oN {outfile-1} 127.0.0.1"
-    with execution(command) as (executor, in_files, out_files):
-
-        with executor as lines:
-            for x in lines:
-                print(x)
-
-        print(executor.status())
-        print(executor.console_output())
-
-        with open(out_files["outfile-1"], "r") as f:
-            content = f.read()
-
-            print(content)
-
-if __name__ == '__main__':
-    main()
 
 __all__ = ("execution",)
