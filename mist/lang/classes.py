@@ -211,19 +211,25 @@ class FunctionCall:
     result: str
     commands: list
     targetStream: str
-    sourceStream: str
 
     async def run(self, stack):
         if config.debug:
             print(f"-> FunctionCall {self.name}")
-        if self.sourceStream or self.targetStream:
-            t = asyncio.create_task(function_runner(self.name, stack[:], self.sourceStream, self.targetStream, self.args, self.namedArgs))
-            if self.sourceStream:
+
+        sourceStream = None
+        for arg in self.args:
+            if arg.source:
+                sourceStream = arg.source
+                break
+
+        if sourceStream or self.targetStream:
+            t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
+            if sourceStream:
                 consumers.append(t)
             else:
                 producers.append(t)
         else:    
-            result = await function_runner(self.name, stack, self.sourceStream, self.targetStream, self.args, self.namedArgs)
+            result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs)
             if self.commands:
                 stack.append({self.result: result} if self.result else {})
                 await command_runner(self.commands, stack)
