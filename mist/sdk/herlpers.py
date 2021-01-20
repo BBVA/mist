@@ -131,6 +131,13 @@ def get_param(params, key):
     t = [x for x in params if x.key == key]
     return t[0].value if t else None
 
+class NamedArg:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+    def __eq__(self, other):
+        return isinstance(other, NamedArg) and self.key == other.key and self.value == other.value
+
 async def get_key(key, stack):
     key=key.strip()
     if key[0]=="'" and key[-1]=="'":
@@ -145,10 +152,6 @@ async def get_key(key, stack):
         function = key.split('(')[0].strip()
         args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')
         if '=' in args[0]:
-            class NamedArg:
-                def __init__(self, key, value):
-                    self.key = key
-                    self.value = value
             namedArgs=[ NamedArg(i.split('=',1)[0].strip(), i.split('=',1)[1].strip()) for i in args]
             return await function_runner(function, stack, None, None, None, namedArgs )
         return await function_runner(function, stack, None, None, [] if args[0]=='' else args)

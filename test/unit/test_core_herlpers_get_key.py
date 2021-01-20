@@ -2,7 +2,7 @@ import unittest
 
 from unittest.mock import patch
 
-from mist.sdk.herlpers import get_key
+from mist.sdk.herlpers import get_key, NamedArg
 
 from test.utilTest import *
 
@@ -57,13 +57,8 @@ class Get_var_Test(unittest.TestCase):
         self.assertEqual(result, ret)
         mock_function_runner.assert_called_once_with("myFunc", ["one", "two", "three"])
 
-    @unittest.skip("WIP")
     @patch('mist.sdk.herlpers.function_runner')
     def test_returns_function_return_value_when_given_a_function_with_named_args(self, mock_function_runner):
-        class NamedArg:
-            def __init__(self, key, value):
-                self.key = key
-                self.value = value
 
         result = "function_return_value"
         mock_function_runner.return_value = result
