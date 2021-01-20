@@ -90,7 +90,9 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
 [X] Integración del nuevo codigo multihilo y flujos (DANI + GERMAN)
 [X] Comando exec con asyncio para no parar la ejecucion de todo el programa (GERMAN)
-[ ] Comando exec proporciona salida linea a linea (each) (DOING GERMAN)
+[X] Cambios en la gramatica asincrona. basic_pipe.mist. (DOING GERMAN)
+[ ] Implementar propuestas del complex_pipe.mist
+[ ] Comando exec proporciona salida linea a linea (each) (GERMAN)
 [ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
 [ ] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR y GERMAN)
 [ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc. (NO TIENE DEPENDENCIAS)
@@ -100,7 +102,7 @@ After cloning the repository, you can run `MIST` without install it:
 [ ] Migrar los antiguos playbooks a funciones (en lenguage mist preferiblemente)
 [ ] Crear binario único
 [ ] Parametros de funciones separados por comas en lugar de espacios
-[ ] Implementar propuestas del complex_pipe.mist
+
 
 # Possible new grammar
 
