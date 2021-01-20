@@ -3,7 +3,7 @@ from unittest.mock import patch, call
 
 from mist.sdk.exceptions import MistException
 
-from mist.sdk.herlpers import get_id
+from mist.sdk.herlpers import get_id, ValueContainer
 
 from test.utilTest import *
 
@@ -66,3 +66,16 @@ class Get_id_Test(unittest.TestCase):
         ret = get_id(MistObj({ 'value': val}))
 
         self.assertEqual(ret, val)
+
+    def test_returns_value_from_ValueContainer_when_given_a_ValueContainer(self):
+        result = 'FOO'
+        class myTestClass(ValueContainer):
+            def __init__(self,d):
+                self.data = d
+
+            def getValue(self):
+                return self.data
+
+        ret = get_id(MistObj({ 'value':myTestClass(result) }))
+
+        self.assertEqual(result, ret)
