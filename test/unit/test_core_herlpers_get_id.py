@@ -1,7 +1,6 @@
 import unittest
-from unittest.mock import patch, call
 
-from mist.sdk.exceptions import MistException
+from unittest.mock import patch, call
 
 from mist.sdk.herlpers import get_id, ValueContainer
 
