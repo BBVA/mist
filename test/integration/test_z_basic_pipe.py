@@ -15,20 +15,26 @@ async def test_check_success(examples_path):
     output = await execute_from_text(content)
     
     assert "Producer 1" in output
-    assert "Consumer 1 : 1" in output
+    assert "Consumer 2 : 1" in output
     assert "Producer 2" in output
     assert "Producer 3" in output
-    assert "Consumer 2 : 1" in output
-    assert "Consumer 2 : 2" in output
-    assert "Consumer 2 : 3" in output
+    assert "Consumer 1 : 1" in output
+    assert "Consumer 1 : 2" in output
+    assert "Consumer 1 : 3" in output
     assert "Producer 4" in output
     assert "Producer 5" in output
     assert "Producer 6" in output
-    assert "Consumer 1 : 2" in output
-    assert "Consumer 1 : 3" in output
-    assert "Consumer 1 : 4" in output
-    assert "Consumer 1 : 5" in output
-    assert "Consumer 1 : 6" in output
+    assert "Consumer 3 : 1" in output
+    assert "Consumer 3 : 2" in output
+    assert "Consumer 3 : 3" in output
+    assert "Consumer 3 : 4" in output
+    assert "Consumer 3 : 5" in output
+    assert "Consumer 3 : 6" in output
+    assert "Consumer 2 : 2" in output
+    assert "Consumer 2 : 3" in output
     assert "Consumer 2 : 4" in output
     assert "Consumer 2 : 5" in output
     assert "Consumer 2 : 6" in output
+    assert "Consumer 1 : 4" in output
+    assert "Consumer 1 : 5" in output
+    assert "Consumer 1 : 6" in output

@@ -3,17 +3,18 @@ function producer (i) {
     send i
 }
 
-function consumer(i received) {
+function consumer(i n) {
     #sleep(i)
     #exec("sleep {i}")
-    print "Consumer" i ":" received
+    print "Consumer" i ":" n
 }
 
+consumer(n=:numbers i=3)
 producer(1) => numbers
-consumer(1 :numbers)
+consumer(i=2 n=:numbers)
 producer(2) => numbers
 producer(3) => numbers
-consumer(2 :numbers)
+consumer(1 :numbers)
 producer(4) => numbers
 producer(5) => numbers
 producer(6) => numbers

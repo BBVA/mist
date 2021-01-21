@@ -221,12 +221,17 @@ class FunctionCall:
             if arg.source:
                 sourceStream = arg.source
                 break
+        for arg in self.namedArgs:
+            if arg.value.source:
+                sourceStream = arg.value.source        
 
         if sourceStream or self.targetStream:
             t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
             if sourceStream:
+                streams.createIfNotExists(sourceStream)
                 consumers.append(t)
             else:
+                streams.createIfNotExists(self.targetStream)
                 producers.append(t)
         else:    
             result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs)

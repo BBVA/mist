@@ -81,9 +81,12 @@ class _Streams(dict):
     def __init__(self):
         super(_Streams, self).__init__()
 
-    async def send(self, name, value):
+    def createIfNotExists(self, name):
         if not name in self:
             self[name] = MemoryStreamQueue(name=name)
+
+    async def send(self, name, value):
+        self.createIfNotExists(name)
         await self[name].put(value)
 
 streams = _Streams()

@@ -3,7 +3,7 @@
 from .db import db
 from .params import params
 from .environment import environment
-from .herlpers import get_id, get_param, get_key, command_runner, function_runner
+from .herlpers import get_id, get_param, get_key, command_runner, function_runner, findQueueInArgs
 from .watchers import watchers
 from .function import functions
 from .cmd import execution

@@ -41,6 +41,19 @@ async def checkArg(v, stack):
     else:
         return await get_id(v, stack)
 
+def findQueueInArgs(args, namedArgsDict):
+    if args:
+        for i, arg in enumerate(args):
+            if isinstance(arg, str) and arg[0] == ":":
+                #return {"position": i, "name": None, "queue": arg.source }
+                return arg[1:], i, None
+    elif namedArgsDict:
+        for key, value in namedArgsDict.items():
+            if isinstance(value, str) and value[0] == ":":
+                return value[1:], None, key
+    #TODO: raise queue not found exception
+    return None, None, None
+
 async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None):
     namedArgsDict = {}
     if args:
@@ -75,8 +88,10 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
             namedArgsDict["targetStream"] = targetStream
         stack.append(namedArgsDict)
         if sourceStream:
-            async for s in streams[sourceStream].iterate():
-                namedArgsDict["received"] = s
+            queue, position, namedName = findQueueInArgs(args, namedArgsDict)
+            namePlaceHolder = next(key for key, value in namedArgsDict.items() if value == ":" + queue)
+            async for s in streams[queue].iterate():
+                namedArgsDict[namePlaceHolder] = s
                 await command_runner(f["commands"], stack)
         else:
             await command_runner(f["commands"], stack)
@@ -103,8 +118,7 @@ async def get_id(id, stack):
     if id.param:
         return params[id.param]
     if id.source:
-        #TODO source. May be remove this.
-        return 
+        return ":" + id.source
     if id.string:
         s=id.string
         pairs = [(i[1],await get_key(i[1], stack)) for i in Formatter().parse(s) if i[1] is not None]
@@ -133,8 +147,7 @@ async def get_key(key, stack):
     if key[0]=='$':
         return environment[key[1:]]
     if key[0]==':':
-        #TODO source. May be remove this.
-        return None
+        return key
     if key[-1]==')':
         function = key.split('(')[0].strip()
         args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(' ')
