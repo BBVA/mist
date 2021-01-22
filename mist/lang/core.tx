@@ -3,8 +3,8 @@ Program:
 ;
 
 Command:
-  IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand | 
-  DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | 
+  IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand |
+  DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition |
   SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand
 ;
 
@@ -58,7 +58,7 @@ FunctionCall:
 ;
 
 FunctionDefinition:
-  'function' name=ID '(' args*=ID ')' ('=>' result=ID)? '{'
+  'function' name=ID '(' args*=ID[','] ')' ('=>' result=ID)? '{'
     commands*=Command
   '}'
 ;

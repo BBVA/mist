@@ -1,9 +1,9 @@
 function producer (i) {
-    print "Producer" i  
+    print "Producer" i
     send i
 }
 
-function consumer(i received) {
+function consumer(i, received) {
     #sleep(i)
     #exec("sleep {i}")
     print "Consumer" i ":" received
@@ -17,4 +17,3 @@ consumer(2 :numbers)
 producer(4) => numbers
 producer(5) => numbers
 producer(6) => numbers
-
