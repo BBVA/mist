@@ -204,6 +204,7 @@ class ExposeCommand:
 
 @dataclass
 class FunctionCall:
+    key: str
     parent: object
     name: str
     args: list
@@ -235,6 +236,10 @@ class FunctionCall:
                 producers.append(t)
         else:    
             result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs)
+            if self.key:
+                for s in reversed(stack):
+                    if "MistBaseNamespace" in s:
+                        s[self.key] = result
             if self.commands:
                 stack.append({self.result: result} if self.result else {})
                 await command_runner(self.commands, stack)

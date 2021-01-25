@@ -52,7 +52,7 @@ IDorSTRING:
 ;
 
 FunctionCall:
-  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') (('=>' result=ID)? '{'
+  (key=ID '=')? name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') (('=>' result=ID)? '{'
       commands*=Command
     '}')? ('=>' targetStream=ID)?
 ;
