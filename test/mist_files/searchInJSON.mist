@@ -33,6 +33,6 @@ set JSONtext <= '''
 }
 '''
 
-searchInJSON ("employees[*].name" JSONtext) => found {
+searchInJSON ("employees[*].name", JSONtext) => found {
   print found
 }

@@ -10,10 +10,10 @@ function consumer(i, received) {
 }
 
 producer(1) => numbers
-consumer(1 :numbers)
+consumer(1, :numbers)
 producer(2) => numbers
 producer(3) => numbers
-consumer(2 :numbers)
+consumer(2, :numbers)
 producer(4) => numbers
 producer(5) => numbers
 producer(6) => numbers
