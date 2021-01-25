@@ -43,7 +43,7 @@ NamedArg:
 ;
 
 FunctionInlineCall:
-  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')')
+  name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')')
 ;
 
 IDorSTRING:
