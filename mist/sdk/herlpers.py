@@ -96,7 +96,7 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         else:
             await command_runner(f["commands"], stack)
         lastStack = stack.pop()
-        return lastStack[f["result"]] if f["result"]!='' and f["result"] in lastStack else None 
+        return lastStack[f["result"]] if f["result"]!='' and f["result"] in lastStack else None
 
 async def get_id(id, stack):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)
@@ -150,13 +150,13 @@ async def get_key(key, stack):
         return key
     if key[-1]==')':
         function = key.split('(')[0].strip()
-        args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(' ')
+        args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')
         if '=' in args[0]:
             class NamedArg:
                 def __init__(self, key, value):
                     self.key = key
                     self.value = value
-            namedArgs=[ NamedArg(i.split('=',1)[0], i.split('=',1)[1]) for i in args]
+            namedArgs=[ NamedArg(i.split('=',1)[0].strip(), i.split('=',1)[1].strip()) for i in args]
             return await function_runner(function, stack, None, None, None, namedArgs )
         return await function_runner(function, stack, None, None, [] if args[0]=='' else args)
     if '.' in key:

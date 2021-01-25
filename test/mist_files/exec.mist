@@ -1,6 +1,6 @@
 set hidden <= "*"
 set filter <= "-a"
-exec("bash -c ls {hidden} -1 {filter}" False) => r {
+exec("bash -c ls {hidden} -1 {filter}", False) => r {
     print "First exec result is {r.result}"
 }
 

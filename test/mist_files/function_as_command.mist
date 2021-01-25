@@ -1,9 +1,9 @@
-range(1 4 1) => result {
+range(1, 4, 1) => result {
     print result
     print "foo"
 }
 
-range(4 1 -1) => result {
+range(4, 1, -1) => result {
     print result
     print "bar"
 }

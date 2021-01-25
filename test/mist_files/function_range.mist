@@ -1,1 +1,1 @@
-print range(1 4 1)
+print range(1, 4, 1)
