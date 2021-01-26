@@ -1,4 +1,4 @@
-r = exec("bash -c 'ls -1 requirements*'" False) {
+r = exec("bash -c 'ls -1 requirements*'", False) {
     print "H:" outputLine
 }
 print r

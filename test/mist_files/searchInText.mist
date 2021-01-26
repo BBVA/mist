@@ -4,4 +4,4 @@
 
 set myDataSearchText <= "Hello, my name is Peter and I like Mist!, Peter dixit"
 
-print searchInText("Peter" myDataSearchText)
+print searchInText("Peter", myDataSearchText)

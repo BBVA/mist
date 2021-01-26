@@ -151,13 +151,13 @@ async def get_key(key, stack):
         return key
     if key[-1]==')':
         function = key.split('(')[0].strip()
-        args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(' ')
+        args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')
         if '=' in args[0]:
             class NamedArg:
                 def __init__(self, key, value):
                     self.key = key
                     self.value = value
-            namedArgs=[ NamedArg(i.split('=',1)[0], i.split('=',1)[1]) for i in args]
+            namedArgs=[ NamedArg(i.split('=',1)[0].strip(), i.split('=',1)[1].strip()) for i in args]
             return await function_runner(function, stack, None, None, None, namedArgs )
         return await function_runner(function, stack, None, None, [] if args[0]=='' else args)
     if '.' in key:

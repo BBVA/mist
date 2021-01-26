@@ -19,7 +19,7 @@ set XMLtext <= '''<?xml version="1.0" encoding="UTF-8"?>
 </bookstore>
 '''
 
-found = searchInXML ("./book[2]/title" XMLtext)
+found = searchInXML ("./book[2]/title", XMLtext)
 print found
 print found.text
 print found.attributes

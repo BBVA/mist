@@ -2,8 +2,8 @@ print "Length =" len([1, 2, 3])
 print "Cleared =" clear([1, 2, 3])
 print "Sorted =" sort(["one", "two", "three", "four"])
 print "Reversed =" reverse(["one", "two", "three", "four"])
-print "Appended =" append(["one", "two", "three", "four"] "five" "six")
-print "Removed =" remove(["one", "two", "three", "four"] "two")
+print "Appended =" append(["one", "two", "three", "four"], "five", "six")
+print "Removed =" remove(["one", "two", "three", "four"], "two")
 
 # Pending
 ##print "Mapped =" map([1, 2, 3] )

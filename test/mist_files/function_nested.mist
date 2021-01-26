@@ -13,5 +13,5 @@ function return1() {
     return 1
 }
 
-print range(1 4 return1())
-print "My range is {range(1 4 return1())}"
+print range(1, 4, return1())
+print "My range is {range(1, 4, return1())}"

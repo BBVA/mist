@@ -1,8 +1,8 @@
-result = range(1 4 1)
+result = range(1, 4, 1)
 print result
 print "foo"
 
-result = range(4 1 -1)
+result = range(4, 1, -1)
 print result
 print "bar"
 

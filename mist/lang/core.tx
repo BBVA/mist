@@ -3,8 +3,8 @@ Program:
 ;
 
 Command:
-  IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand | 
-  DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | 
+  IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand |
+  DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition |
   SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand |
   ReturnCommand
 ;
@@ -44,7 +44,7 @@ NamedArg:
 ;
 
 FunctionInlineCall:
-  name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')')
+  name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')')
 ;
 
 IDorSTRING:
@@ -53,13 +53,13 @@ IDorSTRING:
 ;
 
 FunctionCall:
-  (key=ID '=')? name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') ('{'
+  (key=ID '=')? name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')') ('{'
       commands*=Command
     '}')? ('=>' targetStream=ID)?
 ;
 
 FunctionDefinition:
-  'function' name=ID '(' args*=ID ')' '{'
+  'function' name=ID '(' args*=ID[','] ')' '{'
     commands*=Command
   '}'
 ;
