@@ -3,7 +3,7 @@ function producer (i) {
     send i
 }
 
-function consumer(i, received) {
+function consumer(i, n) {
     #sleep(i)
     #exec("sleep {i}")
     print "Consumer" i ":" n
