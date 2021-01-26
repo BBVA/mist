@@ -209,7 +209,7 @@ class FunctionCall:
     name: str
     args: list
     namedArgs: list
-    result: str
+    #result: str
     commands: list
     targetStream: str
 
@@ -235,28 +235,35 @@ class FunctionCall:
                 streams.createIfNotExists(self.targetStream)
                 producers.append(t)
         else:    
-            result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs)
+            result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
             if self.key:
                 for s in reversed(stack):
                     if "MistBaseNamespace" in s:
                         s[self.key] = result
-            if self.commands:
-                stack.append({self.result: result} if self.result else {})
-                await command_runner(self.commands, stack)
-                stack.pop()
 
 @dataclass
 class FunctionDefinition:
     parent: object
     name: str
     args: list
-    result: str
     commands: list
 
     async def run(self, stack):
         if config.debug:
             print(f"-> Function Definition {self.name}")
-        functions[self.name] = {"native": False, "commands": self.commands, "args": self.args, "result": self.result}
+        functions[self.name] = {"native": False, "commands": self.commands, "args": self.args}
+
+@dataclass
+class ReturnCommand:
+    parent: object
+    value: str
+
+    async def run(self, stack):
+        if config.debug:
+            print(f"-> ReturnCommand")
+        for s in reversed(stack):
+            if "MistBaseNamespace" in s:
+                s["result"] = await get_id(self.value, stack)
 
 @dataclass
 class IncludeCommand:
@@ -276,4 +283,4 @@ class IncludeCommand:
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
-           FunctionDefinition, IncludeCommand, SendCommand]
+           FunctionDefinition, IncludeCommand, SendCommand, ReturnCommand]

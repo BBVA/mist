@@ -5,7 +5,8 @@ Program:
 Command:
   IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand | 
   DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition | 
-  SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand
+  SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand |
+  ReturnCommand
 ;
 
 IncludeCommand:
@@ -52,15 +53,19 @@ IDorSTRING:
 ;
 
 FunctionCall:
-  (key=ID '=')? name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') (('=>' result=ID)? '{'
+  (key=ID '=')? name=ID ('()' | '(' (namedArgs+=NamedArg | args+=IDorSTRING) ')') ('{'
       commands*=Command
     '}')? ('=>' targetStream=ID)?
 ;
 
 FunctionDefinition:
-  'function' name=ID '(' args*=ID ')' ('=>' result=ID)? '{'
+  'function' name=ID '(' args*=ID ')' '{'
     commands*=Command
   '}'
+;
+
+ReturnCommand:
+  'return' value=IDorSTRING
 ;
 
 OutputId:

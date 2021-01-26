@@ -1,22 +1,17 @@
 set hidden <= "*"
 set filter <= "-a"
-exec("bash -c ls {hidden} -1 {filter}" False) => r {
-    print "First exec result is {r.result}"
-}
+r = exec("bash -c ls {hidden} -1 {filter}" False)
+print "First exec result is {r.result}"
 
-exec("echo {%param}") => r {
-    print "Second exec result is {r.result} and console output is {r.consoleOutput}"
-}
+r = exec("echo {%param}")
+print "Second exec result is {r.result} and console output is {r.consoleOutput}"
 
-exec ("bash -c fjfklasjfklñafjdasklñfj") => r {
-    print "Thrid exec result is {r.result}"
-}
+r = exec ("bash -c fjfklasjfklñafjdasklñfj")
+print "Thrid exec result is {r.result}"
 
 exec("echo Last execution without commands")
 
-exec ("echo 1") {
-    print "hola"
-    exec ("echo 2") {
-        print "adios"
-    }
-}
+exec ("echo 1")
+print "hola"
+exec ("echo 2")
+print "adios"

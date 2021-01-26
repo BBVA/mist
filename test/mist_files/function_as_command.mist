@@ -1,19 +1,16 @@
-range(1 4 1) => result {
-    print result
-    print "foo"
-}
+result = range(1 4 1)
+print result
+print "foo"
 
-range(4 1 -1) => result {
-    print result
-    print "bar"
-}
+result = range(4 1 -1)
+print result
+print "bar"
 
-function saySomething(name) => something {
-    set something <= name
+function saySomething(name) {
+    return name
 }
 
 print saySomething("Peter")
 
-saySomething("John") => something {
-    print something
-}
+something = saySomething("John")
+print something

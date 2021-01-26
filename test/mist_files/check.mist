@@ -3,8 +3,7 @@
 # Description: executes a branch or not based on check result using 'is' operator
 # Tags: command, check
 
-exec ("/bin/bash -c {%param}") => r {
-  check r.result is Success {
-    print "FOO"
-  }
+r = exec ("/bin/bash -c {%param}")
+check r.result is Success {
+  print "FOO"
 }

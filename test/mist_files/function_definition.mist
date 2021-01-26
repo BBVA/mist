@@ -1,6 +1,6 @@
-function readFile (file) => result {
+function readFile (file) {
     print "Read" file
-    set result <= "Adios"
+    return "Adios"
 }
 
 print readFile("myfile")

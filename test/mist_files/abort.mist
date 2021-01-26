@@ -2,8 +2,7 @@
 # Version: 1.0.0
 # Description: executes a custom user shell command
 # Tags: command, exec, shell
-exec ("bash -c 'ls --sadfasdf'") => r {
-    check r.result is Error {
-        abort
-    }
+r = exec ("bash -c 'ls --sadfasdf'")
+check r.result is Error {
+    abort
 }

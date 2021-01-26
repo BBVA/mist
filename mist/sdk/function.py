@@ -12,14 +12,15 @@ from mist.sdk.exceptions import MistException
 from mist.sdk.config import config
 from mist.sdk.common import watchedInsert
 from mist.sdk.cmd import execution
+import mist.sdk.herlpers as helpers
 
-def tmpFileFunction(stack: list = None):
+def tmpFileFunction(stack:list=None, commands:list=None):
     return tempfile.NamedTemporaryFile(delete=False).name
 
-def rangeFunction(begin, end, step, stack: list = None):
+def rangeFunction(begin, end, step, stack:list=None, commands:list=None):
     return list(range(begin, end, step))
 
-def searchInText(regex: str, text: str, stack: list = None):
+def searchInText(regex: str, text: str, stack:list=None, commands:list=None):
     found = []
 
     try:
@@ -29,7 +30,7 @@ def searchInText(regex: str, text: str, stack: list = None):
     finally:
         return found
 
-def searchInXML(xpath: str, text: str, stack: list = None):
+def searchInXML(xpath: str, text: str, stack:list=None, commands:list=None):
     found = None
 
     try:
@@ -40,7 +41,7 @@ def searchInXML(xpath: str, text: str, stack: list = None):
     finally:
         return [ {"tag": e.tag, "text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
 
-def searchInJSON(jsonpath: str, text: str, stack: list = None):
+def searchInJSON(jsonpath: str, text: str, stack:list=None, commands:list=None):
     found = None
 
     try:
@@ -53,7 +54,7 @@ def searchInJSON(jsonpath: str, text: str, stack: list = None):
         return [ e.value for e in found ] if found is not None else []
 
 
-async def CSVput(fileName: str, target: str, stack: list = None):
+async def CSVput(fileName: str, target: str, stack:list=None, commands:list=None):
     with open(fileName) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
 
@@ -72,7 +73,7 @@ async def CSVput(fileName: str, target: str, stack: list = None):
             print(f"Error while creating database: {target}: {e}")
             return False
 
-def CSVdump(source: str, fileName: str, stack: list = None):
+def CSVdump(source: str, fileName: str, stack:list=None, commands:list=None):
     with open(fileName, mode='w') as csvFile:
         csvWriter = csv.writer(csvFile,
                                 delimiter=',',
@@ -88,7 +89,7 @@ def CSVdump(source: str, fileName: str, stack: list = None):
             for row in items
         ])
 
-def readFile(path:str, stack: list = None):
+def readFile(path:str, stack:list=None, commands:list=None):
     if not os.path.isfile(path):
         raise MistException(f"File not found: {path}")
 
@@ -97,7 +98,7 @@ def readFile(path:str, stack: list = None):
 
     return fContent
 
-def readFileAsLines(path:str, stack: list = None):
+def readFileAsLines(path:str, stack:list=None, commands:list=None):
     if not os.path.isfile(path):
         raise MistException(f"File not found: {path}")
 
@@ -108,20 +109,25 @@ def readFileAsLines(path:str, stack: list = None):
 
     return fContent
 
-async def exec(command:str, printOutput=True, stack: list = None):
+async def exec(command:str, printOutput=True, stack:list=None, commands:list=None):
     with execution(command) as (executor, in_files, out_files):
         with executor as console_lines:
-            async for line in console_lines:
-                if config.real_time and config.console_output and printOutput:
-                    print(line)
-        return {
-            "result": executor.status_text(),
-            "resultCode": executor.status(),
-            "consoleOutput": executor.console_output(),
-            "consoleError": executor.stderr_output()
-        }
+            async for output in console_lines:
+                if isinstance(output, str):
+                    if config.real_time and config.console_output and printOutput:
+                        print(output)
+                    if commands:
+                        stack.append({"outputLine": output})
+                        await helpers.command_runner(commands, stack)
+                        stack.pop()
+            return {
+                "result": executor.status_text(),
+                "resultCode": executor.status(),
+                "consoleOutput": executor.console_output(),
+                "consoleError": executor.stderr_output()
+            }
 
-def listLen(l:list, stack: list = None):
+def listLen(l:list, stack:list=None, commands:list=None):
     """ Returns the length of the given list """
     if l is None:
         raise MistException("No list received")
@@ -130,7 +136,7 @@ def listLen(l:list, stack: list = None):
 
     return len(l)
 
-def listClear(l:list, stack: list = None):
+def listClear(l:list, stack:list=None, commands:list=None):
     """ Removes all elements from the given list """
     if l is None:
         raise MistException("No list received")
@@ -140,7 +146,7 @@ def listClear(l:list, stack: list = None):
     l.clear()
     return l
 
-def listSort(l:list, stack: list = None):
+def listSort(l:list, stack:list=None, commands:list=None):
     """ Sorts the given list in ascending order """
     if l is None:
         raise MistException("No list received")
@@ -150,7 +156,7 @@ def listSort(l:list, stack: list = None):
     l.sort()
     return l
 
-def listReverse(l:list, stack: list = None):
+def listReverse(l:list, stack:list=None, commands:list=None):
     """ Reverses the elements of the given list """
     if l is None:
         raise MistException("No list received")
@@ -160,7 +166,7 @@ def listReverse(l:list, stack: list = None):
     l.reverse()
     return l
 
-def listAppend(l:list, *elements, stack: list = None):
+def listAppend(l:list, *elements, stack:list=None, commands:list=None):
     """ Appends all the elements to the given list """
     if l is None:
         raise MistException("No list received")
@@ -174,7 +180,7 @@ def listAppend(l:list, *elements, stack: list = None):
 
     return l
 
-def listRemove(l:list, e, stack: list = None):
+def listRemove(l:list, e, stack:list=None, commands:list=None):
     """ Removes the element from the given list if it exists """
     if l is None:
         raise MistException("No list received")
@@ -188,7 +194,7 @@ def listRemove(l:list, e, stack: list = None):
 
     return l
 
-def listMap(l:list, mapFunc, stack: list = None):
+def listMap(l:list, mapFunc, stack:list=None, commands:list=None):
     """ Replace the elements of the given list by aplying the map function to each of them. mapFunc must be defined as mapFunc(val) => val """
     if l is None:
         raise MistException("No list received")
@@ -202,7 +208,7 @@ def listMap(l:list, mapFunc, stack: list = None):
 
     return l
 
-def listReduce(l:list, reduceFunc, stack: list = None):
+def listReduce(l:list, reduceFunc, stack:list=None, commands:list=None):
     """ Returns the value produced by reduceFunc after applyng it to all the elements of the given list. reduceFunc must be defined as reduceFunc(base, val) => val """
     if l is None:
         raise MistException("No list received")
@@ -217,7 +223,7 @@ def listReduce(l:list, reduceFunc, stack: list = None):
 
     return base
 
-async def sleep(n:int, stack: list = None):
+async def sleep(n:int, stack:list=None, commands:list=None):
     await asyncio.sleep(n)
 
 class _Functions(dict):

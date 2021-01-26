@@ -54,7 +54,7 @@ def findQueueInArgs(args, namedArgsDict):
     #TODO: raise queue not found exception
     return None, None, None
 
-async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None):
+async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None, commands=None):
     namedArgsDict = {}
     if args:
         args = [await checkArg(a, stack) for a in args]
@@ -66,12 +66,13 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         #TODO: handle targetStream and sourceStream if needed
         if "async" in f and f["async"]:
             if args:
-                return await f["commands"](*args, stack=stack)
+                return await f["commands"](*args, stack=stack, commands=commands)
             elif namedArgs:
                 namedArgsDict["stack"]=stack
+                namedArgsDict["commands"]=commands
                 return await f["commands"](**namedArgsDict)
             else:
-                return await f["commands"](stack=stack)
+                return await f["commands"](stack=stack, commands=commands)
         else:
             if args:
                 return f["commands"](*args, stack=stack)
@@ -96,7 +97,7 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         else:
             await command_runner(f["commands"], stack)
         lastStack = stack.pop()
-        return lastStack[f["result"]] if f["result"]!='' and f["result"] in lastStack else None 
+        return lastStack["result"] if "result" in lastStack else None
 
 async def get_id(id, stack):
     #print(f'get_id id={id.id} hasAttrString={hasattr(id, "string")} string={id.string} function={id.function} childs={id.childs} var={id.var} param={id.param} intVal={id.intVal}', file=sys.stderr, flush=True)

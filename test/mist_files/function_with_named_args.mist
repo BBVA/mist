@@ -1,5 +1,5 @@
-function saySomething(name) => something {
-    set something <= name
+function saySomething(name) {
+    return name
 }
 
 print range(1 4 1)

@@ -3,10 +3,9 @@
 # Description: executes a branch or another based on check result using 'is not' operator
 # Tags: command, check
 
-exec ("/bin/bash -c {%param}") => r {
-  check r.result is not Success {
-    print "FOO"
-  } else {
-    print "BAR"
-  }
+r = exec ("/bin/bash -c {%param}")
+check r.result is not Success {
+  print "FOO"
+} else {
+  print "BAR"
 }

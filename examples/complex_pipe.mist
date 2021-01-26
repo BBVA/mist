@@ -23,7 +23,6 @@ function searchOpenS3Buckets(originDomain dns) {
         # PROPUESTA: si no hay "to" ignorar el send
         send(line)
     }
-    # PROPUESTA: cambiar a "return r" y quitar el "=> result" de arriba
     return r
 }
 
