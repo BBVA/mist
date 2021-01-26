@@ -231,7 +231,7 @@ class FunctionCall:
             if sourceStream:
                 streams.createIfNotExists(sourceStream)
                 consumers.append(t)
-            else:
+            if self.targetStream:
                 streams.createIfNotExists(self.targetStream)
                 producers.append(t)
         else:    
