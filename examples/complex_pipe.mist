@@ -8,28 +8,33 @@
 ###########
 
 function searchDomains(originDomain)  {
-    # PROPUESTA: El bloque de comandos se ejecuta en cada linea de stdout generada por el exec
-    r = exec("dnsrecon.py -d {originDomain} -t crt") => line {
-        # TODO: filter invalid lines
-        send(line)
+    r = exec("dnsrecon.py -d {originDomain} -t crt", False) {
+        fields = split(outputLine)
+        isEqual(get(fields,1), "A") {
+            #print "SEND" get(fields,2)
+            send get(fields,2)
+        }
+        
+        
     }
     return r
 }
 
-function searchOpenS3Buckets(originDomain dns) {
-    r = exec ("festin {originDomain} --tor -ds {dns}") => line {
-        # TODO: filter invalid lines
-        # PROPUESTA: convertir a funcion
-        # PROPUESTA: si no hay "to" ignorar el send
-        send(line)
+function searchOpenS3Buckets(originDomain, dns) {
+    r = exec ("festin {originDomain} --tor -ds {dns}", False) {
+        if(contains("Adding", outputLine)) {
+            fields = split(outputLine)
+            #print substr(get(fields ,7), 1, -1)
+            send substr(get(fields ,7), 1, -1)    
+        }
     }
     return r
 }
 
-funcion findOpenPorts(ip ports) {
-     r = exec("nmap -p {ports} --open {ip} ") => line {
+function findOpenPorts(ip, ports) {
+     r = exec("nmap -p {ports} --open {ip} ") {
          # TODO: filter invalid lines
-         send line
+         send outputLine
      }
      return r
 }
@@ -43,19 +48,22 @@ data resultOpenPorts {
     ports
 }
 
-# TODO/PROPUESTA: poner algo para hacer notar que esta funcion necesita un from
-function processDomain() {
-    r = findOpenPorts(received)
-    put r.ip r.openPorts => resultOpenPorts 
+function processDomain(domain) {
+    print domain
+    #r = findOpenPorts(domain)
+    #put r.ip r.openPorts => resultOpenPorts 
 }
 
 function enviar(r) {
     send(r)
 }
 
-r = searchDomains("bbva.com")
+set domain <= "germanramos.com"
+
+searchDomains(domain) => domains
+searchOpenS3Buckets(domain, "212.166.64.1") => domains
+
+processDomain(:domains)
+
 #send(r) => domains
 
-searchOpenS3Buckets("bbva.com") to domains
-
-processDomain() from domains
