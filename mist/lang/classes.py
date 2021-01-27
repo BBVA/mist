@@ -9,7 +9,7 @@ from .streams import streams, consumers, producers
 import mist.action_run
 
 from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution, environment
-from mist.sdk.exceptions import MistException
+from mist.sdk.exceptions import MistException, MistUndefinedVariableException
 
 @dataclass
 class DataCommand:
@@ -184,7 +184,12 @@ class SendCommand:
     value: str
 
     async def run(self, stack):
-        targetStream = await get_key("targetStream", stack)
+        try:
+            targetStream = await get_key("targetStream", stack)
+        except MistUndefinedVariableException as e:
+            if config.debug:
+                print(f"-> Ignoring SendCommand because there is not targetStream")
+            return
         value = await get_id(self.value, stack)
         if config.debug:
             print(f"-> SendCommand {targetStream} <= {value}")
