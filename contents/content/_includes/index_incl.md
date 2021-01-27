@@ -95,7 +95,7 @@ After cloning the repository, you can run `MIST` without install it:
 [ ] Implementar propuestas del complex_pipe.mist
 [ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
 [ ] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR y GERMAN)
-[ ] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc. (NO TIENE DEPENDENCIAS)
+[X] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [ ] Soporte para CREAR y MODIFICAR dicionarios (NO TIENE DEPENDENCIAS) (HECTOR)
 [ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática (NO TIENE DEPENDENCIAS) (HECTOR)
 [ ] Migrar los antiguos comandos del catalogo a mist nativo
