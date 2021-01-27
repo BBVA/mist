@@ -234,6 +234,25 @@ def pythonEval(command:str, stack:list=None, commands:list=None):
 def autoCall(f, *args, stack:list=None, commands:list=None):
     return f(*args)
 
+def get(l, index, stack:list=None, commands:list=None):
+    return l[index]
+
+async def isEqual(left, right, stack:list=None, commands:list=None):
+    if left == right and commands:
+        await helpers.command_runner(commands, stack)
+    return left == right
+
+def contains(value, values, stack:list=None, commands:list=None):
+    return value in values
+
+async def ifCommand(val, stack:list=None, commands:list=None):
+    if val and commands:
+        await helpers.command_runner(commands, stack)
+    return val
+
+def substr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
+    return s[start:end:step]
+
 class _Functions(dict):
 
     def __init__(self):
@@ -252,12 +271,17 @@ class _Functions(dict):
         self["clear"] = {"native": True, "commands": listClear}
         self["sort"] = {"native": True, "commands": listSort}
         self["reverse"] = {"native": True, "commands": listReverse}
-        self["append"] = {"native": True, "commands": listAppend}
+        self["append"] = {"native": True, "commands": listAppend}   
         self["remove"] = {"native": True, "commands": listRemove}
         self["map"] = {"native": True, "commands": listMap}
         self["reduce"] = {"native": True, "commands": listReduce}
         self["sleep"] = {"native": True, "commands": sleep, "async": True}
         self["eval"] = {"native": True, "commands": pythonEval}
+        self["get"] = {"native": True, "commands": get}
+        self["isEqual"] = {"native": True, "commands": isEqual, "async": True}
+        self["contains"] = {"native": True, "commands": contains}
+        self["if"] = {"native": True, "commands": ifCommand, "async": True}
+        self["substr"] = {"native": True, "commands": substr}
 
         # Incorporate all functions of str module: capitalize, casefold, center, count, encode, endswith, expandtabs, find, format,
         # format_map, index, isalnum, isalpha, isascii, isdecimal, isdigit, isidentifier, islower, isnumeric, isprintable, isspace, 
