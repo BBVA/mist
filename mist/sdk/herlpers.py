@@ -75,12 +75,13 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
                 return await f["commands"](stack=stack, commands=commands)
         else:
             if args:
-                return f["commands"](*args, stack=stack)
+                return f["commands"](*args, stack=stack, commands=commands)
             elif namedArgs:
                 namedArgsDict["stack"]=stack
+                namedArgsDict["commands"]=commands
                 return f["commands"](**namedArgsDict)
             else:
-                return f["commands"](stack=stack)
+                return f["commands"](stack=stack, commands=commands)
     else:
         if args:
             namedArgsDict = dict(zip(f["args"], args))
