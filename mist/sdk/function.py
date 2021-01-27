@@ -6,6 +6,8 @@ import json
 from jsonpath_ng.ext import parse
 import csv
 import asyncio
+import inspect
+from functools import partial
 
 from mist.sdk import db
 from mist.sdk.exceptions import MistException
@@ -226,6 +228,12 @@ def listReduce(l:list, reduceFunc, stack:list=None, commands:list=None):
 async def sleep(n:int, stack:list=None, commands:list=None):
     await asyncio.sleep(n)
 
+def pythonEval(command:str, stack:list=None, commands:list=None):
+    return eval(command)
+
+def autoCall(f, *args, stack:list=None, commands:list=None):
+    return f(*args)
+
 class _Functions(dict):
 
     def __init__(self):
@@ -249,6 +257,16 @@ class _Functions(dict):
         self["map"] = {"native": True, "commands": listMap}
         self["reduce"] = {"native": True, "commands": listReduce}
         self["sleep"] = {"native": True, "commands": sleep, "async": True}
+        self["eval"] = {"native": True, "commands": pythonEval}
+
+        # Incorporate all function of str module: capitalize, casefold, center, count, encode, endswith, expandtabs, find, format,
+        # format_map, index, isalnum, isalpha, isascii, isdecimal, isdigit, isidentifier, islower, isnumeric, isprintable, isspace, 
+        # istitle, isupper, join, ljust, lower, lstrip, maketrans, partition, replace, rfind, rindex, rjust, rpartition, rsplit,
+        # rstrip, split, splitlines, startswith, strip, swapcase, title, translate, upper, zfill
+        for f in inspect.getmembers(str):
+            if f[0][0] != "_":
+                print (f[0] + ", ") 
+                self[f[0]] = {"native": True, "commands": partial(autoCall,f[1])}
 
 functions = _Functions()
 
