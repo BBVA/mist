@@ -92,9 +92,11 @@ class CheckCommand:
             print(f"-> Check that {self.var} is {self.result}")
 
         # If condition is not met we substitute the check command list with the else command list.
-        if (self.operator == 'is') and (await get_id(self.var, stack) != await get_id(self.result, stack)):
+        left = await get_id(self.var, stack)
+        right = await get_id(self.result, stack)
+        if self.operator == 'is' and left != right:
             self.commands = self.elseCommands
-        elif (self.operator == 'is not') and (await get_id(self.var, stack) == await get_id(self.result, stack)):
+        elif self.operator == 'is not' and left == right:
             self.commands = self.elseCommands
         return True
 
