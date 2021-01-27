@@ -259,13 +259,12 @@ class _Functions(dict):
         self["sleep"] = {"native": True, "commands": sleep, "async": True}
         self["eval"] = {"native": True, "commands": pythonEval}
 
-        # Incorporate all function of str module: capitalize, casefold, center, count, encode, endswith, expandtabs, find, format,
+        # Incorporate all functions of str module: capitalize, casefold, center, count, encode, endswith, expandtabs, find, format,
         # format_map, index, isalnum, isalpha, isascii, isdecimal, isdigit, isidentifier, islower, isnumeric, isprintable, isspace, 
         # istitle, isupper, join, ljust, lower, lstrip, maketrans, partition, replace, rfind, rindex, rjust, rpartition, rsplit,
         # rstrip, split, splitlines, startswith, strip, swapcase, title, translate, upper, zfill
         for f in inspect.getmembers(str):
             if f[0][0] != "_":
-                print (f[0] + ", ") 
                 self[f[0]] = {"native": True, "commands": partial(autoCall,f[1])}
 
 functions = _Functions()
