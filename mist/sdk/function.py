@@ -129,72 +129,9 @@ async def exec(command:str, printOutput=True, stack:list=None, commands:list=Non
                 "consoleError": executor.stderr_output()
             }
 
-def listLen(l:list, stack:list=None, commands:list=None):
-    """ Returns the length of the given list """
-    if l is None:
-        raise MistException("No list received")
-    if not isinstance(l, list):
-        raise MistException("Not a list")
-
+def objectLen(l, stack:list=None, commands:list=None):
+    """ Returns the length of the given object """
     return len(l)
-
-def listClear(l:list, stack:list=None, commands:list=None):
-    """ Removes all elements from the given list """
-    if l is None:
-        raise MistException("No list received")
-    if not isinstance(l, list):
-        raise MistException("Not a list")
-
-    l.clear()
-    return l
-
-def listSort(l:list, stack:list=None, commands:list=None):
-    """ Sorts the given list in ascending order """
-    if l is None:
-        raise MistException("No list received")
-    if not isinstance(l, list):
-        raise MistException("Not a list")
-
-    l.sort()
-    return l
-
-def listReverse(l:list, stack:list=None, commands:list=None):
-    """ Reverses the elements of the given list """
-    if l is None:
-        raise MistException("No list received")
-    if not isinstance(l, list):
-        raise MistException("Not a list")
-
-    l.reverse()
-    return l
-
-def listAppend(l:list, *elements, stack:list=None, commands:list=None):
-    """ Appends all the elements to the given list """
-    if l is None:
-        raise MistException("No list received")
-    if not isinstance(l, list):
-        raise MistException("Not a list")
-    if len(elements) == 0:
-        raise MistException("No elements received")
-
-    for e in elements:
-        l.append(e)
-
-    return l
-
-def listRemove(l:list, e, stack:list=None, commands:list=None):
-    """ Removes the element from the given list if it exists """
-    if l is None:
-        raise MistException("No list received")
-    if not isinstance(l, list):
-        raise MistException("Not a list")
-
-    try:
-        l.remove(e)
-    except ValueError:
-        pass
-
-    return l
 
 def listMap(l:list, mapFunc, stack:list=None, commands:list=None):
     """ Replace the elements of the given list by aplying the map function to each of them. mapFunc must be defined as mapFunc(val) => val """
@@ -232,7 +169,8 @@ def pythonEval(command:str, stack:list=None, commands:list=None):
     return eval(command)
 
 def autoCall(f, *args, stack:list=None, commands:list=None):
-    return f(*args)
+    result = f(*args)
+    return result if result else args[0]
 
 def get(l, index, stack:list=None, commands:list=None):
     return l[index]
@@ -242,7 +180,7 @@ async def isEqual(left, right, stack:list=None, commands:list=None):
         await helpers.command_runner(commands, stack)
     return left == right
 
-def contains(value, values, stack:list=None, commands:list=None):
+def strContains(value, values, stack:list=None, commands:list=None):
     return value in values
 
 async def ifCommand(val, stack:list=None, commands:list=None):
@@ -250,7 +188,7 @@ async def ifCommand(val, stack:list=None, commands:list=None):
         await helpers.command_runner(commands, stack)
     return val
 
-def substr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
+def strSubstr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
     return s[start:end:step]
 
 class _Functions(dict):
@@ -267,29 +205,24 @@ class _Functions(dict):
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
         self["exec"] = {"native": True, "commands": exec, "async": True}
-        self["len"] = {"native": True, "commands": listLen}
-        self["clear"] = {"native": True, "commands": listClear}
-        self["sort"] = {"native": True, "commands": listSort}
-        self["reverse"] = {"native": True, "commands": listReverse}
-        self["append"] = {"native": True, "commands": listAppend}   
-        self["remove"] = {"native": True, "commands": listRemove}
+        self["len"] = {"native": True, "commands": objectLen}
         self["map"] = {"native": True, "commands": listMap}
         self["reduce"] = {"native": True, "commands": listReduce}
         self["sleep"] = {"native": True, "commands": sleep, "async": True}
         self["eval"] = {"native": True, "commands": pythonEval}
         self["get"] = {"native": True, "commands": get}
         self["isEqual"] = {"native": True, "commands": isEqual, "async": True}
-        self["contains"] = {"native": True, "commands": contains}
+        self["strContains"] = {"native": True, "commands": strContains}
         self["if"] = {"native": True, "commands": ifCommand, "async": True}
-        self["substr"] = {"native": True, "commands": substr}
+        self["strSubstr"] = {"native": True, "commands": strSubstr}
 
-        # Incorporate all functions of str module: capitalize, casefold, center, count, encode, endswith, expandtabs, find, format,
-        # format_map, index, isalnum, isalpha, isascii, isdecimal, isdigit, isidentifier, islower, isnumeric, isprintable, isspace, 
-        # istitle, isupper, join, ljust, lower, lstrip, maketrans, partition, replace, rfind, rindex, rjust, rpartition, rsplit,
-        # rstrip, split, splitlines, startswith, strip, swapcase, title, translate, upper, zfill
-        for f in inspect.getmembers(str):
-            if f[0][0] != "_":
-                self[f[0]] = {"native": True, "commands": partial(autoCall,f[1])}
+        # Incorporate all functions of str, dict and list classes:
+        # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
+        for c in [str, dict, list]:
+            for f in inspect.getmembers(c):
+                if f[0][0] != "_" and callable(f[1]):
+                    name = c.__name__ + f[0][0].upper() + f[0][1:]
+                    self[name] = {"native": True, "commands": partial(autoCall,f[1])}
 
 functions = _Functions()
 

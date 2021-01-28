@@ -9,8 +9,7 @@ import sqlite3
 from mist.sdk.exceptions import MistException
 from mist.sdk.function import db # For mocking
 from mist.sdk.function import (tmpFileFunction, rangeFunction, searchInText,
-searchInXML, searchInJSON, CSVput, CSVdump, readFile, readFileAsLines, listLen,
-listClear, listSort, listReverse, listAppend, listRemove, listMap, listReduce)
+searchInXML, searchInJSON, CSVput, CSVdump, readFile, readFileAsLines, objectLen, listMap, listReduce)
 
 class NativeFunctionsTest(IsolatedAsyncioTestCase):
 
@@ -295,144 +294,15 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         self.assertEqual(expected, content)
 
 ######
-###### Tests for listLen
+###### Tests for objectLen
 ######
-    def test_listLen_fails_if_None_received(self):
-        with self.assertRaisesRegex(MistException, "No list received"):
-            listLen(None)
+    def test_objectLen_returns_the_correct_list_length(self):
+        self.assertEqual(0, objectLen([]))
+        self.assertEqual(3, objectLen(["BAR", "FOO", "BAZ"]))
 
-    def test_listLen_fails_if_not_a_list(self):
-        with self.assertRaisesRegex(MistException, "Not a list"):
-            listLen("list")
-
-    def test_listLen_returns_the_correct_list_length(self):
-        self.assertEqual(0, listLen([]))
-        self.assertEqual(3, listLen(["BAR", "FOO", "BAZ"]))
-
-######
-###### Tests for listClear
-######
-    def test_listClear_fails_if_None_received(self):
-        with self.assertRaisesRegex(MistException, "No list received"):
-            listClear(None)
-
-    def test_listClear_fails_if_not_a_list(self):
-        with self.assertRaisesRegex(MistException, "Not a list"):
-            listClear("list")
-
-    def test_listClear_returns_empty_list(self):
-        l = []
-
-        r = listClear(l)
-
-        self.assertEqual([], r)
-        self.assertTrue(l is r)
-
-        l = ["BAR", "FOO", "BAZ"]
-
-        r = listClear(l)
-
-        self.assertEqual([], r)
-        self.assertTrue(l is r)
-
-######
-###### Tests for listSort
-######
-    def test_listSort_fails_if_None_received(self):
-        with self.assertRaisesRegex(MistException, "No list received"):
-            listSort(None)
-
-    def test_listSort_fails_if_not_a_list(self):
-        with self.assertRaisesRegex(MistException, "Not a list"):
-            listSort("list")
-
-    def test_listSort_returns_ordered_list(self):
-        l = ["BAR", "FOO", "BAZ"]
-
-        r = listSort(l)
-
-        self.assertTrue(l is r)
-        self.assertEqual("BAR", r[0])
-        self.assertEqual("BAZ", r[1])
-        self.assertEqual("FOO", r[2])
-
-######
-###### Tests for listReverse
-######
-    def test_listReverse_fails_if_None_received(self):
-        with self.assertRaisesRegex(MistException, "No list received"):
-            listReverse(None)
-
-    def test_listReverse_fails_if_not_a_list(self):
-        with self.assertRaisesRegex(MistException, "Not a list"):
-            listReverse("list")
-
-    def test_listReverse_returns_list_reversed(self):
-        l = ["BAR", "FOO", "BAZ", "FOOBAR"]
-
-        r = listReverse(l)
-
-        self.assertTrue(l is r)
-        self.assertEqual("FOOBAR", r[0])
-        self.assertEqual("BAZ", r[1])
-        self.assertEqual("FOO", r[2])
-        self.assertEqual("BAR", r[3])
-
-######
-###### Tests for listAppend
-######
-    def test_listAppend_fails_if_no_list_received(self):
-        with self.assertRaisesRegex(MistException, "No list received"):
-            listAppend(None)
-
-    def test_listAppend_fails_if_not_a_list(self):
-        with self.assertRaisesRegex(MistException, "Not a list"):
-            listAppend("list")
-
-    def test_listAppend_fails_if_no_elements_received(self):
-        with self.assertRaisesRegex(MistException, "No elements received"):
-            listAppend([])
-
-    def test_listAppend_appends_several_elements(self):
-        l = []
-
-        r = listAppend(l, "one", 2, {"val": 3}, ["four", "five"])
-
-        self.assertTrue(l is r)
-        self.assertEqual(len(l), 4)
-        self.assertEqual("one", l[0])
-        self.assertEqual(2, l[1])
-        self.assertEqual({"val": 3}, l[2])
-        self.assertEqual(["four", "five"], l[3])
-
-######
-###### Tests for listRemove
-######
-    def test_listRemove_fails_if_None_received(self):
-        with self.assertRaisesRegex(MistException, "No list received"):
-            listRemove(None, "BAR")
-
-    def test_listRemove_fails_if_not_a_list(self):
-        with self.assertRaisesRegex(MistException, "Not a list"):
-            listRemove("list","BAR")
-
-    def test_listRemove_removes_given_element(self):
-        expected = ["BAZ", "FOO", "FOOBAR"]
-        l = ["BAR", "BAZ", "FOO", "FOOBAR"]
-
-        r = listRemove(l,"BAR")
-
-        self.assertTrue(l is r)
-        self.assertEqual(expected, r)
-
-    def test_listRemove_returns_same_list_if_element_not_found(self):
-        expected = ["BAR", "BAZ", "FOO", "FOOBAR"]
-        l = ["BAR", "BAZ", "FOO", "FOOBAR"]
-
-        r = listRemove(l,"BARBAZ")
-
-        self.assertTrue(l is r)
-        self.assertEqual(expected, r)
+    def test_objectLen_returns_the_correct_str_length(self):
+        self.assertEqual(0, objectLen(""))
+        self.assertEqual(3, objectLen("BAR"))
 
 ######
 ###### Tests for listMap

@@ -92,16 +92,19 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Comando exec con asyncio para no parar la ejecucion de todo el programa (GERMAN)
 [X] Cambios en la gramatica asincrona. basic_pipe.mist. (DOING GERMAN)
 [X] Comando exec proporciona salida linea a linea (GERMAN)
-[ ] Implementar propuestas del complex_pipe.mist
+[ ] Implementar propuestas del complex_pipe.mist DOING
 [ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
 [ ] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR y GERMAN)
 [X] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
+[X] Añadir libreria de listas y diccionarios
 [ ] Soporte para CREAR y MODIFICAR dicionarios (NO TIENE DEPENDENCIAS) (HECTOR)
 [ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática (NO TIENE DEPENDENCIAS) (HECTOR)
+[ ] Crear binario único
+[X] Parametros de funciones separados por comas en lugar de espacios
+[ ] Include/Import puede importar ficheros mist y ficheros python con funciones
 [ ] Migrar los antiguos comandos del catalogo a mist nativo
 [ ] Migrar los antiguos playbooks a funciones (en lenguage mist preferiblemente)
-[ ] Crear binario único
-[ ] Parametros de funciones separados por comas en lugar de espacios
+[ ] Sustituir check por un if o similar con posibilidad de and or y not
 
 # License
 
