@@ -8,7 +8,7 @@ from .streams import streams, consumers, producers
 
 import mist.action_run
 
-from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution, environment
+from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution, environment, ValueContainer, getChildFromVar, get_var, params
 from mist.sdk.exceptions import MistException, MistUndefinedVariableException
 
 @dataclass
@@ -174,6 +174,7 @@ class SetCommand:
     value: str
 
     async def run(self, stack):
+
         if config.debug:
             print(f"-> SetCommand {self.key}")
         for s in reversed(stack):
@@ -226,12 +227,14 @@ class FunctionCall:
 
         sourceStream = None
         for arg in self.args:
-            if arg.source:
-                sourceStream = arg.source
+            #if arg.source:
+            if isinstance(arg.value, ValueContainer):
+                sourceStream = await arg.value.getValue(stack)
                 break
         for arg in self.namedArgs:
-            if arg.value.source:
-                sourceStream = arg.value.source
+            #if arg.value.source:
+            if isinstance(arg.value.value, ValueContainer):
+                sourceStream = await arg.value.value.getValue(stack)
 
         if sourceStream or self.targetStream:
             t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
@@ -292,7 +295,7 @@ class StringData(ValueContainer):
     parent: object
     data: str
 
-    def getValue(self):
+    async def getValue(self, stack):
         return self.data
 
 @dataclass
@@ -300,7 +303,7 @@ class ExtParameter(ValueContainer):
     parent: object
     param: str
 
-    def getValue(self):
+    async def getValue(self, stack):
         return params[self.param]
 
 @dataclass
@@ -308,7 +311,7 @@ class EnvVariable(ValueContainer):
     parent: object
     var: str
 
-    def getValue(self):
+    async def getValue(self, stack):
         return environment[self.var]
 
 @dataclass
@@ -318,16 +321,16 @@ class FunctionInlineCall(ValueContainer):
     namedArgs: list
     args: list
 
-    def getValue(self):
-        return function_runner(self.name, self.args, self.namedArgs )
+    async def getValue(self, stack):
+        return await function_runner(self.name, stack, None, None, self.args, self.namedArgs )
 
 @dataclass
 class CustomList(ValueContainer):
     parent: object
     components: list
 
-    def getValue(self):
-        return [ get_id(c) for c in self.components ]
+    async def getValue(self, stack):
+        return [ await get_id(c, stack) for c in self.components ]
 
 @dataclass
 class VarReference(ValueContainer):
@@ -335,19 +338,19 @@ class VarReference(ValueContainer):
     id: str
     childs: list
 
-    def getValue(self):
+    async def getValue(self, stack):
         if self.childs:
-            return getChildFromVar(get_var(self.id), self.childs)
+            return getChildFromVar(get_var(self.id, stack), self.childs)
         else:
-            return get_var(self.id)
+            return get_var(self.id, stack)
 
 @dataclass
 class Source(ValueContainer):
     parent: object
     source: str
 
-    def getValue(self):
-        return environment[self.source]
+    async def getValue(self, stack):
+        return ":" + self.source
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
            PrintCommand, IterateCommand, WatchCommand, AbortCommand,

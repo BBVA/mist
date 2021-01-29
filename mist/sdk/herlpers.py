@@ -103,26 +103,26 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
 # Define interface for ValueContainer with a getValue() method for classes that
 # hold a left-side value
 class ValueContainer:
-    def getValue(self):
+    async def getValue(self, stack):
         pass
 
-def get_id(id):
+async def get_id(id, stack):
 
     if id == None:
         return None
 
     if isinstance(id, str):
-        return get_var(id)
+        return get_var(id, stack)
     elif isinstance(id.value, str):
         s = id.value
-        pairs = [(i[1],get_key(i[1])) for i in Formatter().parse(s) if i[1] is not None]
+        pairs = [(i[1],await get_key(i[1], stack)) for i in Formatter().parse(s) if i[1] is not None]
         for k,v in pairs:
             s = s.replace('{' + k + '}',str(v),1)
         return s
     elif isinstance(id.value, int):
         return id.value
     elif isinstance(id.value, ValueContainer):
-        return id.value.getValue()
+        return await id.value.getValue(stack)
     else: # type(id.value is boolean, float, ....)
         pass
 
@@ -150,7 +150,7 @@ async def get_key(key, stack):
         return key
     if key[-1]==')':
         function = key.split('(')[0].strip()
-        args = re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')
+        args = [i.strip() for i in re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')]
         if '=' in args[0]:
             namedArgs=[ NamedArg(i.split('=',1)[0].strip(), i.split('=',1)[1].strip()) for i in args]
             return await function_runner(function, stack, None, None, None, namedArgs )

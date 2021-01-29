@@ -4,6 +4,7 @@ from mist.sdk.params import params
 from mist.sdk.db import db
 
 
+_mistStack = []
 class MistObj(object):
     def __init__(self, d):
         self.__dict__ = { 'value': None }
@@ -19,23 +20,27 @@ def init_mist(mistConfig={'debug': True}, mistEnvironment=None, mistParams=None)
     if mistParams:
         params.update(mistParams)
 
+    clean_variables()
 
-def create_variable(stack, name, val):
-    stack.append({name: val})
+def get_mistStack():
+    return _mistStack
 
-def remove_variable(stack, name):
-    for d in stack:
+def create_variable(name, val):
+    _mistStack.append({name: val})
+
+def remove_variable(name):
+    for d in _mistStack:
         if name in d:
             del d[name]
 
-def clean_variables(stack):
-    stack.clear()
-    stack.append({"MistBaseNamespace": True})
+def clean_variables():
+    _mistStack.clear()
+    _mistStack.append({"MistBaseNamespace": True})
 
-def create_env_var(stack, name, val):
+def create_env_var(name, val):
     environment[name] = val
 
-def remove_env_var(stack, name):
+def remove_env_var(name):
     del environment[name]
 
 def clean_env_vars():
