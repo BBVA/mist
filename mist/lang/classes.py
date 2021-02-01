@@ -228,12 +228,12 @@ class FunctionCall:
         sourceStream = None
         for arg in self.args:
             #if arg.source:
-            if isinstance(arg.value, ValueContainer):
+            if isinstance(arg.value, Source):
                 sourceStream = await arg.value.getValue(stack)
                 break
         for arg in self.namedArgs:
             #if arg.value.source:
-            if isinstance(arg.value.value, ValueContainer):
+            if isinstance(arg.value.value, Source):
                 sourceStream = await arg.value.value.getValue(stack)
 
         if sourceStream or self.targetStream:
