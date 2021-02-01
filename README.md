@@ -94,7 +94,7 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Comando exec proporciona salida linea a linea (GERMAN)
 [ ] Implementar propuestas del complex_pipe.mist DOING
 [ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
-[ ] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR y GERMAN)
+[X] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR y GERMAN)
 [X] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [X] Añadir libreria de listas y diccionarios
 [ ] Soporte para CREAR y MODIFICAR dicionarios (NO TIENE DEPENDENCIAS) (HECTOR)
