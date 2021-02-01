@@ -99,6 +99,7 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Añadir libreria de listas y diccionarios
 [ ] Soporte para CREAR y MODIFICAR dicionarios (NO TIENE DEPENDENCIAS) (HECTOR)
 [ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática (NO TIENE DEPENDENCIAS) (HECTOR)
+[ ] Refactor if then else
 [ ] Crear binario único
 [X] Parametros de funciones separados por comas en lugar de espacios
 [ ] Include/Import puede importar ficheros mist y ficheros python con funciones
