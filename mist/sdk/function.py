@@ -180,6 +180,11 @@ async def isEqual(left, right, stack:list=None, commands:list=None):
         await helpers.command_runner(commands, stack)
     return left == right
 
+async def isGreater(left, right, stack:list=None, commands:list=None):
+    if left > right and commands:
+        await helpers.command_runner(commands, stack)
+    return left > right
+
 def strContains(value, values, stack:list=None, commands:list=None):
     return value in values
 
@@ -212,6 +217,7 @@ class _Functions(dict):
         self["eval"] = {"native": True, "commands": pythonEval}
         self["get"] = {"native": True, "commands": get}
         self["isEqual"] = {"native": True, "commands": isEqual, "async": True}
+        self["isGreater"] = {"native": True, "commands": isGreater, "async": True}
         self["strContains"] = {"native": True, "commands": strContains}
         self["if"] = {"native": True, "commands": ifCommand, "async": True}
         self["strSubstr"] = {"native": True, "commands": strSubstr}

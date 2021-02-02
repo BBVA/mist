@@ -85,7 +85,7 @@ FunctionDefinition:
 ;
 
 ReturnCommand:
-  'return' (value=IDorSTRING)?
+  'return ' (value=IDorSTRING)? | 'return'
 ;
 
 OutputId:

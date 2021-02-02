@@ -14,7 +14,6 @@ function searchDomains(originDomain)  {
     r = exec("dnsrecon.py -d {originDomain} -t crt", False) {
         fields = strSplit(outputLine)
         isEqual(get(fields,1), "A") {
-            #print "SEND" get(fields,2)
             send get(fields,2)
         }     
     }
@@ -25,7 +24,6 @@ function searchOpenS3Buckets(originDomain, dns) {
     r = exec ("festin {originDomain} --tor -ds {dns}", False) {
         if(strContains("Adding", outputLine)) {
             fields = strSplit(outputLine)
-            #print strSubstr(get(fields ,7), 1, -1)
             send strSubstr(get(fields ,7), 1, -1)    
         }
     }
@@ -33,38 +31,77 @@ function searchOpenS3Buckets(originDomain, dns) {
 }
 
 function findOpenPorts(ip, ports) {
-     r = exec("nmap -p {ports} --open {ip} ") {
-         # TODO: filter invalid lines
-         send outputLine
-     }
-     return r
+    #sleep(2)
+    r = exec("nmap -p {ports} --open {ip}", False) {
+        fields = strSplit(outputLine)
+        isGreater(len(fields),1) {
+            isEqual(get(fields,1), "open") {
+                openPort = get(fields,0)
+                send "{ip}:{openPort}"
+                print "SEND"
+            }
+        }     
+    }
+    return r
 }
+
 
 ################
 # Main Program #
 ################
 
+function fooDomains(domain) {
+    send domain
+    sleep(1)
+    send domain
+}
+
 data resultOpenPorts {
-    host
+    domain
     ports
 }
 
-function processDomain(domain) {
-    print domain
-    #r = findOpenPorts(domain)
-    #put r.ip r.openPorts => resultOpenPorts 
+function FAKEfindOpenPorts(ip, ports) {
+    #print "FAKE FIND OPEN PORT" ip
+    send "{ip}:631/tcp"
+    print "FAKE SEND OPEN PORT" "{ip}:631/tcp"
 }
 
-function enviar(r) {
-    send(r)
+function printDomain(domain) {
+    print domain
+}
+
+set domainProcessed <= []
+
+function processDomain(domain) {
+    print "PROCESSING" domain
+    iterate domainProcessed => d {
+        isEqual(d, domain) {
+            print d "already proccesed"
+            return
+        }
+    }
+    listAppend(domainProcessed, domain)
+    send domain
+}
+
+function saveFound(found) {
+    print "SAVE FOUND" found
+    s = strSplit(found,":")
+    put get(s,0) get(s,1) => resultOpenPorts
+    print resultOpenPorts
 }
 
 set domain <= "germanramos.com"
+#searchDomains(domain) => domains
+#searchOpenS3Buckets(domain, "212.166.64.1") => domains
 
-searchDomains(domain) => domains
-searchOpenS3Buckets(domain, "212.166.64.1") => domains
+fooDomains("localhost") => domains
+fooDomains("127.0.0.1") => domains
 
-processDomain(:domains)
+processDomain(:domains) => nonRepeatedDomains
+findOpenPorts(:nonRepeatedDomains, "631") => openPortsFound
+saveFound(:openPortsFound)
 
-#send(r) => domains
-
+sleep(6)
+print "END"

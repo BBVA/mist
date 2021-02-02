@@ -92,5 +92,6 @@ class _Streams(dict):
 streams = _Streams()
 consumers = []
 producers = []
+consumerAndProducers = []
 
-__all__ = ("streams", "consumers", "producers",)
+__all__ = ("streams", "consumers", "producers", "consumerAndProducers",)

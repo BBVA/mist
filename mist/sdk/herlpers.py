@@ -2,6 +2,8 @@ import re
 from typing import List
 from string import Formatter
 
+import asyncio
+
 from mist.sdk.db import db
 from mist.sdk.config import config
 from mist.sdk.watchers import watchers
@@ -94,6 +96,8 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
             namePlaceHolder = next(key for key, value in namedArgsDict.items() if value == ":" + queue)
             async for s in streams[queue].iterate():
                 namedArgsDict[namePlaceHolder] = s
+                if "result" in stack[-1]:
+                    del stack[-1]["result"]
                 await command_runner(f["commands"], stack)
         else:
             await command_runner(f["commands"], stack)
