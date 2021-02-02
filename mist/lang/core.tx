@@ -14,7 +14,7 @@ IncludeCommand:
 ;
 
 PrintCommand:
-    'print' texts+=IDorSTRING[eolterm]
+    'print ' texts+=IDorSTRING[eolterm]
 ;
 
 AbortCommand:
@@ -85,7 +85,7 @@ FunctionDefinition:
 ;
 
 ReturnCommand:
-  'return' value=IDorSTRING
+  'return' (value=IDorSTRING)?
 ;
 
 OutputId:

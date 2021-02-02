@@ -250,6 +250,7 @@ class FunctionCall:
                 for s in reversed(stack):
                     if "MistBaseNamespace" in s:
                         s[self.key] = result
+                        break
 
 @dataclass
 class FunctionDefinition:
@@ -274,6 +275,7 @@ class ReturnCommand:
         for s in reversed(stack):
             if "MistBaseNamespace" in s:
                 s["result"] = await get_id(self.value, stack)
+                break
 
 @dataclass
 class IncludeCommand:

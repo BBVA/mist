@@ -162,6 +162,12 @@ async def get_key(key, stack):
 
 async def command_runner(commands: list, stack):
     for c in commands:
+        if len(stack)>1:
+            for s in reversed(stack):
+                if "MistBaseNamespace" in s:
+                    if "result" in s:
+                        return
+                    break
         if c == "done":
             break
         await c.launch(stack)
