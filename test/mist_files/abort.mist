@@ -4,5 +4,5 @@
 # Tags: command, exec, shell
 r = exec ("bash -c 'ls --sadfasdf'")
 check r.result is Error {
-    abort
+    abort()
 }

@@ -10,7 +10,7 @@ import inspect
 from functools import partial
 
 from mist.sdk import db
-from mist.sdk.exceptions import MistException
+from mist.sdk.exceptions import (MistException, MistAbortException)
 from mist.sdk.config import config
 from mist.sdk.common import watchedInsert
 from mist.sdk.cmd import execution
@@ -200,6 +200,13 @@ def corePrint(*texts, stack:list=None, commands:list=None):
 
     print(*([t for t in texts if texts]))
 
+def coreAbort(reason=None, stack:list=None, commands:list=None):
+
+    if not reason:
+        reason = "Abort reached"
+
+    raise MistAbortException(reason)
+
 class _Functions(dict):
 
     def __init__(self):
@@ -226,6 +233,7 @@ class _Functions(dict):
         self["if"] = {"native": True, "commands": ifCommand, "async": True}
         self["strSubstr"] = {"native": True, "commands": strSubstr}
         self["print"] = {"native": True, "commands": corePrint}
+        self["abort"] = {"native": True, "commands": coreAbort}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort

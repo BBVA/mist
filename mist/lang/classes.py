@@ -348,7 +348,7 @@ class Source(ValueContainer):
         return ":" + self.source
 
 exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
-           PrintCommand, IterateCommand, WatchCommand, AbortCommand,
+           IterateCommand, WatchCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, FunctionInlineCall, CustomList, VarReference, Source,
