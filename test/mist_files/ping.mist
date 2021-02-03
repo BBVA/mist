@@ -26,4 +26,4 @@ ping {
     }
 }
 
-print myHostsPing
+print(myHostsPing)

@@ -5,5 +5,5 @@
 
 r = exec ("/bin/bash -c {%param}")
 check r.result is Success {
-  print "FOO"
+  print("FOO")
 }

@@ -10,12 +10,12 @@ data persistedListData {
 put "Letters" ['A', 'B'] => persistedListData
 put "Numbers" ['1', '2'] => persistedListData
 
-print persistedListData
+print(persistedListData)
 
 iterate persistedListData => d {
-    print d
-    print d.Objects
+    print(d)
+    print(d.Objects)
     iterate d.Objects => o {
-        print o
+        print(o)
     }
 }

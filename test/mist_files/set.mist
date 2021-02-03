@@ -1,14 +1,14 @@
 set A <= "Hello"
-print "Simon says" A
+print("Simon says", A)
 
 r = exec ("echo -n Goodbye")
-print "Simon says" A "again"
+print("Simon says", A, "again")
 set B <= "Bye"
 
 r = exec ("echo -n Hey")
-print "Simon says" A "again and again"
+print("Simon says", A, "again and again")
 set C <= r.consoleOutput
 
-print "Simon says" C
-print "Simon says" B
-print "Simon says" C
+print("Simon says", C)
+print("Simon says", B)
+print("Simon says", C)

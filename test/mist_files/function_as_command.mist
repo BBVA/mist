@@ -1,16 +1,16 @@
 result = range(1, 4, 1)
-print result
-print "foo"
+print(result)
+print("foo")
 
 result = range(4, 1, -1)
-print result
-print "bar"
+print(result)
+print("bar")
 
 function saySomething(name) {
     return name
 }
 
-print saySomething("Peter")
+print(saySomething("Peter"))
 
 something = saySomething("John")
-print something
+print(something)

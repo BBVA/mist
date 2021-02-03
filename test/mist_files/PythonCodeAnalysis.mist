@@ -10,10 +10,10 @@ pythonCodeAnalysis {
     }
     then {
         check result is Error {
-            print "Issues detected!"
+            print("Issues detected!")
         }
         check result is Success {
-            print "Code is clean and safe"
+            print("Code is clean and safe")
         }
     }
 }

@@ -13,6 +13,6 @@ searchOpenS3Buckets {
         console
     }
     then {
-        print itemsFound
+        print(itemsFound)
     }
 }

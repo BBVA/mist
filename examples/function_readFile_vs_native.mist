@@ -10,7 +10,7 @@ function mistReadFile (path) => content {
     }
 }
 
-print "mistReadFile with function: {mistReadFile('VERSION')}"
-print "mistReadFile with function and name param: {mistReadFile(path='VERSION')}"
-print "mistReadFile with native function: {readFile('VERSION')}"
-print "mistReadFile with native function and name param: {readFile(path='VERSION')}"
+print("mistReadFile with function: {mistReadFile('VERSION')}")
+print("mistReadFile with function and name param: {mistReadFile(path='VERSION')}")
+print("mistReadFile with native function: {readFile('VERSION')}")
+print("mistReadFile with native function and name param: {readFile(path='VERSION')}")

@@ -101,17 +101,6 @@ class CheckCommand:
         return True
 
 @dataclass
-class PrintCommand:
-    parent: object
-    texts: list
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> BuiltPrint")
-
-        print(*([await get_id(s, stack) for s in self.texts]))
-
-@dataclass
 class AbortCommand:
     parent: object
     reason: str

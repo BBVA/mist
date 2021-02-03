@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  IncludeCommand |PrintCommand | AbortCommand | SaveListCommand | SaveCommand |
+  IncludeCommand | AbortCommand | SaveListCommand | SaveCommand |
   DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition |
   SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand |
   ReturnCommand
@@ -11,10 +11,6 @@ Command:
 
 IncludeCommand:
     'include' files+=STRING[eolterm]
-;
-
-PrintCommand:
-    'print ' texts+=IDorSTRING[eolterm]
 ;
 
 AbortCommand:

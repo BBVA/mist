@@ -5,7 +5,7 @@
 
 r = exec ("/bin/bash -c {%param}")
 check r.result is not Success {
-  print "FOO"
+  print("FOO")
 } else {
-  print "BAR"
+  print("BAR")
 }

@@ -196,6 +196,10 @@ async def ifCommand(val, stack:list=None, commands:list=None):
 def strSubstr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
     return s[start:end:step]
 
+def corePrint(*texts, stack:list=None, commands:list=None):
+
+    print(*([t for t in texts if texts]))
+
 class _Functions(dict):
 
     def __init__(self):
@@ -221,6 +225,7 @@ class _Functions(dict):
         self["strContains"] = {"native": True, "commands": strContains}
         self["if"] = {"native": True, "commands": ifCommand, "async": True}
         self["strSubstr"] = {"native": True, "commands": strSubstr}
+        self["print"] = {"native": True, "commands": corePrint}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort

@@ -33,4 +33,4 @@ set JSONtext <= '''
 }
 '''
 
-print searchInJSON ("employees[*].name", JSONtext)
+print(searchInJSON ("employees[*].name", JSONtext))

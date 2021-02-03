@@ -18,4 +18,4 @@ CSVdump ("myNewHosts", "test/myNewHosts.csv")
 
 CSVput ("test/myNewHosts.csv", "myNewReadedHosts")
 
-print myNewReadedHosts
+print(myNewReadedHosts)

@@ -3,6 +3,6 @@
 # Description: print a shell variable and a command line parameter
 # Tags: command, variables, parameters, params, shell
 
-print "hola"
-print $PATH
-print %p1
+print("hola")
+print($PATH)
+print(%p1)

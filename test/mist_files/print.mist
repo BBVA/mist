@@ -1,6 +1,7 @@
-print "hello"
-print "hola" "adios"
-print "hola {%name}"
+print('hello')
+
+print("hola", "adios")
+print("hola {%name}")
 
 data myTable {
     ip
@@ -9,10 +10,10 @@ data myTable {
 
 put "127.0.0.1" Success => myTable
 
-print "The result of ping to {myTable.ip} is {myTable.result}"
+print("The result of ping to {myTable.ip} is {myTable.result}")
 iterate myTable => t {
-    print t.ip
-    print "Saved result of ping to {t.ip} is {t.result}"
+    print(t.ip)
+    print("Saved result of ping to {t.ip} is {t.result}")
 }
 
-print "myTable contains {myTable}"
+print("myTable contains {myTable}")

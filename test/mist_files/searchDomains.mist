@@ -13,6 +13,6 @@ searchDomains {
         console
     }
     then {
-        print domains
+        print(domains)
     }
 }

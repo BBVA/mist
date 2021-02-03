@@ -4,12 +4,12 @@ data ports {
 }
 
 watch ports => event {
-    print event.number
-    print event.protocol
+    print(event.number)
+    print(event.protocol)
 }
 
 watch ports => event {
-    print "hola"
+    print("hola")
 }
 
 put "22" "tcp" => ports(number protocol)

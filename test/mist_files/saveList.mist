@@ -30,5 +30,5 @@ check %insertType is "oneSelConst" {
 }
 
 iterate saveListTable => t {
-    print "Saved key1: {t.key1}, key3: {t.key3}"
+    print("Saved key1: {t.key1}, key3: {t.key3}")
 }

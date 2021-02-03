@@ -1,12 +1,12 @@
 function producer (i) {
-    print "Producer" i  
+    print("Producer", i  )
     send i
 }
 
 function consumer(i, n) {
     #sleep(i)
     exec("sleep {i}")
-    print "Consumer" i ":" n
+    print("Consumer", i, ":", n)
 }
 
 consumer(n=:numbers, i=3)

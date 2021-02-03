@@ -6,8 +6,8 @@ function findOpenPorts (ip ports) => openPorts {
         set result <= r.result
         set console <= r.consoleOutput
         check result is Error {
-            print "ERROR RUNNING NMAP"
-            print r.consoleError
+            print("ERROR RUNNING NMAP")
+            print(r.consoleError)
             abort
         }
     }
@@ -20,6 +20,6 @@ function findOpenPorts (ip ports) => openPorts {
 }
 
 findOpenPorts(ip="127.0.0.1" ports="80,631,9050") => openPorts {
-#    print "Result if {r.result}"
-    print "Open ports: {openPorts}"
+#    print("Result if {r.result}")
+    print("Open ports: {openPorts}")
 }

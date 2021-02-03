@@ -1,10 +1,10 @@
 function ping (ip) => isUp {
     exec ("ping -c 1 {ip}") => r {
-        print "exec result is" r.result
+        print("exec result is", r.result)
         set isUp <= r.result
     }
 }
 
 ping(ip="127.0.0.1") => isUp {
-    print "ping result is" isUp
+    print("ping result is", isUp)
 }

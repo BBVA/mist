@@ -1,6 +1,6 @@
 function readFile (file) {
-    print "Read" file
+    print("Read", file)
     return "Adios"
 }
 
-print readFile("myfile")
+print(readFile("myfile"))

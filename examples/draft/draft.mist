@@ -11,24 +11,24 @@ begin
         where a == 1 do scan "127.0.0.1" {
             exec "hola mundo"
             call scan
-            print "asdfsad"
+            print("asdfsad")
         }
 
         query from port.pepe == 90 {
             exec "hola mundo"
-            print "adfasdf"
+            print("adfasdf")
         }
     }
 
     watch ports -> event {
 
-        print event.port
-        print event.ip
+        print(event.port)
+        print(event.ip)
 
         v = select ip from event where port == 80
 
         query from event where port == 80 {
-            print "hola mundo"
+            print("hola mundo")
             exec "/usr/bin/nmap -n -p 80 $event.ip"
         }
     }
