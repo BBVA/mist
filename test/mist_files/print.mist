@@ -8,7 +8,7 @@ data myTable {
     result
 }
 
-put "127.0.0.1" Success => myTable
+put("myTable", "127.0.0.1", Success)
 
 print("The result of ping to {myTable.ip} is {myTable.result}")
 iterate myTable => t {

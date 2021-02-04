@@ -7,8 +7,8 @@ data persistedListData {
     Objects
 }
 
-put "Letters" ['A', 'B'] => persistedListData
-put "Numbers" ['1', '2'] => persistedListData
+put("persistedListData", "Letters", ['A', 'B'])
+put("persistedListData", "Numbers", ['1', '2'])
 
 print(persistedListData)
 

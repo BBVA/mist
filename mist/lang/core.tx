@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  IncludeCommand | SaveListCommand | SaveCommand |
+  IncludeCommand | SaveListCommand |
   DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition |
   SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand |
   ReturnCommand
@@ -86,10 +86,6 @@ OutputId:
 
 SaveListCommand:
   'putlist' list=ID ('(' selectors+=ID ')')? sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
-;
-
-SaveCommand:
-  'put' sources+=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
 ;
 
 WatchCommand:

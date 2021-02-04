@@ -207,6 +207,32 @@ def coreAbort(reason=None, stack:list=None, commands:list=None):
 
     raise MistAbortException(reason)
 
+async def corePut(table, *args, stack:list=None, commands:list=None):
+    if not table:
+        raise MistException("A table is needed")
+    if not args:
+        raise MistException("Data items to store needed")
+
+    data = [ json.dumps(d) if type(d) is list else str(d) for d in args ]
+
+    await watchedInsert(table, stack, data, fields=None)
+
+async def corePutData(table, data, stack:list=None, commands:list=None):
+    if not table:
+        raise MistException("A table is needed")
+    if not data:
+        raise MistException("Data items to store needed")
+    if not isinstance(data, dict):
+        raise TypeError("Data must come in a dictionary")
+
+    values = []
+    fields = []
+    for k, v in data.items():
+        values.append(json.dumps(v) if type(v) is list else str(v))
+        fields.append(k)
+
+    await watchedInsert(table, stack, values, fields)
+
 class _Functions(dict):
 
     def __init__(self):
@@ -234,6 +260,8 @@ class _Functions(dict):
         self["strSubstr"] = {"native": True, "commands": strSubstr}
         self["print"] = {"native": True, "commands": corePrint}
         self["abort"] = {"native": True, "commands": coreAbort}
+        self["put"] = {"native": True, "commands": corePut, "async": True}
+        self["putData"] = {"native": True, "commands": corePutData, "async": True}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort

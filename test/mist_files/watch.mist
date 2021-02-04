@@ -12,5 +12,6 @@ watch ports => event {
     print("hola")
 }
 
-put "22" "tcp" => ports(number protocol)
-put "23" "udp" => ports
+# Waiting for dictionaries
+#putData("ports", {'number': "22",'protocol': "tcp"})
+put("ports", "23", "udp")

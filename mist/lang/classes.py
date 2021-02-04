@@ -27,25 +27,6 @@ class DataCommand:
         db.create_table(self.name, table_params)
 
 @dataclass
-class SaveCommand:
-    parent: object
-    sources: list
-    target: str
-    params: list
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> Put to {self.target}")
-        fields = None
-        if self.params:
-            fields = [p for p in self.params]
-        values = [
-            json.dumps(await get_id(i, stack)) if i.value.__class__.__name__ == 'CustomList' or type(await get_id(i, stack)) is list else str(await get_id(i, stack))
-            for i in self.sources
-        ]
-        await watchedInsert(self.target, stack, values, fields=fields)
-
-@dataclass
 class SaveListCommand:
     parent: object
     list: str
@@ -347,7 +328,7 @@ class Source(ValueContainer):
     async def getValue(self, stack):
         return ":" + self.source
 
-exports = [DataCommand, SaveCommand, SaveListCommand, CheckCommand,
+exports = [DataCommand, SaveListCommand, CheckCommand,
            IterateCommand, WatchCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,

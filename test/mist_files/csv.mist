@@ -11,7 +11,7 @@ data myNewHosts {
 }
 
 iterate myHosts => host {
-    put host.ip host.so "up" => myNewHosts
+    put("myNewHosts", host.ip, host.so, "up")
 }
 
 CSVdump ("myNewHosts", "test/myNewHosts.csv")
