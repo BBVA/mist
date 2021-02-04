@@ -1,0 +1,18 @@
+function customSleep(n) {
+    print("Begin sleep {n}")
+    sleep(ms=n)
+    send n
+    print("End sleep {n}")
+}
+
+function readNumber(n) {
+    print("readNumber {n}")
+}
+
+customSleep(3) => p
+customSleep(2) => p
+customSleep(1) => p
+
+readNumber(:p)
+
+print("END")

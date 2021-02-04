@@ -1,0 +1,24 @@
+function customSleep(n) {
+    print("Begin sleep {n}")
+    sleep(ms=n)
+    send n
+    print("End sleep {n}")
+}
+
+function passNumber(n,t) {
+    print("begin passNumber {n} {t}")
+    sleep(ms=t)
+    send n
+    print("end passNumber {n} {t}")
+}
+
+function printNumber(n) {
+    print("printNumber {n}")
+}
+
+customSleep(1) => p
+passNumber(:p,3) => p2
+passNumber(:p,1) => p2
+printNumber(:p2)
+
+print("END")

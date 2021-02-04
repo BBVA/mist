@@ -36,19 +36,17 @@ async def execute_aux():
         await command_runner(mist_model.commands, stack)
         await waitForTaks()
 
+        # async def execute_from_text(text: str,
+        #                       fn_params: dict = None,
+        #                       realtime_fn: Callable = None,
+        #                       **kwargs) -> str:
+        #         #return asyncio.run(execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs))
+        #         return await execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs)
+
 async def execute_from_text(text: str,
                       fn_params: dict = None,
                       realtime_fn: Callable = None,
-                      **kwargs) -> str:
-    try:
-        #return asyncio.run(execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs))
-        return await execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs)
-    except (KeyboardInterrupt, asyncio.exceptions.CancelledError):
-        pass
-
-async def execute_from_text_aux(text: str,
-                      fn_params: dict = None,
-                      realtime_fn: Callable = None,
+                      waitTime:int = 0,
                       **kwargs) -> str:
     stack = [{"MistBaseNamespace": True}]
     if fn_params:
@@ -113,7 +111,8 @@ async def execute_from_text_aux(text: str,
         check_mist_parameters(text)
 
         await command_runner(mist_model.commands, stack)
-        await waitForTaks()
+        #await waitForTaks()
+        await asyncio.sleep(waitTime)
 
     return stream_stdout.getvalue()
 

@@ -1,7 +1,6 @@
 function customSleep(n) {
     print("Begin sleep {n}")
-    #exec("sleep {n}")
-    sleep(n)
+    sleep(ms=n)
     send n
     print("End sleep {n}")
 }
