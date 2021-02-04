@@ -3,8 +3,6 @@ import argparse
 import platform
 import pkg_resources
 
-import asyncio
-
 from pathlib import Path
 
 from mist.action_run import cli_run
@@ -71,7 +69,7 @@ optional arguments:
     return parser
 
 
-async def async_main():
+def main():
 
     #
     # Check python version
@@ -101,13 +99,7 @@ async def async_main():
 
     parsed_args = main_parser.parse_args()
     if "func" in parsed_args:
-        await parsed_args.func(parsed_args)
+        parsed_args.func(parsed_args)
         
-def main():
-    try:
-        asyncio.run(async_main())
-    except (KeyboardInterrupt, asyncio.exceptions.CancelledError):
-        pass
-
 if __name__ == '__main__':
     main()

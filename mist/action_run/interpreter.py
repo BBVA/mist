@@ -19,7 +19,13 @@ async def waitForTaks():
     if len(consumers)>0:
         await asyncio.wait(consumers)
 
-async def execute():
+def execute():
+    try:
+        asyncio.run(execute_aux())
+    except (KeyboardInterrupt, asyncio.exceptions.CancelledError):
+        pass
+
+async def execute_aux():
     mist_model = get_mist_model()
 
     if config.simulate:
@@ -31,6 +37,16 @@ async def execute():
         await waitForTaks()
 
 async def execute_from_text(text: str,
+                      fn_params: dict = None,
+                      realtime_fn: Callable = None,
+                      **kwargs) -> str:
+    try:
+        #return asyncio.run(execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs))
+        return await execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs)
+    except (KeyboardInterrupt, asyncio.exceptions.CancelledError):
+        pass
+
+async def execute_from_text_aux(text: str,
                       fn_params: dict = None,
                       realtime_fn: Callable = None,
                       **kwargs) -> str:

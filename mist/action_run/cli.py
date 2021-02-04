@@ -7,7 +7,7 @@ from .interpreter import execute
 from .helpers import load_cli_exec_values
 
 
-async def cli_handler(parsed_args: argparse.Namespace):
+def cli_handler(parsed_args: argparse.Namespace):
     #
     # Check if filename is passed as parameter
     #
@@ -35,7 +35,7 @@ async def cli_handler(parsed_args: argparse.Namespace):
         db.setup()
 
     try:
-        await execute()
+        execute()
     except MistMissingBinaryException as e:
         print()
         print("[!] ", e)

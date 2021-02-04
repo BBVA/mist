@@ -98,7 +98,7 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [X] Añadir libreria de listas y diccionarios
 [ ] Soporte para CREAR y MODIFICAR dicionarios (NO TIENE DEPENDENCIAS) (HECTOR)
-[ ] Convertir todos los comandos core posibles (print? set? iterate? put? ...) en funciones y simplificar más la gramática (NO TIENE DEPENDENCIAS) (HECTOR)
+[ ] Convertir todos los comandos core posibles (print? set? put?) en funciones y simplificar más la gramática
 [ ] Refactor if then else
 [ ] Crear binario único
 [X] Parametros de funciones separados por comas en lugar de espacios
