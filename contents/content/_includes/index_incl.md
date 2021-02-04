@@ -88,13 +88,13 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist"
 [X] Comando para importar (o llamar) otros ficheros de mist.
 [X] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
-[X] Integración del nuevo codigo multihilo y flujos (DANI + GERMAN)
-[X] Comando exec con asyncio para no parar la ejecucion de todo el programa (GERMAN)
-[X] Cambios en la gramatica asincrona. basic_pipe.mist. (DOING GERMAN)
-[X] Comando exec proporciona salida linea a linea (GERMAN)
-[ ] Implementar propuestas del complex_pipe.mist DOING
+[X] Integración del nuevo codigo multihilo y flujos
+[X] Comando exec con asyncio para no parar la ejecucion de todo el programa
+[X] Cambios en la gramatica asincrona. basic_pipe.mist.
+[X] Comando exec proporciona salida linea a linea.
+[X] Implementar propuestas del complex_pipe.mist
 [ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
-[X] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción (HECTOR y GERMAN)
+[X] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción
 [X] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
 [X] Añadir libreria de listas y diccionarios
 [ ] Soporte para CREAR y MODIFICAR dicionarios (NO TIENE DEPENDENCIAS) (HECTOR)
