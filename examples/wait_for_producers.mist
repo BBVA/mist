@@ -1,0 +1,13 @@
+function customSleep(n) {
+    print("Begin sleep {n}")
+    #exec("sleep {n}")
+    sleep(n)
+    send n
+    print("End sleep {n}")
+}
+
+customSleep(3) => p
+customSleep(2) => p
+customSleep(1) => p
+
+print("END")

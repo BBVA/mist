@@ -32,16 +32,18 @@ function searchOpenS3Buckets(originDomain, dns) {
 
 function findOpenPorts(ip, ports) {
     #sleep(2)
+    print("BEGIN FIND OPEN PORTS {ip}")
     r = exec("nmap -p {ports} --open {ip}", False) {
         fields = strSplit(outputLine)
         isGreater(len(fields),1) {
             isEqual(get(fields,1), "open") {
                 openPort = get(fields,0)
                 send "{ip}:{openPort}"
-                print "SEND"
+                print("SEND","{ip}:{openPort}")
             }
         }     
     }
+    print("END FIND OPEN PORTS {ip}")
     return r
 }
 
@@ -61,23 +63,13 @@ data resultOpenPorts {
     ports
 }
 
-function FAKEfindOpenPorts(ip, ports) {
-    #print "FAKE FIND OPEN PORT" ip
-    send "{ip}:631/tcp"
-    print "FAKE SEND OPEN PORT" "{ip}:631/tcp"
-}
-
-function printDomain(domain) {
-    print domain
-}
-
 set domainProcessed <= []
 
 function processDomain(domain) {
-    print "PROCESSING" domain
+    print("PROCESSING",domain)
     iterate domainProcessed => d {
         isEqual(d, domain) {
-            print d "already proccesed"
+            print(d,"already proccesed")
             return
         }
     }
@@ -86,22 +78,19 @@ function processDomain(domain) {
 }
 
 function saveFound(found) {
-    print "SAVE FOUND" found
+    print("SAVE FOUND",found)
     s = strSplit(found,":")
     put get(s,0) get(s,1) => resultOpenPorts
-    print resultOpenPorts
+    #print(resultOpenPorts)
 }
 
 set domain <= "germanramos.com"
-#searchDomains(domain) => domains
-#searchOpenS3Buckets(domain, "212.166.64.1") => domains
+searchDomains(domain) => domains
+searchOpenS3Buckets(domain, "212.166.64.1") => domains
 
-fooDomains("localhost") => domains
-fooDomains("127.0.0.1") => domains
+#fooDomains("localhost") => domains
+#fooDomains("127.0.0.1") => domains
 
 processDomain(:domains) => nonRepeatedDomains
-findOpenPorts(:nonRepeatedDomains, "631") => openPortsFound
+findOpenPorts(:nonRepeatedDomains, "443") => openPortsFound
 saveFound(:openPortsFound)
-
-sleep(6)
-print "END"

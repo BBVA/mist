@@ -162,8 +162,8 @@ def listReduce(l:list, reduceFunc, stack:list=None, commands:list=None):
 
     return base
 
-async def sleep(n:int, stack:list=None, commands:list=None):
-    await asyncio.sleep(n)
+async def sleep(seconds:int=None, ms:int=0, stack:list=None, commands:list=None):
+    await asyncio.sleep(seconds if seconds else ms/1000)
 
 def pythonEval(command:str, stack:list=None, commands:list=None):
     return eval(command)

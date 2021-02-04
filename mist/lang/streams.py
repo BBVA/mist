@@ -30,7 +30,7 @@ class MemoryStreamQueue(asyncio.Queue):
                 try:
                     await asyncio.wait_for(getter, 2)
                 except asyncio.exceptions.TimeoutError:
-                    if all(t.done() for t in producers): # and self.empty():
+                    if all(t.done() for t in producers if t != asyncio.current_task() and not t.waitingForQueue):
                         return
 
                 except:
@@ -92,6 +92,5 @@ class _Streams(dict):
 streams = _Streams()
 consumers = []
 producers = []
-consumerAndProducers = []
 
-__all__ = ("streams", "consumers", "producers", "consumerAndProducers",)
+__all__ = ("streams", "consumers", "producers",)

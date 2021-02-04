@@ -95,10 +95,12 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
             queue, position, namedName = findQueueInArgs(args, namedArgsDict)
             namePlaceHolder = next(key for key, value in namedArgsDict.items() if value == ":" + queue)
             async for s in streams[queue].iterate():
+                asyncio.current_task().waitingForQueue = False
                 namedArgsDict[namePlaceHolder] = s
                 if "result" in stack[-1]:
                     del stack[-1]["result"]
                 await command_runner(f["commands"], stack)
+                asyncio.current_task().waitingForQueue = True
         else:
             await command_runner(f["commands"], stack)
         lastStack = stack.pop()

@@ -11,15 +11,13 @@ from mist.sdk import db, config, params, command_runner
 from .language_tools import get_mist_model, load_mist_language, \
     check_mist_parameters, check_installed_binaries
 
-from mist.lang.streams import consumers, producers, consumerAndProducers
+from mist.lang.streams import consumers, producers
 
 async def waitForTaks():
     if len(producers)>0:
         await asyncio.wait(producers)
     if len(consumers)>0:
         await asyncio.wait(consumers)
-    if len(consumerAndProducers)>0:
-        await asyncio.wait(consumerAndProducers)
 
 async def execute():
     mist_model = get_mist_model()

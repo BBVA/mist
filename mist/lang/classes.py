@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import List
 import asyncio
 
-from .streams import streams, consumers, producers, consumerAndProducers
+from .streams import streams, consumers, producers
 
 import mist.action_run
 
@@ -208,14 +208,11 @@ class FunctionCall:
 
         if sourceStream or self.targetStream:
             t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
-            if sourceStream and self.targetStream:
-                streams.createIfNotExists(sourceStream)
-                streams.createIfNotExists(self.targetStream)
-                consumerAndProducers.append(t)
-            elif sourceStream:
+            t.waitingForQueue = False
+            if sourceStream:
                 streams.createIfNotExists(sourceStream)
                 consumers.append(t)
-            elif self.targetStream:
+            if self.targetStream:
                 streams.createIfNotExists(self.targetStream)
                 producers.append(t)
         else:
