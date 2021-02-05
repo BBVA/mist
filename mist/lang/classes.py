@@ -152,23 +152,6 @@ class SetCommand:
                 s[self.key] = await get_id(self.value, stack)
 
 @dataclass
-class SendCommand:
-    parent: object
-    value: str
-
-    async def run(self, stack):
-        try:
-            targetStream = await get_key("targetStream", stack)
-        except MistUndefinedVariableException as e:
-            if config.debug:
-                print(f"-> Ignoring SendCommand because there is not targetStream")
-            return
-        value = await get_id(self.value, stack)
-        if config.debug:
-            print(f"-> SendCommand {targetStream} <= {value}")
-        await streams.send(targetStream, value)
-
-@dataclass
 class ExposeCommand:
     parent: object
     value: str
@@ -325,9 +308,8 @@ class Source(ValueContainer):
     async def getValue(self, stack):
         return ":" + self.source
 
-exports = [DataCommand, SaveListCommand, CheckCommand,
-           IterateCommand, WatchCommand,
+exports = [DataCommand, SaveListCommand, CheckCommand, IterateCommand, WatchCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, FunctionInlineCall, CustomList, VarReference, Source,
-           SendCommand, ReturnCommand]
+           ReturnCommand]

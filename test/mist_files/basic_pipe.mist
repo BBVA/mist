@@ -1,6 +1,6 @@
 function producer (i) {
     print("Producer", i)
-    send i
+    send(i)
 }
 
 function consumer(i, n) {

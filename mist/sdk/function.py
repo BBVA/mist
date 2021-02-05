@@ -10,11 +10,13 @@ import inspect
 from functools import partial
 
 from mist.sdk import db
-from mist.sdk.exceptions import (MistException, MistAbortException)
+from mist.sdk.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 from mist.sdk.config import config
 from mist.sdk.common import watchedInsert
 from mist.sdk.cmd import execution
 import mist.sdk.herlpers as helpers
+
+from mist.lang.streams import streams
 
 def tmpFileFunction(stack:list=None, commands:list=None):
     return tempfile.NamedTemporaryFile(delete=False).name
@@ -233,6 +235,15 @@ async def corePutData(table, data, stack:list=None, commands:list=None):
 
     await watchedInsert(table, stack, values, fields)
 
+async def coreSend(value, stack:list=None, commands:list=None):
+    if value is not None :
+        try:
+            targetStream = await helpers.get_key("targetStream", stack)
+        except MistUndefinedVariableException as e:
+            return
+
+        await streams.send(targetStream, value)
+
 class _Functions(dict):
 
     def __init__(self):
@@ -262,6 +273,7 @@ class _Functions(dict):
         self["abort"] = {"native": True, "commands": coreAbort}
         self["put"] = {"native": True, "commands": corePut, "async": True}
         self["putData"] = {"native": True, "commands": corePutData, "async": True}
+        self["send"] = {"native": True, "commands": coreSend, "async": True}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort

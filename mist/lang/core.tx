@@ -3,10 +3,9 @@ Program:
 ;
 
 Command:
-  IncludeCommand | SaveListCommand |
-  DataCommand | CheckCommand | IterateCommand | WatchCommand | FunctionDefinition |
-  SetCommand | ExposeCommand | EndCommand | AppendCommand | FunctionCall | SendCommand |
-  ReturnCommand
+  IncludeCommand | SaveListCommand | DataCommand | CheckCommand | IterateCommand |
+  WatchCommand | FunctionDefinition | SetCommand | ExposeCommand | EndCommand |
+  AppendCommand | FunctionCall | ReturnCommand
 ;
 
 IncludeCommand:
@@ -112,10 +111,6 @@ IterateCommand:
 
 SetCommand:
   'set' key=ID '<=' value=IDorSTRING
-;
-
-SendCommand:
-  'send' value=IDorSTRING
 ;
 
 ExposeCommand:

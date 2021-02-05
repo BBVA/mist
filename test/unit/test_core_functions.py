@@ -1,8 +1,8 @@
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase, TestCase
 
-from mist.sdk.function import (functions, corePrint, coreAbort, corePut, corePutData)
-from mist.sdk.exceptions import (MistException, MistAbortException)
+from mist.sdk.function import (functions, corePrint, coreAbort, corePut, corePutData, coreSend)
+from mist.sdk.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 
 
 class CoreFunctionsTest(IsolatedAsyncioTestCase):
@@ -11,7 +11,7 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 ###### Check for exported functions
 ######
     def test_all_functions_are_exported(self):
-        ef = [("print", corePrint), ("abort", coreAbort), ("put", corePut, True), ("putData", corePutData, True)]
+        ef = [("print", corePrint), ("abort", coreAbort), ("put", corePut, True), ("putData", corePutData, True), ("send", coreSend, True)]
 
         for i in ef:
             self.assertTrue(i[0] in functions and functions[i[0]]["commands"] == i[1] and functions[i[0]]["native"], f"{i} not exported")
@@ -112,3 +112,51 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
         await corePutData("FOO", data, stack=stack, commands=None)
 
         mock_watchedInsert.assert_called_once_with("FOO", stack, ["1", '["1", "2"]'], ["one", "two"])
+
+######
+###### coreSend
+######
+    @patch('mist.sdk.function.helpers.get_key')
+    async def test_coreSend_looks_for_target_stream(self, mock_getKey):
+        streamKey = "targetStream"
+        msg = "FOO"
+        stack = []
+
+        await coreSend(msg, stack=stack, commands=None)
+
+        mock_getKey.assert_called_once_with(streamKey, stack)
+
+    @patch('mist.sdk.function.helpers.get_key')
+    async def test_coreSend_does_nothing_if_no_value_given(self, mock_getKey):
+        streamKey = "targetStream"
+        stack = []
+
+        await coreSend(None, stack=stack, commands=None)
+
+        mock_getKey.assert_not_called()
+
+    @patch('mist.sdk.function.streams.send')
+    @patch('mist.sdk.function.helpers.get_key')
+    async def test_coreSend_sends_if_theres_stream(self, mock_getKey, mock_streams_send):
+        streamKey = "targetStream"
+        streamName = "myStream"
+        msg = "FOO"
+        stack = []
+        mock_getKey.return_value = streamName
+
+        await coreSend(msg, stack=stack, commands=None)
+
+        mock_getKey.assert_called_once_with(streamKey, stack)
+        mock_streams_send.assert_called_once_with(streamName, msg)
+
+    @patch('mist.sdk.function.streams.send')
+    @patch('mist.sdk.function.helpers.get_key')
+    async def test_coreSend_dont_send_if_theres_no_stream(self, mock_getKey, mock_streams_send):
+        curStream = "targetStream"
+        stack = []
+        mock_getKey.side_effect = MistUndefinedVariableException()
+
+        await coreSend("FOO", stack=stack, commands=None)
+
+        mock_getKey.assert_called_once_with(curStream, stack)
+        mock_streams_send.assert_not_called()
