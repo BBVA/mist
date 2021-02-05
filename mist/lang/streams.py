@@ -21,6 +21,7 @@ class MemoryStreamQueue(asyncio.Queue):
 
         while True:
             try:
+                currentTask.waitingForQueue = False
                 pos = abs(self.__offset - (current - starts))
                 yield json.loads(self._queue[pos])
                 current += 1
@@ -28,11 +29,11 @@ class MemoryStreamQueue(asyncio.Queue):
                 getter = self._loop.create_future()
                 self._getters.append(getter)
                 try:
+                    currentTask.waitingForQueue = True
                     await asyncio.wait_for(getter, 2)
                 except asyncio.exceptions.TimeoutError:
                     if current == self.qsize() and all(t.done() for t in producers if t != currentTask and not t.waitingForQueue):
                         return
-
                 except:
                     getter.cancel()  # Just in case getter is not done yet.
                     try:
