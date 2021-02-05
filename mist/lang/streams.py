@@ -17,12 +17,12 @@ class MemoryStreamQueue(asyncio.Queue):
         """starts value, by default, is the beginning of the queue"""
 
         current = 0
+        currentTask = asyncio.current_task()
 
         while True:
             try:
                 pos = abs(self.__offset - (current - starts))
                 yield json.loads(self._queue[pos])
-
                 current += 1
             except IndexError:
                 getter = self._loop.create_future()
@@ -30,7 +30,7 @@ class MemoryStreamQueue(asyncio.Queue):
                 try:
                     await asyncio.wait_for(getter, 2)
                 except asyncio.exceptions.TimeoutError:
-                    if all(t.done() for t in producers if t != asyncio.current_task() and not t.waitingForQueue):
+                    if current == self.qsize() and all(t.done() for t in producers if t != currentTask and not t.waitingForQueue):
                         return
 
                 except:
