@@ -2,7 +2,7 @@ function customSleep(n) {
     print("Begin sleep {n}")
     sleep(1)
     #exec("sleep {n}")
-    send n
+    send(n)
     print("End sleep {n}")
 }
 
@@ -10,7 +10,7 @@ function passNumber(n,t) {
     print("begin passNumber {n} {t}")
     sleep(ms=900)
     #exec("sleep 0.5")
-    send n
+    send(n)
     print("end passNumber {n} {t}")
 }
 
