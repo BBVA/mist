@@ -34,10 +34,6 @@ NamedArg:
     key=ID '=' value=IDorSTRING
 ;
 
-FunctionInlineCall:
-  name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')')
-;
-
 StringData:
   data=/(?ms)\'{3}(.*?)\'{3}/
 ;

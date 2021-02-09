@@ -243,16 +243,6 @@ class EnvVariable(ValueContainer):
         return environment[self.var]
 
 @dataclass
-class FunctionInlineCall(ValueContainer):
-    parent: object
-    name: str
-    namedArgs: list
-    args: list
-
-    async def getValue(self, stack):
-        return await function_runner(self.name, stack, None, None, self.args, self.namedArgs )
-
-@dataclass
 class CustomList(ValueContainer):
     parent: object
     components: list
@@ -283,5 +273,5 @@ class Source(ValueContainer):
 exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
            SetCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
-           EnvVariable, FunctionInlineCall, CustomList, VarReference, Source,
+           EnvVariable, CustomList, VarReference, Source,
            ReturnCommand]
