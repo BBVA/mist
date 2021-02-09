@@ -95,24 +95,6 @@ class AbortCommand:
         raise MistAbortException(reason)
 
 @dataclass
-class IterateCommand:
-    parent: object
-    var: str
-    name: str
-    commands: list
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> Iterate {self.var}")
-
-        res = []
-
-        for index, item in enumerate(await get_id(self.var, stack)):
-            res.append({self.name: item, "index": index})
-
-        return res
-
-@dataclass
 class WatchCommand:
     parent: object
     var: str
@@ -149,7 +131,10 @@ class SetCommand:
             print(f"-> SetCommand {self.key}")
         for s in reversed(stack):
             if "MistBaseNamespace" in s:
-                s[self.key] = await get_id(self.value, stack)
+                if isinstance(self.value.value,FunctionCall):
+                    s[self.key] = await self.value.value.run(stack)
+                else:
+                    s[self.key] = await get_id(self.value, stack)
 
 @dataclass
 class ExposeCommand:
@@ -165,12 +150,10 @@ class ExposeCommand:
 
 @dataclass
 class FunctionCall:
-    key: str
     parent: object
     name: str
     args: list
     namedArgs: list
-    #result: str
     commands: list
     targetStream: str
 
@@ -200,11 +183,12 @@ class FunctionCall:
                 producers.append(t)
         else:
             result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
-            if self.key:
+            if result:
                 for s in reversed(stack):
                     if "MistBaseNamespace" in s:
-                        s[self.key] = result
+                        s["result"] = result
                         break
+            return result
 
 @dataclass
 class FunctionDefinition:
@@ -308,7 +292,7 @@ class Source(ValueContainer):
     async def getValue(self, stack):
         return ":" + self.source
 
-exports = [DataCommand, SaveListCommand, CheckCommand, IterateCommand, WatchCommand,
+exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
            SetCommand, ExposeCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, FunctionInlineCall, CustomList, VarReference, Source,

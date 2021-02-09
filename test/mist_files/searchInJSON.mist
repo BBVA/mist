@@ -2,7 +2,7 @@
 # Description: Search some jsonpath in a JSON string
 # Tags: search, find, JSON
 
-set JSONtext <= '''
+JSONtext = '''
 {
   "employees": [
     {

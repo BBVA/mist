@@ -3,7 +3,7 @@ data saveListTable {
     key3
 }
 
-set myList <= listGenerator(%listKind)
+myList = listGenerator(%listKind)
 
 check %insertType is "as_is" {
     putlist myList => saveListTable
@@ -29,6 +29,6 @@ check %insertType is "oneSelConst" {
     putlist myList(key02) "key00" => saveListTable
 }
 
-iterate saveListTable => t {
+iterate (saveListTable, "t") {
     print("Saved key1: {t.key1}, key3: {t.key3}")
 }

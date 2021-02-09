@@ -12,6 +12,7 @@ from mist.sdk.params import params
 from mist.sdk.function import functions
 
 from mist.lang.streams import streams
+import mist.lang
 
 def get_var(var, stack):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
@@ -117,6 +118,9 @@ async def get_id(id, stack):
 
     if isinstance(id, str):
         return get_var(id, stack)
+    elif isinstance(id.value, mist.lang.classes.FunctionCall):
+        result = await id.value.launch(stack)
+        return result
     elif isinstance(id.value, str):
         s = id.value
         pairs = [(i[1],await get_key(i[1], stack)) for i in Formatter().parse(s) if i[1] is not None]

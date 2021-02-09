@@ -2,7 +2,7 @@
 # Description: Search some xpath in a XML string
 # Tags: search, find, XML
 
-set XMLtext <= '''<?xml version="1.0" encoding="UTF-8"?>
+XMLtext = '''<?xml version="1.0" encoding="UTF-8"?>
 <bookstore>
     <book category="cooking">
         <title lang="en">Everyday Italian</title>

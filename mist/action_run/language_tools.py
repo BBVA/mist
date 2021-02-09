@@ -42,26 +42,10 @@ GRAMMAR_TEMPLATE = """
 # Grammar helpers
 # -------------------------------------------------------------------------
 async def launch_hook(self, stack):
-    if results := await self.run(stack):
-        if type(results) is list:
-
-            for r in results:
-                stack.append(r)
-
-                if self.commands:
-                    for c in self.commands:
-                        await c.launch(stack)
-                    stack.pop()
-
-        else:
-
-            if type(results) is dict:
-                stack.append(results)
-
-            if self.commands:
-                await command_runner(self.commands, stack)
-                if type(results) is dict:
-                    stack.pop()
+    results = await self.run(stack)
+    if results and hasattr(self,"commands") and self.commands:
+        await command_runner(self.commands, stack)
+    return results
 
 @lru_cache(1)
 def mist_catalog_path() -> str:

@@ -10,7 +10,7 @@ data myNewHosts {
     status
 }
 
-iterate myHosts => host {
+iterate(myHosts,"host") {
     put("myNewHosts", host.ip, host.so, "up")
 }
 

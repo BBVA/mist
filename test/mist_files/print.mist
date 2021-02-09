@@ -11,7 +11,7 @@ data myTable {
 put("myTable", "127.0.0.1", Success)
 
 print("The result of ping to {myTable.ip} is {myTable.result}")
-iterate myTable => t {
+iterate(myTable,"t") {
     print(t.ip)
     print("Saved result of ping to {t.ip} is {t.result}")
 }

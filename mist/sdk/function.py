@@ -195,6 +195,12 @@ async def ifCommand(val, stack:list=None, commands:list=None):
         await helpers.command_runner(commands, stack)
     return val
 
+async def iterateCommand(items, name, stack:list=None, commands:list=None):
+    for item in items:
+        stack[-1][name] = item
+        await helpers.command_runner(commands, stack)
+    del stack[-1][name]
+
 def strSubstr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
     return s[start:end:step]
 
@@ -268,6 +274,7 @@ class _Functions(dict):
         self["isGreater"] = {"native": True, "commands": isGreater, "async": True}
         self["strContains"] = {"native": True, "commands": strContains}
         self["if"] = {"native": True, "commands": ifCommand, "async": True}
+        self["iterate"] = {"native": True, "commands": iterateCommand, "async": True}
         self["strSubstr"] = {"native": True, "commands": strSubstr}
         self["print"] = {"native": True, "commands": corePrint}
         self["abort"] = {"native": True, "commands": coreAbort}

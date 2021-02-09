@@ -1,5 +1,5 @@
-set hidden <= "*"
-set filter <= "-a"
+hidden = "*"
+filter = "-a"
 r = exec("bash -c ls {hidden} -1 {filter}", False)
 print("First exec result is {r.result}")
 

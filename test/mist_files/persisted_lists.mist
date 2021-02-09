@@ -12,10 +12,10 @@ put("persistedListData", "Numbers", ['1', '2'])
 
 print(persistedListData)
 
-iterate persistedListData => d {
+iterate(persistedListData, "d") {
     print(d)
     print(d.Objects)
-    iterate d.Objects => o {
+    iterate(d.Objects, "o") {
         print(o)
     }
 }
