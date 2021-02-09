@@ -251,12 +251,45 @@ class CustomList(ValueContainer):
         return [ await get_id(c, stack) for c in self.components ]
 
 @dataclass
+class ListReference(ValueContainer):
+    parent: object
+    id: str
+    index: int
+
+    async def getValue(self, stack):
+        l = get_var(self.id, stack)
+        if l is None:
+            raise MistUndefinedVariableException(self.id)
+        if not isinstance(l, list):
+            raise TypeError(f"{self.id} is a {type(l)}")
+
+        try:
+            return l[self.index]
+        except IndexError:
+            return None
+
+@dataclass
 class CustomDict(ValueContainer):
     parent: object
     entries: list
 
     async def getValue(self, stack):
         return { e.key: await get_id(e.value, stack) for e in self.entries }
+
+@dataclass
+class DictReference(ValueContainer):
+    parent: object
+    id: str
+    key: str
+
+    async def getValue(self, stack):
+        d = get_var(self.id, stack)
+        if d is None:
+            raise MistUndefinedVariableException(self.id)
+        if not isinstance(d, dict):
+            raise TypeError(f"{self.id} is a {type(d)}")
+
+        return d.get(self.key, None)
 
 @dataclass
 class VarReference(ValueContainer):
@@ -282,4 +315,4 @@ exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
            SetCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
-           ReturnCommand]
+           ListReference, DictReference, ReturnCommand]

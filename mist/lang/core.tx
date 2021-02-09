@@ -50,6 +50,14 @@ VarReference:
   id=ID('.'childs+=ID['.'])?
 ;
 
+ListReference:
+  id=ID '[' index=INT ']'
+;
+
+DictReference:
+  id=ID '[' key=STRING ']'
+;
+
 ExtParameter:
   '%' param=ID
 ;
@@ -63,8 +71,9 @@ Source:
 ;
 
 IDorSTRING:
-  value=FunctionCall | value=CustomList | value=CustomDict | value=StringData | value=VarReference |
-  value=STRING | value=INT | value=ExtParameter | value=EnvVariable | value=Source
+  value=FunctionCall | value=CustomList | value=CustomDict | value=StringData |
+  value=VarReference | value=ListReference | value=DictReference | value=STRING |
+  value=INT | value=ExtParameter | value=EnvVariable | value=Source
 ;
 
 SetCommand:

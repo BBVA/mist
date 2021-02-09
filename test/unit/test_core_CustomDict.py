@@ -1,7 +1,12 @@
 from unittest.mock import patch
-from unittest import IsolatedAsyncioTestCase, TestCase, skip
+from unittest import (IsolatedAsyncioTestCase, TestCase, skip)
 
-from mist.lang.classes import CustomDict, EnvVariable, ExtParameter, VarReference
+## Here to remove circular dependency with language_tools.py
+import mist.action_run
+
+from mist.lang.classes import (CustomDict, DictReference, EnvVariable, ExtParameter, VarReference)
+from mist.sdk.exceptions import (MistUndefinedVariableException)
+
 from test.utilTest import *
 
 
@@ -34,3 +39,32 @@ class CoreCustomDictTest(IsolatedAsyncioTestCase):
 
         print(d)
         self.assertEqual({ "number": 5, "string": "strvalue", "mistVar": "varValue", "mistEnvvar": "envarValue", "mistParam": "paramValue" }, d)
+
+    async def test_DictReference_raises_MistUndefinedVariableException_if_not_exist(self):
+
+        dr = DictReference(None, "FOO", "BAR")
+        with self.assertRaisesRegex(MistUndefinedVariableException, "FOO"):
+            await dr.getValue([])
+
+    async def test_DictReference_raises_TypeError_if_not_a_dict(self):
+        create_variable("myDict", "varValue")
+
+        dr = DictReference(None, "myDict", "BAR")
+        with self.assertRaisesRegex(TypeError, "myDict is a <class 'str'>"):
+            await dr.getValue(get_mistStack())
+
+    async def test_DictReference_returns_None_if_key_not_exist(self):
+        create_variable("myDict", {"FOO": "BAR"})
+
+        dr = DictReference(None, "myDict", "BAR")
+        v = await dr.getValue(get_mistStack())
+
+        self.assertIsNone(v)
+
+    async def test_DictReference_returns_stored_value(self):
+        create_variable("myDict", {"key": "val"})
+
+        dr = DictReference(None, "myDict", "key")
+        v = await dr.getValue(get_mistStack())
+
+        self.assertEqual("val", v)
