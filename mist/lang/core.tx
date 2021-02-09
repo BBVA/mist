@@ -4,7 +4,7 @@ Program:
 
 Command:
   IncludeCommand | SaveListCommand | DataCommand | CheckCommand |
-  WatchCommand | FunctionDefinition | SetCommand | ExposeCommand | EndCommand |
+  WatchCommand | FunctionDefinition | SetCommand | EndCommand |
   AppendCommand | FunctionCall | ReturnCommand
 ;
 
@@ -105,10 +105,6 @@ CheckCommand:
 
 CheckOperator:
   'is not' | 'is'
-;
-
-ExposeCommand:
-  'expose' value=ID
 ;
 
 EndCommand:

@@ -137,18 +137,6 @@ class SetCommand:
                     s[self.key] = await get_id(self.value, stack)
 
 @dataclass
-class ExposeCommand:
-    parent: object
-    value: str
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> ExposeCommand {self.value}")
-        for i in range(len(stack)-1,0,-1):
-            if "MistBaseNamespace" in stack[i]:
-                stack[i-1][self.value] = await get_key(self.value, stack)
-
-@dataclass
 class FunctionCall:
     parent: object
     name: str
@@ -293,7 +281,7 @@ class Source(ValueContainer):
         return ":" + self.source
 
 exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
-           SetCommand, ExposeCommand, AppendCommand, FunctionCall,
+           SetCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, FunctionInlineCall, CustomList, VarReference, Source,
            ReturnCommand]
