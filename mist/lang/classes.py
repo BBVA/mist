@@ -251,6 +251,14 @@ class CustomList(ValueContainer):
         return [ await get_id(c, stack) for c in self.components ]
 
 @dataclass
+class CustomDict(ValueContainer):
+    parent: object
+    entries: list
+
+    async def getValue(self, stack):
+        return { e.key: await get_id(e.value, stack) for e in self.entries }
+
+@dataclass
 class VarReference(ValueContainer):
     parent: object
     id: str
@@ -273,5 +281,5 @@ class Source(ValueContainer):
 exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
            SetCommand, AppendCommand, FunctionCall,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
-           EnvVariable, CustomList, VarReference, Source,
+           EnvVariable, CustomList, CustomDict, VarReference, Source,
            ReturnCommand]

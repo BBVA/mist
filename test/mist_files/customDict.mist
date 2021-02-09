@@ -1,0 +1,3 @@
+ dict = { "first": 4, "second": "value"}
+
+print("{dict}")

@@ -30,6 +30,14 @@ CustomList:
   '['(components+=IDorSTRING[','])? ']'
 ;
 
+CustomDict:
+  '{' (entries+=DictEntry[','])? '}'
+;
+
+DictEntry:
+  key=STRING ':' value=IDorSTRING
+;
+
 NamedArg:
     key=ID '=' value=IDorSTRING
 ;
@@ -55,7 +63,7 @@ Source:
 ;
 
 IDorSTRING:
-  value=FunctionCall | value=CustomList | value=StringData | value=VarReference |
+  value=FunctionCall | value=CustomList | value=CustomDict | value=StringData | value=VarReference |
   value=STRING | value=INT | value=ExtParameter | value=EnvVariable | value=Source
 ;
 
