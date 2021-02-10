@@ -36,19 +36,12 @@ async def execute_aux():
         await command_runner(mist_model.commands, stack)
         await waitForTaks()
 
-        # async def execute_from_text(text: str,
-        #                       fn_params: dict = None,
-        #                       realtime_fn: Callable = None,
-        #                       **kwargs) -> str:
-        #         #return asyncio.run(execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs))
-        #         return await execute_from_text_aux(text=text, fn_params=fn_params, realtime_fn=realtime_fn, **kwargs)
-
 async def execute_from_text(text: str,
                       fn_params: dict = None,
                       realtime_fn: Callable = None,
                       waitTime:int = 0,
+                      stack: list = [{"MistBaseNamespace": True}],
                       **kwargs) -> str:
-    stack = [{"MistBaseNamespace": True}]
     if fn_params:
         params.update(fn_params)
 

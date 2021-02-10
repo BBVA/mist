@@ -214,8 +214,7 @@ class IncludeCommand:
         for f in self.files:
             with open(f, "r") as f:
                 content = f.read()
-                # TODO: pass stack
-                print(await mist.action_run.execute_from_text(content, environment))
+                print(await mist.action_run.execute_from_text(text=content, fn_params=environment, stack=stack))
 
 # Create the classes StringData, ExtParameter, EnvVariable, FunctionInlineCall, CustomList, VarReference and Source, all implementing ValueContainer and containing the corresponding code in herlpers.get_id
 @dataclass

@@ -10,7 +10,7 @@ async def test_exec(examples_path):
     with open(os.path.join(examples_path, EXAMPLE_FILE), "r") as f:
         content = f.read()
 
-    console = await execute_from_text(content)
+    console = await execute_from_text(content,stack=[{"MistBaseNamespace": True}])
 
     assert """H: requirements-doc.txt
 H: requirements-test.txt
