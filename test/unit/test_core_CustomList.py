@@ -6,6 +6,7 @@ import mist.action_run
 
 from mist.lang.classes import (CustomList, ListReference, EnvVariable, ExtParameter, VarReference)
 from mist.sdk.exceptions import (MistUndefinedVariableException)
+
 from test.utilTest import *
 
 
@@ -38,27 +39,6 @@ class CoreCustomListTest(IsolatedAsyncioTestCase):
 
         print(d)
         self.assertEqual([ 5, "strvalue", "varValue", "envarValue", "paramValue" ], d)
-
-    async def test_ListReference_raises_MistUndefinedVariableException_if_not_exist(self):
-
-        dl = ListReference(None, "FOO", "BAR")
-        with self.assertRaisesRegex(MistUndefinedVariableException, "FOO"):
-            await dl.getValue([])
-
-    async def test_ListReference_raises_TypeError_if_not_a_list(self):
-        create_variable("myList", "varValue")
-
-        dl = ListReference(None, "myList", "BAR")
-        with self.assertRaisesRegex(TypeError, "myList is a <class 'str'>"):
-            await dl.getValue(get_mistStack())
-
-    async def test_ListReference_returns_None_if_index_not_exist(self):
-        create_variable("myList", ["FOO"])
-
-        dr = ListReference(None, "myList", 1)
-        v = await dr.getValue(get_mistStack())
-
-        self.assertIsNone(v)
 
     async def test_ListReference_returns_stored_value(self):
         create_variable("myDict", ["value"])

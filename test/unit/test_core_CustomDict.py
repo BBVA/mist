@@ -40,27 +40,6 @@ class CoreCustomDictTest(IsolatedAsyncioTestCase):
         print(d)
         self.assertEqual({ "number": 5, "string": "strvalue", "mistVar": "varValue", "mistEnvvar": "envarValue", "mistParam": "paramValue" }, d)
 
-    async def test_DictReference_raises_MistUndefinedVariableException_if_not_exist(self):
-
-        dr = DictReference(None, "FOO", "BAR")
-        with self.assertRaisesRegex(MistUndefinedVariableException, "FOO"):
-            await dr.getValue([])
-
-    async def test_DictReference_raises_TypeError_if_not_a_dict(self):
-        create_variable("myDict", "varValue")
-
-        dr = DictReference(None, "myDict", "BAR")
-        with self.assertRaisesRegex(TypeError, "myDict is a <class 'str'>"):
-            await dr.getValue(get_mistStack())
-
-    async def test_DictReference_returns_None_if_key_not_exist(self):
-        create_variable("myDict", {"FOO": "BAR"})
-
-        dr = DictReference(None, "myDict", "BAR")
-        v = await dr.getValue(get_mistStack())
-
-        self.assertIsNone(v)
-
     async def test_DictReference_returns_stored_value(self):
         create_variable("myDict", {"key": "val"})
 

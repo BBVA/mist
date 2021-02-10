@@ -1,0 +1,9 @@
+list = [ "first", "second" ]
+
+print("{list}")
+
+a = list[0]
+b = list[1]
+
+print("{a} {b}")
+print("{list[1]} {list[0]}")

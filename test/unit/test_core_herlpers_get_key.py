@@ -91,3 +91,23 @@ class Get_var_Test(unittest.IsolatedAsyncioTestCase):
         ret = await get_key(var_name, get_mistStack())
 
         self.assertEqual(var_value, ret)
+
+    async def test_returns_list_component_when_given_a_list_reference(self):
+        var_name = "myList"
+        var_value = ["a", "b"]
+        init_mist()
+        create_variable(var_name, var_value)
+
+        ret = await get_key(var_name + "[0]", get_mistStack())
+
+        self.assertEqual("a", ret)
+
+    async def test_returns_dictionary_component_when_given_a_dictionary_reference(self):
+        var_name = "myDict"
+        var_value = {"a": 1, "b": 2}
+        init_mist()
+        create_variable(var_name, var_value)
+
+        ret = await get_key(var_name + '["b"]', get_mistStack())
+
+        self.assertEqual(2, ret)

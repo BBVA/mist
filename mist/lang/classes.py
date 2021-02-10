@@ -8,7 +8,10 @@ from .streams import streams, consumers, producers
 
 import mist.action_run
 
-from mist.sdk import db, get_id, get_key, get_param, watchers, functions, config, watchedInsert, MistAbortException, command_runner, function_runner, execution, environment, ValueContainer, getChildFromVar, get_var, params
+from mist.sdk import (db, get_id, get_key, get_param, watchers, functions, config,
+                      watchedInsert, MistAbortException, command_runner, function_runner,
+                      execution, environment, ValueContainer, getChildFromVar,
+                      get_var, params, resolve_list_reference, resolve_dict_reference)
 from mist.sdk.exceptions import MistException, MistUndefinedVariableException
 
 @dataclass
@@ -256,16 +259,7 @@ class ListReference(ValueContainer):
     index: int
 
     async def getValue(self, stack):
-        l = get_var(self.id, stack)
-        if l is None:
-            raise MistUndefinedVariableException(self.id)
-        if not isinstance(l, list):
-            raise TypeError(f"{self.id} is a {type(l)}")
-
-        try:
-            return l[self.index]
-        except IndexError:
-            return None
+        return await resolve_list_reference(self.id, self.index, stack)
 
 @dataclass
 class CustomDict(ValueContainer):
@@ -282,13 +276,7 @@ class DictReference(ValueContainer):
     key: str
 
     async def getValue(self, stack):
-        d = get_var(self.id, stack)
-        if d is None:
-            raise MistUndefinedVariableException(self.id)
-        if not isinstance(d, dict):
-            raise TypeError(f"{self.id} is a {type(d)}")
-
-        return d.get(self.key, None)
+        return await resolve_dict_reference(self.id, self.key, stack)
 
 @dataclass
 class VarReference(ValueContainer):

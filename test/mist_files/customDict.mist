@@ -1,3 +1,9 @@
- dict = { "first": 4, "second": "value"}
+dict = { "first": 4, "second": "value"}
 
 print("{dict}")
+
+a = dict["first"]
+b = dict["second"]
+
+print("{a} {b}")
+print("{dict['second']} {dict['first']}")

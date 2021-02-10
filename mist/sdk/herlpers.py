@@ -146,6 +146,10 @@ class NamedArg:
     def __eq__(self, other):
         return isinstance(other, NamedArg) and self.key == other.key and self.value == other.value
 
+LIST_MATCHER = re.compile("(\w*)\[(\d*)]")
+DICT_MATCHER1 = re.compile('(\w*)\["(\w*)"]')
+DICT_MATCHER2 = re.compile("(\w*)\['(\w*)']")
+
 async def get_key(key, stack):
     key=key.strip()
     if key[0]=="'" and key[-1]=="'":
@@ -156,6 +160,15 @@ async def get_key(key, stack):
         return environment[key[1:]]
     if key[0]==':':
         return key
+    if key[-1]==']': # List or dictionary reference
+        if grs := LIST_MATCHER.fullmatch(key):
+            return await resolve_list_reference(grs.group(1), int(grs.group(2)), stack)
+        elif grs := DICT_MATCHER1.fullmatch(key):
+            return await resolve_dict_reference(grs.group(1), grs.group(2), stack)
+        elif grs := DICT_MATCHER2.fullmatch(key):
+            return await resolve_dict_reference(grs.group(1), grs.group(2), stack)
+        else:
+            raise MistException(f"Invalid reference {key}")
     if key[-1]==')':
         function = key.split('(')[0].strip()
         args = [i.strip() for i in re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')]
@@ -167,6 +180,27 @@ async def get_key(key, stack):
         t = key.split('.')
         return getChildFromVar(get_var(t[0], stack), t[1:])
     return get_var(key, stack)
+
+async def resolve_list_reference(lid, i, stack):
+        l = get_var(lid, stack)
+        if l is None:
+            raise MistUndefinedVariableException(lid)
+        if not isinstance(l, list):
+            raise TypeError(f"{lid} is a {type(l)}")
+
+        try:
+            return l[i]
+        except IndexError:
+            return None
+
+async def resolve_dict_reference(did, k, stack):
+        d = get_var(did, stack)
+        if d is None:
+            raise MistUndefinedVariableException(did)
+        if not isinstance(d, dict):
+            raise TypeError(f"{did} is a {type(d)}")
+
+        return d.get(k, None)
 
 async def command_runner(commands: list, stack):
     for c in commands:

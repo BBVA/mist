@@ -71,8 +71,8 @@ Source:
 ;
 
 IDorSTRING:
-  value=FunctionCall | value=CustomList | value=CustomDict | value=StringData |
-  value=VarReference | value=ListReference | value=DictReference | value=STRING |
+  value=ListReference | value=DictReference | value=FunctionCall | value=CustomList |
+  value=CustomDict | value=StringData | value=VarReference | value=STRING |
   value=INT | value=ExtParameter | value=EnvVariable | value=Source
 ;
 
