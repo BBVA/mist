@@ -98,10 +98,12 @@ After cloning the repository, you can run `MIST` without install it:
 [X] Añadir libreria de listas y diccionarios
 [X] Parametros de funciones separados por comas en lugar de espacios
 [X] Convertir todos los comandos core posibles (print? set? put?) en funciones y simplificar más la gramática
-[ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
 [ ] Soporte para CREAR y MODIFICAR dicionarios. La libreria ya está (HECTOR)
-[ ] Include/Import puede importar ficheros mist y ficheros python con funciones (DOING GERMAN)
+[X] "Include" ficheros mist
+[ ] "Import" ficheros python con funciones (DOING GERMAN)
 [ ] Refactor if then else. Sustituir check por un if o similar con posibilidad de and or y not
+[ ] Actualizar toda la documentacion y añadir la nueva que haga falta
+[ ] Unir lang y sdk (DANI y HECTOR y GERMAN)
 [ ] Migrar los antiguos comandos del catalogo a mist nativo
 [ ] Migrar los antiguos playbooks a funciones (en lenguage mist preferiblemente)
 [ ] Crear binario único
