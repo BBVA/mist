@@ -1,0 +1,6 @@
+import "./test/mist_files/mylib.py"
+#import "mylib.py"
+#import "./mylib.py"
+#import "mylib.py"
+
+mylibMyPrint("Hola")

@@ -3,6 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 import asyncio
+import importlib, os, pathlib, sys
 
 from .streams import streams, consumers, producers
 
@@ -219,6 +220,24 @@ class IncludeCommand:
                 content = f.read()
                 print(await mist.action_run.execute_from_text(text=content, fn_params=environment, stack=stack))
 
+@dataclass
+class ImportCommand:
+    parent: object
+    files: list
+
+    async def run(self, stack):
+        if config.debug:
+            print(f"-> Import {self.files}")
+        for py_file in self.files:
+            sys.path.append(os.path.dirname(py_file))
+            module_name = pathlib.Path(py_file).stem
+            module = importlib.import_module(module_name)
+            for fname in dir(module):
+                ffunc = getattr(module, fname) 
+                if fname[0] != "_" and callable(ffunc):
+                    name = module_name + fname[0].upper() + fname[1:]
+                    functions[name] = {"native": True, "commands": ffunc}
+
 # Create the classes StringData, ExtParameter, EnvVariable, FunctionInlineCall, CustomList, VarReference and Source, all implementing ValueContainer and containing the corresponding code in herlpers.get_id
 @dataclass
 class StringData(ValueContainer):
@@ -299,7 +318,7 @@ class Source(ValueContainer):
         return ":" + self.source
 
 exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
-           SetCommand, AppendCommand, FunctionCall,
+           SetCommand, AppendCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
            ListReference, DictReference, ReturnCommand]

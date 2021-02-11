@@ -5,11 +5,15 @@ Program:
 Command:
   IncludeCommand | SaveListCommand | DataCommand | CheckCommand |
   WatchCommand | FunctionDefinition | SetCommand | EndCommand |
-  AppendCommand | FunctionCall | ReturnCommand
+  AppendCommand | FunctionCall | ReturnCommand | ImportCommand
 ;
 
 IncludeCommand:
-    'include' files+=STRING[eolterm]
+  'include' files+=STRING[eolterm]
+;
+
+ImportCommand:
+  'import' files+=STRING[eolterm]
 ;
 
 DataCommand:
