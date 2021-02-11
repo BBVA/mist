@@ -1,0 +1,2 @@
+include "test/mist_files/assign_string.mist"
+print(foo)

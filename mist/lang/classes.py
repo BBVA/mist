@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 import asyncio
-import importlib, os, pathlib, sys
+import importlib, os, pathlib, sys, tempfile, urllib
 
 from .streams import streams, consumers, producers
 
@@ -229,7 +229,8 @@ class IncludeCommand:
         for f in self.files:
             with open(f, "r") as f:
                 content = f.read()
-                print(await mist.action_run.execute_from_text(text=content, fn_params=environment, stack=stack))
+                stdout = await mist.action_run.execute_from_text(text=content, fn_params=environment, stack=stack)
+                print(stdout, end = '')
 
 @dataclass
 class ImportCommand:
@@ -240,9 +241,18 @@ class ImportCommand:
         if config.debug:
             print(f"-> Import {self.files}")
         for py_file in self.files:
-            sys.path.append(os.path.dirname(py_file))
             module_name = pathlib.Path(py_file).stem
-            module = importlib.import_module(module_name)
+            if py_file.startswith("http"):
+                dest = tempfile.NamedTemporaryFile(suffix=".py")
+                destname = dest.name
+                sys.path.append(os.path.dirname(destname))
+                with urllib.request.urlopen(py_file) as remote:
+                    dest.write(remote.read())
+                    dest.flush()
+                module = importlib.import_module(pathlib.Path(destname).stem)
+            else:
+                sys.path.append(os.path.dirname(py_file))
+                module = importlib.import_module(module_name)
             for fname in dir(module):
                 ffunc = getattr(module, fname) 
                 if fname[0] != "_" and callable(ffunc):

@@ -1,0 +1,3 @@
+import "https://raw.githubusercontent.com/cr0hn/mist/master/test/mist_files/mylib.py"
+
+mylibMyPrint("Hola")
