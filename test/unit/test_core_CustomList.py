@@ -37,7 +37,6 @@ class CoreCustomListTest(IsolatedAsyncioTestCase):
         cd = CustomList(None, elements)
         d = await cd.getValue(get_mistStack())
 
-        print(d)
         self.assertEqual([ 5, "strvalue", "varValue", "envarValue", "paramValue" ], d)
 
     async def test_ListReference_returns_stored_value(self):

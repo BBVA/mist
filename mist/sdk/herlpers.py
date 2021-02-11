@@ -146,9 +146,9 @@ class NamedArg:
     def __eq__(self, other):
         return isinstance(other, NamedArg) and self.key == other.key and self.value == other.value
 
-LIST_MATCHER = re.compile("(\w*)\[(\d*)]")
-DICT_MATCHER1 = re.compile('(\w*)\["(\w*)"]')
-DICT_MATCHER2 = re.compile("(\w*)\['(\w*)']")
+LIST_MATCHER = re.compile(r"(\w*)\[(\d*)]")
+DICT_MATCHER1 = re.compile(r'(\w*)\["(\w*)"]')
+DICT_MATCHER2 = re.compile(r"(\w*)\['(\w*)']")
 
 async def get_key(key, stack):
     key=key.strip()

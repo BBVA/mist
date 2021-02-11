@@ -126,8 +126,8 @@ class AppendCommand:
 @dataclass
 class SetCommand:
     parent: object
-    key: str
-    value: str
+    key: object
+    value: object
 
     async def run(self, stack):
 
@@ -135,10 +135,21 @@ class SetCommand:
             print(f"-> SetCommand {self.key}")
         for s in reversed(stack):
             if "MistBaseNamespace" in s:
-                if isinstance(self.value.value,FunctionCall):
-                    s[self.key] = await self.value.value.run(stack)
+                # Get the value to be stored
+                val = await self.value.value.run(stack) if isinstance(self.value.value, FunctionCall) else await get_id(self.value, stack)
+
+                # Get where to store the value
+                if isinstance(self.key, str):
+                    s[self.key] = val
+                elif isinstance(self.key, DictReference):
+                    d = get_var(self.key.id, stack)
+                    d[self.key.key] = val
+                elif isinstance(self.key, ListReference):
+                    l = get_var(self.key.id, stack)
+                    l[self.key.index] = val
                 else:
-                    s[self.key] = await get_id(self.value, stack)
+                    raise MistException(f"Unexpected LHS value {type(self.key)}")
+                return
 
 @dataclass
 class FunctionCall:

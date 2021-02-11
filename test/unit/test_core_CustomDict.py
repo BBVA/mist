@@ -37,7 +37,6 @@ class CoreCustomDictTest(IsolatedAsyncioTestCase):
         cd = CustomDict(None, entries)
         d = await cd.getValue(get_mistStack())
 
-        print(d)
         self.assertEqual({ "number": 5, "string": "strvalue", "mistVar": "varValue", "mistEnvvar": "envarValue", "mistParam": "paramValue" }, d)
 
     async def test_DictReference_returns_stored_value(self):

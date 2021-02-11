@@ -14,3 +14,4 @@ async def test_CustomList(examples_path):
     assert "['first', 'second']" in console
     assert "first second" in console
     assert "second first" in console
+    assert "['first', 'other']" in console

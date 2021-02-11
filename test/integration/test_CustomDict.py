@@ -14,3 +14,4 @@ async def test_CustomDict(examples_path):
     assert "{'first': 4, 'second': 'value'}" in console
     assert "4 value" in console
     assert "value 4" in console
+    assert "{'first': 'other', 'second': 'value'}" in console

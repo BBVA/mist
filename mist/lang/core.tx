@@ -80,8 +80,12 @@ IDorSTRING:
   value=INT | value=ExtParameter | value=EnvVariable | value=Source
 ;
 
+SetLHS:
+  ListReference | DictReference | ID
+;
+
 SetCommand:
-  key=ID '=' value=IDorSTRING
+  key=SetLHS '=' value=IDorSTRING
 ;
 
 FunctionCall:

@@ -7,3 +7,6 @@ b = dict["second"]
 
 print("{a} {b}")
 print("{dict['second']} {dict['first']}")
+
+dict["first"] = "other"
+print("{dict}")
