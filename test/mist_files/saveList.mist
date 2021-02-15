@@ -5,27 +5,27 @@ data saveListTable {
 
 myList = listGenerator(%listKind)
 
-check %insertType is "as_is" {
+isEqual(%insertType,"as_is") {
     putlist myList => saveListTable
 }
 
-check %insertType is "selInv" {
+isEqual(%insertType,"selInv") {
     putlist myList(key02 key01) => saveListTable
 }
 
-check %insertType is "selColInv" {
+isEqual(%insertType,"selColInv") {
     putlist myList(key02 key01) => saveListTable(key3 key1)
 }
 
-check %insertType is "colInv" {
+isEqual(%insertType,"colInv") {
     putlist myList => saveListTable(key3 key1)
 }
 
-check %insertType is "oneSel" {
+isEqual(%insertType,"oneSel") {
     putlist myList(key02) => saveListTable(key1)
 }
 
-check %insertType is "oneSelConst" {
+isEqual(%insertType,"oneSelConst") {
     putlist myList(key02) "key00" => saveListTable
 }
 

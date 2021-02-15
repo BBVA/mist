@@ -186,11 +186,6 @@ class FunctionCall:
                 producers.append(t)
         else:
             result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
-            if result:
-                for s in reversed(stack):
-                    if "MistBaseNamespace" in s:
-                        s["result"] = result
-                        break
             return result
 
 @dataclass

@@ -3,6 +3,6 @@
 # Description: executes a custom user shell command
 # Tags: command, exec, shell
 r = exec ("bash -c 'ls --sadfasdf'")
-check r.result is Error {
+isEqual(r.result,Error) {
     abort()
 }

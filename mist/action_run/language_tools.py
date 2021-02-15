@@ -43,8 +43,6 @@ GRAMMAR_TEMPLATE = """
 # -------------------------------------------------------------------------
 async def launch_hook(self, stack):
     results = await self.run(stack)
-    if results and hasattr(self,"commands") and self.commands:
-        await command_runner(self.commands, stack)
     return results
 
 @lru_cache(1)
