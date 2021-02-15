@@ -111,6 +111,7 @@ After cloning the repository, you can run `MIST` without install it:
 [ ] Limpiar tests
 [ ] Actualizar toda la documentacion y añadir la nueva que haga falta
 [ ] Crear binario único
+[ ] Implementar limite de concurrencia en los consumidores de las colas
 
 # License
 
