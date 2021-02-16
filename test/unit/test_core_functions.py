@@ -1,7 +1,8 @@
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase, TestCase
 
-from mist.sdk.function import (functions, corePrint, coreAbort, corePut, corePutData, coreSend)
+from mist.sdk.function import (functions, corePrint, coreAbort, corePut,
+                                corePutData, coreSend, parseInt, toString)
 from mist.sdk.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 
 
@@ -160,3 +161,40 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 
         mock_getKey.assert_called_once_with(curStream, stack)
         mock_streams_send.assert_not_called()
+
+######
+###### parseInt
+######
+    def test_parseInt_raises_exception_when_non_string_given(self):
+        tests = [{}, []]
+
+        for t in tests:
+            with self.assertRaises(TypeError):
+                parseInt(t)
+
+    def test_parseInt_raises_exception_when_no_parseable_integer_given(self):
+        tests = ["{}", "[]", "hola", "1234.56"]
+
+        for t in tests:
+            with self.assertRaises(ValueError):
+                parseInt(t)
+
+    def test_parseInt_parses_integers_given(self):
+        tests = [["0", 0], ("-1", -1), ("123456", 123456)]
+
+        for t in tests:
+            r = parseInt(t[0])
+
+            self.assertEqual(r, t[1])
+
+######
+###### toString
+######
+
+    def test_toString_returns_string_representation(self):
+        tests = [[0, "0"], (-1, "-1"), (1234.56, "1234.56")]
+
+        for t in tests:
+            r = toString(t[0])
+
+            self.assertEqual(r, t[1])
