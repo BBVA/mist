@@ -18,8 +18,8 @@ import mist.sdk.herlpers as helpers
 
 from mist.lang.streams import streams
 
-def tmpFileFunction(stack:list=None, commands:list=None):
-    return tempfile.NamedTemporaryFile(delete=False).name
+def tmpFileFunction(delete=False, stack:list=None, commands:list=None):
+    return tempfile.NamedTemporaryFile(delete=delete).name
 
 def rangeFunction(begin, end, step, stack:list=None, commands:list=None):
     return list(range(begin, end, step))
@@ -57,6 +57,24 @@ def searchInJSON(jsonpath: str, text: str, stack:list=None, commands:list=None):
     finally:
         return [ e.value for e in found ] if found is not None else []
 
+def readJSON(jsonfilepath: str, stack:list=None, commands:list=None):
+    json_data = None
+    try:
+        with open(jsonfilepath, 'r') as json_file:
+            data = json.load(json_file)
+    except Exception as e:
+        print(f" Error in 'readJSON' -> {e}")
+    finally:
+        return json_data
+
+def parseJSON(jsonstr: str, stack:list=None, commands:list=None):
+    json_data = None
+    try:
+        json_data = json.loads(jsonstr)
+    except Exception as e:
+        print(f" Error in 'parseJSON' -> {e}")
+    finally:
+        return json_data
 
 async def CSVput(fileName: str, target: str, stack:list=None, commands:list=None):
     with open(fileName) as csvfile:
@@ -259,6 +277,8 @@ class _Functions(dict):
         self["searchInText"] = {"native": True, "commands": searchInText}
         self["searchInXML"] = {"native": True, "commands": searchInXML}
         self["searchInJSON"] = {"native": True, "commands": searchInJSON}
+        self["readJSON"] = {"native": True, "commands": readJSON}
+        self["parseJSON"] = {"native": True, "commands": parseJSON}
         self["CSVput"] = {"native": True, "commands": CSVput, "async": True}
         self["CSVdump"] = {"native": True, "commands": CSVdump}
         self["readFile"] = {"native": True, "commands": readFile}

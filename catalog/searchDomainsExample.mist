@@ -1,5 +1,0 @@
-include "searchDomains"
-
-r = searchDomains(%domain)
-
-print(r)

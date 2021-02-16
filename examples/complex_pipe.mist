@@ -3,32 +3,12 @@
 # Description: Given a domain, find related domains and open ports in each domain.
 # Tags: dnsrecon, nmap, network
 
-# PROPOSAL
-#import myLibrary
+include "searchDomains"
+include "searchOpenS3Buckets"
 
 ###########
 # Library #
 ###########
-
-function searchDomains(originDomain)  {
-    r = exec("dnsrecon.py -d {originDomain} -t crt", False) {
-        fields = strSplit(outputLine)
-        isEqual(get(fields,1), "A") {
-            send get(fields,2)
-        }     
-    }
-    return r
-}
-
-function searchOpenS3Buckets(originDomain, dns) {
-    r = exec ("festin {originDomain} --tor -ds {dns}", False) {
-        if(strContains("Adding", outputLine)) {
-            fields = strSplit(outputLine)
-            send strSubstr(get(fields ,7), 1, -1)    
-        }
-    }
-    return r
-}
 
 function findOpenPorts(ip, ports) {
     #sleep(2)
@@ -86,7 +66,7 @@ function saveFound(found) {
 
 set domain <= "germanramos.com"
 searchDomains(domain) => domains
-searchOpenS3Buckets(domain, "212.166.64.1") => domains
+searchOpenS3Buckets(domain, "212.166.64.1", True) => domains
 
 #fooDomains("localhost") => domains
 #fooDomains("127.0.0.1") => domains

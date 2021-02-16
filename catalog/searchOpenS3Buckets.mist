@@ -1,0 +1,26 @@
+# Name: searchOpenS3Buckets
+# Version: 2.0.0
+# Description: Find related domains and open S3 bucket in it, including S3 compatible providers
+# Tags: network, festin, dns, s3, network
+
+function searchOpenS3Buckets(originDomain, dns, useTor) {
+    tor = ""
+    if(useTor) {
+        tor = "--tor"
+    }
+    resultFile = tmpFile()
+    r = exec ("festin {originDomain} {tor} -ds {dns} -rr {resultFile}", False) {
+        if(strContains("Adding", outputLine)) {
+            fields = strSplit(outputLine)
+            domain = strSubstr(get(fields ,7), 1, -1)
+            send(domain)
+        }
+    }
+    r["buckets"] = []
+    buckets = readFileAsLines(resultFile)
+    iterate(buckets, "line") {
+        parsedLine = parseJSON(line)
+        listAppend(r["buckets"],parsedLine)
+    }
+    return r
+}
