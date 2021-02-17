@@ -148,9 +148,7 @@ class NamedArg:
     def __eq__(self, other):
         return isinstance(other, NamedArg) and self.key == other.key and self.value == other.value
 
-LIST_MATCHER = re.compile(r"(\w*)\[(\d*)]")
-DICT_MATCHER1 = re.compile(r'(\w*)\["(\w*)"]')
-DICT_MATCHER2 = re.compile(r"(\w*)\['(\w*)']")
+LDREF_MATCHER = re.compile(r"(\w*)\[(.*)\]")
 
 async def get_key(key, stack):
     key=key.strip()
@@ -163,12 +161,8 @@ async def get_key(key, stack):
     if key[0]==':':
         return key
     if key[-1]==']': # List or dictionary reference
-        if grs := LIST_MATCHER.fullmatch(key):
-            return await resolve_list_reference(grs.group(1), int(grs.group(2)), stack)
-        elif grs := DICT_MATCHER1.fullmatch(key):
-            return await resolve_dict_reference(grs.group(1), grs.group(2), stack)
-        elif grs := DICT_MATCHER2.fullmatch(key):
-            return await resolve_dict_reference(grs.group(1), grs.group(2), stack)
+        if grs := LDREF_MATCHER.fullmatch(key):
+            return await resolve_list_dict_reference(grs.group(1), grs.group(2), stack)
         else:
             raise MistException(f"Invalid reference {key}")
     if key[-1]==')':
@@ -183,26 +177,25 @@ async def get_key(key, stack):
         return getChildFromVar(get_var(t[0], stack), t[1:])
     return get_var(key, stack)
 
-async def resolve_list_reference(lid, i, stack):
-        l = get_var(lid, stack)
-        if l is None:
-            raise MistUndefinedVariableException(lid)
-        if not isinstance(l, list):
-            raise TypeError(f"{lid} is a {type(l)}")
-
+async def resolve_list_dict_reference(id, member, stack):
+    i = get_var(id, stack)
+    if i is None:
+        raise MistUndefinedVariableException(id)
+    if isinstance(member, int):
+        m = member
+    elif isinstance(member, str) and (member[0] == "'" and member[-1] == "'" or member[0] == '"' and member[-1] == '"'):
+        m = member[1:-1]
+    else:
+        m = await get_id(member, stack)
+    if isinstance(i, list):
         try:
-            return l[i]
+            return i[m]
         except IndexError:
             return None
-
-async def resolve_dict_reference(did, k, stack):
-        d = get_var(did, stack)
-        if d is None:
-            raise MistUndefinedVariableException(did)
-        if not isinstance(d, dict):
-            raise TypeError(f"{did} is a {type(d)}")
-
-        return d.get(k, None)
+    elif isinstance(i, dict):
+        return i.get(m, None)
+    else:
+        raise TypeError(f"{id} is not a list neither a dict")
 
 async def command_runner(commands: list, stack):
     for c in commands:

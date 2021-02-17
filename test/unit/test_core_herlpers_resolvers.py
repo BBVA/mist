@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase, TestCase, skip
 
-from mist.sdk.herlpers import (resolve_list_reference, resolve_dict_reference)
+from mist.sdk.herlpers import (resolve_list_dict_reference)
 from mist.sdk.exceptions import (MistUndefinedVariableException)
 
 from test.utilTest import *
@@ -16,62 +16,87 @@ class CoreResolversTest(IsolatedAsyncioTestCase):
         clean_env_vars()
         clean_mist_params()
 
-    async def test_resolveListReference_raises_MistUndefinedVariableException_if_not_exist(self):
+    @patch("mist.sdk.herlpers.get_var")
+    async def test_resolveListDictReference_raises_MistUndefinedVariableException_if_not_exist(self, mock_get_var):
+        varName = "FOO"
+        mock_get_var.side_effect = MistUndefinedVariableException(varName)
 
-        with self.assertRaisesRegex(MistUndefinedVariableException, "FOO"):
-            await resolve_list_reference("FOO", None, [])
+        with self.assertRaisesRegex(MistUndefinedVariableException, varName):
+            await resolve_list_dict_reference(varName, None, [])
 
-    async def test_resolveListReference_raises_TypeError_if_not_a_list(self):
-        create_variable("myList", "varValue")
+    async def test_resolveListDictReference_raises_TypeError_if_not_a_list_neither_a_dict(self):
+        varName = "myList"
+        create_variable(varName, "varValue")
 
-        with self.assertRaisesRegex(TypeError, "myList is a <class 'str'>"):
-            await resolve_list_reference("myList", None, get_mistStack())
+        with self.assertRaisesRegex(TypeError, f"{varName} is not a list neither a dict"):
+            await resolve_list_dict_reference(varName, None, get_mistStack())
 
-    async def test_resolveListReference_raises_TypeError_if_not_an_int(self):
+    @patch("mist.sdk.herlpers.get_id")
+    async def test_resolveListDictReference_doesnt_resolve_member_if_int(self, mock_get_id):
+        varName = "myList"
+        intVal = 0
+        create_variable(varName, ["BAR"])
+
+        await resolve_list_dict_reference(varName, intVal, get_mistStack())
+
+        mock_get_id.assert_not_called()
+
+    @patch("mist.sdk.herlpers.get_id")
+    async def test_resolveListDictReference_doesnt_resolve_member_if_quoted_string(self, mock_get_id):
+        varName = "myDict"
+        quotStrVal = '"FOO"'
+        create_variable(varName, {"FOO": "BAR"})
+
+        await resolve_list_dict_reference(varName, quotStrVal, get_mistStack())
+
+        mock_get_id.assert_not_called()
+
+    @patch("mist.sdk.herlpers.get_id")
+    async def test_resolveListDictReference_resolves_member(self, mock_get_id):
+        varName = "myList"
+        expected = "FOO"
+        create_variable(varName, ["BAR"])
+        mock_get_id.return_value = 0
+
+        await resolve_list_dict_reference(varName, expected, get_mistStack())
+
+        mock_get_id.assert_called_once_with(expected, get_mistStack())
+
+    async def test_resolveListDictReference_raises_TypeError_when_accessing_list_with_non_int(self):
+        create_variable("myIndex", "FOO")
         create_variable("myList", ["FOO"])
-        tests = [None, "str"]
 
-        for t in tests:
-            with self.assertRaisesRegex(TypeError, "list indices must be integers or slices,*"):
-                await resolve_list_reference("myList", t, get_mistStack())
+        with self.assertRaisesRegex(TypeError, "list indices must be integers or slices,*"):
+            await resolve_list_dict_reference("myList", "myIndex", get_mistStack())
 
-    async def test_resolveListReference_returns_None_if_index_not_exist(self):
+    async def test_resolveListDictReference_returns_None_if_index_not_exist_in_list(self):
+        create_variable("myIndex", 1)
         create_variable("myList", ["FOO"])
 
-        v = await resolve_list_reference("myList", 1, get_mistStack())
+        v = await resolve_list_dict_reference("myList", "myIndex", get_mistStack())
 
         self.assertIsNone(v)
 
-    async def test_resolveListReference_returns_stored_value(self):
+    async def test_resolveListDictReference_returns_None_if_key_not_exist_in_dict(self):
+        create_variable("myKey", "key")
+        create_variable("myDict", {"FOO": "BAR"})
+
+        v = await resolve_list_dict_reference("myDict", "myKey", get_mistStack())
+
+        self.assertIsNone(v)
+
+    async def test_resolveListDictReference_returns_stored_value_in_list(self):
+        create_variable("myIndex", 0)
         create_variable("myList", ["value"])
 
-        v = await resolve_list_reference("myList", 0, get_mistStack())
+        v = await resolve_list_dict_reference("myList", "myIndex", get_mistStack())
 
         self.assertEqual("value", v)
 
-    async def test_resolveDictReference_raises_MistUndefinedVariableException_if_not_exist(self):
-
-        with self.assertRaisesRegex(MistUndefinedVariableException, "FOO"):
-            await resolve_dict_reference("FOO", None, [])
-
-    async def test_resolveDictReference_raises_TypeError_if_not_a_dict(self):
-        create_variable("myDict", "varValue")
-
-        with self.assertRaisesRegex(TypeError, "myDict is a <class 'str'>"):
-            await resolve_dict_reference("myDict", None, get_mistStack())
-
-    async def test_resolveDictReference_returns_None_if_key_not_exist(self):
-        create_variable("myDict", {"FOO": "BAR"})
-        tests = [None, "BAR"]
-
-        for t in tests:
-            v = await resolve_dict_reference("myDict", t, get_mistStack())
-
-            self.assertIsNone(v)
-
-    async def test_resolveDictReference_returns_stored_value(self):
+    async def test_resolveListDictReference_returns_stored_value_in_dict(self):
+        create_variable("myKey", "key")
         create_variable("myDict", {"key": "val"})
 
-        v = await resolve_dict_reference("myDict", "key", get_mistStack())
+        v = await resolve_list_dict_reference("myDict", "myKey", get_mistStack())
 
         self.assertEqual("val", v)

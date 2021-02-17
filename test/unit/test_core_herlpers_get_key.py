@@ -7,7 +7,7 @@ from mist.sdk.herlpers import get_key, NamedArg
 from test.utilTest import *
 
 
-class Get_var_Test(unittest.IsolatedAsyncioTestCase):
+class Get_key_Test(unittest.IsolatedAsyncioTestCase):
 
     async def test_returns_string_content_when_given_a_string(self):
         result = "value"

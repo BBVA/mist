@@ -4,7 +4,7 @@ from unittest import (IsolatedAsyncioTestCase, TestCase, skip)
 ## Here to remove circular dependency with language_tools.py
 import mist.action_run
 
-from mist.lang.classes import (SetCommand, FunctionCall, DictReference, ListReference)
+from mist.lang.classes import (SetCommand, FunctionCall, ListDictReference)
 from mist.sdk.exceptions import (MistUndefinedVariableException)
 
 from test.utilTest import *
@@ -64,36 +64,33 @@ class CoreSetCommandTest(IsolatedAsyncioTestCase):
 
         self.assertTrue(varName in get_mistStack()[0] and get_mistStack()[0][varName] == varValue)
 
-    @patch('mist.lang.classes.get_id')
-    async def test_puts_given_value_into_given_dictionary(self, mock_get_id):
+    async def test_puts_given_value_into_given_dictionary(self):
         dictName = "dict"
         dict = { }
         key = "var"
         value = "val"
-        mock_get_id.return_value = value
         create_variable(dictName, dict)
         class TestObj:
             def __init__(self, d):
                 self.value = d
+
         v = TestObj(value)
-        cmd = SetCommand(None, DictReference(None, dictName, key), v)
+        cmd = SetCommand(None, ListDictReference(None, dictName, TestObj(key)), v)
 
         await cmd.run(get_mistStack())
 
         self.assertEqual(dict[key], value)
 
-    @patch('mist.lang.classes.get_id')
-    async def test_sets_given_value_into_given_list_index(self, mock_get_id):
+    async def test_sets_given_value_into_given_list_index(self):
         listName = "list"
         value = "Other"
-        mock_get_id.return_value = value
         list = ["One"]
         create_variable(listName, list)
         class TestObj:
             def __init__(self, d):
                 self.value = d
         v = TestObj(value)
-        cmd = SetCommand(None, ListReference(None, listName, 0), v)
+        cmd = SetCommand(None, ListDictReference(None, listName, TestObj(0)), v)
 
         await cmd.run(get_mistStack())
 

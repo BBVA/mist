@@ -12,7 +12,7 @@ import mist.action_run
 from mist.sdk import (db, get_id, get_key, get_param, watchers, functions, config,
                       watchedInsert, MistAbortException, command_runner, function_runner,
                       execution, environment, ValueContainer, getChildFromVar,
-                      get_var, params, resolve_list_reference, resolve_dict_reference)
+                      get_var, params, resolve_list_dict_reference)
 from mist.sdk.exceptions import MistException, MistUndefinedVariableException
 
 @dataclass
@@ -141,12 +141,10 @@ class SetCommand:
                 # Get where to store the value
                 if isinstance(self.key, str):
                     s[self.key] = val
-                elif isinstance(self.key, DictReference):
-                    d = get_var(self.key.id, stack)
-                    d[self.key.key] = val
-                elif isinstance(self.key, ListReference):
-                    l = get_var(self.key.id, stack)
-                    l[self.key.index] = val
+                elif isinstance(self.key, ListDictReference):
+                    obj = get_var(self.key.id, stack)
+                    m = await get_id(self.key.member, stack)
+                    obj[m] = val
                 else:
                     raise MistException(f"Unexpected LHS value {type(self.key)}")
                 return
@@ -253,7 +251,7 @@ class ImportCommand:
                 sys.path.append(os.path.dirname(py_file))
                 module = importlib.import_module(module_name)
             for fname in dir(module):
-                ffunc = getattr(module, fname) 
+                ffunc = getattr(module, fname)
                 if fname[0] != "_" and callable(ffunc):
                     name = module_name + fname[0].upper() + fname[1:]
                     functions[name] = {"native": True, "commands": ffunc}
@@ -292,15 +290,6 @@ class CustomList(ValueContainer):
         return [ await get_id(c, stack) for c in self.components ]
 
 @dataclass
-class ListReference(ValueContainer):
-    parent: object
-    id: str
-    index: int
-
-    async def getValue(self, stack):
-        return await resolve_list_reference(self.id, self.index, stack)
-
-@dataclass
 class CustomDict(ValueContainer):
     parent: object
     entries: list
@@ -309,13 +298,13 @@ class CustomDict(ValueContainer):
         return { e.key: await get_id(e.value, stack) for e in self.entries }
 
 @dataclass
-class DictReference(ValueContainer):
+class ListDictReference(ValueContainer):
     parent: object
     id: str
-    key: str
+    member: object
 
     async def getValue(self, stack):
-        return await resolve_dict_reference(self.id, self.key, stack)
+        return await resolve_list_dict_reference(self.id, self.member, stack)
 
 @dataclass
 class VarReference(ValueContainer):
@@ -341,4 +330,4 @@ exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
            SetCommand, AppendCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
-           ListReference, DictReference, ReturnCommand]
+           ListDictReference, ReturnCommand]

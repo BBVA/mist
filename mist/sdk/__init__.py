@@ -5,7 +5,7 @@ from .params import params
 from .environment import environment
 from .herlpers import (get_id, get_param, get_key, command_runner, function_runner,
                         findQueueInArgs, ValueContainer, getChildFromVar, get_var,
-                        resolve_list_reference, resolve_dict_reference)
+                        resolve_list_dict_reference)
 from .watchers import watchers
 from .function import functions
 from .cmd import execution

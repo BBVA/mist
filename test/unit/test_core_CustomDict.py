@@ -4,7 +4,7 @@ from unittest import (IsolatedAsyncioTestCase, TestCase, skip)
 ## Here to remove circular dependency with language_tools.py
 import mist.action_run
 
-from mist.lang.classes import (CustomDict, DictReference, EnvVariable, ExtParameter, VarReference)
+from mist.lang.classes import (CustomDict, ListDictReference, EnvVariable, ExtParameter, VarReference)
 from mist.sdk.exceptions import (MistUndefinedVariableException)
 
 from test.utilTest import *
@@ -39,10 +39,11 @@ class CoreCustomDictTest(IsolatedAsyncioTestCase):
 
         self.assertEqual({ "number": 5, "string": "strvalue", "mistVar": "varValue", "mistEnvvar": "envarValue", "mistParam": "paramValue" }, d)
 
-    async def test_DictReference_returns_stored_value(self):
+    async def test_ListDictReference_returns_stored_value(self):
+        create_variable("myKey", "key")
         create_variable("myDict", {"key": "val"})
 
-        dr = DictReference(None, "myDict", "key")
+        dr = ListDictReference(None, "myDict", MistObj({"value": VarReference(None, "myKey", None)}))
         v = await dr.getValue(get_mistStack())
 
         self.assertEqual("val", v)
