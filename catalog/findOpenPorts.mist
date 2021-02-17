@@ -1,0 +1,20 @@
+# Name: findOpenPorts
+# Version: 2.0.0
+# Description: Find open ports at some specific host
+# Tags: ports, network, nmap
+
+function findOpenPorts(ip, ports) {
+    openPorts = []
+    r = exec("nmap -p {ports} --open {ip}", False) {
+        fields = strSplit(outputLine)
+        isGreater(len(fields),1) {
+            isEqual(get(fields,1), "open") {
+                openPort = strSplit(get(fields,0),"/")
+                send({"ip": ip, "port": openPort[0], "protocol": openPort[1]})
+                listAppend(openPorts, {"port": openPort[0], "protocol": openPort[1]})
+            }
+        }     
+    }
+    r["openPorts"] = openPorts
+    return r
+}
