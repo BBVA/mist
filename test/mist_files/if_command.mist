@@ -1,0 +1,13 @@
+r = [False, False, False, False]
+i = parseInt(%index)
+r[i] = True
+
+if (r[0]) {
+  print("ONE")
+} elsif (r[1]) {
+  print("TWO")
+} elsif (r[2]) {
+  print("THREE")
+} else {
+  print("FOUR")
+}

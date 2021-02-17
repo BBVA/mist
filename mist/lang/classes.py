@@ -319,6 +319,29 @@ class VarReference(ValueContainer):
             return get_var(self.id, stack)
 
 @dataclass
+class IfCommand:
+    parent: object
+    main: object    # IfCommand (textx)
+    elsifs: list    # ElsifCommand (textx)
+    default: object # ElseCommand (textx)
+
+    async def run(self, stack):
+        # Run the commands of the branch that has a true condition. Evaluate in order, main, all elsifs and default
+        if await self.evaluate(self.main.condition, stack):
+            await command_runner(self.main.commands, stack)
+            return
+
+        for branch in self.elsifs:
+            if await self.evaluate(branch.condition, stack):
+                await command_runner(branch.commands, stack)
+                return
+
+        await command_runner(self.default.commands, stack)
+
+    async def evaluate(self, condition, stack):
+        return bool(await get_id(condition.cond, stack))
+
+@dataclass
 class Source(ValueContainer):
     parent: object
     source: str
@@ -326,7 +349,7 @@ class Source(ValueContainer):
     async def getValue(self, stack):
         return ":" + self.source
 
-exports = [DataCommand, SaveListCommand, WatchCommand,
+exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
            SetCommand, AppendCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,

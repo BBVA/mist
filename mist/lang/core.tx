@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  IncludeCommand | SaveListCommand | DataCommand |
+  IncludeCommand | SaveListCommand | DataCommand | IfCommand |
   WatchCommand | FunctionDefinition | SetCommand | EndCommand |
   AppendCommand | FunctionCall | ReturnCommand | ImportCommand
 ;
@@ -112,6 +112,32 @@ WatchCommand:
   'watch' var=ID '=>' name=ID '{'
     commands*=Command
   '}'
+;
+
+IfCommand:
+  main=IfBranch elsifs*=ElsifBranch (default=ElseBranch)?
+;
+
+IfBranch:
+  'if' '(' condition=BoolExpr ')' '{'
+    commands*=Command
+  '}'
+;
+
+ElsifBranch:
+'elsif' '(' condition=BoolExpr ')' '{'
+  commands*=Command
+'}'
+;
+
+ElseBranch:
+  'else' '{'
+    commands*=Command
+  '}'
+;
+
+BoolExpr:
+  cond=IDorSTRING
 ;
 
 EndCommand:
