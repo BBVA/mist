@@ -20,6 +20,8 @@ def get_var(var, stack):
         return True
     if var in ("False", "Error"):
         return False
+    if var in ("None", "Null"):
+        return None
     try:
         return int(var)
     except ValueError:
