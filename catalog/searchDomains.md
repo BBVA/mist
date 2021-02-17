@@ -11,7 +11,7 @@ domain in order to find other related domains.
 
 ## Output parameters
 
-- **result**: Boolean, possible values are: True, if the playbook has been
+- **result**: Boolean, possible values are: True, if the dnsrecon command has been
 executed without errors, or False otherwise.
 - **resultCode**: Integer. Exit code from dnsrecon command.
 - **domains**: A list of domains found. This output will also be send to a queue if requiered.

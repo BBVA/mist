@@ -12,11 +12,11 @@ This command finds open S3 buckets from an origin domain list.
 
 ## Output parameters
 
-- **result**: Boolean, possible values are: True, if the command has been
+- **result**: Boolean, possible values are: True, if the festin command has been
 executed without errors, or False otherwise.
-- **resultCode**: Integer. Exit code from dnsrecon command.
-- **consoleOutput**: Raw text with console output from dnsrecon command.
-- **consoleError**: Raw text with console error from dnsrecon command.
+- **resultCode**: Integer. Exit code from festin command.
+- **consoleOutput**: Raw text with console output from festin command.
+- **consoleError**: Raw text with console error from festin command.
 - **buckets**: A list of domains, S3 bucket names and objects found.
 
 ## Tools and services
