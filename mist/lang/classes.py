@@ -63,27 +63,27 @@ class SaveListCommand:
 
             await watchedInsert(self.target, stack, values, fields=cols)
 
-@dataclass
-class CheckCommand:
-    parent: object
-    var: str
-    operator: str
-    result: list
-    commands: list
-    elseCommands: list
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> Check that {self.var} is {self.result}")
-
-        # If condition is not met we substitute the check command list with the else command list.
-        left = await get_id(self.var, stack)
-        right = await get_id(self.result, stack)
-        if self.operator == 'is' and left != right:
-            self.commands = self.elseCommands
-        elif self.operator == 'is not' and left == right:
-            self.commands = self.elseCommands
-        return True
+##@dataclass
+##class CheckCommand:
+##    parent: object
+##    var: str
+##    operator: str
+##    result: list
+##    commands: list
+##    elseCommands: list
+##
+##    async def run(self, stack):
+##        if config.debug:
+##            print(f"-> Check that {self.var} is {self.result}")
+##
+##        # If condition is not met we substitute the check command list with the else command list.
+##        left = await get_id(self.var, stack)
+##        right = await get_id(self.result, stack)
+##        if self.operator == 'is' and left != right:
+##            self.commands = self.elseCommands
+##        elif self.operator == 'is not' and left == right:
+##            self.commands = self.elseCommands
+##        return True
 
 @dataclass
 class AbortCommand:
@@ -326,7 +326,7 @@ class Source(ValueContainer):
     async def getValue(self, stack):
         return ":" + self.source
 
-exports = [DataCommand, SaveListCommand, CheckCommand, WatchCommand,
+exports = [DataCommand, SaveListCommand, WatchCommand,
            SetCommand, AppendCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,

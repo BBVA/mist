@@ -3,7 +3,7 @@ Program:
 ;
 
 Command:
-  IncludeCommand | SaveListCommand | DataCommand | CheckCommand |
+  IncludeCommand | SaveListCommand | DataCommand |
   WatchCommand | FunctionDefinition | SetCommand | EndCommand |
   AppendCommand | FunctionCall | ReturnCommand | ImportCommand
 ;
@@ -112,16 +112,6 @@ WatchCommand:
   'watch' var=ID '=>' name=ID '{'
     commands*=Command
   '}'
-;
-
-CheckCommand:
-  'check' var=IDorSTRING operator=CheckOperator result=IDorSTRING '{'
-    commands+=Command
-  '}' ('else' '{' elseCommands+=Command '}')?
-;
-
-CheckOperator:
-  'is not' | 'is'
 ;
 
 EndCommand:
