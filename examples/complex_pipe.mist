@@ -38,16 +38,16 @@ function processDomain(domain) {
 
 function saveFound(found) {
     print("SAVE OPEN PORT FOUND",found)
-    put("resultOpenPorts", s["ip"], s["port"])
-    print(resultOpenPorts)
+    put("resultOpenPorts", found["ip"], found["port"])
+    #print(resultOpenPorts)
 }
-
-domain = "germanramos.com"
-searchDomains(domain) => domains
-searchOpenS3Buckets(domain, "212.166.64.1", True) => domains
 
 #fooDomains("localhost") => domains
 #fooDomains("127.0.0.1") => domains
+
+domain = "bbva.com"
+searchDomains(domain) => domains
+searchOpenS3Buckets(domain, "212.166.64.1", True) => domains
 
 processDomain(:domains) => nonRepeatedDomains
 findOpenPorts(:nonRepeatedDomains, "443") => openPortsFound
