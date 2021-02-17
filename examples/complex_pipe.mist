@@ -1,41 +1,20 @@
 # Name: find-open-ports-by-domains
-# Version: 2.0.0
+# Version: 4.0.0
 # Description: Given a domain, find related domains and open ports in each domain.
 # Tags: dnsrecon, nmap, network
 
 include "searchDomains"
 include "searchOpenS3Buckets"
-
-###########
-# Library #
-###########
-
-function findOpenPorts(ip, ports) {
-    #sleep(2)
-    print("BEGIN FIND OPEN PORTS {ip}")
-    r = exec("nmap -p {ports} --open {ip}", False) {
-        fields = strSplit(outputLine)
-        isGreater(len(fields),1) {
-            isEqual(get(fields,1), "open") {
-                openPort = get(fields,0)
-                send "{ip}:{openPort}"
-                print("SEND","{ip}:{openPort}")
-            }
-        }     
-    }
-    print("END FIND OPEN PORTS {ip}")
-    return r
-}
-
+include "findOpenPorts"
 
 ################
 # Main Program #
 ################
 
-function fooDomains(domain) {
-    send domain
-    sleep(1)
-    send domain
+function fooDomains(domain, n) {
+    send(domain)
+    sleep(n)
+    send(domain)
 }
 
 data resultOpenPorts {
@@ -43,28 +22,27 @@ data resultOpenPorts {
     ports
 }
 
-set domainProcessed <= []
+domainProcessed = []
 
 function processDomain(domain) {
     print("PROCESSING",domain)
-    iterate domainProcessed => d {
+    iterate(domainProcessed, "d") {
         isEqual(d, domain) {
             print(d,"already proccesed")
             return
         }
     }
     listAppend(domainProcessed, domain)
-    send domain
+    send(domain)
 }
 
 function saveFound(found) {
-    print("SAVE FOUND",found)
-    s = strSplit(found,":")
-    put get(s,0) get(s,1) => resultOpenPorts
-    #print(resultOpenPorts)
+    print("SAVE OPEN PORT FOUND",found)
+    put("resultOpenPorts", s["ip"], s["port"])
+    print(resultOpenPorts)
 }
 
-set domain <= "germanramos.com"
+domain = "germanramos.com"
 searchDomains(domain) => domains
 searchOpenS3Buckets(domain, "212.166.64.1", True) => domains
 
