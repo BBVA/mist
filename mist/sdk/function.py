@@ -273,6 +273,25 @@ def parseInt(value, stack:list=None, commands:list=None):
 def toString(value, stack:list=None, commands:list=None):
     return str(value)
 
+def boolNot(value, stack:list=None, commands:list=None):
+    return (not bool(value))
+
+def boolAnd(*values, stack:list=None, commands:list=None):
+    ret = True
+
+    for v in values:
+        ret = ret and v
+
+    return ret
+
+def boolOr(*values, stack:list=None, commands:list=None):
+    ret = False
+
+    for v in values:
+        ret = ret or v
+
+    return ret
+
 class _Functions(dict):
 
     def __init__(self):
@@ -308,6 +327,9 @@ class _Functions(dict):
         self["send"] = {"native": True, "commands": coreSend, "async": True}
         self["parseInt"] = {"native": True, "commands": parseInt}
         self["toString"] = {"native": True, "commands": toString}
+        self["NOT"] = {"native": True, "commands": boolNot}
+        self["AND"] = {"native": True, "commands": boolAnd}
+        self["OR"] = {"native": True, "commands": boolOr}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
