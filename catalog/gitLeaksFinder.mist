@@ -1,0 +1,11 @@
+# Name: gitLeaksFinder
+# Version: 2.0.0
+# Description: Find git secrets in a Git repository
+# Tags: security, secrets, git
+
+function gitLeaksFinder(gitPath) {
+    resultFile = tmpFile()
+    r = exec("gitleaks --repo-path \"{gitPath}\" --report {resultFile}", False)
+    r["issues"] = readJSON(resultFile)
+    return r
+}

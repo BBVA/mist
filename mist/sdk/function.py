@@ -58,14 +58,13 @@ def searchInJSON(jsonpath: str, text: str, stack:list=None, commands:list=None):
         return [ e.value for e in found ] if found is not None else []
 
 def readJSON(jsonfilepath: str, stack:list=None, commands:list=None):
-    json_data = None
+    json_data = {}
     try:
         with open(jsonfilepath, 'r') as json_file:
-            data = json.load(json_file)
+            json_data = json.load(json_file)
     except Exception as e:
-        print(f" Error in 'readJSON' -> {e}")
-    finally:
-        return json_data
+        return None
+    return json_data
 
 def parseJSON(jsonstr: str, stack:list=None, commands:list=None):
     json_data = None
