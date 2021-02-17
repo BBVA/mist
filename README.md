@@ -102,13 +102,13 @@ After cloning the repository, you can run `MIST` without install it:
 [X] "Include" ficheros mist
 [X] "Import" modulos python locales
 [X] "Import" modulos python remotos
-[ ] Refactor if then else. Sustituir check por un if o similar con posibilidad de and or y not (DOING HECTOR)
+[X] Refactor if then else. Sustituir check por un if o similar con posibilidad de and or y not
 [ ] Unir lang y sdk (DANI)
 [ ] Eliminar codigo antiguo relaccionado con el catalogo
 [ ] Arreglar integracion continua
 [ ] Migrar los antiguos comandos del catalogo a mist nativo. Ponerlas en un directorio del repo (catalog?) desde el cual se podrán importar
 [ ] Migrar los antiguos playbooks a funciones. Ponerlos en un directorio del repo (examples?)
-[ ] Limpiar tests
+[ ] Limpiar tests (DOING Héctor)
 [ ] Actualizar toda la documentacion y añadir la nueva que haga falta
 [ ] Crear binario único
 [ ] Implementar limite de concurrencia en los consumidores de las colas
