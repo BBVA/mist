@@ -1,0 +1,27 @@
+function t() {
+    return True
+}
+
+function f() {
+    return False
+}
+
+tv = True
+
+if (NOT(f())) {
+  print("NOT IF")
+} else {
+  print("NOT ELSE")
+}
+
+if (AND(NOT(f()), NOT(t()))) {
+  print("AND IF")
+} else {
+  print("AND ELSE")
+}
+
+if (OR(NOT(t()), NOT(t()), f(), tv)) {
+  print("OR IF")
+} else {
+  print("OR ELSE")
+}
