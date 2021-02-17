@@ -217,7 +217,7 @@ async def iterateCommand(items, name, stack:list=None, commands:list=None):
     for item in items:
         stack[-1][name] = item
         await helpers.command_runner(commands, stack)
-    del stack[-1][name]
+        del stack[-1][name]
 
 def strSubstr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
     return s[start:end:step]
