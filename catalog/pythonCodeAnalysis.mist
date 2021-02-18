@@ -1,0 +1,11 @@
+# Name: pythonCodeAnalysis
+# Version: 2.0.0
+# Description: Find vulnerabilities in source code for Python
+# Tags: code, source code, python, security
+
+function pythonCodeAnalysis(sources) {
+    resultFile = tmpFile()
+    r = exec("bandit -r {sources} -f json -o {resultFile}", False)
+    r["issues"] = readJSON(resultFile)
+    return r
+}
