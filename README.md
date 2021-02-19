@@ -71,48 +71,6 @@ After cloning the repository, you can run `MIST` without install it:
 > docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
 ```
 
-# TODO
-
-[X] Nueva gramatica simplificada y convertir todo a funciones
-[X] Funcion nativa para generar de nombres de ficheros temporales y actualizar ejemplo "command_findOpenPorts.mist"
-[X] Soporte completo para funciones escritas en Python
-[X] Soporte completo para funciones escritas en Mist
-[X] Que no se pinte por defecto la salida de los comandos, o que sea configurable por un parametro en el exec
-[X] Hacer que el put itere listas automaticamente si coincide el numero de campos
-[X] Soporte para crear listas y añadir elementos a una lista creada
-[X] Migrar comandos de busqueda de text, XML y JSON a funciones
-[X] Migrar CSV dump y load a funciones
-[X] Refactor comando exec como función
-[X] Eliminar soporte para definir comandos y usar solo funciones
-[X] Que el templating de strings {} funcione en todos los sitios, y no solo en el print
-[X] Funcion nativa para leer ficheros. Comparar usando el ejemplo "mist_commands_vs_mist_functions.mist" y actualizar ejemplo "command_findOpenPorts.mist"
-[X] Comando para importar (o llamar) otros ficheros de mist.
-[X] Soporte completo de listas incluyendo utilidades de filtro, mapeo, etc.
-[X] Integración del nuevo codigo multihilo y flujos
-[X] Comando exec con asyncio para no parar la ejecucion de todo el programa
-[X] Cambios en la gramatica asincrona. basic_pipe.mist.
-[X] Comando exec proporciona salida linea a linea.
-[X] Implementar propuestas del complex_pipe.mist
-[X] Modificar gramática para sustituir regla IDorSTRING por varias reglas de producción
-[X] Soporte completo de strings incluyendo utilidades de concatenacion, split, busqueda, etc.
-[X] Añadir libreria de listas y diccionarios
-[X] Parametros de funciones separados por comas en lugar de espacios
-[X] Convertir todos los comandos core posibles (print? set? put?) en funciones y simplificar más la gramática
-[X] Soporte para CREAR y MODIFICAR dicionarios. La libreria ya está
-[X] "Include" ficheros mist
-[X] "Import" modulos python locales
-[X] "Import" modulos python remotos
-[X] Refactor if then else. Sustituir check por un if o similar con posibilidad de and or y not
-[ ] Unir lang y sdk (DANI)
-[ ] Eliminar codigo antiguo relaccionado con el catalogo
-[ ] Arreglar integracion continua
-[ ] Migrar los antiguos comandos del catalogo a mist nativo. Ponerlas en un directorio del repo (catalog?) desde el cual se podrán importar
-[ ] Migrar los antiguos playbooks a funciones. Ponerlos en un directorio del repo (examples?)
-[ ] Limpiar tests (DOING Héctor)
-[ ] Actualizar toda la documentacion y añadir la nueva que haga falta
-[ ] Crear binario único
-[ ] Implementar limite de concurrencia en los consumidores de las colas
-
 # License
 
 This project is distributed under `BSD license <https://github.com/cr0hn/mist/blob/master/LICENSE>`_

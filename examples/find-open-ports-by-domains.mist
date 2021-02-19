@@ -16,7 +16,7 @@ function saveFound(found) {
 }
 
 searchDomains(%domain) => domains
-searchOpenS3Buckets(domain, "212.166.64.1", True) => domains
+searchOpenS3Buckets(%domain, "212.166.64.1", True) => domains
 
 domainProcessed = []
 filterRepeated(:domains, domainProcessed, False) => nonRepeatedDomains
