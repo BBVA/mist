@@ -204,7 +204,7 @@ async def isGreater(left, right, stack:list=None, commands:list=None):
         await helpers.command_runner(commands, stack)
     return left > right
 
-def strContains(value, values, stack:list=None, commands:list=None):
+def contains(value, values, stack:list=None, commands:list=None):
     return value in values
 
 async def ifCommand(val, stack:list=None, commands:list=None):
@@ -316,7 +316,7 @@ class _Functions(dict):
         self["get"] = {"native": True, "commands": get}
         self["isEqual"] = {"native": True, "commands": isEqual, "async": True}
         self["isGreater"] = {"native": True, "commands": isGreater, "async": True}
-        self["strContains"] = {"native": True, "commands": strContains}
+        self["contains"] = {"native": True, "commands": contains}
         self["if"] = {"native": True, "commands": ifCommand, "async": True}
         self["iterate"] = {"native": True, "commands": iterateCommand, "async": True}
         self["strSubstr"] = {"native": True, "commands": strSubstr}

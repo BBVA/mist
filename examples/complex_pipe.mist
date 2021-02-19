@@ -1,15 +1,4 @@
-# Name: find-open-ports-by-domains
-# Version: 4.0.0
-# Description: Given a domain, find related domains and open ports in each domain.
-# Tags: dnsrecon, nmap, network
-
-include "searchDomains"
-include "searchOpenS3Buckets"
-include "findOpenPorts"
-
-################
-# Main Program #
-################
+include "searchDomains" "searchOpenS3Buckets" "findOpenPorts" "filterRepeated"
 
 function fooDomains(domain, n) {
     send(domain)
@@ -17,38 +6,14 @@ function fooDomains(domain, n) {
     send(domain)
 }
 
-data resultOpenPorts {
-    domain
-    ports
+function saveFound(domain) {
+    print("SAVE", domain)
 }
+
+fooDomains("localhost",1) => domains
+fooDomains("127.0.0.1",1) => domains
 
 domainProcessed = []
+filterRepeated(:domains, domainProcessed, True) => nonRepeatedDomains
 
-function processDomain(domain) {
-    print("PROCESSING",domain)
-    iterate(domainProcessed, "d") {
-        isEqual(d, domain) {
-            print(d,"already proccesed")
-            return
-        }
-    }
-    listAppend(domainProcessed, domain)
-    send(domain)
-}
-
-function saveFound(found) {
-    print("SAVE OPEN PORT FOUND",found)
-    put("resultOpenPorts", found["ip"], found["port"])
-    #print(resultOpenPorts)
-}
-
-#fooDomains("localhost") => domains
-#fooDomains("127.0.0.1") => domains
-
-domain = "bbva.com"
-searchDomains(domain) => domains
-searchOpenS3Buckets(domain, "212.166.64.1", True) => domains
-
-processDomain(:domains) => nonRepeatedDomains
-findOpenPorts(:nonRepeatedDomains, "443") => openPortsFound
-saveFound(:openPortsFound)
+saveFound(:nonRepeatedDomains)
