@@ -63,28 +63,6 @@ class SaveListCommand:
 
             await watchedInsert(self.target, stack, values, fields=cols)
 
-##@dataclass
-##class CheckCommand:
-##    parent: object
-##    var: str
-##    operator: str
-##    result: list
-##    commands: list
-##    elseCommands: list
-##
-##    async def run(self, stack):
-##        if config.debug:
-##            print(f"-> Check that {self.var} is {self.result}")
-##
-##        # If condition is not met we substitute the check command list with the else command list.
-##        left = await get_id(self.var, stack)
-##        right = await get_id(self.result, stack)
-##        if self.operator == 'is' and left != right:
-##            self.commands = self.elseCommands
-##        elif self.operator == 'is not' and left == right:
-##            self.commands = self.elseCommands
-##        return True
-
 @dataclass
 class AbortCommand:
     parent: object
@@ -336,7 +314,8 @@ class IfCommand:
                 await command_runner(branch.commands, stack)
                 return
 
-        await command_runner(self.default.commands, stack)
+        if self.default:
+            await command_runner(self.default.commands, stack)
 
     async def evaluate(self, condition, stack):
         return bool(await get_id(condition.cond, stack))

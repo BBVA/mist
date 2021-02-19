@@ -120,19 +120,19 @@ IfCommand:
 
 IfBranch:
   'if' '(' condition=BoolExpr ')' '{'
-    commands*=Command
+    commands+=Command
   '}'
 ;
 
 ElsifBranch:
 'elsif' '(' condition=BoolExpr ')' '{'
-  commands*=Command
+  commands+=Command
 '}'
 ;
 
 ElseBranch:
   'else' '{'
-    commands*=Command
+    commands+=Command
   '}'
 ;
 
