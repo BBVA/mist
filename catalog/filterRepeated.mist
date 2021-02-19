@@ -1,0 +1,17 @@
+# Name: filterRepeated
+# Version: 1.0.0
+# Description: To use with queues. Filter repeated values in a given list. Send non repeated values.
+# Tags: filter, send
+
+function filterRepeated(v, values, verbose) {
+    if (verbose) {
+        print("filterRepeated PROCESS", v)
+    }
+    if (NOT(contains(v,values))) {
+        if (verbose) {
+            print("filterRepeated SEND", v)
+        }
+        listAppend(values, v)
+        send(v)
+    }
+}

@@ -10,7 +10,7 @@ function searchOpenS3Buckets(originDomain, dns, useTor) {
     }
     resultFile = tmpFile()
     r = exec ("festin {originDomain} {tor} -ds {dns} -rr {resultFile}", False) {
-        if(strContains("Adding", outputLine)) {
+        if(contains("Adding", outputLine)) {
             fields = strSplit(outputLine)
             domain = strSubstr(get(fields ,7), 1, -1)
             send(domain)
