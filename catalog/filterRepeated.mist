@@ -3,7 +3,9 @@
 # Description: To use with queues. Filter repeated values in a given list. Send non repeated values.
 # Tags: filter, send
 
-function filterRepeated(v, values, verbose) {
+values = []
+
+function filterRepeated(v, verbose) {
     if (verbose) {
         print("filterRepeated PROCESS", v)
     }

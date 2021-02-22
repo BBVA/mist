@@ -13,7 +13,6 @@ function saveFound(domain) {
 fooDomains("localhost",1) => domains
 fooDomains("127.0.0.1",1) => domains
 
-domainProcessed = []
-filterRepeated(:domains, domainProcessed, True) => nonRepeatedDomains
+filterRepeated(:domains, True) => nonRepeatedDomains
 
 saveFound(:nonRepeatedDomains)
