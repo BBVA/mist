@@ -15,9 +15,9 @@ from mist.lang.streams import consumers, producers
 
 async def waitForTaks():
     if len(producers)>0:
-        await asyncio.wait(producers)
+        await asyncio.gather(*producers)
     if len(consumers)>0:
-        await asyncio.wait(consumers)
+        await asyncio.gather(*consumers)
 
 def execute():
     try:
