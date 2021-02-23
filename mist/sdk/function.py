@@ -21,6 +21,10 @@ from mist.lang.streams import streams
 def tmpFileFunction(delete=False, stack:list=None, commands:list=None):
     return tempfile.NamedTemporaryFile(delete=delete).name
 
+def fileWriteLine(name, line, stack:list=None, commands:list=None):
+    with open(name, 't+a') as f:
+        f.write(str(line) + '\n')
+
 def rangeFunction(begin, end, step, stack:list=None, commands:list=None):
     return list(range(begin, end, step))
 
@@ -297,6 +301,7 @@ class _Functions(dict):
     def __init__(self):
         super(_Functions, self).__init__()
         self["tmpFile"] = {"native": True, "commands": tmpFileFunction}
+        self["writeLine"] = {"native": True, "commands": fileWriteLine}
         self["range"] = {"native": True, "commands": rangeFunction}
         self["searchInText"] = {"native": True, "commands": searchInText}
         self["searchInXML"] = {"native": True, "commands": searchInXML}

@@ -1,15 +1,15 @@
 import os
 import tempfile
-import unittest
+from unittest import (IsolatedAsyncioTestCase, TestCase, skip)
 from unittest.mock import patch
-from unittest import IsolatedAsyncioTestCase
 
 import sqlite3
 
 from mist.sdk.exceptions import MistException
 from mist.sdk.function import db # For mocking
-from mist.sdk.function import (tmpFileFunction, rangeFunction, searchInText,
-searchInXML, searchInJSON, CSVput, CSVdump, readFile, readFileAsLines, objectLen, listMap, listReduce)
+from mist.sdk.function import (functions, tmpFileFunction, fileWriteLine, rangeFunction,
+                                searchInText, searchInXML, searchInJSON, CSVput, CSVdump,
+                                readFile, readFileAsLines, objectLen, listMap, listReduce)
 
 class NativeFunctionsTest(IsolatedAsyncioTestCase):
 
@@ -26,6 +26,23 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         ### For CSVdumpFile tests
         if hasattr(self, 'CSVdumpFile'):
             os.remove(self.CSVdumpFile)
+        ### For fileWriteLine tests
+        if hasattr(self, 'fileWriteLine'):
+            os.remove(self.fileWriteLine)
+
+######
+###### Check for exported functions
+######
+    def test_all_functions_are_exported(self):
+        ef = [("tmpFile", tmpFileFunction), ("writeLine", fileWriteLine), ("range", rangeFunction),
+              ("searchInText", searchInText), ("searchInXML", searchInXML), ("searchInJSON", searchInJSON),
+              ("CSVput", CSVput, True),("CSVdump", CSVdump), ("readFile", readFile), ("readFileAsLines", readFileAsLines),
+              ("len", objectLen), ("map", listMap), ("reduce", listReduce), ]
+
+        for i in ef:
+            self.assertTrue(i[0] in functions and functions[i[0]]["commands"] == i[1] and functions[i[0]]["native"], f"{i} not exported")
+            if len(i) > 2:
+                self.assertEqual(i[2], functions[i[0]]["async"])
 
 ######
 ###### Tests for tmpFileFunction
@@ -34,6 +51,33 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         self.tmpFile = tmpFileFunction()
 
         self.assertTrue(os.path.isfile(self.tmpFile))
+
+######
+###### Tests for fileWriteLine
+######
+    def test_fileWriteLine_creates_file_and_writes_line(self):
+        expected = "FOO BAR BAZZ"
+        self.fileWriteLine = tempfile.NamedTemporaryFile(delete=False).name
+
+        fileWriteLine(self.fileWriteLine, expected)
+
+        with open(self.fileWriteLine, 'r') as f:
+            r = f.read()
+
+        self.assertEqual(expected + '\n', r)
+
+    def test_fileWriteLine_appends_to_file(self):
+        expected = "FOO BAR BAZZ"
+        self.fileWriteLine = tempfile.NamedTemporaryFile(delete=False).name
+
+        fileWriteLine(self.fileWriteLine, expected)
+        fileWriteLine(self.fileWriteLine, expected)
+        fileWriteLine(self.fileWriteLine, expected)
+
+        with open(self.fileWriteLine, 'r') as f:
+            r = f.read()
+
+        self.assertEqual((expected + '\n')* 3, r)
 
 ######
 ###### Tests for rangeFunction
