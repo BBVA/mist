@@ -1,0 +1,8 @@
+# Name: S3Store
+# Version: 1.0.0
+# Description: Stores the given local path in the given S3Uri.
+# Tags:
+
+function S3Store(localPath, remoteUri) {
+  exec("aws s3 cp '{localPath}' {remoteUri}", False)
+}
