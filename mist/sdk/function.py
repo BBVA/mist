@@ -137,12 +137,13 @@ def readFileAsLines(path:str, stack:list=None, commands:list=None):
 async def exec(command:str, printOutput=True, stack:list=None, commands:list=None):
     with execution(command) as (executor, in_files, out_files):
         with executor as console_lines:
-            async for output in console_lines:
+            async for output, process in console_lines:
                 if isinstance(output, str):
                     if config.real_time and config.console_output and printOutput:
                         print(output)
                     if commands:
                         stack.append({"outputLine": output})
+                        stack.append({"process": process})
                         await helpers.command_runner(commands, stack)
                         stack.pop()
             return {
@@ -296,6 +297,12 @@ def boolOr(*values, stack:list=None, commands:list=None):
 
     return ret
 
+def terminate(stack:list=None, commands:list=None):
+    stack[-1]["process"].terminate()
+
+def kill(stack:list=None, commands:list=None):
+    stack[-1]["process"].kill()
+
 class _Functions(dict):
 
     def __init__(self):
@@ -335,6 +342,8 @@ class _Functions(dict):
         self["NOT"] = {"native": True, "commands": boolNot}
         self["AND"] = {"native": True, "commands": boolAnd}
         self["OR"] = {"native": True, "commands": boolOr}
+        self["terminate"] = {"native": True, "commands": terminate}
+        self["kill"] = {"native": True, "commands": kill}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort

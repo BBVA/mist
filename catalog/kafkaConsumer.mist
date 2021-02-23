@@ -1,0 +1,21 @@
+# Name: kafkaConsumer
+# Version: 1.0.0
+# Description: Read from a Kafka topic and send values.
+# Tags: kafka, consumer, topic, send
+
+kafkaConsumerEndMessageReceived = False
+function kafkaConsumer(servers, topic, endMessage, fromBeginning) {
+    options = ""
+    if (fromBeginning) {
+        options = "--from-beginning"
+    }
+    exec("kafka-console-consumer --bootstrap-server {servers} --topic {topic} {options}", False) {
+        if (isEqual(outputLine, endMessage)) {
+            kafkaConsumerEndMessageReceived = True
+            terminate()
+        }
+        if (NOT(kafkaConsumerEndMessageReceived)) {
+            send(outputLine)
+        }
+    }
+}

@@ -192,7 +192,7 @@ class LocalExecutor(Executor):
             line = output.strip()
             self._console_output.append(output.strip())
 
-            yield line
+            yield line, process
 
         while True:
             output = await process.stderr.readline()
