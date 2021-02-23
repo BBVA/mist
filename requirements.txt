@@ -1,5 +1,4 @@
 textx
-pygit2
 jsonpath-ng
 terminaltables
 
