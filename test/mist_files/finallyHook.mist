@@ -1,0 +1,17 @@
+
+function foo(s) {
+    send(s)
+}
+
+function bar(s) {
+    print(s)
+}
+
+function finallyHook() {
+    print("finallyHook")
+}
+
+foo("message") => q
+bar(:q)
+
+print("Main end")
