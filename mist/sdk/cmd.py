@@ -46,11 +46,13 @@ class Executor(object):
                  command: str,
                  environment: dict,
                  input_files: dict,
-                 output_files :dict):
+                 output_files :dict,
+                 interactive: bool):
         self.environment = environment or {}
         self.command = command
         self.input_files = input_files
         self.output_files = output_files
+        self.interactive = interactive
         self._console_output = []
         self._console_stderr = []
         self.error_code = None
@@ -178,10 +180,15 @@ class LocalExecutor(Executor):
         process = await asyncio.create_subprocess_exec(command[0],
                                    *command[1:],
                                    env=run_env,
+                                   stdin=self.interactive,
                                    stdout=asyncio.subprocess.PIPE,
                                    stderr=asyncio.subprocess.PIPE,
                                    universal_newlines=False)
 
+        if self.interactive:
+            yield "InteractiveInit", process
+            return
+        
         while True:
             output = await process.stdout.readline()
             output = output.decode('utf-8')
@@ -202,8 +209,9 @@ class LocalExecutor(Executor):
             line = output.strip()
             self._console_stderr.append(output.strip())
 
-        await process.communicate()
-        self.error_code = process.returncode
+        if not self.interactive:
+            await process.communicate()
+            self.error_code = process.returncode
 
         end_time = time.time()
 
@@ -216,10 +224,11 @@ class execution(object):
 
     __db_created__: bool = False
 
-    def __init__(self, command: str, metadata: dict = None, environment: dict = None):
+    def __init__(self, command: str, metadata: dict = None, environment: dict = None, interactive=False):
         self.command = command
         self.metadata = metadata or {}
         self.environment = environment or {}
+        self.interactive = asyncio.subprocess.PIPE if interactive else None 
 
         self.input_files = {}
         self.output_files = {}
@@ -248,7 +257,8 @@ class execution(object):
             self.command,
             self.environment,
             self.input_files,
-            self.output_files
+            self.output_files,
+            self.interactive
         )
         return executor, self.input_files, self.output_files
 

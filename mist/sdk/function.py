@@ -134,8 +134,8 @@ def readFileAsLines(path:str, stack:list=None, commands:list=None):
 
     return fContent
 
-async def exec(command:str, printOutput=True, stack:list=None, commands:list=None):
-    with execution(command) as (executor, in_files, out_files):
+async def exec(command:str, printOutput=True, interactive=False, stack:list=None, commands:list=None):
+    with execution(command, interactive=interactive) as (executor, in_files, out_files):
         with executor as console_lines:
             async for output, process in console_lines:
                 if isinstance(output, str):
@@ -263,12 +263,13 @@ async def corePutData(table, data, stack:list=None, commands:list=None):
 
     await watchedInsert(table, stack, values, fields)
 
-async def coreSend(value, stack:list=None, commands:list=None):
+async def coreSend(value, targetStream=None, stack:list=None, commands:list=None):
     if value is not None :
-        try:
-            targetStream = await helpers.get_key("targetStream", stack)
-        except MistUndefinedVariableException as e:
-            return
+        if not targetStream:
+            try:
+                targetStream = await helpers.get_key("targetStream", stack)
+            except MistUndefinedVariableException as e:
+                return
 
         await streams.send(targetStream, value)
 
@@ -302,6 +303,9 @@ def terminate(stack:list=None, commands:list=None):
 
 def kill(stack:list=None, commands:list=None):
     stack[-1]["process"].kill()
+
+def processWriteLine(p, input, stack:list=None, commands:list=None):
+    p.stdin.writelines([bytes(input+"\n", 'utf-8')])
 
 class _Functions(dict):
 
@@ -344,6 +348,7 @@ class _Functions(dict):
         self["OR"] = {"native": True, "commands": boolOr}
         self["terminate"] = {"native": True, "commands": terminate}
         self["kill"] = {"native": True, "commands": kill}
+        self["processWriteLine"] = {"native": True, "commands": processWriteLine}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort

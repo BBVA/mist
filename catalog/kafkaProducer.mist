@@ -1,0 +1,25 @@
+# Name: kafkaProducer
+# Version: 1.0.0
+# Description: Write to a Kafka topic.
+# Tags: kafka, producer, topic.
+
+initialized = False
+
+function kafkaProducer(servers, topic, message, endMessage) {
+    if (initialized) {
+        send(message,"kafkaProducerMessages")
+    } else {
+        initialized = True
+        print("kafkaProducer Before initialization")
+        r = exec("kafka-console-producer --broker-list {servers} --topic {topic}", False, True) {
+            print("kafkaProducerAux", outputLine)
+            kafkaProducerAux(:kafkaProducerMessages, process)
+        }
+        print("kafkaProducer After initialization")
+    }
+}
+
+function kafkaProducerAux(message, process) {
+    print("Write message", message, process)
+    processWriteLine(process, message)
+}
