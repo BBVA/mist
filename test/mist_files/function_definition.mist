@@ -1,6 +1,6 @@
-function readFile (file) {
+function printFile (file) {
     print("Read", file)
     return "Adios"
 }
 
-print(readFile("myfile"))
+print(printFile("myfile"))

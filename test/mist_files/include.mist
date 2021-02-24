@@ -1,2 +1,2 @@
 include "test/mist_files/function_definition.mist"
-print(readFile("myfile again"))
+print(printFile("myfile again"))
