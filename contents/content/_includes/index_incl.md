@@ -71,6 +71,14 @@ After cloning the repository, you can run `MIST` without install it:
 > docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
 ```
 
-# License
+## Authors
 
-This project is distributed under `BSD license <https://github.com/cr0hn/mist/blob/master/LICENSE>`_
+MIST is being developed by BBVA-Labs Security team members.
+
+## Contributions
+
+Contributions are of course welcome. See [CONTRIBUTING](https://github.com/BBVA/mist/blob/master/CONSTRIBUTING.rst) or skim existing tickets to see where you could help out.
+
+## License
+
+MIST is Open Source Software and available under the [Apache 2 license](https://github.com/BBVA/mist/blob/master/LICENSE)
