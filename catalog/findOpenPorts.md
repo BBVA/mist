@@ -4,6 +4,10 @@
 
 This command performs a port scan to a target host.
 
+## Concurrency Type
+
+Sync or Async
+
 ## Input parameters
 
 - **ip**: String. Target IP or dns name.
@@ -18,6 +22,8 @@ executed without errors, or False otherwise.
 - **consoleOutput**: Raw text with console output from nmap command.
 - **consoleError**: Raw text with console error from nmap command.
 - **openPorts**: A list of open ports found.
+
+NOTE: when used with a queue the list of openPorts will be send with the format: {"ip": "1.2.3.4", "port": 443, "protocol": "tcp"}
 
 ## Tools and services
 

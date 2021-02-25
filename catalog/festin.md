@@ -4,6 +4,10 @@
 
 This command finds open S3 buckets from an origin domain list.
 
+## Concurrency Type
+
+Sync or Async
+
 ## Input parameters
 
 - **originDomain**: Origin domain to search S3 buckets.
@@ -19,7 +23,7 @@ executed without errors, or False otherwise.
 - **consoleError**: Raw text with console error from festin command.
 - **buckets**: A list of domains, S3 bucket names and objects found.
 
-NOTE: when used as a producer for a queue it will send the domains as it will find it.
+NOTE: when used as a producer for a queue (Async) every domain found will be sent as soon as found it.
 
 ## Tools and services
 

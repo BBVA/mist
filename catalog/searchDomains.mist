@@ -1,5 +1,6 @@
 # Name: searchDomains
 # Version: 3.0.0
+# Concurrency: Sync and Async
 # Description: Discover extra domains and subdomains from a start domain quierying CRT database
 # Tags: security, secrets, git
 

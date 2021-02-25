@@ -4,6 +4,10 @@
 
 Performs security code analysis on Python code.
 
+## Concurrency Type
+
+Sync
+
 ## Input parameters
 
 - **sources**: Path of Python source code.

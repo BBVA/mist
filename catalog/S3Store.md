@@ -4,6 +4,10 @@
 
 This command stores a local file in the given S3Uri.
 
+## Concurrency Type
+
+Sync
+
 ## Input parameters
 
 - **localPath**: Path of the local file to store

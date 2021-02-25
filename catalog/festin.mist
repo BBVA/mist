@@ -1,5 +1,6 @@
 # Name: festin
 # Version: 2.0.0
+# Concurrency: Sync and Async
 # Description: Find related domains and open S3 bucket in it, including S3 compatible providers
 # Tags: network, festin, dns, s3, network
 

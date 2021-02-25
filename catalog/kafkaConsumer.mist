@@ -1,5 +1,6 @@
 # Name: kafkaConsumer
 # Version: 1.0.0
+# Concurrency: Async
 # Description: Read from a Kafka topic and send values.
 # Tags: kafka, consumer, topic, send
 

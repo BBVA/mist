@@ -1,5 +1,6 @@
 # Name: S3Store
 # Version: 1.0.0
+# Concurrency: Sync
 # Description: Stores the given local path in the given S3Uri.
 # Tags:
 

@@ -4,6 +4,10 @@
 
 Read from a Kafka topic and send values to a queue.
 
+## Concurrency Type
+
+Async. This function have to be alwais used with a target queue.
+
 ## Input parameters
 
 - **servers**: String. Server list for bootstrap-server options. Example: "127.0.0.1:9092"
@@ -13,14 +17,13 @@ Read from a Kafka topic and send values to a queue.
 
 ## Output parameters
 
-This function have to be alwais used with a target queue.
-Every message (line) received in the topic will be send to the queue.
+Every message received in the topic will be send to the queue.
 
 ## Tools and services
 
 The following commands need to be available in your command path:
 
-- kafka-console-producer
+- kafka-console-consumer
 
 ## Examples
 

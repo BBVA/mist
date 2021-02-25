@@ -1,5 +1,6 @@
 # Name: findOpenPorts
 # Version: 2.0.0
+# Concurrency: Sync and Async
 # Description: Find open ports at some specific host
 # Tags: ports, network, nmap
 

@@ -11,7 +11,7 @@ To use with queues. This command filter repeated values in a given list. And sen
 
 ## Output parameters
 
-None. Non repeated items will be sent.
+Non repeated items will be sent.
 
 ## Examples
 

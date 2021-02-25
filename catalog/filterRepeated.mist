@@ -1,5 +1,6 @@
 # Name: filterRepeated
 # Version: 1.0.0
+# Concurrency: Async
 # Description: To use with queues. Filter repeated values in a given list. Send non repeated values.
 # Tags: filter, send
 

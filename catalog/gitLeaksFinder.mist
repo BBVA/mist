@@ -1,5 +1,6 @@
 # Name: gitLeaksFinder
 # Version: 2.0.0
+# Concurrency: Sync
 # Description: Find git secrets in a Git repository
 # Tags: security, secrets, git
 

@@ -4,6 +4,10 @@
 
 Finds sensitive information in Git repositories.
 
+## Concurrency Type
+
+Sync
+
 ## Input parameters
 
 - **gitPath**: Path of Git repositories.
