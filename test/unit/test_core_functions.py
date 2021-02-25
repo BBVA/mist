@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from unittest import IsolatedAsyncioTestCase, TestCase
+from unittest import IsolatedAsyncioTestCase, TestCase, skip
 
 from mist.sdk.function import (functions, corePrint, coreAbort, corePut,
                                 corePutData, coreSend, parseInt, toString)
@@ -190,7 +190,6 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 ######
 ###### toString
 ######
-
     def test_toString_returns_string_representation(self):
         tests = [[0, "0"], (-1, "-1"), (1234.56, "1234.56")]
 

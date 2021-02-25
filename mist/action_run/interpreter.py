@@ -6,7 +6,7 @@ from io import StringIO
 from contextlib import redirect_stdout
 from typing import Callable
 
-from mist.sdk import db, config, params, command_runner, functions
+from mist.sdk import (db, config, params, command_runner, functions)
 
 from .language_tools import get_mist_model, load_mist_language, \
     check_mist_parameters, check_installed_binaries
@@ -35,9 +35,8 @@ async def execute_aux():
         stack = [{"MistBaseNamespace": True}]
         await command_runner(mist_model.commands, stack)
         await waitForTaks()
-        if "finallyHook" in functions:
-            await command_runner(functions["finallyHook"]["commands"], stack)
-            
+        await runFinalizers(stack)
+
 
 async def execute_from_text(text: str,
                       fn_params: dict = None,
@@ -109,9 +108,14 @@ async def execute_from_text(text: str,
         await command_runner(mist_model.commands, stack)
         #await waitForTaks()
         await asyncio.sleep(waitTime)
-        if "finallyHook" in functions:
-            await command_runner(functions["finallyHook"]["commands"], stack)
+        await runFinalizers(stack)
 
     return stream_stdout.getvalue()
+
+
+async def runFinalizers(stack):
+    if "finallyHook" in functions:
+        await command_runner(functions["finallyHook"]["commands"], stack)
+
 
 __all__ = ("execute", "execute_from_text")
