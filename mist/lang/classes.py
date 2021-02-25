@@ -324,9 +324,12 @@ class IfCommand:
 class Source(ValueContainer):
     parent: object
     source: str
+    sourceIndirect: str
 
     async def getValue(self, stack):
-        return ":" + self.source
+        if self.source:
+            return ":" + self.source
+        return ":" + await get_id(self.sourceIndirect, stack)
 
 exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
            SetCommand, AppendCommand, FunctionCall, ImportCommand,
