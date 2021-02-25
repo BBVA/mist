@@ -8,6 +8,7 @@ import csv
 import asyncio
 import inspect
 from functools import partial
+import uuid
 
 from mist.sdk import db
 from mist.sdk.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
@@ -307,6 +308,9 @@ def kill(stack:list=None, commands:list=None):
 def processWriteLine(p, input, stack:list=None, commands:list=None):
     p.stdin.writelines([bytes(input+"\n", 'utf-8')])
 
+def uuidStr(stack:list=None, commands:list=None):
+    return str(uuid.uuid4())
+
 class _Functions(dict):
 
     def __init__(self):
@@ -349,6 +353,7 @@ class _Functions(dict):
         self["terminate"] = {"native": True, "commands": terminate}
         self["kill"] = {"native": True, "commands": kill}
         self["processWriteLine"] = {"native": True, "commands": processWriteLine}
+        self["uuidStr"] = {"native": True, "commands": uuidStr}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
