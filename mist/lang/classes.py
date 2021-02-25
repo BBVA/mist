@@ -12,7 +12,7 @@ import mist.action_run
 from mist.sdk import (db, get_id, get_key, get_param, watchers, functions, config,
                       watchedInsert, MistAbortException, command_runner, function_runner,
                       execution, environment, ValueContainer, getChildFromVar,
-                      get_var, params, resolve_list_dict_reference)
+                      get_var, params, resolve_list_dict_reference, MistCallable)
 from mist.sdk.exceptions import MistException, MistUndefinedVariableException
 
 @dataclass
@@ -128,7 +128,7 @@ class SetCommand:
                 return
 
 @dataclass
-class FunctionCall:
+class FunctionCall(MistCallable):
     parent: object
     name: str
     args: list

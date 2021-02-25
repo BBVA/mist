@@ -12,7 +12,6 @@ from mist.sdk.params import params
 from mist.sdk.function import functions
 
 from mist.lang.streams import streams
-import mist.lang
 
 def get_var(var, stack):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
@@ -109,8 +108,14 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
 
 # Define interface for ValueContainer with a getValue() method for classes that
 # hold a left-side value
+# And a MistCallable for classes that represent function executions with
+# method launch to be invoked
 class ValueContainer:
     async def getValue(self, stack):
+        pass
+
+class MistCallable:
+    async def launch(self, stack):
         pass
 
 async def get_id(id, stack):
@@ -120,7 +125,7 @@ async def get_id(id, stack):
 
     if isinstance(id, str):
         return get_var(id, stack)
-    elif isinstance(id.value, mist.lang.classes.FunctionCall):
+    elif isinstance(id.value, MistCallable):
         result = await id.value.launch(stack)
         return result
     elif isinstance(id.value, str):
