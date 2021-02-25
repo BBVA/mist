@@ -1,4 +1,4 @@
-# *searchOpenS3Buckets* command
+# *festin* command
 
 ## Description
 
@@ -19,6 +19,8 @@ executed without errors, or False otherwise.
 - **consoleError**: Raw text with console error from festin command.
 - **buckets**: A list of domains, S3 bucket names and objects found.
 
+NOTE: when used as a producer for a queue it will send the domains as it will find it.
+
 ## Tools and services
 
 The following commands need to be available in your command path:
@@ -30,7 +32,7 @@ The following commands need to be available in your command path:
 Find S3 buckets from "wordpress.com" using Tor network and 212.166.64.1 as dns server.
 
 ```text
-include "searchOpenS3Buckets"
-r = searchOpenS3Buckets("wordpress.com", "212.166.64.1", True)
+include "festin"
+r = festin("wordpress.com", "212.166.64.1", True)
 print(r["buckets"])
 ```
