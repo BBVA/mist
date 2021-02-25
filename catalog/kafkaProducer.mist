@@ -3,17 +3,18 @@
 # Description: Write to a Kafka topic.
 # Tags: kafka, producer, topic.
 
-initialized = False
+queue = False
 
 function kafkaProducer(servers, topic, message, endMessage) {
-    if (initialized) {
-        send(message,"kafkaProducerMessages")
+    if (queue) {
+        send(message, queue)
     } else {
-        initialized = True
+        queue = uuidStr()
+        send(message, queue)    
         print("kafkaProducer Before initialization")
         r = exec("kafka-console-producer --broker-list {servers} --topic {topic}", False, True) {
             print("kafkaProducerAux", outputLine)
-            kafkaProducerAux(:kafkaProducerMessages, process)
+            kafkaProducerAux(::queue, process)
         }
         print("kafkaProducer After initialization")
     }
