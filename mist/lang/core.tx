@@ -5,7 +5,7 @@ Program:
 Command:
   IncludeCommand | SaveListCommand | DataCommand | IfCommand |
   WatchCommand | FunctionDefinition | SetCommand | EndCommand |
-  AppendCommand | FunctionCall | ReturnCommand | ImportCommand
+  FunctionCall | ReturnCommand | ImportCommand
 ;
 
 IncludeCommand:
@@ -24,10 +24,6 @@ DataCommand:
 
 Param:
     key=ID '<=' value=IDorSTRING
-;
-
-AppendCommand:
-  'append' target=ID '<=' value=IDorSTRING
 ;
 
 CustomList:

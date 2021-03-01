@@ -89,19 +89,6 @@ class WatchCommand:
         watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
 
 @dataclass
-class AppendCommand:
-    parent: object
-    target: str
-    value: str
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> AppendCommand {self.target}")
-        for s in reversed(stack):
-            if "MistBaseNamespace" in s:
-                s[self.target].append(await get_id(self.value, stack))
-
-@dataclass
 class SetCommand:
     parent: object
     key: object
@@ -332,7 +319,7 @@ class Source(ValueContainer):
         return ":" + await get_id(self.sourceIndirect, stack)
 
 exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
-           SetCommand, AppendCommand, FunctionCall, ImportCommand,
+           SetCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
            ListDictReference, ReturnCommand]
