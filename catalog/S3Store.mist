@@ -1,9 +1,37 @@
 # Name: S3Store
 # Version: 1.0.0
-# Concurrency: Sync
-# Description: Stores the given local path in the given S3Uri.
+# Description: Stores the data received from source in the given S3Uri.
 # Tags:
+# WARNING: NOT WORKING YET
 
-function S3Store(localPath, remoteUri) {
+localPath = False
+s3File = False
+
+function S3Store(text, remoteUri) {
+
+  if (NOT(localPath)) {
+    localPath = tmpFile()
+    s3File = remoteUri
+    print("Created {localPath} to store {s3File}")
+  }
+
+  writeLine(localPath, text)
+  print("Written {text} to {localPath}")
+}
+
+# Auxiliar function to create the S3 object from the local file
+function S3Write(localPath, remoteUri) {
+  print("Copy {localPath} to {s3File}")
   exec("aws s3 cp '{localPath}' {remoteUri}", False)
 }
+
+function finallyHook() {
+  print("Call S3Write with {localPath}, {s3File}")
+  S3Write(localPath, s3File)
+}
+
+print("Start writing")
+S3Store("Un dato", "s3://hhrbkt202010226/dir/datos.txt")
+S3Store("Otro dato", "s3://hhrbkt202010226/dir/datos.txt")
+
+print("End mist program")
