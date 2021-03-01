@@ -1,0 +1,8 @@
+function customPrint(m) {
+    print(m)
+}
+
+send("hola","consume_queues_in_native_functions_queue")
+
+print(:consume_queues_in_native_functions_queue)
+customPrint(:consume_queues_in_native_functions_queue)

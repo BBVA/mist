@@ -171,10 +171,7 @@ class ReturnCommand:
     async def run(self, stack):
         if config.debug:
             print(f"-> ReturnCommand")
-        for s in reversed(stack):
-            if "MistBaseNamespace" in s:
-                s["result"] = await get_id(self.value, stack)
-                break
+        stack[-1]["MistFunctionResultTmpVariable"] = await get_id(self.value, stack)            
 
 @dataclass
 class IncludeCommand:

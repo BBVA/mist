@@ -58,6 +58,26 @@ def findQueueInArgs(args, namedArgsDict):
     #TODO: raise queue not found exception
     return None, None, None
 
+async def callNative(f, args, namedArgs, namedArgsDict, stack, commands):
+    if "async" in f and f["async"]:
+        if args:
+            return await f["commands"](*args, stack=stack, commands=commands)
+        elif namedArgs:
+            namedArgsDict["stack"]=stack
+            namedArgsDict["commands"]=commands
+            return await f["commands"](**namedArgsDict)
+        else:
+            return await f["commands"](stack=stack, commands=commands)
+    else:
+        if args:
+            return f["commands"](*args, stack=stack, commands=commands)
+        elif namedArgs:
+            namedArgsDict["stack"]=stack
+            namedArgsDict["commands"]=commands
+            return f["commands"](**namedArgsDict)
+        else:
+            return f["commands"](stack=stack, commands=commands)
+
 async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None, commands=None):
     namedArgsDict = {}
     if args:
@@ -66,45 +86,35 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         for i in namedArgs:
             namedArgsDict[i.key] = await checkArg(i.value, stack)
     f = functions[name]
-    if "native" in f and f["native"]:
-        #TODO: handle targetStream and sourceStream if needed
-        if "async" in f and f["async"]:
-            if args:
-                return await f["commands"](*args, stack=stack, commands=commands)
-            elif namedArgs:
-                namedArgsDict["stack"]=stack
-                namedArgsDict["commands"]=commands
-                return await f["commands"](**namedArgsDict)
-            else:
-                return await f["commands"](stack=stack, commands=commands)
-        else:
-            if args:
-                return f["commands"](*args, stack=stack, commands=commands)
-            elif namedArgs:
-                namedArgsDict["stack"]=stack
-                namedArgsDict["commands"]=commands
-                return f["commands"](**namedArgsDict)
-            else:
-                return f["commands"](stack=stack, commands=commands)
-    else:
+    isNative = "native" in f and f["native"]
+    if not isNative:
         if args:
             namedArgsDict = dict(zip(f["args"], args))
-        namedArgsDict["MistBaseNamespace"] = True
+            namedArgsDict["MistBaseNamespace"] = True
         if targetStream:
             namedArgsDict["targetStream"] = targetStream
         stack.append(namedArgsDict)
-        if sourceStream:
-            queue, position, namedName = findQueueInArgs(args, namedArgsDict)
+    if sourceStream:
+        queue, position, namedName = findQueueInArgs(args, namedArgsDict)
+        if not isNative:
             namePlaceHolder = next(key for key, value in namedArgsDict.items() if value == ":" + queue)
-            async for s in streams[queue].iterate():
+        async for s in streams[queue].iterate():
+            if isNative:
+                args[0] = s
+            else:
                 namedArgsDict[namePlaceHolder] = s
-                if "result" in stack[-1]:
-                    del stack[-1]["result"]
+            if "MistFunctionResultTmpVariable" in stack[-1]:
+                del stack[-1]["MistFunctionResultTmpVariable"]
+            if isNative:
+                await callNative(f, args, namedArgs, namedArgsDict, stack, commands)
+            else:
                 await command_runner(f["commands"], stack)
-        else:
-            await command_runner(f["commands"], stack)
+    else:
+        if isNative:
+            return await callNative(f, args, namedArgs, namedArgsDict, stack, commands) 
+        await command_runner(f["commands"], stack)
         lastStack = stack.pop()
-        return lastStack["result"] if "result" in lastStack else None
+        return lastStack["MistFunctionResultTmpVariable"] if "MistFunctionResultTmpVariable" in lastStack else None
 
 # Define interface for ValueContainer with a getValue() method for classes that
 # hold a left-side value
@@ -207,7 +217,7 @@ async def command_runner(commands: list, stack):
         if len(stack)>1:
             for s in reversed(stack):
                 if "MistBaseNamespace" in s:
-                    if "result" in s:
+                    if "MistFunctionResultTmpVariable" in s:
                         return
                     break
         if c == "done":
