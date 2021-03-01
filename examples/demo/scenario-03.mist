@@ -1,0 +1,10 @@
+include "searchDomains" "searchOpenS3Buckets" "findOpenPorts" "filterRepeated" "kafkaProducer"
+
+searchDomains(%domain) => foundDomains
+searchOpenS3Buckets(%domain, "212.166.64.1", True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "443") => openPortsFound
+
+kafkaProducer("127.0.0.1:9092", "domainsTopic", :openPortsFound)
