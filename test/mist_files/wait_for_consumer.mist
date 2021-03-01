@@ -9,10 +9,10 @@ function readNumber(n) {
     print("readNumber {n}")
 }
 
-customSleep(3) => p
-customSleep(2) => p
-customSleep(1) => p
+customSleep(3) => waitForConsumerQueue
+customSleep(2) => waitForConsumerQueue
+customSleep(1) => waitForConsumerQueue
 
-readNumber(:p)
+readNumber(:waitForConsumerQueue)
 
 print("END")

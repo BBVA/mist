@@ -8,7 +8,7 @@ from mist.action_run import execute_from_text
 CHECK_FILE = "basic_pipe.mist"
 
 @pytest.mark.asyncio
-async def test_check_success(examples_path):
+async def test_basic_pipe(examples_path):
     with open(os.path.join(examples_path, CHECK_FILE), "r") as f:
         content = f.read()
 

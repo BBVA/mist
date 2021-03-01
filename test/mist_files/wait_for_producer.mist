@@ -5,8 +5,8 @@ function customSleep(n) {
     print("End sleep {n}")
 }
 
-customSleep(3) => p
-customSleep(2) => p
-customSleep(1) => p
+customSleep(3) => waitForProducerQueue
+customSleep(2) => waitForProducerQueue
+customSleep(1) => waitForProducerQueue
 
 print("END")

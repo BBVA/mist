@@ -6,7 +6,7 @@ from mist.action_run import execute_from_text
 EXAMPLE_FILE = "function_nested.mist"
 
 @pytest.mark.asyncio
-async def test_function_with_named_args(examples_path):
+async def test_function_nested(examples_path):
     with open(os.path.join(examples_path, EXAMPLE_FILE), "r") as f:
         content = f.read()
 

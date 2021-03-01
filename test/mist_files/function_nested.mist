@@ -1,17 +1,17 @@
-function saySomething(name)  {
+function say(name)  {
     print(".")
     return name
 }
 
-print(saySomething(saySomething('Foo')))
-print("Hello {saySomething(saySomething('Bar'))}")
+print(say(say('Foo')))
+print("Hello {say(say('Bar'))}")
 
-print(saySomething(name=saySomething(name='Foo2')))
-print("Hello {saySomething(name=saySomething(name='Bar2'))}")
+print(say(name=say(name='Foo2')))
+print("Hello {say(name=say(name='Bar2'))}")
 
-function return1() {
+function ret1() {
     return 1
 }
 
-print(range(1, 4, return1()))
-print("My range is {range(1, 4, return1())}")
+print(range(1, 4, ret1()))
+print("My range is {range(1, 4, ret1())}")

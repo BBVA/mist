@@ -11,7 +11,7 @@ function finallyHook() {
     print("finallyHook")
 }
 
-foo("message") => q
-bar(:q)
+foo("message") => finallyHookQueue
+bar(:finallyHookQueue)
 
 print("Main end")

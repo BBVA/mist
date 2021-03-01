@@ -8,7 +8,7 @@ from mist.action_run import execute_from_text
 CHECK_FILE = "wait_for_consumer.mist"
 
 @pytest.mark.asyncio
-async def test_check_success(examples_path):
+async def test_wait_for_consumer(examples_path):
     with open(os.path.join(examples_path, CHECK_FILE), "r") as f:
         content = f.read()
 

@@ -15,9 +15,9 @@ function printNumber(n) {
     print("printNumber {n}")
 }
 
-customSend(1) => p
-passNumber(:p,3) => p2
-passNumber(:p,1) => p2
-printNumber(:p2)
+customSend(1) => waitForConsumerProducer1
+passNumber(:waitForConsumerProducer1,3) => waitForConsumerProducer2
+passNumber(:waitForConsumerProducer1,1) => waitForConsumerProducer2
+printNumber(:waitForConsumerProducer2)
 
 print("END")

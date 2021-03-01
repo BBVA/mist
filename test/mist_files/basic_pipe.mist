@@ -4,17 +4,15 @@ function producer (i) {
 }
 
 function consumer(i, n) {
-    #sleep(i)
-    #exec("sleep {i}")
     print("Consumer", i, ":", n)
 }
 
-consumer(n=:numbers, i=3)
-producer(1) => numbers
-consumer(i=2, n=:numbers)
-producer(2) => numbers
-producer(3) => numbers
-consumer(1, :numbers)
-producer(4) => numbers
-producer(5) => numbers
-producer(6) => numbers
+consumer(n=:basicPipeQueue, i=3)
+producer(1) => basicPipeQueue
+consumer(i=2, n=:basicPipeQueue)
+producer(2) => basicPipeQueue
+producer(3) => basicPipeQueue
+consumer(1, :basicPipeQueue)
+producer(4) => basicPipeQueue
+producer(5) => basicPipeQueue
+producer(6) => basicPipeQueue
