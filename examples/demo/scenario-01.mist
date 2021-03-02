@@ -1,11 +1,7 @@
 include "searchDomains" "findOpenPorts"
 
-function dispach(found) {
-    print("Open Port Found:",found)
-}
-
 searchDomains(%domain) => foundDomains
 
-findOpenPorts(:foundDomains, "22,23,80,443,8080") => openPortsFound
+findOpenPorts(:foundDomains, "80,443") => openPortsFound
 
-dispach(:openPortsFound)
+print(:openPortsFound)
