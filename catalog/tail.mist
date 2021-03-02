@@ -1,0 +1,15 @@
+# Name: tail
+# Version: 1.0.0
+# Concurrency: Async
+# Description: Read a file line by line and send each line to a queue
+# Tags: tail, file
+
+function tail(file, endline)  {
+    r = exec("tail -f {file}", False) {
+        if (isEqual(outputLine,endline)) {
+            terminate()
+        } else {
+            send(outputLine)
+        }
+    }
+}
