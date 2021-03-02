@@ -32,7 +32,7 @@ async def execute_aux():
         print("[*] File loaded successfully")
     else:
         # Run user program!
-        stack = [{"MistBaseNamespace": True}]
+        stack = [{ }]
         await command_runner(mist_model.commands, stack)
         await waitForTaks()
         await runFinalizers(stack)
@@ -42,7 +42,7 @@ async def execute_from_text(text: str,
                       fn_params: dict = None,
                       realtime_fn: Callable = None,
                       waitTime:int = 0,
-                      stack: list = [{"MistBaseNamespace": True}],
+                      stack: list = [{ }],
                       **kwargs) -> str:
     if fn_params:
         params.update(fn_params)

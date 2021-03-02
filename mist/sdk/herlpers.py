@@ -108,7 +108,7 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
                 await command_runner(f["commands"], stack)
     else:
         if isNative:
-            return await callNative(f, args, namedArgs, namedArgsDict, stack, commands) 
+            return await callNative(f, args, namedArgs, namedArgsDict, stack, commands)
         await command_runner(f["commands"], stack)
         lastStack = stack.pop()
         return lastStack["MistFunctionResultTmpVariable"] if "MistFunctionResultTmpVariable" in lastStack else None
@@ -211,12 +211,10 @@ async def resolve_list_dict_reference(id, member, stack):
 
 async def command_runner(commands: list, stack):
     for c in commands:
-        if len(stack)>1:
-            for s in reversed(stack):
-                if "MistBaseNamespace" in s:
-                    if "MistFunctionResultTmpVariable" in s:
-                        return
-                    break
+        if len(stack)>1:                            # We're running inside a function
+            if "MistFunctionResultTmpVariable" in stack[-1]:               # The function returns, we stop executing it commands
+                return
+
         if c == "done":
             break
         await c.launch(stack)

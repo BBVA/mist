@@ -98,21 +98,29 @@ class SetCommand:
 
         if config.debug:
             print(f"-> SetCommand {self.key}")
-        for s in reversed(stack):
-            if "MistBaseNamespace" in s:
-                # Get the value to be stored
-                val = await self.value.value.run(stack) if isinstance(self.value.value, FunctionCall) else await get_id(self.value, stack)
 
-                # Get where to store the value
-                if isinstance(self.key, str):
-                    s[self.key] = val
-                elif isinstance(self.key, ListDictReference):
-                    obj = get_var(self.key.id, stack)
-                    m = await get_id(self.key.member, stack)
-                    obj[m] = val
-                else:
-                    raise MistException(f"Unexpected LHS value {type(self.key)}")
-                return
+        # Get the value to be stored
+        val = await self.value.value.run(stack) if isinstance(self.value.value, FunctionCall) else await get_id(self.value, stack)
+
+        # Get where to store the value
+        if isinstance(self.key, str):
+            # Look from the top of the stack for the variable and set the value
+            # in the first scope we found. If not found create the variable in
+            # the current scope
+            scope = stack[-1]
+            for s in reversed(stack):
+                if self.key in s:
+                    scope = s
+                    break
+
+            scope[self.key] = val
+        elif isinstance(self.key, ListDictReference):
+            obj = get_var(self.key.id, stack)
+            m = await get_id(self.key.member, stack)
+            obj[m] = val
+        else:
+            raise MistException(f"Unexpected LHS value {type(self.key)}")
+        return
 
 @dataclass
 class FunctionCall(MistCallable):
