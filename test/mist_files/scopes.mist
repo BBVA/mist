@@ -1,0 +1,34 @@
+
+global = "Global"
+
+function test() {
+
+  outerLocal = "Local"
+
+  print("Test before - global: {global}, outerLocal: {outerLocal}")
+
+  global = "test"
+
+  innerTest()
+
+  print("Test after - global: {global}, outerLocal: {outerLocal}")
+
+}
+
+function innerTest() {
+
+  local = "local"
+
+  print("InnerTest before - global: {global}, outerLocal: {outerLocal}, local: {local}")
+
+  global = "innerTest"
+
+  outerLocal = "innerLocal"
+
+  print("InnerTest after - global: {global}, outerLocal: {outerLocal}, local: {local}")
+
+}
+
+test()
+
+print("Test: global: {global}")
