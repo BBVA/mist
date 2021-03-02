@@ -1,0 +1,22 @@
+include "searchDomains" "searchOpenS3Buckets" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store"
+
+function dispacher(p) {
+    if (isEqual(p.port, "80")) {
+        send(p, "kafkaQueue")
+    } else {
+        send(p, "S3Queue")
+    }
+}
+
+searchDomains(%domain) => foundDomains
+searchOpenS3Buckets(%domain, "212.166.64.1", True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+dispacher(:openPortsFound)
+
+kafkaProducer("127.0.0.1:9092", "domainsTopic", :kafkaQueue)
+
+#S3Store(:S3Queue, %BUCKET_URI)
