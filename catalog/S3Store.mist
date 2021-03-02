@@ -2,7 +2,6 @@
 # Version: 1.0.0
 # Description: Stores the data received from source in the given S3Uri.
 # Tags:
-# WARNING: NOT WORKING YET
 
 localPath = False
 s3File = False
@@ -29,9 +28,3 @@ function finallyHook() {
   print("Call S3Write with {localPath}, {s3File}")
   S3Write(localPath, s3File)
 }
-
-print("Start writing")
-S3Store("Un dato", "s3://hhrbkt202010226/dir/datos.txt")
-S3Store("Otro dato", "s3://hhrbkt202010226/dir/datos.txt")
-
-print("End mist program")
