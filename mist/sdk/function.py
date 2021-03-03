@@ -306,6 +306,8 @@ def kill(stack:list=None, commands:list=None):
     stack[-1]["process"].kill()
 
 def processWriteLine(p, input, stack:list=None, commands:list=None):
+    if not isinstance(input, str):
+        input = json.dumps(input)
     p.stdin.writelines([bytes(input+"\n", 'utf-8')])
 
 def uuidStr(stack:list=None, commands:list=None):
