@@ -6,12 +6,12 @@
 
 function searchDomains(originDomain)  {
     domains = []
-    r = exec("dnsrecon.py -d {originDomain} -t crt", False) {
+    r = exec("dnsrecon -d {originDomain} -t crt", False) {
         fields = strSplit(outputLine)
         isEqual(get(fields,1), "A") {
             send(get(fields,2))
             listAppend(domains,get(fields,2))
-        }     
+        }
     }
     r["domains"] = domains
     return r

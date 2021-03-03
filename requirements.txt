@@ -8,3 +8,5 @@ flask_sse
 flask-executor
 
 cryptography
+
+pygit2
