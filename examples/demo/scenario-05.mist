@@ -1,4 +1,4 @@
-include "searchDomains" "searchOpenS3Buckets" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
 
 function dispacher(p) {
     if (isEqual(p.port, "80")) {
@@ -12,7 +12,7 @@ kafkaConsumer("127.0.0.1:9092", "inputDomains", "*END*", False) => inputDomains
 tail("domains.txt", "*END*") => inputDomains
 
 searchDomains(:inputDomains) => foundDomains
-searchOpenS3Buckets(:inputDomains, "212.166.64.1", True) => foundDomains
+festin(:inputDomains, "212.166.64.1", True) => foundDomains
 
 filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
 
@@ -22,4 +22,4 @@ dispacher(:openPortsFound)
 
 kafkaProducer("127.0.0.1:9092", "domainsTopic", :kafkaQueue)
 
-#S3Store(:S3Queue, %BUCKET_URI)
+S3Store(:S3Queue, $BUCKET_URI)
