@@ -150,7 +150,7 @@ class FunctionCall(MistCallable):
             t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
             t.waitingForQueue = False
             if sourceStream:
-                streams.createIfNotExists(sourceStream)
+                streams.createIfNotExists(sourceStream[1:])
                 consumers.append(t)
             if self.targetStream:
                 streams.createIfNotExists(self.targetStream)

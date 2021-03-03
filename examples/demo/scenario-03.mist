@@ -1,7 +1,7 @@
-include "searchDomains" "searchOpenS3Buckets" "findOpenPorts" "filterRepeated" "kafkaProducer"
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer"
 
 searchDomains(%domain) => foundDomains
-searchOpenS3Buckets(%domain, "212.166.64.1", True) => foundDomains
+festin(%domain, "212.166.64.1", True) => foundDomains
 
 filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
 
