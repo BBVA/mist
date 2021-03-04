@@ -1,7 +1,7 @@
 ![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png)
 
 
-`MIST`, a high level programming language focussed in security testing.
+When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
 # Installing
 
@@ -9,67 +9,128 @@
 > pip install mist-lang
 ```
 
-# Screenshots
+# Quick Start
 
-![Image of editor](https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/MIST_Editor.png)
+## Demo 1 - The simplest scenario
 
-# Local usage
 
-You can use MIST for running local mist files (A.K.A. playbooks), or starting a
-web editor to write your own playbooks.
+![Demo 1](images/mist-demo-1.svg)
 
-## Running a mist file
 
 ```bash
-> mist run examples/ping.mist
+include "searchDomains" "findOpenPorts"
+
+searchDomains(%domain) => foundDomains
+
+findOpenPorts(:foundDomains, "80,443") => openPortsFound
+
+print(:openPortsFound)
 ```
 
-## Launch server with editor
+## Demo 2 - Sending results to Kafka
 
-### Starting Redis Server
 
-MIST Server need Redis to work. So, we must launch it:
+![Demo 2](images/mist-demo-2.svg)
+
 
 ```bash
-> docker run --rm -d -p 6379:6379 redis
+include "searchDomains" "findOpenPorts" "kafkaProducer"
+
+searchDomains(%domain) => foundDomains
+
+findOpenPorts(:foundDomains, "80,443") => openPortsFound
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 ```
 
-### Starting MIST Server with Editor
+## Demo 3 - Adding new tool and remove duplicate domains
+
+
+![Demo 3](images/mist-demo-3.svg)
+
 
 ```bash
-> mist server -E -R redis://127.0.0.1:6379
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer"
+
+searchDomains(%domain) => foundDomains
+festin(%domain, $DNS_SERVER, True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
+
 ```
 
-# Developers
+## Demo 4 - Send results to Kafka and S3 through a dispatcher
 
-After cloning the repository, you can run `MIST` without install it:
+
+![Demo 4](images/mist-demo-4.svg)
+
 
 ```bash
-> git clone https://github.com/cr0hn/mist
-> cd mist
-> python3 -m pip install -r requirements.txt
-> python3 -m mist -h
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store"
+
+function dispacher(p) {
+    if (isEqual(p.port, "80")) {
+        send(p, "kafkaOutput")
+    } else {
+        send(p, "S3Output")
+    }
+}
+
+searchDomains(%domain) => foundDomains
+festin(%domain, $DNS_SERVER, True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+dispacher(:openPortsFound)
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
+
+S3Store(:S3Output, $BUCKET_URI)
+
 ```
 
-# Docker usage
+## Demo 5 - Read from Kafka and a File
 
-## Image build
+
+![Demo 5](images/mist-demo-5.svg)
+
 
 ```bash
-> docker build -t mist-lang .
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
+
+function dispacher(p) {
+    if (isEqual(p.port, "80")) {
+        send(p, "kafkaOutput")
+    } else {
+        send(p, "S3Output")
+    }
+}
+
+kafkaConsumer($KAFKA_SERVER, "inputDomains", "*END*", False) => inputDomains
+tail("domains.txt", "*END*") => inputDomains
+send(%domain, "inputDomains")
+
+searchDomains(:inputDomains) => foundDomains
+festin(:inputDomains, $DNS_SERVER, True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+dispacher(:openPortsFound)
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
+
+S3Store(:S3Output, $BUCKET_URI)
+
 ```
 
-## Run a mist file with Docker
-
-```bash
-> docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang run examples/ping.mist
-```
-
-## Launch server with editor with Docker
-
-```bash
-> docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
-```
 
 ## Authors
 
