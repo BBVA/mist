@@ -2,9 +2,9 @@ include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer
 
 function dispacher(p) {
     if (isEqual(p.port, "80")) {
-        send(p, "kafkaQueue")
+        send(p, "kafkaOutput")
     } else {
-        send(p, "S3Queue")
+        send(p, "S3Output")
     }
 }
 
@@ -17,6 +17,6 @@ findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
 
 dispacher(:openPortsFound)
 
-kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaQueue)
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
 
-S3Store(:S3Queue, $BUCKET_URI)
+S3Store(:S3Output, $BUCKET_URI)
