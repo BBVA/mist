@@ -9,7 +9,7 @@ function dispacher(p) {
 }
 
 searchDomains(%domain) => foundDomains
-festin(%domain, "212.166.64.1", True) => foundDomains
+festin(%domain, $DNS_SERVER, True) => foundDomains
 
 filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
 
@@ -17,6 +17,6 @@ findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
 
 dispacher(:openPortsFound)
 
-kafkaProducer("127.0.0.1:9092", "domainsTopic", :kafkaQueue)
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaQueue)
 
 S3Store(:S3Queue, $BUCKET_URI)
