@@ -3,6 +3,12 @@
 
 When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
+# Why is MIST
+
+`MIST` is a high level programming language for defining executions workflows easily.
+
+Ab execution is a command line tool you can invoke from `MIST`. They will connect the tools and manage executions and synchronization fo you. 
+
 # Installing
 
 ```bash
