@@ -106,8 +106,11 @@ async def execute_from_text(text: str,
         check_mist_parameters(text)
 
         await command_runner(mist_model.commands, stack)
-        #await waitForTaks()
-        await asyncio.sleep(waitTime)
+        if waitTime:
+            await asyncio.sleep(waitTime)
+        else:
+            await waitForTaks()
+        
         await runFinalizers(stack)
 
     return stream_stdout.getvalue()

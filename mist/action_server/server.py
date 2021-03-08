@@ -14,6 +14,8 @@ from .storage import Redis, current_jobs
 from ..action_run import execute_from_text
 from ..guuid import guuid
 
+import asyncio
+
 here = op.dirname(__file__)
 
 app = Flask("mist",
@@ -41,13 +43,12 @@ def bg_run(redis_con: str, job_id: str, mist_content: str, parameters: dict):
 
         storage.set_job_running(job_id)
         try:
-            results = execute_from_text(
+            results = asyncio.run(execute_from_text(                
                 text=mist_content,
                 fn_params=parameters,
                 realtime_fn=realtime_callback,
                 database_path=db.name
-            )
-
+            )) 
             storage.store_job_result(
                 job_id,
                 results,
