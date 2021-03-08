@@ -99,7 +99,7 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
             namePlaceHolder = next(key for key, value in namedArgsDict.items() if value == ":" + queue)
         async for s in streams[queue].iterate():
             if isNative:
-                args[0] = s
+                args[position] = s
                 await callNative(f, args, namedArgs, namedArgsDict, stack, commands)
             else:
                 namedArgsDict[namePlaceHolder] = s
