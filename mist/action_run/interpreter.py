@@ -12,12 +12,15 @@ from .language_tools import get_mist_model, load_mist_language, \
     check_mist_parameters, check_installed_binaries
 
 from mist.lang.streams import consumers, producers
+from mist.sdk.cmd import interactive_processes
 
 async def waitForTaks():
     if len(producers)>0:
         await asyncio.gather(*producers)
     if len(consumers)>0:
         await asyncio.gather(*consumers)
+    for i in interactive_processes:
+        await i[0].finish_run(i[1],i[2])
 
 def execute():
     try:

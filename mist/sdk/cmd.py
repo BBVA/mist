@@ -159,6 +159,12 @@ class LocalExecutor(Executor):
     def _replace_files_in_command_(self) -> str:
         return self.command.format(**{**self.output_files, **self.input_files})
 
+    async def finish_run(self, row_id, process):
+        await process.communicate()
+        self.error_code = process.returncode
+        end_time = time.time()
+        self.__update_with_results__(row_id, end_time)
+
     async def run_ctx(self):
 
         start_time = time.time()
@@ -187,6 +193,7 @@ class LocalExecutor(Executor):
 
         if self.interactive:
             yield "InteractiveInit", process
+            interactive_processes.append((self, row_id, process))
             return
         
         while True:
@@ -209,16 +216,7 @@ class LocalExecutor(Executor):
             line = output.strip()
             self._console_stderr.append(output.strip())
 
-        if not self.interactive:
-            await process.communicate()
-            self.error_code = process.returncode
-
-        end_time = time.time()
-
-        #
-        # Save execution information
-        #
-        self.__update_with_results__(row_id, end_time)
+        await self.finish_run(row_id, process)
 
 class execution(object):
 
@@ -270,4 +268,6 @@ class execution(object):
         for f in self._tmp_files:
             f.close()
 
-__all__ = ("execution",)
+interactive_processes = []
+
+__all__ = ("execution", interactive_processes)
