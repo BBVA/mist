@@ -50,7 +50,7 @@ print(:openPortsFound)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-01.mist
+> mist examples/demo/scenario-01.mist domain=example.com
 ```
 
 ## Demo 2 - Sending results to Kafka
@@ -61,7 +61,7 @@ In this scenario we'll do:
 
 1. `CLI Input` - Read a domain as a parameter from CLI.
 2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
-3. `Fin OpenPorts` - Search open port for each new domain / sub-domain found.   
+3. `FindOpenPorts` - Search open port for each new domain / sub-domain found.   
 4. `Kafka output` - Send results to a Kafka topic. 
 
 **Use case diagram**
@@ -87,7 +87,7 @@ kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-02.mist
+> mist examples/demo/scenario-02.mist domain=example.com
 ```
 
 ## Demo 3 - Adding new tool and remove duplicate domains
@@ -131,7 +131,7 @@ kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-03.mist
+> mist examples/demo/scenario-03.mist domain=example.com
 ```
 
 ## Demo 4 - Send results to Kafka and S3 through a dispatcher
@@ -145,7 +145,7 @@ In this scenario we'll do:
     1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
     2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
 3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
-4. `Fin OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
+4. `Find OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
 5. `Dispatcher (80 / 443)` - Split results and send each port to a different queue.
 6. Send results:
     1. `Kafka output` - Send found 80 ports to a Kafka topic.   
@@ -190,7 +190,7 @@ S3Store(:S3Output, $BUCKET_URI)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-04.mist
+> mist examples/demo/scenario-04.mist domain=example.com
 ```
 
 ## Demo 5 - Read from Kafka and a File
@@ -205,7 +205,7 @@ In this scenario we'll do:
 2.1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
 2.2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
 3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
-4. `Fin OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
+4. `Find OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
 5. `Dispatcher (80 / 443)` - Split results and send each port to a different queue.   
 6.1. `Kafka output` - Send found 80 ports to a Kafka topic.   
 6.2. `S3 output` - Send found 443 ports to a AWS S3 bucket. 
@@ -252,7 +252,7 @@ S3Store(:S3Output, $BUCKET_URI)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-05.mist
+> mist examples/demo/scenario-05.mist domain=example.com
 ```
 
 ## Authors
