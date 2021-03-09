@@ -35,9 +35,7 @@ In this scenario we'll do:
 **MIST code**
 
 ```bash
-#
-# Source code at: examples/demo/scenario-01.mist
-#
+# examples/demo/scenario-01.mist
 include "searchDomains" "findOpenPorts"
 
 searchDomains(%domain) => foundDomains
@@ -71,10 +69,7 @@ In this scenario we'll do:
 **MIST code**
 
 ```bash
-#
-# Source code at: examples/demo/scenario-02.mist
-#
-
+# examples/demo/scenario-02.mist
 include "searchDomains" "findOpenPorts" "kafkaProducer"
 
 searchDomains(%domain) => foundDomains
@@ -111,10 +106,7 @@ In this scenario we'll do:
 **MIST code**
 
 ```bash
-#
-# Source code at: examples/demo/scenario-03.mist
-#
-
+# examples/demo/scenario-03.mist
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer"
 
 searchDomains(%domain) => foundDomains
@@ -158,10 +150,7 @@ In this scenario we'll do:
 **MIST code**
 
 ```bash
-#
-# Source code at: examples/demo/scenario-04.mist
-#
-
+# examples/demo/scenario-04.mist
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store"
 
 function dispacher(p) {
@@ -220,10 +209,7 @@ In this scenario we'll do:
 **MIST code**
 
 ```bash
-#
-# Source code at: examples/demo/scenario-05.mist
-#
-
+# examples/demo/scenario-05.mist
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
 
 function dispacher(p) {
