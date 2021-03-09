@@ -1,4 +1,4 @@
-include requirements.txt README.rst VERSION
+include requirements.txt README.md VERSION
 
 include mist/action_server/assets/*
 include mist/action_server/templates/*
