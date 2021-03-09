@@ -19,9 +19,19 @@ Ab execution is a command line tool you can invoke from `MIST`. They will connec
 
 ## Demo 1 - The simplest scenario
 
+In this scenario we do:
+
+1. `CLI Input` - Read a domain as a parameter from CLI.
+2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+3. `Fin OpenPorts` - Search open port for each new domain / sub-domain found.   
+4. `Screen (Pring)` - Displays the results into the screen (by using MIST 'print' function). 
+
+
+**Use case diagram**
 
 ![Demo 1](images/mist-demo-1.svg)
 
+**MIST code**
 
 ```bash
 include "searchDomains" "findOpenPorts"
@@ -35,9 +45,11 @@ print(:openPortsFound)
 
 ## Demo 2 - Sending results to Kafka
 
+**Use case diagram**
 
 ![Demo 2](images/mist-demo-2.svg)
 
+**MIST code**
 
 ```bash
 include "searchDomains" "findOpenPorts" "kafkaProducer"
@@ -51,9 +63,11 @@ kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 
 ## Demo 3 - Adding new tool and remove duplicate domains
 
+**Use case diagram**
 
 ![Demo 3](images/mist-demo-3.svg)
 
+**MIST code**
 
 ```bash
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer"
@@ -71,9 +85,11 @@ kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 
 ## Demo 4 - Send results to Kafka and S3 through a dispatcher
 
+**Use case diagram**
 
 ![Demo 4](images/mist-demo-4.svg)
 
+**MIST code**
 
 ```bash
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store"
@@ -103,9 +119,11 @@ S3Store(:S3Output, $BUCKET_URI)
 
 ## Demo 5 - Read from Kafka and a File
 
+**Use case diagram**
 
 ![Demo 5](images/mist-demo-5.svg)
 
+**MIST code**
 
 ```bash
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
