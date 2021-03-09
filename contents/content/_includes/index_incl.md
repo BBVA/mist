@@ -1,4 +1,4 @@
-![MIST LOGO](images/logo-yellow-250.png)
+![MIST LOGO](images/logo-yellow-250x250.png)
 
 When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
