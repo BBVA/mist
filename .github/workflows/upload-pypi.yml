@@ -74,5 +74,5 @@ jobs:
       - name: Publish Package Manager PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
-          user: ${{ secrets.pypi_user }}
+          user: __token__
           password: ${{ secrets.pypi_password }}
