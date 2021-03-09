@@ -231,7 +231,7 @@ function dispacher(p) {
     }
 }
 
-kafkaConsumer($KAFKA_SERVER, "inputDomains", "*END*", False) => inputDomains
+kafkaConsumer($KAFKA_SERVER, "inputTopic", "*END*", False) => inputDomains
 tail("domains.txt", "*END*") => inputDomains
 send(%domain, "inputDomains")
 

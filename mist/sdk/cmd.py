@@ -159,8 +159,9 @@ class LocalExecutor(Executor):
     def _replace_files_in_command_(self) -> str:
         return self.command.format(**{**self.output_files, **self.input_files})
 
-    async def finish_run(self, row_id, process):
-        await process.communicate()
+    async def finish_run(self, row_id, process, wait=True):
+        if wait:
+            await process.communicate()
         self.error_code = process.returncode
         end_time = time.time()
         self.__update_with_results__(row_id, end_time)
