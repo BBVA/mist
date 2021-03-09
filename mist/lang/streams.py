@@ -64,18 +64,18 @@ class MemoryStreamQueue(asyncio.Queue):
 
         # Purge queue
         if len(self._queue) > self.__max_cache:
-            print("Queue: ", len(self._queue))
-            print("Getter: ", len(self._getters))
-            print("Setter: ", len(self._putters))
-            print("Unished tasks: ", self._unfinished_tasks)
+            # print("Queue: ", len(self._queue))
+            # print("Getter: ", len(self._getters))
+            # print("Setter: ", len(self._putters))
+            # print("Unished tasks: ", self._unfinished_tasks)
             self._get()
             self.__offset += 1
 
-            print("#" * 10, "after", "#" * 10)
-            print("Queue: ", len(self._queue))
-            print("Getter: ", len(self._getters))
-            print("Setter: ", len(self._putters))
-            print("Unished tasks: ", self._unfinished_tasks)
+            # print("#" * 10, "after", "#" * 10)
+            # print("Queue: ", len(self._queue))
+            # print("Getter: ", len(self._getters))
+            # print("Setter: ", len(self._putters))
+            # print("Unished tasks: ", self._unfinished_tasks)
 
 class _Streams(dict):
 
