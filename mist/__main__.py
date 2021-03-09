@@ -78,7 +78,7 @@ def main():
         print("\n[!] Python 3.8 or above is required\n")
         print("If you don't want to install Python 3.8. "
               "Try with Docker:\n")
-        print("   $ docker run --rm cr0hn/mist -h")
+        print("   $ docker run --rm bbvalabs/mist -h")
         exit(1)
 
     #
@@ -100,6 +100,6 @@ def main():
     parsed_args = main_parser.parse_args()
     if "func" in parsed_args:
         parsed_args.func(parsed_args)
-        
+
 if __name__ == '__main__':
     main()

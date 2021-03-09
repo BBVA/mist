@@ -9,7 +9,7 @@ Welcome to MIST's documentation!
 
 The programming language for security made easy
 
-.. _GitHub: https://github.com/cr0hn/mist
+.. _GitHub: https://github.com/bbva/mist
 
 
 Key Features
@@ -45,7 +45,7 @@ Source code
 The project is hosted on GitHub_
 
 Please feel free to file an issue on the `bug tracker
-<https://github.com/cr0hn/mist/issues>`_ if you have found a bug
+<https://github.com/bbva/mist/issues>`_ if you have found a bug
 or have some suggestion in order to improve the project.
 
 Contributing
