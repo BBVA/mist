@@ -1,10 +1,6 @@
-import pygit2
 import urllib
 import pathlib
 import urllib.request
-
-from mist.sdk import MistException
-
 
 def download(url: str, destination: str):
     with open(destination, "w") as f:
@@ -12,12 +8,6 @@ def download(url: str, destination: str):
             f.write(remote.read())
             f.flush()
 
-def git_clone(url: str, destination: str):
-    try:
-        pygit2.clone_repository(url, str(destination))
-    except ValueError:
-        raise MistException("Catalog already exits")
-#
 # This function was taken from:
 # https://stackoverflow.com/a/57463161/8153205
 #
@@ -44,4 +34,4 @@ def file_uri_to_path(file_uri, path_class=pathlib.PurePath):
             file_uri, result))
     return result
 
-__all__ = ("download", "file_uri_to_path", "git_clone")
+__all__ = ("download", "file_uri_to_path")

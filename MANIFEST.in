@@ -6,7 +6,7 @@ include mist/action_server/templates/*
 recursive-include * *.tx
 recursive-include mist/ META
 
-exclude test
+exclude test/*
 
 recursive-exclude * test_*
 recursive-exclude * __pycache__

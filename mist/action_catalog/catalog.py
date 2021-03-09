@@ -9,9 +9,9 @@ from typing import List
 from mist.guuid import guuid
 from mist.sdk.db import cm
 
-from ..finders import find_commands_folders, find_catalog_metas
-from ..net_utils import download, file_uri_to_path, git_clone
 from ..sdk import MistException, config
+from ..net_utils import download, file_uri_to_path
+from ..finders import find_commands_folders, find_catalog_metas
 
 
 @lru_cache
@@ -324,7 +324,7 @@ class _Catalog():
                     print("[*] Downloading core catalog...", end='',
                           flush=True)
 
-                git_clone(catalog_uri, str(catalog_dst))
+                # git_clone(catalog_uri, str(catalog_dst))
 
                 if not config.get("quiet", False):
                     print("Done", flush=True)

@@ -6,7 +6,3 @@ flask
 redis
 flask_sse
 flask-executor
-
-cryptography
-
-pygit2
