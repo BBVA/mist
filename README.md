@@ -1,5 +1,4 @@
-![MIST LOGO](https://raw.githubusercontent.com/cr0hn/mist/master/docs/source/_static/images/logo-250x250.png)
-
+![MIST LOGO](images/logo-yellow-250.png)
 
 When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
@@ -98,8 +97,9 @@ kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 In this scenario we'll do:
 
 1. `CLI Input` - Read a domain as a parameter from CLI.
-2.1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
-2.2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
+2. Search domains:
+    1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+    2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
 3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
 4. `Fin OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
 5. `Kafka output` - Send results to a Kafka topic.  
@@ -141,13 +141,15 @@ kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 In this scenario we'll do:
 
 1. `CLI Input` - Read a domain as a parameter from CLI.
-2.1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
-2.2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
+2. Search domains:
+    1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+    2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
 3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
 4. `Fin OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
-5. `Dispatcher (80 / 443)` - Split results and send each port to a different queue.   
-6.1. `Kafka output` - Send found 80 ports to a Kafka topic.   
-6.2. `S3 output` - Send found 443 ports to a AWS S3 bucket.   
+5. `Dispatcher (80 / 443)` - Split results and send each port to a different queue.
+6. Send results:
+    1. `Kafka output` - Send found 80 ports to a Kafka topic.   
+    2. `S3 output` - Send found 443 ports to a AWS S3 bucket.   
 
 **Use case diagram**
 
