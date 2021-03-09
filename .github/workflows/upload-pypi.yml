@@ -6,7 +6,7 @@ on:
       - v*
 
 jobs:
-  build-nix:
+  build-os:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -37,6 +37,7 @@ jobs:
 
   deploy:
     name: Publish in Pypi
+    needs: build-os
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
