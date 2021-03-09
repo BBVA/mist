@@ -193,7 +193,7 @@ class IncludeCommand:
             if not (f.endswith(".mist") or f.endswith(".MIST")):
                 f += ".mist"
             if not os.path.isfile(f):
-                f = str(pathlib.Path(sys.modules['__main__'].__file__).parent.parent) + "/catalog/" + f
+                f = str(pathlib.Path(sys.modules['mist'].__file__).parent) + "/catalog/" + f
             with open(f, "r") as f:
                 content = f.read()
                 stdout = await mist.action_run.execute_from_text(text=content, fn_params=environment, stack=stack)
