@@ -1,7 +1,9 @@
 import argparse
 
-from mist.sdk import config, params, db, MistMissingBinaryException, \
-    MistInputDataException, MistAbortException, MistUndefinedVariableException
+from mist.lang.config import config
+from mist.lang.params import params
+from mist.lang.db import db
+from mist.lang.exceptions import MistMissingBinaryException, MistInputDataException, MistAbortException, MistUndefinedVariableException
 
 from .interpreter import execute
 from .helpers import load_cli_exec_values

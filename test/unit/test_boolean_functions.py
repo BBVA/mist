@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import sqlite3
 
-from mist.sdk.function import (functions, boolNot, boolAnd, boolOr)
+from mist.lang.function import (functions, boolNot, boolAnd, boolOr)
 
 class BooleanFunctionsTest(TestCase):
 

@@ -6,13 +6,17 @@ from io import StringIO
 from contextlib import redirect_stdout
 from typing import Callable
 
-from mist.sdk import (db, config, params, command_runner, functions)
+from mist.lang.db import db
+from mist.lang.config import config
+from mist.lang.params import params
+from mist.lang.herlpers import command_runner
+from mist.lang.function import functions
+from mist.lang.streams import consumers, producers
+from mist.lang.cmd import interactive_processes
 
 from .language_tools import get_mist_model, load_mist_language, \
     check_mist_parameters, check_installed_binaries
 
-from mist.lang.streams import consumers, producers
-from mist.sdk.cmd import interactive_processes
 
 async def waitForTaks():
     if len(producers)>0:

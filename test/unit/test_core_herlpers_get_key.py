@@ -2,7 +2,7 @@ import unittest
 
 from unittest.mock import patch
 
-from mist.sdk.herlpers import get_key, NamedArg
+from mist.lang.herlpers import get_key, NamedArg
 
 from test.utilTest import *
 
@@ -37,7 +37,7 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(var_value, ret)
 
     #@unittest.skip("WIP")
-    @patch('mist.sdk.herlpers.function_runner')
+    @patch('mist.lang.herlpers.function_runner')
     async def test_returns_function_return_value_when_given_a_function_without_args(self, mock_function_runner):
         result = "function_return_value"
         mock_function_runner.return_value = result
@@ -47,7 +47,7 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, ret)
         mock_function_runner.assert_called_once_with("myFunc", [], None, None, [])
 
-    @patch('mist.sdk.herlpers.function_runner')
+    @patch('mist.lang.herlpers.function_runner')
     async def test_returns_function_return_value_when_given_a_function_with_args(self, mock_function_runner):
         result = "function_return_value"
         mock_function_runner.return_value = result
@@ -57,7 +57,7 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, ret)
         mock_function_runner.assert_called_once_with("myFunc", [], None, None, ["one", "two", "three"])
 
-    @patch('mist.sdk.herlpers.function_runner')
+    @patch('mist.lang.herlpers.function_runner')
     async def test_returns_function_return_value_when_given_a_function_with_named_args(self, mock_function_runner):
 
         result = "function_return_value"
@@ -68,8 +68,8 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, ret)
         mock_function_runner.assert_called_once_with("myFunc", [], None, None, None, [NamedArg("one", "1"), NamedArg("two", "2"), NamedArg("three", "3")])
 
-    @patch('mist.sdk.herlpers.get_var')
-    @patch('mist.sdk.herlpers.getChildFromVar')
+    @patch('mist.lang.herlpers.get_var')
+    @patch('mist.lang.herlpers.getChildFromVar')
     async def test_returns_var_value_when_given_a_composed_variable_name(self, mock_getChildFromVar, mock_get_var):
         result = "part_value"
         result1 = "whole_value"

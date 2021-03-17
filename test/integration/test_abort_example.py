@@ -2,7 +2,7 @@ import os
 import pytest
 
 from mist.action_run import execute_from_text
-from mist.sdk.exceptions import MistAbortException
+from mist.lang.exceptions import MistAbortException
 
 PING_EXAMPLE_FILE = "abort.mist"
 

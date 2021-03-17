@@ -13,7 +13,7 @@ from configparser import ConfigParser
 
 import argparse
 
-from mist.sdk import config
+from mist.lang.config import config
 
 EXTRACT_MODULE_REGEX = re.compile(r'''^(.*Command)(:)''')
 

@@ -2,7 +2,7 @@ import unittest
 
 from unittest.mock import patch
 
-from mist.sdk.herlpers import get_var, db
+from mist.lang.herlpers import get_var, db
 
 from test.utilTest import *
 

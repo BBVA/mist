@@ -9,8 +9,10 @@ from textwrap import wrap
 
 from terminaltables import SingleTable
 
-from mist.sdk import db, config, MistInputDataException
-from mist.sdk.cmd import _DB_TABLE_NAME, _DB_TABLE_FIELDS
+from mist.lang.exceptions import MistInputDataException
+from mist.lang.config import config
+from mist.lang.db import db
+from mist.lang.cmd import _DB_TABLE_NAME, _DB_TABLE_FIELDS
 
 def load_cli_values(d, parsed: argparse.Namespace):
     d.update(parsed.__dict__)

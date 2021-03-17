@@ -1,9 +1,9 @@
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase, TestCase, skip
 
-from mist.sdk.function import (functions, corePrint, coreAbort, corePut,
+from mist.lang.function import (functions, corePrint, coreAbort, corePut,
                                 corePutData, coreSend, parseInt, toString)
-from mist.sdk.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
+from mist.lang.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 
 
 class CoreFunctionsTest(IsolatedAsyncioTestCase):
@@ -22,8 +22,8 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 ######
 ###### corePrint
 ######
-    @patch('mist.sdk.function.print')
-    @patch('mist.sdk.function.helpers.get_id')
+    @patch('mist.lang.function.print')
+    @patch('mist.lang.function.helpers.get_id')
     def test_CorePrint_call_python_print_with_all_its_params(self, mock_getId, mock_print):
         stack = []
         mock_getId.side_effect = lambda id, stack: id
@@ -66,7 +66,7 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(MistException, expected):
             await corePut("FOO", stack=[], commands=None)
 
-    @patch('mist.sdk.function.watchedInsert')
+    @patch('mist.lang.function.watchedInsert')
     async def test_corePut_stores_data_in_table(self, mock_watchedInsert):
         stack = []
 
@@ -74,7 +74,7 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 
         mock_watchedInsert.assert_called_once_with("FOO", stack, ["one", "two", "three", "four", "five"], fields=None)
 
-    @patch('mist.sdk.function.watchedInsert')
+    @patch('mist.lang.function.watchedInsert')
     async def test_corePut_stores_list_data_as_string_in_table(self, mock_watchedInsert):
         stack = []
 
@@ -105,7 +105,7 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
             await corePutData("FOO", ["foo"], stack=[], commands=None)
             await corePutData("FOO", "foo", stack=[], commands=None)
 
-    @patch('mist.sdk.function.watchedInsert')
+    @patch('mist.lang.function.watchedInsert')
     async def test_corePutData_stores_list_data_as_string_in_table(self, mock_watchedInsert):
         stack = []
         data = {"one": "1", "two": ["1", "2"]}
@@ -117,7 +117,7 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 ######
 ###### coreSend
 ######
-    @patch('mist.sdk.function.helpers.get_key')
+    @patch('mist.lang.function.helpers.get_key')
     async def test_coreSend_looks_for_target_stream(self, mock_getKey):
         streamKey = "targetStream"
         msg = "FOO"
@@ -127,7 +127,7 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 
         mock_getKey.assert_called_once_with(streamKey, stack)
 
-    @patch('mist.sdk.function.helpers.get_key')
+    @patch('mist.lang.function.helpers.get_key')
     async def test_coreSend_does_nothing_if_no_value_given(self, mock_getKey):
         streamKey = "targetStream"
         stack = []
@@ -136,8 +136,8 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
 
         mock_getKey.assert_not_called()
 
-    @patch('mist.sdk.function.streams.send')
-    @patch('mist.sdk.function.helpers.get_key')
+    @patch('mist.lang.function.streams.send')
+    @patch('mist.lang.function.helpers.get_key')
     async def test_coreSend_sends_if_theres_stream(self, mock_getKey, mock_streams_send):
         streamKey = "targetStream"
         streamName = "myStream"
@@ -150,8 +150,8 @@ class CoreFunctionsTest(IsolatedAsyncioTestCase):
         mock_getKey.assert_called_once_with(streamKey, stack)
         mock_streams_send.assert_called_once_with(streamName, msg)
 
-    @patch('mist.sdk.function.streams.send')
-    @patch('mist.sdk.function.helpers.get_key')
+    @patch('mist.lang.function.streams.send')
+    @patch('mist.lang.function.helpers.get_key')
     async def test_coreSend_dont_send_if_theres_no_stream(self, mock_getKey, mock_streams_send):
         curStream = "targetStream"
         stack = []

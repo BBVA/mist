@@ -2,7 +2,7 @@ import os
 import pytest
 
 from mist.action_run import execute_from_text
-from mist.sdk.function import functions
+from mist.lang.function import functions
 
 MIST_FILE = "saveList.mist"
 

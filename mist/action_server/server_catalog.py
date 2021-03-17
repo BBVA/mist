@@ -2,7 +2,7 @@ import sqlite3
 
 from typing import List
 
-from mist.sdk.db import cm
+from mist.lang.db import cm
 from mist.action_catalog.catalog import catalog_path
 
 

@@ -2,11 +2,11 @@ import unittest
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase
 
-from mist.sdk.exceptions import MistUndefinedVariableException, MistException
+from mist.lang.exceptions import MistUndefinedVariableException, MistException
 
 #from mist.sdk.herlpers import get_id, get_param, get_key, watchedInsert, command_runner, function_runner
 
-import mist.sdk.herlpers
+import mist.lang.herlpers
 from mist.lang.classes import SaveListCommand
 
 from test.utilTest import *

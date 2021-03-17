@@ -1,8 +1,8 @@
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase, TestCase, skip
 
-from mist.sdk.herlpers import (resolve_list_dict_reference)
-from mist.sdk.exceptions import (MistUndefinedVariableException)
+from mist.lang.herlpers import (resolve_list_dict_reference)
+from mist.lang.exceptions import (MistUndefinedVariableException)
 
 from test.utilTest import *
 
@@ -16,7 +16,7 @@ class CoreResolversTest(IsolatedAsyncioTestCase):
         clean_env_vars()
         clean_mist_params()
 
-    @patch("mist.sdk.herlpers.get_var")
+    @patch("mist.lang.herlpers.get_var")
     async def test_resolveListDictReference_raises_MistUndefinedVariableException_if_not_exist(self, mock_get_var):
         varName = "FOO"
         mock_get_var.side_effect = MistUndefinedVariableException(varName)
@@ -31,7 +31,7 @@ class CoreResolversTest(IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(TypeError, f"{varName} is not a list neither a dict"):
             await resolve_list_dict_reference(varName, None, get_mistStack())
 
-    @patch("mist.sdk.herlpers.get_id")
+    @patch("mist.lang.herlpers.get_id")
     async def test_resolveListDictReference_doesnt_resolve_member_if_int(self, mock_get_id):
         varName = "myList"
         intVal = 0
@@ -41,7 +41,7 @@ class CoreResolversTest(IsolatedAsyncioTestCase):
 
         mock_get_id.assert_not_called()
 
-    @patch("mist.sdk.herlpers.get_id")
+    @patch("mist.lang.herlpers.get_id")
     async def test_resolveListDictReference_doesnt_resolve_member_if_quoted_string(self, mock_get_id):
         varName = "myDict"
         quotStrVal = '"FOO"'
@@ -51,7 +51,7 @@ class CoreResolversTest(IsolatedAsyncioTestCase):
 
         mock_get_id.assert_not_called()
 
-    @patch("mist.sdk.herlpers.get_id")
+    @patch("mist.lang.herlpers.get_id")
     async def test_resolveListDictReference_resolves_member(self, mock_get_id):
         varName = "myList"
         expected = "FOO"

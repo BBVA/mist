@@ -1,9 +1,6 @@
 from unittest import (IsolatedAsyncioTestCase, TestCase, skip)
 from unittest.mock import (patch, call)
 
-## Here to remove circular dependency with language_tools.py
-import mist.action_run
-
 from mist.lang.classes import (IfCommand, command_runner)
 
 class IfBranch:

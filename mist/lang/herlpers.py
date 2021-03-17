@@ -4,12 +4,12 @@ from string import Formatter
 
 import asyncio
 
-from mist.sdk.db import db
-from mist.sdk.config import config
-from mist.sdk.watchers import watchers
-from mist.sdk.environment import environment
-from mist.sdk.params import params
-from mist.sdk.function import functions
+from mist.lang.db import db
+from mist.lang.config import config
+from mist.lang.watchers import watchers
+from mist.lang.environment import environment
+from mist.lang.params import params
+from mist.lang.function import functions
 
 from mist.lang.streams import streams
 

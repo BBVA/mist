@@ -7,7 +7,7 @@ import importlib.util
 from typing import Set, List
 from functools import lru_cache
 
-from mist.sdk import MistInputDataException
+from mist.lang.exceptions import MistInputDataException
 from mist.finders import find_commands_folders
 
 from .helpers import command_name_to_class

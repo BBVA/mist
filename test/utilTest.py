@@ -1,7 +1,7 @@
-from mist.sdk.config import config
-from mist.sdk.environment import environment
-from mist.sdk.params import params
-from mist.sdk.db import db
+from mist.lang.config import config
+from mist.lang.environment import environment
+from mist.lang.params import params
+from mist.lang.db import db
 
 
 _mistStack = []

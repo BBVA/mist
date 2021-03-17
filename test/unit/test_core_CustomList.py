@@ -1,11 +1,8 @@
 from unittest.mock import patch
 from unittest import IsolatedAsyncioTestCase, TestCase, skip
 
-## Here to remove circular dependency with language_tools.py
-import mist.action_run
-
 from mist.lang.classes import (CustomList, ListDictReference, EnvVariable, ExtParameter, VarReference)
-from mist.sdk.exceptions import (MistUndefinedVariableException)
+from mist.lang.exceptions import (MistUndefinedVariableException)
 
 from test.utilTest import *
 

@@ -7,9 +7,10 @@ from pathlib import Path
 from typing import List
 
 from mist.guuid import guuid
-from mist.sdk.db import cm
+from mist.lang.db import cm
 
-from ..sdk import MistException, config
+from ..lang.exceptions import MistException
+from ..lang.config import config
 from ..net_utils import download, file_uri_to_path
 from ..finders import find_commands_folders, find_catalog_metas
 

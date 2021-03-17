@@ -1,7 +1,7 @@
 from typing import List
-from mist.sdk.db import db
-from mist.sdk.watchers import watchers
-from mist.sdk.config import config
+from mist.lang.db import db
+from mist.lang.watchers import watchers
+from mist.lang.config import config
 
 async def watchedInsert(table: str, stack, values: List[str], *, fields=None):
     if config.debug:

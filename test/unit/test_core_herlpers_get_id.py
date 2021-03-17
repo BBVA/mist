@@ -2,7 +2,7 @@ import unittest
 
 from unittest.mock import patch, call
 
-from mist.sdk.herlpers import get_id, ValueContainer
+from mist.lang.herlpers import get_id, ValueContainer
 
 from test.utilTest import *
 
@@ -15,7 +15,7 @@ class Get_id_Test(unittest.IsolatedAsyncioTestCase):
 
         self.assertIsNone(ret)
 
-    @patch('mist.sdk.herlpers.get_var')
+    @patch('mist.lang.herlpers.get_var')
     async def test_returns_True_when_given_True_or_Success_string(self, mock_get_var):
         mock_get_var.return_value = True
         param = [ "True", "Success"]
@@ -28,7 +28,7 @@ class Get_id_Test(unittest.IsolatedAsyncioTestCase):
 
             mock_get_var.reset_mock()
 
-    @patch('mist.sdk.herlpers.get_var')
+    @patch('mist.lang.herlpers.get_var')
     async def test_returns_False_when_given_False_or_Error_string(self, mock_get_var):
         mock_get_var.return_value = False
         param = ["False", "Error"]
@@ -40,7 +40,7 @@ class Get_id_Test(unittest.IsolatedAsyncioTestCase):
             mock_get_var.assert_called_once_with(p, [])
             mock_get_var.reset_mock()
 
-    @patch('mist.sdk.herlpers.get_key')
+    @patch('mist.lang.herlpers.get_key')
     async def test_returns_Formatted_string_when_given_parameterized_string(self, mock_get_key):
 
         async def get_key_SE(p, stack):

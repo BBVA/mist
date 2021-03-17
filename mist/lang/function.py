@@ -10,12 +10,12 @@ import inspect
 from functools import partial
 import uuid
 
-from mist.sdk import db
-from mist.sdk.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
-from mist.sdk.config import config
-from mist.sdk.common import watchedInsert
-from mist.sdk.cmd import execution
-import mist.sdk.herlpers as helpers
+from mist.lang.db import db
+from mist.lang.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
+from mist.lang.config import config
+from mist.lang.common import watchedInsert
+from mist.lang.cmd import execution
+import mist.lang.herlpers as helpers
 
 from mist.lang.streams import streams
 

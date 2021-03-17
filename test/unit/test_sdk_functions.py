@@ -5,9 +5,9 @@ from unittest.mock import patch
 
 import sqlite3
 
-from mist.sdk.exceptions import MistException
-from mist.sdk.function import db # For mocking
-from mist.sdk.function import (functions, tmpFileFunction, fileWriteLine, rangeFunction,
+from mist.lang.exceptions import MistException
+from mist.lang.db import db
+from mist.lang.function import (functions, tmpFileFunction, fileWriteLine, rangeFunction,
                                 searchInText, searchInXML, searchInJSON, CSVput, CSVdump,
                                 readFile, readFileAsLines, objectLen, listMap, listReduce)
 
@@ -227,7 +227,7 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         mock_create_table.assert_called_once_with(table, expected)
 
     @patch.object(db, 'create_table')
-    @patch('mist.sdk.function.watchedInsert')
+    @patch('mist.lang.function.watchedInsert')
     async def test_CSVPut_creates_target_and_insert_content(self, mock_watchedInsert, mock_create_table):
         header = "col01,col02"
         expectedHeader = header.split(',')
