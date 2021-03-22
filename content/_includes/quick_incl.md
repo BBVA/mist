@@ -1,132 +1,229 @@
-# Quick Start (ping)
+# Quick Start
 
-Let us start with a very simple program explained step by step.
+## Demo 1 - The simplest scenario
 
-Create a new file (i.e. quickStart.mist) and open it with your favorite editor.
+**Explanation**
 
-You can run it at every step with the command:
+In this scenario we'll do:
 
-``` console
-$ mist exec quickStart.mist
-```
-First of all, we are going to define some host.
-With this, we declare a new structure "myHosts" on the knowledge base.
+1. `CLI Input` - Read a domain as a parameter from CLI.
+2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+3. `Fin OpenPorts` - Search open port for each new domain / sub-domain found.   
+4. `Screen (Pring)` - Displays the results into the screen (by using MIST 'print' function).
 
-``` text
-  data myHosts {
-    host
-    status
-  }
-```
 
-Now, we are going to populate the structure myHosts with 2 hosts.
+**Use case diagram**
 
-``` text
-  put "127.0.0.1" "linux" => myHosts
-  put "192.168.1.32" "windows" => myHosts
-```
+![Demo 1](content/assets/images/mist-demo-1.png)
 
-We can print the structure with this command:
+**MIST code**
 
-``` text
-  print myHosts
+```bash
+# examples/demo/scenario-01.mist
+include "searchDomains" "findOpenPorts"
+
+searchDomains(%domain) => foundDomains
+
+findOpenPorts(:foundDomains, "80,443") => openPortsFound
+
+print(:openPortsFound)
 ```
 
-Or just print the last host ip with this command:
+**Execute**
 
-``` text
-  print myHosts.ip
+```bash
+> mist examples/demo/scenario-01.mist domain=example.com
 ```
 
-Now, we are going to print the ip of all my hosts using "iterate" command.
+## Demo 2 - Sending results to Kafka
 
-``` text
-  iterate myHosts => host {
-    print host.ip
-  }
+**Explanation**
+
+In this scenario we'll do:
+
+1. `CLI Input` - Read a domain as a parameter from CLI.
+2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+3. `FindOpenPorts` - Search open port for each new domain / sub-domain found.   
+4. `Kafka output` - Send results to a Kafka topic.
+
+**Use case diagram**
+
+![Demo 2](content/assets/images/mist-demo-2.png)
+
+**MIST code**
+
+```bash
+# examples/demo/scenario-02.mist
+include "searchDomains" "findOpenPorts" "kafkaProducer"
+
+searchDomains(%domain) => foundDomains
+
+findOpenPorts(:foundDomains, "80,443") => openPortsFound
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
 ```
 
-Let us do something more interesting, we are going to define a structure for our hosts up.
+**Execute**
 
-``` text
-  data myHostsStatus {
-    host
-    status
-  }
+```bash
+> mist examples/demo/scenario-02.mist domain=example.com
 ```
 
-And now, we are going to run a ping over all my hosts and leave the result in our new structure.
+## Demo 3 - Adding new tool and remove duplicate domains
 
-``` text
-  iterate myHosts => host {
-    ping {
-      input {
-        ip <= host.ip
-      }
-      output {
-        result
-        console
-      }
-      then {
-        check result is Success {
-          put ip 'Up' => myHostsStatus
-        }
-        check result is Error {
-          put ip 'Down' => myHostsStatus
-        }
-      }
+**Explanation**
+
+In this scenario we'll do:
+
+1. `CLI Input` - Read a domain as a parameter from CLI.
+2. Search domains:
+    1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+    2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
+3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
+4. `Fin OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
+5. `Kafka output` - Send results to a Kafka topic.  
+
+**Use case diagram**
+
+![Demo 3](content/assets/images/mist-demo-3.png)
+
+**MIST code**
+
+```bash
+# examples/demo/scenario-03.mist
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer"
+
+searchDomains(%domain) => foundDomains
+festin(%domain, $DNS_SERVER, True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
+
+```
+
+**Execute**
+
+```bash
+> mist examples/demo/scenario-03.mist domain=example.com
+```
+
+## Demo 4 - Send results to Kafka and S3 through a dispatcher
+
+**Explanation**
+
+In this scenario we'll do:
+
+1. `CLI Input` - Read a domain as a parameter from CLI.
+2. Search domains:
+    1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+    2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
+3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
+4. `Find OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
+5. `Dispatcher (80 / 443)` - Split results and send each port to a different queue.
+6. Send results:
+    1. `Kafka output` - Send found 80 ports to a Kafka topic.   
+    2. `S3 output` - Send found 443 ports to a AWS S3 bucket.   
+
+**Use case diagram**
+
+![Demo 4](content/assets/images/mist-demo-4.png)
+
+**MIST code**
+
+```bash
+# examples/demo/scenario-04.mist
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store"
+
+function dispacher(p) {
+    if (isEqual(p.port, "80")) {
+        send(p, "kafkaOutput")
+    } else {
+        send(p, "S3Output")
     }
-  }
+}
 
-  print myHostsStatus
+searchDomains(%domain) => foundDomains
+festin(%domain, $DNS_SERVER, True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+dispacher(:openPortsFound)
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
+
+S3Store(:S3Output, $BUCKET_URI)
+
 ```
 
-Finally this is all the code together:
+**Execute**
 
-``` text
-  data myHosts {
-    host
-    status
-  }
+```bash
+> mist examples/demo/scenario-04.mist domain=example.com
+```
 
-  put "127.0.0.1" "linux" => myHosts
-  put "192.168.1.32" "windows" => myHosts
+## Demo 5 - Read from Kafka and a File
 
-  # Print all myHosts
-  print myHosts
+**Explanation**
 
-  # Print last myHosts ip
-  print myHosts.ip
+In this scenario we'll do:
 
-  # Print all myHosts ips
-  iterate myHosts => host {
-      print host.ip
-  }
+1 Input from multiple sources:
+   1. `File Input` - Read domains from an external file.
+   2. `Kafka Input` - Read domains from Kafka topics.
+   3. `CLI Input` - Read domains from CLI.
+2. Search domains:
+    1. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
+    2. `Festin` - Use MIST integration for [Festin](https://github.com/cr0hn/festin) for search related domains / sub-domains from a start domain.
+3. `Filter Repeated` - Use MIST function to detect and remove repeated found domains.   
+4. `Find OpenPorts` - Search open port for each new domain / sub-domain get from `Fitler Repeated`.   
+5. `Dispatcher (80 / 443)` - Split results and send each port to a different queue.
+6. Send results:
+    1. `Kafka output` - Send found 80 ports to a Kafka topic.   
+    2. `S3 output` - Send found 443 ports to a AWS S3 bucket.
 
-  data myHostsStatus {
-    host
-    status
-  }
+**Use case diagram**
 
-  iterate myHosts => host {
-    ping {
-      input {
-        ip <= host.ip
-      }
-      output {
-        result
-        console
-      }
-      then {
-        check result is Success {
-          put ip 'Up' => myHostsStatus
-        }
-        check result is Error {
-          put ip 'Down' => myHostsStatus
-        }
-      }
+![Demo 5](content/assets/images/mist-demo-5.png)
+
+**MIST code**
+
+```bash
+# examples/demo/scenario-05.mist
+include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
+
+function dispacher(p) {
+    if (isEqual(p.port, "80")) {
+        send(p, "kafkaOutput")
+    } else {
+        send(p, "S3Output")
     }
-  }
+}
 
-  print myHostsStatus
+kafkaConsumer($KAFKA_SERVER, "inputTopic", "*END*", False) => inputDomains
+tail("domains.txt", "*END*") => inputDomains
+send(%domain, "inputDomains")
+
+searchDomains(:inputDomains) => foundDomains
+festin(:inputDomains, $DNS_SERVER, True) => foundDomains
+
+filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+
+findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
+
+dispacher(:openPortsFound)
+
+kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
+
+S3Store(:S3Output, $BUCKET_URI)
+```
+
+**Execute**
+
+```bash
+> mist examples/demo/scenario-05.mist domain=example.com
 ```

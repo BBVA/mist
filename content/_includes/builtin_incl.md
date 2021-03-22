@@ -1,3 +1,15 @@
+# Builtin commands
+
+`MIST` comes with a handful of builtin commands for the most basic tasks. This
+set can be increased by the use of external repositories. Here follow the list
+of builtin commands:
+
+
+---
+commandName: data
+link: builtin_data.html
+order: 1
+---
 <a id="data"></a>
 ## **data** command
 
@@ -50,6 +62,11 @@ This example define the structure myHosys, put 3 instances and then print it.
 ```
 
 
+---
+commandName: put
+link: builtin_put.html
+order: 2
+---
 <a id="put"></a>
 ## **put** command
 
@@ -97,6 +114,11 @@ The number of parameter must match with the data structure fields
 ```
 
 
+---
+commandName: print
+link: builtin_print.html
+order: 3
+---
 <a id="print"></a>
 ## **print** command
 
@@ -140,6 +162,11 @@ This command write an string, a local variable or a data structure of the knowle
 ```
 
 
+---
+commandName: check
+link: builtin_check.html
+order: 4
+---
 <a id="check"></a>
 ## **check** command
 
@@ -182,6 +209,11 @@ This example define the structure myHosys, put 1 instance, check the ip value an
 ```
 
 
+---
+commandName: iterate
+link: builtin_iterate.html
+order: 5
+---
 <a id="iterate"></a>
 ## **iterate** command
 
@@ -224,6 +256,11 @@ This command iterate over a data list
 ```
 
 
+---
+commandName: exec
+link: builtin_exec.html
+order: 6
+---
 <a id="exec"></a>
 ## *exec* command
 
@@ -291,6 +328,11 @@ List all files with "txt" extension
 ```
 
 
+---
+commandName: searchInText
+link: builtin_searchInText.html
+order: 7
+---
 <a id="searchInText"></a>
 ## *searchInText* command
 
@@ -350,6 +392,11 @@ Find a name in a phrase.
 ```
 
 
+---
+commandName: searchInXML
+link: builtin_searchInXML.html
+order: 8
+---
 <a id="searchInXML"></a>
 ## *searchInXML* command
 
@@ -429,6 +476,11 @@ Find an item title in a xml document.
 ```
 
 
+---
+commandName: searchInJSON
+link: builtin_searchInJSON.html
+order: 9
+---
 <a id="searchInJSON"></a>
 ## *searchInJSON* command
 
@@ -508,6 +560,11 @@ Find an item name in a json document.
 ```
 
 
+---
+commandName: csvDump
+link: builtin_csvDump.html
+order: 10
+---
 <a id="csvDump"></a>
 ## *CSVdump* command
 
@@ -548,6 +605,11 @@ Define a data structure, fill it with some content, and dump it to a CSV file.
 ```
 
 
+---
+commandName: csvPut
+link: builtin_csvPut.html
+order: 11
+---
 <a id="csvPut"></a>
 ## *CSVput* command
 

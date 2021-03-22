@@ -1,66 +1,28 @@
-![MIST LOGO](content/assets/images/logo-250x250.png)
+![MIST LOGO](content/assets/images/logo-yellow-250x250.png)
 
+When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
-`MIST` a high level programming language focussed in security testing.
+# Why is MIST
+
+`MIST` is a high level programming language for defining executions workflows easily.
+
+Ab execution is a command line tool you can invoke from `MIST`. They will connect the tools and manage executions and synchronization fo you.
 
 # Installing
 
 ```bash
-$ pip install mist
+> pip install mist-lang
 ```
 
-# Screenshots
 
-![Image of editor](content/assets/images/MIST_Editor.png)
+## Authors
 
-# Local usage
+MIST is being developed by BBVA-Labs Security team members.
 
-You can use MIST for running local mist files (A.K.A. playbooks), or starting a
-web editor to write your own playbooks.
+## Contributions
 
-## Running a mist file
+Contributions are of course welcome. See [CONTRIBUTING](https://github.com/BBVA/mist/blob/master/CONSTRIBUTING.rst) or skim existing tickets to see where you could help out.
 
-```bash
-$ mist run examples/ping.mist
-```
+## License
 
-## Launch server with editor
-
-```bash
-$ mist server -E
-```
-
-# Developers
-
-After clone the repository, you can run `MIST` without install them:
-
-```bash
-$ git clone https://github.com/cr0hn/mist
-$ cd mist
-$ python3 -m pip install -r requirements.txt
-$ python3 -m mist -h
-```
-
-# Docker usage
-
-## Image build
-
-```bash
-$ docker build -t mist-lang .
-```
-
-## Run a mist file with Docker
-
-```bash
-$ docker run -v $(pwd)/examples:/examples -v mist:/root/.mist mist-lang run examples/ping.mist
-```
-
-## Launch server with editor with Docker
-
-```bash
-$ docker run -p 9000:9000 -t mist-lang server -E -l 0.0.0.0
-```
-
-# License
-
-This project is distributed under `BSD license <https://github.com/cr0hn/mist/blob/master/LICENSE>`_
+MIST is Open Source Software and available under the [Apache 2 license](https://github.com/BBVA/mist/blob/master/LICENSE)
