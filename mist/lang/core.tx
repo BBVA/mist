@@ -5,7 +5,7 @@ Program:
 Command:
   IncludeCommand | SaveListCommand | DataCommand | IfCommand |
   WatchCommand | FunctionDefinition | SetCommand | EndCommand |
-  FunctionCall | ReturnCommand | ImportCommand
+  FunctionCall | ReturnCommand | ImportCommand | PipeCommand
 ;
 
 IncludeCommand:
@@ -142,4 +142,12 @@ EndCommand:
 
 Comment:
   /#.*$/
+;
+
+PipeNext:
+  (value=FunctionCall | value=ID) ('=>' next=PipeNext)?
+;
+
+PipeCommand:
+  value=IDorSTRING '=>' next=PipeNext
 ;

@@ -1,0 +1,10 @@
+function tee(p) {
+    print(p)
+    send(p)
+}
+
+"hola" => tee("foo") => explicitQueue
+
+"hola" => tee("foo") => explicitQueue => tee("bar")
+
+#"hola" => tee("foo") => tee("bar")
