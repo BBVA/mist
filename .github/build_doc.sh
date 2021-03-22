@@ -15,7 +15,7 @@ echo "generated_docs/content/_includes/intro_incl.md"
 sed -e 's/<!---/---/' -e 's/--->/---/' mist/lang/README.md > generated_docs/content/_includes/intro_incl.md
 
 echo "generated_docs/content/_includes/builtin_incl.md"
-copy -v mist/lang/BUILTIN.md generated_docs/content/_includes/builtin_incl.md
+cp -v mist/lang/BUILTIN.md generated_docs/content/_includes/builtin_incl.md
 
 echo "generated_docs/content/_includes/quick_incl.md"
 sed -e 's#https://raw.githubusercontent.com/BBVA/mist/master#content/assets#' docs01 > generated_docs/content/_includes/quick_incl.md
