@@ -121,6 +121,8 @@ GEM
     jekyll-github-metadata (2.13.0)
       jekyll (>= 3.4, < 5.0)
       octokit (~> 4.0, != 4.4.0)
+    jekyll-include-cache (0.2.1)
+      jekyll (>= 3.7, < 5.0)
     jekyll-mentions (1.5.1)
       html-pipeline (~> 2.3)
       jekyll (>= 3.7, < 5.0)
@@ -253,6 +255,8 @@ PLATFORMS
 
 DEPENDENCIES
   github-pages
+  jekyll-include-cache
+  jekyll-remote-theme
   kramdown-parser-gfm
 
 BUNDLED WITH

@@ -13,27 +13,35 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: MIST
-#email: your-email@example.com
-#description: >- # this means to ignore newlines until "baseurl:"
-#  Write an awesome description for your new site here. You can edit this
-#  line in _config.yml. It will appear in your document head meta (for
-#  Google search results) and in your feed.xml site description.
+minimal_mistakes_skin: "contrast"
 
-show_downloads: false
-#github:
-#  zip_url:
-#  tar_url:
+locale: en-US
+title: MIST
+title_separator: "-"
+subtitle: Create complex tools execution Workflows for working together
+
+logo: /content/assets/images/logo-yellow-250x250.png
 
 #google_analytics: #
-baseurl: "/mist" # the subpath of your site, e.g. /blog
 #url: "" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/mist" # the subpath of your site, e.g. /blog
+repository: BBVA/mist
+
+footer:
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: https://github.com/BBVA/mist
 
 # Build settings
 markdown: kramdown
-theme: jekyll-theme-cayman
+remote_theme: "mmistakes/minimal-mistakes@4.22.0"
+
 #plugins:
 #  - jekyll-feed
+plugins:
+  - jekyll-remote-theme
+  - jekyll-include-cache
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -48,10 +56,11 @@ theme: jekyll-theme-cayman
 #   - vendor/ruby/
 data_dir: content/_data
 
-#defaults:
-#  - scope:
-#      path: ""
-#      type: "playbooks"
-#    values:
-#      layout: "main"
-#
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "single"
+      sidebar:
+        nav: "sidebar"
