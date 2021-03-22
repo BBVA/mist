@@ -6,7 +6,7 @@ When you need to create complex Workflows and need to communicate different tool
 
 `MIST` is a high level programming language for defining executions workflows easily.
 
-Ab execution is a command line tool you can invoke from `MIST`. They will connect the tools and manage executions and synchronization fo you. 
+Ab execution is a command line tool you can invoke from `MIST`. They will connect the tools and manage executions and synchronization fo you.
 
 # Installing
 
@@ -14,6 +14,7 @@ Ab execution is a command line tool you can invoke from `MIST`. They will connec
 > pip install mist-lang
 ```
 
+<!--split-->
 # Quick Start
 
 ## Demo 1 - The simplest scenario
@@ -25,7 +26,7 @@ In this scenario we'll do:
 1. `CLI Input` - Read a domain as a parameter from CLI.
 2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
 3. `Fin OpenPorts` - Search open port for each new domain / sub-domain found.   
-4. `Screen (Pring)` - Displays the results into the screen (by using MIST 'print' function). 
+4. `Screen (Pring)` - Displays the results into the screen (by using MIST 'print' function).
 
 
 **Use case diagram**
@@ -60,7 +61,7 @@ In this scenario we'll do:
 1. `CLI Input` - Read a domain as a parameter from CLI.
 2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
 3. `FindOpenPorts` - Search open port for each new domain / sub-domain found.   
-4. `Kafka output` - Send results to a Kafka topic. 
+4. `Kafka output` - Send results to a Kafka topic.
 
 **Use case diagram**
 
@@ -243,6 +244,7 @@ S3Store(:S3Output, $BUCKET_URI)
 ```bash
 > mist examples/demo/scenario-05.mist domain=example.com
 ```
+<!--split-->
 
 ## Authors
 

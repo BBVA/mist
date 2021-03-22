@@ -1,9 +1,3 @@
-<!---
-name: Builtin Commands
-link: builtin.html
-order: 3
---->
-
 # Builtin commands
 
 `MIST` comes with a handful of builtin commands for the most basic tasks. This

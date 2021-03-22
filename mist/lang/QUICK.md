@@ -1,9 +1,3 @@
-<!---
-name: Quick Start
-link: quick.html
-order: 2
---->
-
 # Quick Start (ping)
 
 Let us start with a very simple program explained step by step.

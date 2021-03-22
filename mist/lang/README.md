@@ -1,8 +1,3 @@
-<!---
-name: Introduction
-link: intro.html
-order: 1
---->
 # Introduction
 
 `MIST` is a high level programming language focussed in security testing.
