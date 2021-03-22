@@ -7,14 +7,17 @@ mkdir -vp generated_docs/content/{_data,_includes,assets/images} 2> /dev/null
 cp -vr images/*.png generated_docs/content/assets/images
 
 
-echo -e "Generating doc files: \n generated_docs/content/_includes/index_incl.md\n generated_docs/content/_includes/intro_incl.md\n generated_docs/content/_includes/quick_incl.md\n generated_docs/content/_includes/builtin_incl.md"
+echo -e "Generating doc files: \ngenerated_docs/content/_includes/index_incl.md"
 csplit --prefix=docs --suppress-matched  README.md '/<!--split-->/' '{*}'
-
 sed -e 's#https://raw.githubusercontent.com/BBVA/mist/master#content/assets#' docs00 docs02 > generated_docs/content/_includes/index_incl.md
 
+echo "generated_docs/content/_includes/intro_incl.md"
 sed -e 's/<!---/---/' -e 's/--->/---/' mist/lang/README.md > generated_docs/content/_includes/intro_incl.md
-sed -e 's/<!---/---/' -e 's/--->/---/' mist/lang/BUILTIN.md > generated_docs/content/_includes/builtin_incl.md
 
+echo "generated_docs/content/_includes/builtin_incl.md"
+copy -v mist/lang/BUILTIN.md generated_docs/content/_includes/builtin_incl.md
+
+echo "generated_docs/content/_includes/quick_incl.md"
 sed -e 's#https://raw.githubusercontent.com/BBVA/mist/master#content/assets#' docs01 > generated_docs/content/_includes/quick_incl.md
 
 rm docs??
