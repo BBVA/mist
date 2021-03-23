@@ -3,8 +3,17 @@ function tee(p) {
     send(p)
 }
 
-"hola" => tee("foo") => explicitQueue
+# Test 1
+# "hola" => tee("foo") => explicitQueue
 
-"hola" => tee("foo") => explicitQueue => tee("bar")
+# Test 2
+# send("hola", "q")
+# :q => tee() => explicitQueue
+
+# Test 3
+send("hola", "q")
+q => tee() => explicitQueue
+
+#"hola" => tee("foo") => explicitQueue => tee("bar")
 
 #"hola" => tee("foo") => tee("bar")

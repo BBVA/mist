@@ -326,8 +326,25 @@ class Source(ValueContainer):
             return ":" + self.source
         return ":" + await get_id(self.sourceIndirect, stack)
 
+@dataclass
+class PipeCommand(MistCallable):
+    parent: object
+    left: object
+    nextVal: object
+
+    async def run(self, stack):
+        if config.debug:
+            print(f"-> PipeCommand {self.left} {self.nextVal}")
+        # print(self.value)
+        # print(self.nextVal)
+        if isinstance(self.nextVal.value, FunctionCall):
+            if isinstance(self.left.value, VarReference) and self.left.value.id in streams.keys():
+                self.left.value = Source(self, self.left.value.id, None)
+            self.nextVal.value.args.insert(0, self.left)
+            await self.nextVal.value.launch(stack)
+
 exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
            SetCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
-           ListDictReference, ReturnCommand]
+           ListDictReference, ReturnCommand, PipeCommand]

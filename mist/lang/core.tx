@@ -145,9 +145,9 @@ Comment:
 ;
 
 PipeNext:
-  (value=FunctionCall | value=ID) ('=>' next=PipeNext)?
+  (value=FunctionCall | value=ID) ('=>' nextVal=PipeNext)?
 ;
 
 PipeCommand:
-  value=IDorSTRING '=>' next=PipeNext
+  left=IDorSTRING '=>' nextVal=PipeNext
 ;
