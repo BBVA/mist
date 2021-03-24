@@ -58,6 +58,11 @@ data_dir: content/_data
 
 defaults:
   - scope:
+      path: "index.html"
+      type: "pages"
+    values:
+      layout: "splash"
+  - scope:
       path: ""
       type: "pages"
     values:
