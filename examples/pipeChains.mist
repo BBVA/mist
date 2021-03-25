@@ -3,6 +3,11 @@ function tee(p) {
     send(p)
 }
 
+function tee2(a,b) {
+    print(a,b)
+    send(a)
+}
+
 # Test 1
 # "hola" => tee("foo") => explicitQueue
 
@@ -11,9 +16,23 @@ function tee(p) {
 # :q => tee() => explicitQueue
 
 # Test 3
-send("hola", "q")
-q => tee() => explicitQueue
+# send("hola", "q")
+# q => tee() => explicitQueue
 
-#"hola" => tee("foo") => explicitQueue => tee("bar")
+# Test 4
+# "hola" => tee() => explicitQueue => tee()
 
-#"hola" => tee("foo") => tee("bar")
+# Test 5
+# "hola" => tee() => aQueue => tee() => bQueue => tee()
+
+# Test 5
+# "hola" => tee() => tee()
+
+# Test 6
+# "hola" => tee() => tee() => tee()
+
+# Test 7
+"hola" => tee2("1") => tee2("2") => tee2("3")
+
+# Test 8
+# tee("hola") => tee()

@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 import asyncio
-import importlib, os, pathlib, sys, tempfile, urllib
+import importlib, os, pathlib, sys, tempfile, urllib, uuid
 
 from .streams import streams, consumers, producers
 
@@ -327,6 +327,15 @@ class Source(ValueContainer):
         return ":" + await get_id(self.sourceIndirect, stack)
 
 @dataclass
+class ObjectWithValue:
+    value: object
+
+@dataclass
+class PipeNext:
+    value: object
+    nextVal: object
+
+@dataclass
 class PipeCommand(MistCallable):
     parent: object
     left: object
@@ -335,13 +344,30 @@ class PipeCommand(MistCallable):
     async def run(self, stack):
         if config.debug:
             print(f"-> PipeCommand {self.left} {self.nextVal}")
-        # print(self.value)
-        # print(self.nextVal)
         if isinstance(self.nextVal.value, FunctionCall):
             if isinstance(self.left.value, VarReference) and self.left.value.id in streams.keys():
                 self.left.value = Source(self, self.left.value.id, None)
             self.nextVal.value.args.insert(0, self.left)
+            if isinstance(self.nextVal.value.targetStream, FunctionCall):
+                intermediate = PipeNext(self.nextVal.value.targetStream, self.nextVal.nextVal)
+                tmpStream = str(uuid.uuid4())
+                streams.createIfNotExists(tmpStream)
+                self.nextVal.value.targetStream = tmpStream
+                self.nextVal.nextVal = intermediate
             await self.nextVal.value.launch(stack)
+        
+        current = self.nextVal
+        while current.nextVal:
+            currentNextVal = current.nextVal.value
+            currentNextVal.args.insert(0, ObjectWithValue(Source(self, current.value.targetStream, None)))
+            if isinstance(currentNextVal.targetStream, FunctionCall):
+                intermediate = PipeNext(currentNextVal.targetStream, current.nextVal.nextVal)
+                tmpStream = str(uuid.uuid4())
+                streams.createIfNotExists(tmpStream)
+                currentNextVal.targetStream = tmpStream
+                current.nextVal.nextVal = intermediate
+            await currentNextVal.launch(stack)
+            current = current.nextVal
 
 exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
            SetCommand, FunctionCall, ImportCommand,

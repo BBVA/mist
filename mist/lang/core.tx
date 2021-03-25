@@ -83,7 +83,7 @@ SetCommand:
 FunctionCall:
   name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')') ('{'
       commands*=Command
-    '}')? ('=>' targetStream=ID)?
+    '}')? ('=>' (targetStream=FunctionCall | targetStream=ID) )?
 ;
 
 FunctionDefinition:
@@ -145,7 +145,7 @@ Comment:
 ;
 
 PipeNext:
-  (value=FunctionCall | value=ID) ('=>' nextVal=PipeNext)?
+  value=FunctionCall ('=>' nextVal=PipeNext)?
 ;
 
 PipeCommand:
