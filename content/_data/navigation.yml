@@ -7,7 +7,7 @@ main:
   - title: Documentation
     url: documentation.html
   - title: "Mist Language"
-    url: sintax.html
+    url: syntax.html
 
 sidebar:
   - title: Home
@@ -16,14 +16,14 @@ sidebar:
     url: documentation.html
     children:
       - title: Introduction
-        url: documentation.html#Intro
+        url: documentation.html#Introduction
       - title: Quick Start
         url: documentation.html#QuickStart
   - title: Mist Language
     children:
-      - title: Sintax
-        url: sintax.html
+      - title: Syntax
+        url: syntax.html
       - title: Functions
         url: builtin.html
       - title: Catalog
-        url: Catalog.html
+        url: catalog.html
