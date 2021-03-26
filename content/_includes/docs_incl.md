@@ -1,3 +1,6 @@
+# Mist Documentation
+
+<a id="Documentation"></a>
 
 When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
@@ -14,17 +17,6 @@ Ab execution is a command line tool you can invoke from `MIST`. They will connec
 ```
 
 
-## Authors
-
-MIST is being developed by BBVA-Labs Security team members.
-
-## Contributions
-
-Contributions are of course welcome. See [CONTRIBUTING](https://github.com/BBVA/mist/blob/master/CONSTRIBUTING.rst) or skim existing tickets to see where you could help out.
-
-## License
-
-MIST is Open Source Software and available under the [Apache 2 license](https://github.com/BBVA/mist/blob/master/LICENSE)
 
 <a id="Introduction"></a>
 # Introduction
@@ -276,3 +268,18 @@ S3Store(:S3Output, $BUCKET_URI)
 ```bash
 > mist examples/demo/scenario-05.mist domain=example.com
 ```
+
+
+
+
+## Authors
+
+MIST is being developed by BBVA-Labs Security team members.
+
+## Contributions
+
+Contributions are of course welcome. See [CONTRIBUTING](https://github.com/BBVA/mist/blob/master/CONSTRIBUTING.rst) or skim existing tickets to see where you could help out.
+
+## License
+
+MIST is Open Source Software and available under the [Apache 2 license](https://github.com/BBVA/mist/blob/master/LICENSE)

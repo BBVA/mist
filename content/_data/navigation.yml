@@ -9,6 +9,7 @@ main:
   - title: "Mist Language"
     url: syntax.html
 
+# sidebar links
 sidebar:
   - title: Home
     url: /
@@ -24,6 +25,6 @@ sidebar:
       - title: Syntax
         url: syntax.html
       - title: Functions
-        url: builtin.html
+        url: functions.html
       - title: Catalog
         url: catalog.html

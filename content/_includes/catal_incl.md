@@ -1,654 +1,444 @@
-# Builtin commands
-
-`MIST` comes with a handful of builtin commands for the most basic tasks. This
-set can be increased by the use of external repositories. Here follow the list
-of builtin commands:
+# Mist Catalog
 
 
-<!---
-commandName: data
-link: builtin_data.html
-order: 1
---->
-<a id="data"></a>
-## **data** command
+<a id="mist/catalog/festin.md"></a>
+# *festin* command
 
+## Description
 
-### Description
+This command finds open S3 buckets from an origin domain list.
 
-This command define a knowledge base structure that can be populated later.
-You can access to the component of the structure by using "." symbol
-Every structure can store several instances.
-They can be considered a stack and it can be iterated with the command "iterate".
-When you have put more than one instances in a structure, you have direct access to the last instance inserted.
+## Concurrency Type
 
+Sync or Async
 
-### Syntax
+## Input parameters
 
-``` text
-  data mydata {
-    key1
-    key2
-    ...
-  }
+- **originDomain**: Origin domain to search S3 buckets.
+- **dns**: Dns server to use during execution.
+- **tor**: "True" if you want to use Tor network, "False" otherwise.
+
+## Output parameters
+
+- **result**: Boolean, possible values are: True, if the festin command has been
+executed without errors, or False otherwise.
+- **resultCode**: Integer. Exit code from festin command.
+- **consoleOutput**: Raw text with console output from festin command.
+- **consoleError**: Raw text with console error from festin command.
+- **buckets**: A list of domains, S3 bucket names and objects found.
+
+NOTE: when used as a producer for a queue (Async) every domain found will be sent as soon as found it.
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- festin
+
+## Example
+
+Find S3 buckets from "wordpress.com" using Tor network and 212.166.64.1 as dns server.
+
+```text
+include "festin"
+r = festin("wordpress.com", "212.166.64.1", True)
+print(r["buckets"])
 ```
 
 
-### Parameters
+<a id="mist/catalog/filterRepeated.md"></a>
+# *filterRepeated* command
 
-- myDaya: an identifier for the structure
-- keyN: an identifier for a component inside the structure
+## Description
 
+To use with queues. This command filter repeated values in a given list. And send non repeated values.
 
-### Examples
+## Input parameters
 
-This example define the structure myHosys, put 3 instances and then print it.
+- **v**: Any. Input value to check
+- **values**: List where all values will be saved. (With no repetitions)
+
+## Output parameters
+
+Non repeated items will be sent.
+
+## Examples
+
+Filer repeated domains at input queue "domains" and output non repeated to queu "nonRepeatedDomains".
 
 ``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "windows" "192.168.1.23" => myHosts(so ip)
-  put "8.8.8.8" "unknown" => myHosts
-
-  # This print all the instaces inserted
-  print myHosts
-
-  # This print 8.8.8.8
-  print myHosts.ip
+domainProcessed = []
+filterRepeated(:domains, domainProcessed) => nonRepeatedDomains
 ```
 
 
-<!---
-commandName: put
-link: builtin_put.html
-order: 2
---->
-<a id="put"></a>
-## **put** command
+<a id="mist/catalog/findOpenPorts.md"></a>
+# *findOpenPorts* command
 
+## Description
 
-### Description
+This command performs a port scan to a target host.
 
-This command put data to the knowledge base.
-The number of parameter must match with the data structure fields
+## Concurrency Type
 
+Sync or Async
 
-### Syntax
+## Input parameters
+
+- **ip**: String. Target IP or dns name.
+- **ports**: String. Ports to scan, one, a range or a list of ports giving, optionally,
+the protocol (U=UDP, T=TCP, S=SYN scan). Ex: "22", "1-65535", "U:53,111,137,T:21-25,80,139,8080,S:9".
+
+## Output parameters
+
+- **result**: Boolean, possible values are: True, if the nmap command has been
+executed without errors, or False otherwise.
+- **resultCode**: Integer. Exit code from nmap command.
+- **consoleOutput**: Raw text with console output from nmap command.
+- **consoleError**: Raw text with console error from nmap command.
+- **openPorts**: A list of open ports found.
+
+NOTE: when used with a queue the list of openPorts will be send with the format: {"ip": "1.2.3.4", "port": 443, "protocol": "tcp"}
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- nmap
+
+## Examples
+
+Find open ports among a range (0-9000) at localhost and print them
+out on console.
 
 ``` text
-  put IDorString [IDorString] [IDorString] ... => targetId
-  put IDorString [IDorString] [IDorString] ... => targetId(field1 field2 field3...)
+include "findOpenPorts"
+r = findOpenPorts("127.0.0.1", "0-9000")
+print(r)
+```
+
+Expected output:
+
+```text
+{'result': True, 'resultCode': 0, 'consoleOutput': 'Starting Nmap 7.80 ( https://nmap.org ) at 2021-02-17 11:48 CET\nNmap scan report for localhost (127.0.0.1)\nHost is up (0.00017s latency).\n\nPORT     STATE SERVICE\n631/tcp  open  ipp\n8021/tcp open  ftp-proxy\n\nNmap done: 1 IP address (1 host up) scanned in 0.03 seconds', 'consoleError': '', 'openPorts': [{'port': '631', 'protocol': 'tcp'}, {'port': '8021', 'protocol': 'tcp'}]}
 ```
 
 
-### Parameters
+<a id="mist/catalog/gitLeaksFinder.md"></a>
+# *gitLeaksFinder* command
 
-- IdorString: An string or an id with the name of the source local variable.
-- targetId: data structure id of the knowledge base
-- fieldX: optionally, you can chose the order of the fields to put
+## Description
 
+Finds sensitive information in Git repositories.
 
-### Examples
+## Concurrency Type
 
-``` text
-  data myHosts {
-    ip
-    so
-  }
+Sync
 
-  put "127.0.0.1" "linux" => myHosts
-  put "windows" "192.168.1.23" => myHosts(so ip)
-  put "8.8.8.8" "unknown" => myHosts
+## Input parameters
 
-  data myIps {
-    ip
-  }
+- **gitPath**: Path of Git repositories.
 
-  iterate myHosts => host {
-    put host.ip => MyIps
-  }
-```
+## Output parameters
 
+- **result**: Boolean, possible values are: True, if the gitleaks command has been
+executed without errors and not issues detected, or False otherwise.
+- **resultCode**: Integer. Exit code from gitleaks command.
+- **consoleOutput**: Raw text with console output from gitleaks command.
+- **consoleError**: Raw text with console error from gitleaks command.
+- **issues**: List of issues found by analyzer.
 
-<!---
-commandName: print
-link: builtin_print.html
-order: 3
---->
-<a id="print"></a>
-## **print** command
+Issues contains an array of objects with the following information:
 
-
-### Description
-
-This command write an string, a local variable or a data structure of the knowledge base on console
-
-
-### Syntax
-
-``` text
-  print IDorString
-```
-
-
-### Parameters
-
-- IdorString: An string or an id with the name of the source local variable or data structure.
-
-
-### Examples
-
-``` text
-  print "Program init"
-
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "192.168.1.23" "windows" => myHosts
-  put "8.8.8.8" "unknown" => myHosts
-
-  print myHosts
-
-  iterate myHosts => host {
-    print host.ip
-  }
-```
-
-
-<!---
-commandName: check
-link: builtin_check.html
-order: 4
---->
-<a id="check"></a>
-## **check** command
-
-
-### Description
-
-This command check the value of a variable and execute commands if match.
-
-
-### Syntax
-
-``` text
-  check id is value {
-    ...
-  }
-```
-
-
-### Parameters
-
-- id: an identifier to match with value
-- value: an identifier or string to match with id
-
-
-### Examples
-
-This example define the structure myHosys, put 1 instance, check the ip value and then print some log.
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-
-  check myHosts.ip "127.0.0.1" {
-    print "My IP is the same!"
-  }
-```
-
-
-<!---
-commandName: iterate
-link: builtin_iterate.html
-order: 5
---->
-<a id="iterate"></a>
-## **iterate** command
-
-
-### Description
-
-This command iterate over a data list
-
-
-### Syntax
-
-``` text
-  iterate myList => item {
-    ...
-  }
-```
-
-
-### Parameters
-
-- myList: An id with the name of the source list: local variable or knowledge base id.
-- item: the name of the local variable to map every item
-
-
-### Examples
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "windows" "192.168.1.23" => myHosts(so ip)
-  put "8.8.8.8" "unknown" => myHosts
-
-  iterate myHosts => host {
-    print host.ip
-  }
-```
-
-
-<!---
-commandName: exec
-link: builtin_exec.html
-order: 6
---->
-<a id="exec"></a>
-## *exec* command
-
-
-### Description
-
-
-This command executes a custom user shell command
-
-
-### Syntax
-
-``` text
-  exec myCustomCommand {
-    input {
-      param1 = param1value
-      ...
-    }
-    output {
-      result
-      resultCode
-      consoleOutput
-      consoleError
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- myCustomCommand: An string with the shell command I want to execute. You can parametrize it using {} place holders
-- paramN: The value of the parameters used in the command
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- resultCode: the exit code provided after command execution
-- consoleOutput: raw text with console standard output of the command.
-- consoleError: raw text with console standard error of the command.
-
-
-### Examples
-
-List all files with "txt" extension
-
-``` text
-  exec "bash -c ls -1 {filter}" {
-    input {
-      filter = "*.txt"
-    }
-    output {
-      result
-      resultCode
-      consoleOutput
-      consoleError
-    }
-    then {
-      print resultCode
-    }
-  }
-```
-
-
-<!---
-commandName: searchInText
-link: builtin_searchInText.html
-order: 7
---->
-<a id="searchInText"></a>
-## *searchInText* command
-
-
-### Description
-
-Search some regex in a text
-
-
-### Syntax
-
-``` text
-  searchInText regex text {
-    output {
-      result
-      found
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- regex: a Python3 regex expression
-- text: a variable that contains the text to look into.
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- found: "True" if regex was found. "False" otherwise
-
-
-### Examples
-
-Find a name in a phrase.
-
-``` text
-  data myData {
-    text
-  }
-  put "Hello, my name is Peter and I like Mist!" => myData
-  searchInText "Peter" myData.text {
-    output {
-      result
-      found
-    }
-    then {
-      check found is True {
-        print "Peter found"
-      }
-    }
-  }
-```
-
-
-<!---
-commandName: searchInXML
-link: builtin_searchInXML.html
-order: 8
---->
-<a id="searchInXML"></a>
-## *searchInXML* command
-
-
-### Description
-
-Search some xpath node in an XML string
-
-Syntax
-------
-
-``` text
-  searchInXML xpath text {
-    output {
-      result
-      found
-      value
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- xpath: an XML xpath to search
-- text: a variable that contains the XML text to look into.
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- found: "True" if xpath was found. "False" otherwise
-- value: If found, it contains the value of the xpath node. "None" otherwise
-
-
-### Examples
-
-Find an item title in a xml document.
-
-``` text
-  data myData {
-    XMLtext
-  }
-
-  put '''<?xml version="1.0" encoding="UTF-8"?>
-  <bookstore>
-    <book category="cooking">
-      <title lang="en">Everyday Italian</title>
-      <author>Giada De Laurentiis</author>
-      <year>2005</year>
-      <price>30.00</price>
-    </book>
-    <book category="children">
-      <title lang="en">Harry Potter</title>
-      <author>J K. Rowling</author>
-      <year>2005</year>
-      <price>29.99</price>
-    </book>
-  </bookstore>
-  ''' => myData
-
-  searchInXML "./book[2]/title" myData.XMLtext {
-    output {
-      r    esult
-      found
-      value
-    }
-    then {
-      print result
-      print found
-      print value
-    }
-  }
-```
-
-
-<!---
-commandName: searchInJSON
-link: builtin_searchInJSON.html
-order: 9
---->
-<a id="searchInJSON"></a>
-## *searchInJSON* command
-
-
-### Description
-
-Search some jsonpath node in an JSON string
-
-
-### Syntax
-
-``` text
-  searchInJSON jsonpath text {
-    output {
-      result
-      found
-      value
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- jsonpath: a JSON path to search
-- text: a variable that contains the JSON text to look into.
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- found: "True" if then jsonpath was found. "False" otherwise
-- value: If found, it contains the value of the jsonpath node. "None" otherwise
-
-
-### Examples
-
-Find an item name in a json document.
-
-``` text
-  data myData {
-    JSONtext
-  }
-
-  put '''
-  {
-  "employees": [
+``` json
+  [
     {
-      "id": 1,
-      "name": "Pankaj",
-      "salary": "10000"
-    },
-    {
-      "name": "David",
-      "salary": "5000",
-      "id": 2
+      "commit": {COMMIT-ID},
+      "repo": {REPO NAME},
+      "rule": {RULE NAME},
+      "line": {LINE NUMBER}
     }
   ]
-  }
-  ''' => myData
+```
 
-  searchInJSON "employees[1].name" myData.JSONtext {
-    output {
-      result
-      found
-      value
-    }
-    then {
-      print result
-      print found
-      print value
-    }
-  }
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- gitleaks
+
+## Examples
+
+Find sensitive information in git repository at current directory
+
+``` text
+include "gitLeaksFinder"
+r = gitLeaksFinder("./")
+print(r)
+```
+
+Example output:
+
+```text
+{'result': False, 'resultCode': 1, 'consoleOutput': '\x1b[36mINFO\x1b[0m[2021-02-17T16:46:02+01:00] report written to /var/folders/vt/0gyg50fx3_q3nn0dwhmjgynh0000gp/T/tmpuwfs8mvr\n\x1b[33mWARN\x1b[0m[2021-02-17T16:46:02+01:00] 1 leaks detected. 9 commits scanned in 1 second 738 milliseconds 202 microseconds', 'consoleError': '', 'issues': [{'line': '          "current_key": "XXXXXXXXXXXXXXXXXXX"', 'lineNumber': 24, 'offender': 'XXXXXXXXXXXXXXXXXXX', 'commit': 'XXXXXXXXXXXXXXXXXXX', 'repo': 'XXXXXXXXXXXXXXXXXXX', 'rule': 'Google API key', 'commitMessage': 'Version 1.0.2\n', 'author': 'XXXXXXXXXXXXXXXXXXX', 'email': 'XXXXXXXXXXXXXXXXXXX', 'file': 'google-services.json', 'date': '2019-08-25T14:14:34+02:00', 'tags': 'key, Google', 'operation': 'addition'}]}
 ```
 
 
-<!---
-commandName: csvDump
-link: builtin_csvDump.html
-order: 10
---->
-<a id="csvDump"></a>
-## *CSVdump* command
+<a id="mist/catalog/kafkaConsumer.md"></a>
+# *kafkaConsumer* command
 
+## Description
 
-### Description
+Read from a Kafka topic and send values to a queue.
 
-This command write a data structure of the knowledge base into a CSV file
+## Concurrency Type
 
+Async. This function have to be alwais used with a target queue.
 
-### Syntax
+## Input parameters
+
+- **servers**: String. Server list for bootstrap-server options. Example: "127.0.0.1:9092"
+- **topic**: String. Kafka topic to listen.
+- **endMessage**: String. When this message arrives the consumer will terminate.
+- **fromBeginning**: Boolean. True for read the topic from the beginning.
+
+## Output parameters
+
+Every message received in the topic will be send to the queue.
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- kafka-console-consumer
+
+## Examples
+
+Connect to Kafka at 127.0.0.1:9092, listen the topic "myTopic" for new messages and send then to "myQueue".
+When the message "END" arrives, stop listening and finish the process.
 
 ``` text
-  CSVdump data => "targetFile.csv"
+include "kafkaConsumer"
+
+function echo(s) {
+    print(s)
+}
+
+kafkaConsumer("127.0.0.1:9092", "prueba", "END", True) => myQueue
+echo(:myQueue)
 ```
 
 
-### Parameters
+<a id="mist/catalog/kafkaProducer.md"></a>
+# *kafkaProducer* command
 
-- data: An id with the name of the source data structure in the knowledge base
-- "targetFile.csv": An string with the path and name of the target CSV file
+## Description
 
+Write messages to a Kafka topic
 
-### Examples
+## Concurrency Type
 
-Define a data structure, fill it with some content, and dump it to a CSV file.
+Sync(for one message) or Async(for muliple messages received in a queue)
+
+## Input parameters
+
+- **servers**: String. Server list for bootstrap-server options. Example: "127.0.0.1:9092"
+- **topic**: String. Kafka topic to send messages.
+- **message**: String. The message to send. You may also want to use a source queue here.
+
+## Output parameters
+
+Every "message" received will be send to kafka topic.
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- kafka-console-producer
+
+## Examples
+
+Async. Connect to Kafka at 127.0.0.1:9092, listen the topic "q" for new messages and send then to Kafla topic "prueba".
 
 ``` text
-  data myHosts {
-    ip
-    so
-  }
+include "kafkaProducer"
 
-  put "127.0.0.1" "linux" => myHosts
-  put "192.168.1.23" "windows" => myHosts
-  put "8.8.8.8" "unknown" => myHosts
+kafkaProducer("127.0.0.1:9092", "prueba", :q)
 
-  CSVdump myHosts => "myHosts.csv"
+send("msg1","q")
+send("msg2","q")
+```
+
+Sync. Connect to Kafka at 127.0.0.1:9092 and send the message "hello" to Kafla topic "prueba".
+
+``` text
+include "kafkaProducer"
+
+kafkaProducer("127.0.0.1:9092", "prueba", "hello")
 ```
 
 
-<!---
-commandName: csvPut
-link: builtin_csvPut.html
-order: 11
---->
-<a id="csvPut"></a>
-## *CSVput* command
+<a id="mist/catalog/pythonCodeAnalysis.md"></a>
+# *PythonCodeAnalysis* command
 
+## Description
 
-### Description
+Performs security code analysis on Python code.
 
-This command reads a CSV file and put all the data into the knowledge base
+## Concurrency Type
 
+Sync
 
-### Syntax
+## Input parameters
+
+- **sources**: Path of Python source code.
+
+## Output parameters
+
+- **result**: Boolean, possible values are: True, if the gitleaks command has been
+executed without errors and not issues detected, or False otherwise.
+- **resultCode**: Integer. Exit code from gitleaks command.
+- **consoleOutput**: Raw text with console output from gitleaks command.
+- **consoleError**: Raw text with console error from gitleaks command.
+- **issues**: List of issues found by the analyzer.
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- bandit
+
+## Examples
+
+**Basic**: Find vulnerabilities in python code ay current directory
 
 ``` text
-  CSVput "sourceFile.csv" => target
+include "gitLeaksFinder"
+r = gitLeaksFinder("./")
+print(r)
 ```
 
 
-### Parameters
+<a id="mist/catalog/S3Store.md"></a>
+# *S3Store* command
 
-- "sourceFile.csv": An string with the path and name of the source CSV file
-  (CSV header is mandatory, and delimiter must be a comma)
-- target: An id with the target name in the knowledge base
+## Description
 
-Examples
---------
+This command stores the data received as lines in the given S3 URI. This command
+is intended to be used with a stream.
 
-Read a csvFile
+## Input parameters
 
-| IP           | SO       |
-|:-------------|:---------|
-| 127.0.0.1    | linux    |
-| 192.168.1.23 | windows  |
-| 8.8.8.8      | unknown  |
+- **text**: Source stream to read text lines from
+- **remoteUri**: S3Uri of the remote object to create. Must contain bucket, prefix
+and object name
 
-and iterate over it printing some of its content.
+## Output parameters
+
+None.
+
+## Dependencies
+
+This command requires the AWS CLI and the credentials configuration in place.
+
+## Examples
+
+Store the data received from the stream *:source* as s3://myBucket/facts/list.txt.
 
 ``` text
-  CSVput "examples/nmap/myhosts.csv" => myHosts
+S3Store(:source, "s3://myBucket/facts/list.txt")
+```
 
-  iterate myHosts => host {
-    print host.ip
-  }
+## Auxiliar functions
+
+### *S3Writer*
+
+This function copies a local file in the given S3Uri.
+
+### Input parameters
+
+- **localPath**: Path of the local file to copy
+- **remoteUri**: S3Uri of the remote object to create
+
+
+<a id="mist/catalog/searchDomains.md"></a>
+# *searchDomains* command
+
+## Description
+
+This command performs a certificate search at https://crt.sh/ for an origin
+domain in order to find other related domains.
+
+## Concurrency Type
+
+Sync or Async
+
+## Input parameters
+
+- **originDomain**: Origin domain to search for at https://crt.sh/.
+
+## Output parameters
+
+- **result**: Boolean, possible values are: True, if the dnsrecon command has been
+executed without errors, or False otherwise.
+- **resultCode**: Integer. Exit code from dnsrecon command.
+- **domains**: A list of domains found. This output will also be send to a queue if requiered.
+- **consoleOutput**: Raw text with console output from dnsrecon command.
+- **consoleError**: Raw text with console error from dnsrecon command.
+
+NOTE: when used as a producer for a queue (Async) every domain found will be sent as soon as found it.
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- dnsrecon.py
+
+## Example
+
+Find related domains for "bbva.com" and print result
+
+``` text
+include "searchDomains"
+r = searchDomains("bbva.com")
+print(r)
+```
+
+
+<a id="mist/catalog/tail.md"></a>
+# *tail* command
+
+## Description
+
+This command is a wrapper for tail command.
+It will read a file line by line and send each line to a queue.
+The command will terminate when read an specific EOF token.
+
+## Concurrency Type
+
+Async
+
+## Input parameters
+
+- **file**: String. File to read.
+- **endline**: String. EOF line token.
+
+## Output parameters
+
+Each line will be send to the target queue
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- tail
+
+## Example
+
+Read file domains.txt, send every line to queue "l". Stop reading when "*END*" is read.
+
+``` text
+include "tail"
+tail("domains.txt","*END*") => l
+print(: l)
 ```
