@@ -5,7 +5,7 @@ Program:
 Command:
   IncludeCommand | SaveListCommand | DataCommand | IfCommand |
   WatchCommand | FunctionDefinition | SetCommand | EndCommand |
-  FunctionCall | ReturnCommand | ImportCommand | PipeCommand
+  ReturnCommand | ImportCommand | PipeCommand
 ;
 
 IncludeCommand:
@@ -83,7 +83,7 @@ SetCommand:
 FunctionCall:
   name=ID ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')') ('{'
       commands*=Command
-    '}')? ('=>' (targetStream=FunctionCall | targetStream=ID) )?
+    '}')?
 ;
 
 FunctionDefinition:
@@ -144,10 +144,6 @@ Comment:
   /#.*$/
 ;
 
-PipeNext:
-  value=FunctionCall ('=>' nextVal=PipeNext)?
-;
-
 PipeCommand:
-  left=IDorSTRING '=>' nextVal=PipeNext
+  left=IDorSTRING ('=>' right=PipeCommand)?
 ;

@@ -132,7 +132,7 @@ class FunctionCall(MistCallable):
     args: list
     namedArgs: list
     commands: list
-    targetStream: str
+    targetStream: str = None
 
     async def run(self, stack):
         if config.debug:
@@ -339,35 +339,55 @@ class PipeNext:
 class PipeCommand(MistCallable):
     parent: object
     left: object
-    nextVal: object
+    right: object
 
     async def run(self, stack):
         if config.debug:
-            print(f"-> PipeCommand {self.left} {self.nextVal}")
-        if isinstance(self.nextVal.value, FunctionCall):
-            if isinstance(self.left.value, VarReference) and self.left.value.id in streams.keys():
-                self.left.value = Source(self, self.left.value.id, None)
-            self.nextVal.value.args.insert(0, self.left)
-            if isinstance(self.nextVal.value.targetStream, FunctionCall):
-                intermediate = PipeNext(self.nextVal.value.targetStream, self.nextVal.nextVal)
-                tmpStream = str(uuid.uuid4())
-                streams.createIfNotExists(tmpStream)
-                self.nextVal.value.targetStream = tmpStream
-                self.nextVal.nextVal = intermediate
-            await self.nextVal.value.launch(stack)
-        
-        current = self.nextVal
-        while current.nextVal:
-            currentNextVal = current.nextVal.value
-            currentNextVal.args.insert(0, ObjectWithValue(Source(self, current.value.targetStream, None)))
-            if isinstance(currentNextVal.targetStream, FunctionCall):
-                intermediate = PipeNext(currentNextVal.targetStream, current.nextVal.nextVal)
-                tmpStream = str(uuid.uuid4())
-                streams.createIfNotExists(tmpStream)
-                currentNextVal.targetStream = tmpStream
-                current.nextVal.nextVal = intermediate
-            await currentNextVal.launch(stack)
-            current = current.nextVal
+            print(f"-> PipeCommand {self.left} {self.right}")
+
+        left = self.left
+        right = self.right
+
+        # CASES
+        # Case 1: left = variable or value or queue, right=function
+        # Case 2: left = variable or value, right=queue
+        # Case 3: left = function, right=None
+        # Case 4: left = function, right=queue
+        # Case 5: left = function, right=function         
+        # Case 6: left = queue, right=None (META CASE FOR STOP CONDITION)
+        while left:
+            if isinstance(left.value, FunctionCall):
+                if not right: # Case 3
+                    pass
+                elif isinstance(right.left.value, VarReference): # Case 4 
+                    left.value.targetStream = right.left.value.id
+                elif isinstance(right.left.value, FunctionCall): # Case 5
+                    tmpStream = str(uuid.uuid4())
+                    left.value.targetStream = tmpStream
+                    right.left.value.args.insert(0, ObjectWithValue(Source(self, tmpStream, None)))
+                else:
+                    raise MistPipelineException()
+                await left.value.launch(stack)
+            else: # Case 1 or 2
+                if not right: # Case 6: Do nothing and stop
+                    return
+                leftVal = None
+                try:
+                    leftVal = await get_id(left, stack) # Left is variable or value
+                except: # Left is queue
+                    left.value = Source(self, left.value.id, None)
+                if isinstance(right.left.value, FunctionCall): # Case 1
+                    right.left.value.args.insert(0, left)
+                elif isinstance(right.left.value, VarReference): # Case 2
+                    await streams.send(right.left.value.id, leftVal)
+                else:
+                    raise MistPipelineException()
+                
+            if right:
+                left = right.left
+                right = right.right
+            else:
+                left = None
 
 exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
            SetCommand, FunctionCall, ImportCommand,

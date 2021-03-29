@@ -15,3 +15,6 @@ class MistInputDataException(Exception):
 
 class MistUndefinedVariableException(Exception):
     pass
+
+class MistPipelineException(Exception):
+    pass
