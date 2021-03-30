@@ -1,0 +1,35 @@
+function tee(p) {
+    print(p)
+    send(p)
+}
+
+tee("Direct parameter")
+
+"Direct value" => tee()
+
+pipeChainQueue = "Value from variable"
+pipeChainQueue => tee()
+
+pipeChainQueue2 => tee()
+"Value from pipe" => pipeChainQueue2
+
+tee("ExplicitQueue to parameter queue") => pipeChainQueueExplicit
+print(:pipeChainQueueExplicit)
+
+tee("Implicit queue") => tee()
+
+"Direct value to function and explicit queue" => tee() => pipeChainQueueExplicit2
+
+send("Traditional send and old pipe notation", "pipeChainQueueExplicit3")
+:pipeChainQueueExplicit3 => tee() => pipeChainQueueExplicit4
+
+send("Traditional send and new notation", "pipeChainQueueExplicit4")
+pipeChainQueueExplicit4 => tee() => explicitQueue
+
+"Chain of 3 with explicit pipes" => tee() => pipeChainQueueExplicit5 => tee()
+
+"Chain of 4 with explicit pipes" => tee() => pipeChainQueueExplicit6 => tee() => pipeChainQueueExplicit7 => tee()
+
+"Implicit pipe of 2" => tee() => tee()
+
+"Implicit pipe of 3" => tee() => tee() => tee()

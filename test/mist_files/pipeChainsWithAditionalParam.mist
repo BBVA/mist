@@ -1,0 +1,6 @@
+function tee2(a,b) {
+    print(a,b)
+    send(a)
+}
+
+"hola" => tee2("1") => tee2("2") => tee2("3")
