@@ -23,9 +23,8 @@ ExplicitQueue to parameter queue
 Implicit queue
 Implicit queue
 Direct value to function and explicit queue
-Traditional send and old pipe notation
-Traditional send and new notation
-Traditional send and old pipe notation
+Send and old pipe notation
+Send and new pipe notation
 Chain of 3 with explicit pipes
 Chain of 3 with explicit pipes
 Chain of 4 with explicit pipes

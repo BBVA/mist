@@ -1,6 +1,6 @@
-function producer (i) {
+function producer (i) => p {
     print("Producer", i)
-    send(i)
+    i => p
 }
 
 function consumer(i, n) {

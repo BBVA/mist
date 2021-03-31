@@ -87,7 +87,7 @@ FunctionCall:
 ;
 
 FunctionDefinition:
-  'function' name=ID '(' args*=ID[','] ')' '{'
+  'function' name=ID '(' args*=ID[','] ')' ('=>' targetStreams+=ID[','])? '{'
     commands*=Command
   '}'
 ;
@@ -145,5 +145,5 @@ Comment:
 ;
 
 PipeCommand:
-  left=IDorSTRING ('=>' right=PipeCommand)?
+  left+=IDorSTRING[','] ('=>' right=PipeCommand)?
 ;

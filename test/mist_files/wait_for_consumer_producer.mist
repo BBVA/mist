@@ -1,13 +1,13 @@
-function customSend(n) {
+function customSend(n) => p {
     print("Begin send {n}")
-    send(n)
+    n => p
     print("End send {n}")
 }
 
-function passNumber(n,t) {
+function passNumber(n,t) => p {
     print("begin passNumber {n} {t}")
     sleep(ms=t)
-    send(n)
+    n => p
     print("end passNumber {n} {t}")
 }
 

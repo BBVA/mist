@@ -1,6 +1,6 @@
 
-function foo(s) {
-    send(s)
+function foo(s) => p {
+    s => p
 }
 
 function bar(s) {

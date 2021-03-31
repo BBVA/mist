@@ -156,7 +156,8 @@ class FunctionCall(MistCallable):
                 streams.createIfNotExists(sourceStream[1:])
                 consumers.append(t)
             if self.targetStream:
-                streams.createIfNotExists(self.targetStream)
+                for s in self.targetStream:
+                    streams.createIfNotExists(s)
                 producers.append(t)
         else:
             result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
@@ -168,6 +169,7 @@ class FunctionDefinition:
     name: str
     args: list
     commands: list
+    targetStreams: list
 
     async def run(self, stack):
         if config.debug:
@@ -356,30 +358,41 @@ class PipeCommand(MistCallable):
         # Case 5: left = function, right=function         
         # Case 6: left = queue, right=None (META CASE FOR STOP CONDITION)
         while left:
-            if isinstance(left.value, FunctionCall):
+            if isinstance(left[0].value, FunctionCall):
                 if not right: # Case 3
                     pass
-                elif isinstance(right.left.value, VarReference): # Case 4 
-                    left.value.targetStream = right.left.value.id
-                elif isinstance(right.left.value, FunctionCall): # Case 5
+                elif isinstance(right.left[0].value, VarReference): # Case 4 
+                    #left[0].value.targetStream = right.left[0].value.id
+                    left[0].value.targetStream = [i.value.id for i in right.left]
+                elif isinstance(right.left[0].value, FunctionCall): # Case 5
                     tmpStream = str(uuid.uuid4())
-                    left.value.targetStream = tmpStream
-                    right.left.value.args.insert(0, ObjectWithValue(Source(self, tmpStream, None)))
+                    left[0].value.targetStream = [tmpStream]
+                    right.left[0].value.args.insert(0, ObjectWithValue(Source(self, tmpStream, None)))
                 else:
                     raise MistPipelineException()
-                await left.value.launch(stack)
+                await left[0].value.launch(stack)
             else: # Case 1 or 2
                 if not right: # Case 6: Do nothing and stop
                     return
                 leftVal = None
                 try:
-                    leftVal = await get_id(left, stack) # Left is variable or value
+                    leftVal = await get_id(left[0], stack) # Left is variable or value
                 except: # Left is queue
-                    left.value = Source(self, left.value.id, None)
-                if isinstance(right.left.value, FunctionCall): # Case 1
-                    right.left.value.args.insert(0, left)
-                elif isinstance(right.left.value, VarReference): # Case 2
-                    await streams.send(right.left.value.id, leftVal)
+                    left[0].value = Source(self, left[0].value.id, None)
+                if isinstance(right.left[0].value, FunctionCall): # Case 1
+                    right.left[0].value.args.insert(0, left[0])
+                elif isinstance(right.left[0].value, VarReference): # Case 2
+                    if 'targetStream' in stack[-1]: 
+                        realTargetStreams = stack[-1]['targetStream']
+                        metaTargetStream = right.left[0].value.id
+                        fcall = right.left[0].parent
+                        while not isinstance(fcall, FunctionDefinition):
+                            fcall = fcall.parent
+                        metaTargetStreams = fcall.targetStreams
+                        i = metaTargetStreams.index(metaTargetStream)
+                        await streams.send(realTargetStreams[i], leftVal)
+                    else:
+                        await streams.send(right.left[0].value.id, leftVal)
                 else:
                     raise MistPipelineException()
                 

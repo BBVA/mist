@@ -1,7 +1,7 @@
-function customSleep(n) {
+function customSleep(n) => p {
     print("Begin sleep {n}")
     sleep(ms=n)
-    send(n)
+    n => p
     print("End sleep {n}")
 }
 

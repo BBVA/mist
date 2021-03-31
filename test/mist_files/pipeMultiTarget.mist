@@ -1,0 +1,18 @@
+function dispatcher(a) => metaQueue1, metaQueue2, metaQueue3 {
+    if (isGreater(a,2)) {
+        a => metaQueue3
+    } elsif (isGreater(a,1)) {
+        a => metaQueue2
+    } else {
+        a => metaQueue1
+    }
+}
+
+n => dispatcher() => realQueue1, realQueue2, realQueue3
+realQueue1 => print("a")
+realQueue2 => print("b")
+realQueue3 => print("c")
+
+1 => n
+2 => n
+3 => n

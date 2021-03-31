@@ -264,16 +264,6 @@ async def corePutData(table, data, stack:list=None, commands:list=None):
 
     await watchedInsert(table, stack, values, fields)
 
-async def coreSend(value, targetStream=None, stack:list=None, commands:list=None):
-    if value is not None :
-        if not targetStream:
-            try:
-                targetStream = await helpers.get_key("targetStream", stack)
-            except MistUndefinedVariableException as e:
-                return
-
-        await streams.send(targetStream, value)
-
 def parseInt(value, stack:list=None, commands:list=None):
     return int(value)
 
@@ -346,7 +336,6 @@ class _Functions(dict):
         self["abort"] = {"native": True, "commands": coreAbort}
         self["put"] = {"native": True, "commands": corePut, "async": True}
         self["putData"] = {"native": True, "commands": corePutData, "async": True}
-        self["send"] = {"native": True, "commands": coreSend, "async": True}
         self["parseInt"] = {"native": True, "commands": parseInt}
         self["toString"] = {"native": True, "commands": toString}
         self["NOT"] = {"native": True, "commands": boolNot}
