@@ -143,8 +143,7 @@ async def exec(command:str, printOutput=True, interactive=False, stack:list=None
                     if config.real_time and config.console_output and printOutput:
                         print(output)
                     if commands:
-                        stack.append({"outputLine": output})
-                        stack.append({"process": process})
+                        stack.append({"outputLine": output, "process": process})
                         await helpers.command_runner(commands, stack)
                         stack.pop()
             return {
