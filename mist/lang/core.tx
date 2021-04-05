@@ -63,7 +63,7 @@ EnvVariable:
 ;
 
 Source:
-  (':' source=ID) | ('::' sourceIndirect=ID)
+  (':' source=ID) | ('*' sourceIndirect=ID)
 ;
 
 IDorSTRING:

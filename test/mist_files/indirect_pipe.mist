@@ -1,0 +1,6 @@
+queueName = "q"
+
+"hola" => *queueName
+
+*queueName => print()
+q => print()

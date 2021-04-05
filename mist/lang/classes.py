@@ -15,7 +15,7 @@ from mist.lang.function import functions, watchedInsert
 from mist.lang.config import config
 from mist.lang.db import db
 from mist.lang.watchers import watchers
-from mist.lang.exceptions import MistAbortException, MistException, MistUndefinedVariableException
+from mist.lang.exceptions import MistAbortException, MistException, MistUndefinedVariableException, MistPipelineException
 from mist.lang.herlpers import MistCallable, get_var, params, command_runner, function_runner, get_id, get_key, get_param, getChildFromVar, resolve_list_dict_reference, ValueContainer
 
 @dataclass
@@ -351,18 +351,17 @@ class PipeCommand(MistCallable):
         right = self.right
 
         # CASES
-        # Case 1: left = variable or value or queue, right=function
-        # Case 2: left = variable or value, right=queue
-        # Case 3: left = function, right=None
-        # Case 4: left = function, right=queue
-        # Case 5: left = function, right=function         
-        # Case 6: left = queue, right=None (META CASE FOR STOP CONDITION)
+        # Case 1 : left = variable or value or queue, right=function
+        # Case 2 : left = variable or value, right=direct queue (id) or indirect queue (source)
+        # Case 3 : left = function, right=None
+        # Case 4 : left = function, right=queue
+        # Case 5 : left = function, right=function      
+        # Case 6 : left = queue, right=None (META CASE FOR STOP CONDITION)
         while left:
             if isinstance(left[0].value, FunctionCall):
                 if not right: # Case 3
                     pass
                 elif isinstance(right.left[0].value, VarReference): # Case 4 
-                    #left[0].value.targetStream = right.left[0].value.id
                     left[0].value.targetStream = [i.value.id for i in right.left]
                 elif isinstance(right.left[0].value, FunctionCall): # Case 5
                     tmpStream = str(uuid.uuid4())
@@ -381,10 +380,15 @@ class PipeCommand(MistCallable):
                     left[0].value = Source(self, left[0].value.id, None)
                 if isinstance(right.left[0].value, FunctionCall): # Case 1
                     right.left[0].value.args.insert(0, left[0])
-                elif isinstance(right.left[0].value, VarReference): # Case 2
-                    if 'targetStream' in stack[-1]: 
-                        realTargetStreams = stack[-1]['targetStream']
-                        metaTargetStream = right.left[0].value.id
+                elif isinstance(right.left[0].value, VarReference) or isinstance(right.left[0].value, Source): # Case 2
+                    value = right.left[0].value.id if isinstance(right.left[0].value, VarReference) else get_var(right.left[0].value.sourceIndirect, stack)
+                    realTargetStreams = None
+                    for s in reversed(stack):
+                        if 'targetStream' in s:
+                            realTargetStreams = s['targetStream']
+                            break
+                    if realTargetStreams: 
+                        metaTargetStream = value
                         fcall = right.left[0].parent
                         while not isinstance(fcall, FunctionDefinition):
                             fcall = fcall.parent
@@ -392,7 +396,7 @@ class PipeCommand(MistCallable):
                         i = metaTargetStreams.index(metaTargetStream)
                         await streams.send(realTargetStreams[i], leftVal)
                     else:
-                        await streams.send(right.left[0].value.id, leftVal)
+                        await streams.send(value, leftVal)
                 else:
                     raise MistPipelineException()
                 
