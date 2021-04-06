@@ -4,7 +4,7 @@
 # Description: Find related domains and open S3 bucket in it, including S3 compatible providers
 # Tags: network, festin, dns, s3, network
 
-function festin(originDomain, dns, useTor) {
+function festin(originDomain, dns, useTor) => out {
     tor = ""
     if(useTor) {
         tor = "--tor"
@@ -14,7 +14,7 @@ function festin(originDomain, dns, useTor) {
         if(contains("Adding", outputLine)) {
             fields = strSplit(outputLine)
             domain = strSubstr(get(fields ,7), 1, -1)
-            send(domain)
+            domain => out
         }
     }
     r["buckets"] = []

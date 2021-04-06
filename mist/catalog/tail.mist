@@ -4,12 +4,12 @@
 # Description: Read a file line by line and send each line to a queue
 # Tags: tail, file
 
-function tail(file, endline)  {
+function tail(file, endline) => out {
     r = exec("tail -f {file}", False) {
         if (isEqual(outputLine,endline)) {
             terminate()
         } else {
-            send(outputLine)
+            outputLine => out
         }
     }
 }

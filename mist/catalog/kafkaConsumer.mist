@@ -5,7 +5,7 @@
 # Tags: kafka, consumer, topic, send
 
 kafkaConsumerEndMessageReceived = False
-function kafkaConsumer(servers, topic, endMessage, fromBeginning) {
+function kafkaConsumer(servers, topic, endMessage, fromBeginning) => out {
     options = ""
     if (fromBeginning) {
         options = "--from-beginning"
@@ -16,7 +16,7 @@ function kafkaConsumer(servers, topic, endMessage, fromBeginning) {
             terminate()
         }
         if (NOT(kafkaConsumerEndMessageReceived)) {
-            send(outputLine)
+            outputLine => out
         }
     }
 }

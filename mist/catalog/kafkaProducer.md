@@ -10,9 +10,9 @@ Sync(for one message) or Async(for muliple messages received in a queue)
 
 ## Input parameters
 
+- **message**: String. The message to send. You may also want to use a source queue here.
 - **servers**: String. Server list for bootstrap-server options. Example: "127.0.0.1:9092"
 - **topic**: String. Kafka topic to send messages.
-- **message**: String. The message to send. You may also want to use a source queue here.
 
 ## Output parameters
 
@@ -31,7 +31,7 @@ Async. Connect to Kafka at 127.0.0.1:9092, listen the topic "q" for new messages
 ``` text
 include "kafkaProducer"
 
-kafkaProducer("127.0.0.1:9092", "prueba", :q)
+kafkaProducer(:q, "127.0.0.1:9092", "prueba")
 
 send("msg1","q")
 send("msg2","q")
@@ -42,5 +42,5 @@ Sync. Connect to Kafka at 127.0.0.1:9092 and send the message "hello" to Kafla t
 ``` text
 include "kafkaProducer"
 
-kafkaProducer("127.0.0.1:9092", "prueba", "hello")
+kafkaProducer("hello", "127.0.0.1:9092", "prueba")
 ```
