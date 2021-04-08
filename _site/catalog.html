@@ -494,9 +494,9 @@ echo(:myQueue)
 <h2 id="input-parameters-5">Input parameters</h2>
 
 <ul>
+  <li><strong>message</strong>: String. The message to send. You may also want to use a source queue here.</li>
   <li><strong>servers</strong>: String. Server list for bootstrap-server options. Example: “127.0.0.1:9092”</li>
   <li><strong>topic</strong>: String. Kafka topic to send messages.</li>
-  <li><strong>message</strong>: String. The message to send. You may also want to use a source queue here.</li>
 </ul>
 
 <h2 id="output-parameters-5">Output parameters</h2>
@@ -517,7 +517,7 @@ echo(:myQueue)
 
 <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include "kafkaProducer"
 
-kafkaProducer("127.0.0.1:9092", "prueba", :q)
+kafkaProducer(:q, "127.0.0.1:9092", "prueba")
 
 send("msg1","q")
 send("msg2","q")
@@ -527,7 +527,7 @@ send("msg2","q")
 
 <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include "kafkaProducer"
 
-kafkaProducer("127.0.0.1:9092", "prueba", "hello")
+kafkaProducer("hello", "127.0.0.1:9092", "prueba")
 </code></pre></div></div>
 
 <p><a id="mist/catalog/pythonCodeAnalysis.md"></a></p>

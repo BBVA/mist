@@ -239,23 +239,204 @@
 
       <section class="page__content" itemprop="text">
         
-        <h1 id="introduction">Introduction</h1>
+        <h1 id="mist-core-syntax">MIST core syntax</h1>
 
-<p><code class="language-plaintext highlighter-rouge">MIST</code> is a high level programming language focussed in security testing.</p>
+<p>This file explain the basic syntax and features of MIST Language.</p>
 
-<p>It provides with a very simple and univoque verbose grammar for writing playbooks,
-and an SDK that allows yo to create commands that can be used from those playbooks.</p>
+<h2 id="comments">Comments</h2>
 
-<p>All generated output can stored in a SQL knowledge database so playbook results
-can be reviewed later.</p>
+<p>Any line starting with # is a comment</p>
 
-<p>The language also works as a glue between diferent tools and it can be extended easily.</p>
+<h2 id="data-types-and-asignations">Data types and asignations</h2>
 
-<p><code class="language-plaintext highlighter-rouge">MIST</code> has a builtin catalog management system that allows you to import commands
-written by other people. Command catalogs are git repositories that are cloned
-locally to make commands available to you for usin from within playbooks.</p>
+<p>In MIST there are 3 basic data types: booleans, integers and strings.
+In addition, exists complex data structures: Dictionaries and List.
+The asignation operator is “=”</p>
 
-<p>Language comments are lines starting with <code class="language-plaintext highlighter-rouge">#</code>.</p>
+<h3 id="booleans">Booleans</h3>
+
+<p>Mist have suport for booleans: True and False
+You can use NOT and AND function to create complex boolean expressions.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foo <span class="o">=</span> True
+bar <span class="o">=</span> False
+
+foobar <span class="o">=</span> AND<span class="o">(</span>NOT<span class="o">(</span>foo, NOT<span class="o">(</span>bar<span class="o">))</span>
+</code></pre></div></div>
+
+<h3 id="integers">Integers</h3>
+
+<p>Mist have support for integers numbers. For now, there are no arithmetic operators but it will be in the future.</p>
+
+<p>foo = 43</p>
+
+<h3 id="strings">Strings</h3>
+
+<p>Like other languages, strings are delimited by “</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foo <span class="o">=</span> <span class="s2">"John"</span>
+</code></pre></div></div>
+
+<p>In adition, you can use {} tu create formatted strings that include values from variables or function calls.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bar <span class="o">=</span> <span class="s2">"Hi {foo}"</span>
+</code></pre></div></div>
+
+<h3 id="dictionaries">Dictionaries</h3>
+
+<p>Dictionaries are difined with JSON syntax and you can access it with []. It can contain values of different types.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mydict <span class="o">=</span> <span class="o">{</span> <span class="s2">"foo"</span>: 4, <span class="s2">"bar"</span>: <span class="s2">"John"</span><span class="o">}</span>
+foo <span class="o">=</span> mydict[<span class="s2">"foo"</span><span class="o">]</span>
+</code></pre></div></div>
+
+<h3 id="lists">Lists</h3>
+
+<p>Lists are difined with JSON syntax and you can access it with [index]. It can contain values of different types.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mylist <span class="o">=</span> <span class="o">[</span><span class="s2">"foo"</span>, <span class="s2">"bar"</span><span class="o">]</span>
+foo <span class="o">=</span> mylist[0]
+</code></pre></div></div>
+
+<h2 id="variables-and-parameters">Variables and Parameters</h2>
+
+<p>Use de operator $ to access environments variables.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print<span class="o">(</span><span class="nv">$PATH</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Use de operator % to access to command line parameters.</p>
+
+<p>```bash example.mist
+print(%p1)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+```bash
+&gt;mist run example.mist p1=hello
+hello
+</code></pre></div></div>
+
+<h2 id="conditionals">Conditionals</h2>
+
+<p>The syntax of conditional expressions is:</p>
+
+<p>if (boolean expresion) {
+    commands…
+} elsif (boolean expresion) {
+    commands…
+} else {
+    commands…
+}</p>
+
+<p>See the following example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foo <span class="o">=</span> False
+bar <span class="o">=</span> True
+
+<span class="k">if</span> <span class="o">(</span>foo<span class="o">)</span> <span class="o">{</span>
+  print<span class="o">(</span><span class="s2">"A"</span><span class="o">)</span>
+<span class="o">}</span> elsif <span class="o">(</span>bar<span class="o">)</span> <span class="o">{</span>
+  print<span class="o">(</span><span class="s2">"B"</span><span class="o">)</span>
+<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+  print<span class="o">(</span><span class="s2">"C"</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The result of the code is “B”</p>
+
+<h2 id="functions">Functions</h2>
+
+<p>MIST follow an structured paradign similar to C Language. So the basic structure item is the function.</p>
+
+<p>You can define a function with the following syntax:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span>functionName <span class="o">(</span>param1name, param2name, ...<span class="o">)</span> <span class="o">[=&gt;</span> out1, out2...] <span class="o">{</span>
+    commands...
+    <span class="k">return </span>value
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>NOTE: Be aware that out1 and out2 is refered to pipes and not to the return value. This will be explained in the Pipes section.</p>
+
+<p>Example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span>salute<span class="o">(</span>name<span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="s2">"Hello {name}"</span>
+<span class="o">}</span>
+
+You can invoke a <span class="k">function </span>with positional parameters or with named parameters. For example, invoking previous defined <span class="k">function</span>:
+
+<span class="sb">```</span>bash
+print<span class="o">(</span>salute<span class="o">(</span><span class="s2">"John"</span><span class="o">))</span>
+print<span class="o">(</span>salute<span class="o">(</span><span class="nv">name</span><span class="o">=</span><span class="s2">"John"</span><span class="o">))</span>
+</code></pre></div></div>
+
+<h2 id="variable-scopes">Variable Scopes</h2>
+
+<p>Variables defined outside a function can be considered global variables because they are visible inside other funcion as long as there are no other variable defined with the same name inside the function.</p>
+
+<p>Variables defined inside a funcion are only visibles inside the function.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>global <span class="o">=</span> <span class="s2">"Global"</span>
+
+<span class="k">function </span><span class="nb">test</span><span class="o">()</span> <span class="o">{</span>
+  <span class="nb">local</span> <span class="o">=</span> <span class="s2">"Local"</span>
+  <span class="c"># global exists here</span>
+  <span class="c"># local exists here</span>
+<span class="o">}</span>
+
+<span class="c"># global exists here</span>
+<span class="c"># local NOT exists here</span>
+
+<span class="k">function </span>test2<span class="o">(</span>global<span class="o">)</span> <span class="o">{</span>
+  <span class="c"># global exists here but is not the same. It is a local variable with the same name that hide the real global</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="include-and-import">Include and Import</h2>
+
+<p>For organizing the code. Mist provides the directives <em>include</em> and <em>import</em></p>
+
+<h3 id="include-files">Include files</h3>
+
+<p><em>include</em> is used to include .mist files in your code. The result is exactly like copy the content of the specified file in your own file. Example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include <span class="s2">"./lib/module.mist"</span>
+include <span class="s2">"module.mist"</span>
+include <span class="s2">"https://github.com/BBVA/mist/raw/master/mist/catalog/festin.mist"</span>
+</code></pre></div></div>
+
+<p>The first line include the local file module.mist at lib directory
+The second line include module.mist from current directory or from local catalog directory.
+The third line include the remote file festin.mist</p>
+
+<h3 id="import-files">Import files</h3>
+
+<p>MIST is implemented in Python. And you can import Python functions and work with them in MIST. <em>import</em> directive imports all the funcions defined in a Python file. Example:</p>
+
+<p>```python file=./test/mist_files/mylib.py
+def myPrint(s: str, stack:list=None, commands:list=None):
+    print(“&gt;”,s)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+```bash file=myProgram.mist
+import "./test/mist_files/mylib.py"
+mylibMyPrint("Hola")
+</code></pre></div></div>
+
+<p>Note that Python functions receives 2 additional parameters: <em>stack</em> and <em>commands</em>. You can use those parameters to implement advanced functionality.
+The <em>import</em> directive can also import remote files. Example:</p>
+
+<p><code class="language-plaintext highlighter-rouge">bash file=myProgram.mist
+import "https://raw.githubusercontent.com/BBVA/mist/master/test/mist_files/mylib.py"
+mylibMyPrint("Hola")
+</code></p>
+
+<h2 id="streams">Streams</h2>
+
+<h2 id="finally-hook">Finally Hook</h2>
+
+<h2 id="structures-and-watch">Structures and Watch?????</h2>
+
+<h2 id="abort-vs-done">Abort vs done?</h2>
 
 
         
