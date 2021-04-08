@@ -1,6 +1,7 @@
 #! /bin/bash
 
 GENERATION_ROOT=generated_docs/content
+ASSETS_DIR=$GENERATION_ROOT/assets/images
 NAV_FILE="$GENERATION_ROOT/_data/navigation.yml"
 DOCS_FILE="$GENERATION_ROOT/_includes/docs_incl.md"
 LANG_FUNCS_FILE="$GENERATION_ROOT/_includes/funcs_incl.md"
@@ -8,10 +9,10 @@ LANG_CATALOG_FILE="$GENERATION_ROOT/_includes/catal_incl.md"
 LANG_SYNTAX_FILE="$GENERATION_ROOT/_includes/syntax_incl.md"
 
 # Create the directory tree in which to generate the documentation files
-mkdir -vp generated_docs/content/{_data,_includes,assets/images} 2> /dev/null
+mkdir -vp $GENERATION_ROOT/{_data,_includes,assets/images} 2> /dev/null
 
 # copy assets
-cp -vr images/*.png generated_docs/content/assets/images
+cp -vr images/*.png $ASSETS_DIR
 
 # Create main index yaml
 echo "Generating main index: $NAV_FILE"
@@ -49,18 +50,16 @@ sidebar:
 EOF
 
 echo -e "Generating doc file: \n$DOCS_FILE"
-echo -e "# Mist Documentation\n\n<a id=\"Documentation\"></a>" > $DOCS_FILE
+echo -e "<a id=\"Introduction\"></a>\n\n# Mist Documentation\n\n<a id=\"Documentation\"></a>" > $DOCS_FILE
 csplit --prefix=docs --suppress-matched  README.md '/<!--split-->/' '{*}'
 grep -v "MIST LOGO" docs00 >> $DOCS_FILE
-echo -e "\n\n<a id=\"Introduction\"></a>" >> $DOCS_FILE
-cat mist/lang/README.md >> $DOCS_FILE
 echo -e "\n\n<a id=\"QuickStart\"></a>" >> $DOCS_FILE
 sed -e 's#https://raw.githubusercontent.com/BBVA/mist/master#content/assets#' docs01 >> $DOCS_FILE
 echo -e "\n\n" >> $DOCS_FILE
 cat docs02 >> $DOCS_FILE
 
 echo "$LANG_SYNTAX_FILE"
-cp -v mist/lang/README.md $LANG_SYNTAX_FILE
+cp -v mist/lang/SYNTAX.md $LANG_SYNTAX_FILE
 
 echo "$LANG_FUNCS_FILE"
 cp -v mist/lang/BUILTIN.md $LANG_FUNCS_FILE
