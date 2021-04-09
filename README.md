@@ -33,17 +33,12 @@ In this scenario we'll do:
 
 ![Demo 1](https://raw.githubusercontent.com/BBVA/mist/master/images/mist-demo-1.png)
 
-**MIST code**
+**MIST code** (examples/demo/scenario-01.mist)
 
 ```bash
-# examples/demo/scenario-01.mist
-include "searchDomains" "findOpenPorts"
+include "searchDomains" include "findOpenPorts"
 
-searchDomains(%domain) => foundDomains
-
-findOpenPorts(:foundDomains, "80,443") => openPortsFound
-
-print(:openPortsFound)
+searchDomains(%domain) => findOpenPorts("80,443") => print()
 ```
 
 **Execute**
@@ -67,17 +62,13 @@ In this scenario we'll do:
 
 ![Demo 2](https://raw.githubusercontent.com/BBVA/mist/master/images/mist-demo-2.png)
 
-**MIST code**
+**MIST code** (examples/demo/scenario-02.mist)
 
 ```bash
-# examples/demo/scenario-02.mist
 include "searchDomains" "findOpenPorts" "kafkaProducer"
 
-searchDomains(%domain) => foundDomains
-
-findOpenPorts(:foundDomains, "80,443") => openPortsFound
-
-kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
+searchDomains(%domain) => findOpenPorts("80,443") => 
+    kafkaProducer($KAFKA_SERVER, "domainsTopic")
 ```
 
 **Execute**
@@ -104,21 +95,16 @@ In this scenario we'll do:
 
 ![Demo 3](https://raw.githubusercontent.com/BBVA/mist/master/images/mist-demo-3.png)
 
-**MIST code**
+**MIST code** (examples/demo/scenario-03.mist)
 
 ```bash
-# examples/demo/scenario-03.mist
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer"
 
 searchDomains(%domain) => foundDomains
 festin(%domain, $DNS_SERVER, True) => foundDomains
 
-filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
-
-findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
-
-kafkaProducer($KAFKA_SERVER, "domainsTopic", :openPortsFound)
-
+foundDomains => filterRepeated(False) => 
+    findOpenPorts("80,443") => kafkaProducer($KAFKA_SERVER, "domainsTopic")
 ```
 
 **Execute**
@@ -148,33 +134,27 @@ In this scenario we'll do:
 
 ![Demo 4](https://raw.githubusercontent.com/BBVA/mist/master/images/mist-demo-4.png)
 
-**MIST code**
+**MIST code** (examples/demo/scenario-04.mist)
 
 ```bash
-# examples/demo/scenario-04.mist
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store"
 
-function dispacher(p) {
+function dispatcher(p) => kafka, S3 {
     if (isEqual(p.port, "80")) {
-        send(p, "kafkaOutput")
+        p => kafka
     } else {
-        send(p, "S3Output")
+        p => S3
     }
 }
 
 searchDomains(%domain) => foundDomains
 festin(%domain, $DNS_SERVER, True) => foundDomains
 
-filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+foundDomains => filterRepeated(False) =>
+    findOpenPorts("80,443") => dispatcher() => kafkaOutput, S3Output
 
-findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
-
-dispacher(:openPortsFound)
-
-kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
-
-S3Store(:S3Output, $BUCKET_URI)
-
+kafkaOutput => kafkaProducer($KAFKA_SERVER, "domainsTopic")
+S3Output => S3Store($BUCKET_URI)
 ```
 
 **Execute**
@@ -207,36 +187,31 @@ In this scenario we'll do:
 
 ![Demo 5](https://raw.githubusercontent.com/BBVA/mist/master/images/mist-demo-5.png)
 
-**MIST code**
+**MIST code** (examples/demo/scenario-05.mist)
 
 ```bash
-# examples/demo/scenario-05.mist
 include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer" "S3Store" "kafkaConsumer" "tail"
 
-function dispacher(p) {
+function dispatcher(p) => kafka, S3 {
     if (isEqual(p.port, "80")) {
-        send(p, "kafkaOutput")
+        p => kafka
     } else {
-        send(p, "S3Output")
+        p => S3
     }
 }
 
 kafkaConsumer($KAFKA_SERVER, "inputTopic", "*END*", False) => inputDomains
 tail("domains.txt", "*END*") => inputDomains
-send(%domain, "inputDomains")
+%domain => inputDomains
 
-searchDomains(:inputDomains) => foundDomains
-festin(:inputDomains, $DNS_SERVER, True) => foundDomains
+inputDomains => searchDomains() => foundDomains
+inputDomains => festin($DNS_SERVER, True) => foundDomains
 
-filterRepeated(:foundDomains, False) => nonRepeatedFoundDomains
+foundDomains => filterRepeated(False) => findOpenPorts("80,443") => 
+    dispatcher() => kafkaOutput, S3Output
 
-findOpenPorts(:nonRepeatedFoundDomains, "80,443") => openPortsFound
-
-dispacher(:openPortsFound)
-
-kafkaProducer($KAFKA_SERVER, "domainsTopic", :kafkaOutput)
-
-S3Store(:S3Output, $BUCKET_URI)
+kafkaOutput => kafkaProducer($KAFKA_SERVER, "domainsTopic")
+S3Output => S3Store($BUCKET_URI)
 ```
 
 **Execute**

@@ -1,0 +1,7 @@
+function finallyHook() {
+    print("This will be executed at the end of the program")
+}
+
+print("1")
+abort()
+print("2")

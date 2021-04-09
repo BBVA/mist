@@ -123,7 +123,7 @@ function functionName (param1name, param2name, ...) [=> out1, out2...] {
 }
 ```
 
-NOTE: Be aware that out1 and out2 is refered to pipes and not to the return value. This will be explained in the Pipes section.
+NOTE: Be aware that out1 and out2 is refered to streams and not to the return value. This will be explained in the Streams section.
 
 Example:
 
@@ -131,6 +131,7 @@ Example:
 function salute(name) {
     return "Hello {name}"
 }
+```
 
 You can invoke a function with positional parameters or with named parameters. For example, invoking previous defined function:
 
@@ -204,8 +205,135 @@ mylibMyPrint("Hola")
 
 ## Streams
 
-## Finally Hook
+### Source streams
 
-## Structures and Watch?????
+In order to comunicate funtion MIST implements streams. When running a function you can specify a source stream to replace one parameter using the following syntax:
 
-## Abort vs done?
+```bash
+myfunction(:mystream,[param2, param3,...])
+
+or
+
+:mystream => myfunction([param2, param3,...])
+
+or
+
+mystream => myfunction([param2, param3,...])
+```
+
+Note that with arrow notation the streams is always mapped to first parameter of the function.
+
+When a new element is inserted in the stream, the function myfunction will be asyncronous invoked using the element of the stream as first parameter. The other parameters will be the same on eachh invocation.
+
+No more than one instance of myfunction will be running at the same time. If there are more elements in the streams they will wait in the stream using FIFO strategy.
+
+You can also use the arrow notation to invoke a function.
+
+```bash
+(value or function) => myStream
+```
+
+In this case leftValue is a value (string, integer, dictionary...) or a variable. Example:
+
+```bash
+"hello" => print()
+```
+
+NOTE: You can only use one source stream when invoking a function.
+
+### Send operator
+
+You can send data to an stream using the following syntax:
+
+```bash
+leftValue => myStream
+```
+
+In this case leftValue is a value (string, integer, dictionary...) or a variable. Example:
+
+```bash
+mystream => print()
+"hello" => mystream
+"John" => mystream
+```
+
+### Function with target streams
+
+A function can send data to one or several streams. When defining a function you can specify how many targets stream you have and an internal name.
+
+```bash
+function functionName (param1name, param2name, ...) [=> out1, out2...] {
+    commands...
+    return value
+}
+```
+
+out1 and out2 are the internal names of streams where the function will send data. Let us see this with an example:
+
+The following code will print "foo" twice in the console:
+
+```bash
+function tee(i) => p {
+    print(i)
+    i => p
+}
+
+tee("foo") => myStream
+myStream => print()
+```
+
+In contrast to source streams. You can can have more than one target streams when defining and invoking a function.
+
+If we invoke a function that has output streams without specifying the real streams. The output data will be discarded.
+
+Note than a function can return a value and also produce data to output streams.
+
+### Chains
+
+We call chains to several functions connected with arrows.
+
+The following examples will also print "foo" twice in the console:
+
+```bash
+tee("foo") => myStream => print()
+```
+
+or
+
+```bash
+tee("foo") => print()
+```
+
+or
+
+```bash
+"foo" => tee() => print()
+```
+
+Note that you can omit the name of the stream when connecting two functions. In this case, a hidden stream will be created automatically.
+
+When a function produces to more than one stream. Only the first stream will be connected to the next function.
+
+## Finally Hook and abort function
+
+There are a special funcion named "finallyHook" that will be invoked once at the end of the program. This can be used to close connection, and run the needed final code of your program. Example:
+
+```bash
+function finallyHook() {
+    print("This will be executed at the end of the program")
+}
+```
+
+The function "abort(reason)" will end the program inmediatelly. The finally hook will not be executed. You can invoke it in any place of your program. It can be considered as the last option when you cannot recover from an error.
+
+```bash
+abort("My custom panic message")
+```
+
+## Reserved work: done
+
+The reserver word "done" will stop the execution of a block of code (closure)
+
+Used inside a function will work as a return without a value.
+
+Used inside an if-else structure will stop the execution of the closure.

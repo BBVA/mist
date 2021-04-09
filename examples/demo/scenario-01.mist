@@ -1,7 +1,3 @@
 include "searchDomains" include "findOpenPorts"
 
-searchDomains(%domain) => foundDomains =>
-foundDomains => findOpenPorts("80,443") => openPortsFound
-openPortsFound => print()
-
-#searchDomains(%domain) => findOpenPorts("80,443") => print()
+searchDomains(%domain) => findOpenPorts("80,443") => print()
