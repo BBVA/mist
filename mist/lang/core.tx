@@ -3,8 +3,8 @@ Program:
 ;
 
 Command:
-  IncludeCommand | SaveListCommand | DataCommand | IfCommand |
-  WatchCommand | FunctionDefinition | SetCommand | EndCommand |
+  IncludeCommand | IfCommand |
+  FunctionDefinition | SetCommand | EndCommand |
   ReturnCommand | ImportCommand | PipeCommand
 ;
 
@@ -14,12 +14,6 @@ IncludeCommand:
 
 ImportCommand:
   'import' files+=STRING[eolterm]
-;
-
-DataCommand:
-  'data' name=ID '{'
-    params*=ID
-  '}'
 ;
 
 Param:
@@ -98,16 +92,6 @@ ReturnCommand:
 
 OutputId:
   source=ID ('(' fields+=ID ')' '=>' target=ID)?
-;
-
-SaveListCommand:
-  'putlist' list=ID ('(' selectors+=ID ')')? sources*=IDorSTRING '=>' target=ID ('(' params*=ID ')')?
-;
-
-WatchCommand:
-  'watch' var=ID '=>' name=ID '{'
-    commands*=Command
-  '}'
 ;
 
 IfCommand:

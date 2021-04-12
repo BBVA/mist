@@ -8,7 +8,7 @@ import sqlite3
 from mist.lang.exceptions import MistException
 from mist.lang.db import db
 from mist.lang.function import (functions, tmpFileFunction, fileWriteLine, rangeFunction,
-                                searchInText, searchInXML, searchInJSON, CSVput, CSVdump,
+                                searchInText, searchInXML, searchInJSON,
                                 readFile, readFileAsLines, objectLen, listMap, listReduce)
 
 class NativeFunctionsTest(IsolatedAsyncioTestCase):
@@ -20,12 +20,6 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         ### For readFile tests
         if hasattr(self, 'readFile'):
             os.remove(self.readFile)
-        ### For CSVPutFile tests
-        if hasattr(self, 'CSVPutFile'):
-            os.remove(self.CSVPutFile)
-        ### For CSVdumpFile tests
-        if hasattr(self, 'CSVdumpFile'):
-            os.remove(self.CSVdumpFile)
         ### For fileWriteLine tests
         if hasattr(self, 'fileWriteLine'):
             os.remove(self.fileWriteLine)
@@ -36,7 +30,7 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
     def test_all_functions_are_exported(self):
         ef = [("tmpFile", tmpFileFunction), ("writeLine", fileWriteLine), ("range", rangeFunction),
               ("searchInText", searchInText), ("searchInXML", searchInXML), ("searchInJSON", searchInJSON),
-              ("CSVput", CSVput, True),("CSVdump", CSVdump), ("readFile", readFile), ("readFileAsLines", readFileAsLines),
+              ("readFile", readFile), ("readFileAsLines", readFileAsLines),
               ("len", objectLen), ("map", listMap), ("reduce", listReduce), ]
 
         for i in ef:
@@ -198,104 +192,6 @@ class NativeFunctionsTest(IsolatedAsyncioTestCase):
         found = searchInJSON("$..grandsons[?(@.name=='BAR')]", self.JSONSearchIn)
 
         self.assertEqual(expected, found)
-
-######
-###### Tests for CSVPut
-######
-    async def test_CSVPut_fails_if_file_doesnt_exists(self):
-        with self.assertRaisesRegex(FileNotFoundError, r"\[Errno 2\] No such file or directory: '/imagine'"):
-            await CSVput("/imagine", "BAR", [])
-
-    async def test_CSVPut_fails_on_empty_file(self):
-        self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
-
-        with self.assertRaisesRegex(MistException, f"Empty file: {self.CSVPutFile}"):
-            ret = await CSVput(self.CSVPutFile, "BAR", [])
-            self.assertFalse(ret)
-
-    @patch.object(db, 'create_table')
-    async def test_CSVPut_creates_target(self,mock_create_table):
-        header = "col01,col02"
-        expected = header.split(',')
-        table = "myTable"
-        self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
-        with open(self.CSVPutFile,'w') as f:
-            f.write(header)
-
-        ret = await CSVput(self.CSVPutFile, table, [])
-        self.assertTrue(ret)
-        mock_create_table.assert_called_once_with(table, expected)
-
-    @patch.object(db, 'create_table')
-    @patch('mist.lang.function.watchedInsert')
-    async def test_CSVPut_creates_target_and_insert_content(self, mock_watchedInsert, mock_create_table):
-        header = "col01,col02"
-        expectedHeader = header.split(',')
-        data = "value01,value02"
-        expectedData = data.split(',')
-        table = "myTable"
-        self.CSVPutFile = tempfile.NamedTemporaryFile(delete=False).name
-        with open(self.CSVPutFile,'w') as f:
-            f.write(header)
-            f.write('\n')
-            f.write(data)
-
-        ret = await CSVput(self.CSVPutFile, table, [])
-        self.assertTrue(ret)
-        mock_create_table.assert_called_once_with(table, expectedHeader)
-        mock_watchedInsert.assert_called_with(table, [], expectedData)
-
-######
-###### Tests for CSVdump
-######
-    def test_CSVdump_fails_if_non_writable_file(self):
-        with self.assertRaisesRegex(PermissionError, r"\[Errno 13\] Permission denied: '/imagine'"):
-            CSVdump('BAR','/imagine')
-
-    @patch.object(db, 'fetch_table_headers')
-    def test_CSVdump_fails_if_source_doesnt_exists(self, mock_fetch_table_headers):
-        mock_fetch_table_headers.side_effect = sqlite3.OperationalError("no such table: BAR")
-        self.CSVdumpFile = tempfile.NamedTemporaryFile(delete=False).name
-
-        with self.assertRaisesRegex(sqlite3.OperationalError, "no such table: BAR"):
-            CSVdump('BAR',self.CSVdumpFile)
-
-        mock_fetch_table_headers.assert_called_once_with('BAR')
-
-    @patch.object(db, 'fetch_table_headers')
-    @patch.object(db, 'fetch_table_as_dict')
-    def test_CSVdump_writes_only_headers_in_no_data_exists(self, mock_fetch_table_as_dict, mock_fetch_table_headers):
-        expected = "col01,col02,col03\n"
-        mock_fetch_table_headers.return_value = ["id", "col01", "col02", "col03"]
-        mock_fetch_table_as_dict.return_value = []
-        self.CSVdumpFile = tempfile.NamedTemporaryFile(delete=False).name
-
-        CSVdump("myTable",self.CSVdumpFile)
-
-        mock_fetch_table_headers.assert_called_with("myTable")
-        mock_fetch_table_as_dict.assert_called_once_with("myTable")
-        with open(self.CSVdumpFile, 'r') as f:
-            content = f.read()
-        self.assertEqual(expected, content)
-
-    @patch.object(db, 'fetch_table_headers')
-    @patch.object(db, 'fetch_table_as_dict')
-    def test_CSVdump_writes_all_data(self, mock_fetch_table_as_dict, mock_fetch_table_headers):
-        expected = "col01,col02,col03\nval01,val02,val03\nval11,val12,val13\nval21,val22,val23\n"
-        mock_fetch_table_headers.return_value = ["id", "col01", "col02", "col03"]
-        mock_fetch_table_as_dict.return_value = [
-            {"id": "", "col01": "val01", "col02": "val02", "col03": "val03"},
-            {"id": "", "col01": "val11", "col02": "val12", "col03": "val13"},
-            {"id": "", "col01": "val21", "col02": "val22", "col03": "val23"}]
-        self.CSVdumpFile = tempfile.NamedTemporaryFile(delete=False).name
-
-        CSVdump("myTable",self.CSVdumpFile)
-
-        mock_fetch_table_headers.assert_called_with("myTable")
-        mock_fetch_table_as_dict.assert_called_once_with("myTable")
-        with open(self.CSVdumpFile, 'r') as f:
-            content = f.read()
-        self.assertEqual(expected, content)
 
 ######
 ###### Tests for readFile

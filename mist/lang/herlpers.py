@@ -6,7 +6,6 @@ import asyncio
 
 from mist.lang.db import db
 from mist.lang.config import config
-from mist.lang.watchers import watchers
 from mist.lang.environment import environment
 from mist.lang.params import params
 from mist.lang.function import functions

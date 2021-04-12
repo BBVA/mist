@@ -13,7 +13,6 @@ import uuid
 from mist.lang.db import db
 from mist.lang.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 from mist.lang.config import config
-from mist.lang.common import watchedInsert
 from mist.lang.cmd import execution
 import mist.lang.herlpers as helpers
 
@@ -79,41 +78,6 @@ def parseJSON(jsonstr: str, stack:list=None, commands:list=None):
         print(f" Error in 'parseJSON' -> {e}")
     finally:
         return json_data
-
-async def CSVput(fileName: str, target: str, stack:list=None, commands:list=None):
-    with open(fileName) as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-
-        try:
-            # TODO: ADD CSV HEADER?
-            headers = next(reader)
-
-            db.create_table(target, headers)
-            for row in reader:
-                await watchedInsert(target, stack, row)
-            return True
-        except StopIteration:
-            raise MistException(f"Empty file: {fileName}")
-            return False
-        except Exception as e:
-            print(f"Error while creating database: {target}: {e}")
-            return False
-
-def CSVdump(source: str, fileName: str, stack:list=None, commands:list=None):
-    with open(fileName, mode='w') as csvFile:
-        csvWriter = csv.writer(csvFile,
-                                delimiter=',',
-                                quotechar='"',
-                                quoting=csv.QUOTE_MINIMAL)
-        headers = db.fetch_table_headers(source)[1:]
-        csvWriter.writerow(headers)
-        items = db.fetch_table_as_dict(source)
-        for row in items:
-            row.pop('id', None)
-        csvWriter.writerows([
-            row.values()
-            for row in items
-        ])
 
 def readFile(path:str, stack:list=None, commands:list=None):
     if not os.path.isfile(path):
@@ -237,32 +201,6 @@ def coreAbort(reason=None, stack:list=None, commands:list=None):
 
     raise MistAbortException(reason)
 
-async def corePut(table, *args, stack:list=None, commands:list=None):
-    if not table:
-        raise MistException("A table is needed")
-    if not args:
-        raise MistException("Data items to store needed")
-
-    data = [ json.dumps(d) if type(d) is list else str(d) for d in args ]
-
-    await watchedInsert(table, stack, data, fields=None)
-
-async def corePutData(table, data, stack:list=None, commands:list=None):
-    if not table:
-        raise MistException("A table is needed")
-    if not data:
-        raise MistException("Data items to store needed")
-    if not isinstance(data, dict):
-        raise TypeError("Data must come in a dictionary")
-
-    values = []
-    fields = []
-    for k, v in data.items():
-        values.append(json.dumps(v) if type(v) is list else str(v))
-        fields.append(k)
-
-    await watchedInsert(table, stack, values, fields)
-
 def parseInt(value, stack:list=None, commands:list=None):
     return int(value)
 
@@ -314,8 +252,6 @@ class _Functions(dict):
         self["searchInJSON"] = {"native": True, "commands": searchInJSON}
         self["readJSON"] = {"native": True, "commands": readJSON}
         self["parseJSON"] = {"native": True, "commands": parseJSON}
-        self["CSVput"] = {"native": True, "commands": CSVput, "async": True}
-        self["CSVdump"] = {"native": True, "commands": CSVdump}
         self["readFile"] = {"native": True, "commands": readFile}
         self["readFileAsLines"] = {"native": True, "commands": readFileAsLines}
         self["exec"] = {"native": True, "commands": exec, "async": True}
@@ -333,8 +269,6 @@ class _Functions(dict):
         self["strSubstr"] = {"native": True, "commands": strSubstr}
         self["print"] = {"native": True, "commands": corePrint}
         self["abort"] = {"native": True, "commands": coreAbort}
-        self["put"] = {"native": True, "commands": corePut, "async": True}
-        self["putData"] = {"native": True, "commands": corePutData, "async": True}
         self["parseInt"] = {"native": True, "commands": parseInt}
         self["toString"] = {"native": True, "commands": toString}
         self["NOT"] = {"native": True, "commands": boolNot}

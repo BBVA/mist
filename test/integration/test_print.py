@@ -11,10 +11,8 @@ async def test_print(examples_path):
         content = f.read()
     
     console = await execute_from_text(content, {"name": "pepe"})
-    assert "hello" in console
-    assert "hola adios" in console
-    assert "hola pepe" in console
-    assert "127.0.0.1\n" in console
-    assert "The result of ping to 127.0.0.1 is True" in console
-    assert "Saved result of ping to 127.0.0.1 is True" in console
-    assert "myTable contains [{" in console    
+    assert """hello
+hola adios
+hola pepe
+The result of ping to 127.0.0.1 is True
+myTable contains {'ip': '127.0.0.1', 'result': True}\n""" == console

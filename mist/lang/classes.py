@@ -11,60 +11,11 @@ import mist.action_run
 
 from mist.lang.environment import environment
 from mist.lang.cmd import execution
-from mist.lang.function import functions, watchedInsert
+from mist.lang.function import functions
 from mist.lang.config import config
 from mist.lang.db import db
-from mist.lang.watchers import watchers
 from mist.lang.exceptions import MistAbortException, MistException, MistUndefinedVariableException, MistPipelineException
 from mist.lang.herlpers import MistCallable, get_var, params, command_runner, function_runner, get_id, get_key, get_param, getChildFromVar, resolve_list_dict_reference, ValueContainer
-
-@dataclass
-class DataCommand:
-    parent: object
-    name: str
-    params: list = field(default_factory=list)
-
-    async def run(self, stack):
-
-        table_params = [
-            f"{param} text"
-            for param in self.params
-        ]
-
-        db.create_table(self.name, table_params)
-
-@dataclass
-class SaveListCommand:
-    parent: object
-    list: str
-    selectors: list
-    sources: list
-    target: str
-    params: list
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"->Put list to {self.target}")
-
-        cols = [c for c in self.params] if self.params else None
-        sels = [s for s in self.selectors] if self.selectors else None
-
-        elements = await get_id(self.list, stack)
-        if type(elements) is not list:
-            raise MistException(f"{self.list} is not a list")
-
-        commons = [ str(await get_id(it, stack)) for it in self.sources ] if self.sources else None
-
-        for el in elements:
-            if type(el) is dict:
-                values = [ v for v in el.values() ] if sels is None else [ el[sel] for sel in sels ]
-            else:
-                values = list(str(el))
-
-            if commons is not None:
-                values.extend(commons)
-
-            await watchedInsert(self.target, stack, values, fields=cols)
 
 @dataclass
 class AbortCommand:
@@ -78,18 +29,6 @@ class AbortCommand:
             reason = "Abort reached"
 
         raise MistAbortException(reason)
-
-@dataclass
-class WatchCommand:
-    parent: object
-    var: str
-    name: str
-    commands: list
-
-    async def run(self, stack):
-        if config.debug:
-            print(f"-> Watch {self.var}")
-        watchers.append({"var": self.var, "name": self.name, "commands": self.commands})
 
 @dataclass
 class SetCommand:
@@ -406,8 +345,7 @@ class PipeCommand(MistCallable):
             else:
                 left = None
 
-exports = [DataCommand, SaveListCommand, WatchCommand, IfCommand,
-           SetCommand, FunctionCall, ImportCommand,
+exports = [ IfCommand, SetCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
            ListDictReference, ReturnCommand, PipeCommand]
