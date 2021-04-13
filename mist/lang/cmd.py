@@ -13,15 +13,8 @@ import asyncio
 from typing import Tuple
 from functools import lru_cache
 
-from .db import db
-
 input_file_regex = re.compile(r'''(\{)(infile-[\w\.\-\d]+)(\})''')
 output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
-
-_DB_TABLE_NAME = "execution"
-_DB_TABLE_FIELDS = ("command", "start_time", "end_time", "stdout",
-                    "stdout_signature", "stderr", "stderr_signature",
-                    "in_files", "out_files")
 
 def _extract_files(text: str, input_or_output: str) -> list:
     if input_or_output == "input":
@@ -56,71 +49,6 @@ class Executor(object):
         self._console_output = []
         self._console_stderr = []
         self.error_code = None
-
-        self.__create_database__()
-
-    def __create_database__(self):
-        db.create_table(
-            _DB_TABLE_NAME,
-            _DB_TABLE_FIELDS
-        )
-
-
-    def __update_with_results__(self, row_id, end_time):
-        if self.stderr_output():
-            stderr_signature = hashlib.sha512(
-                self.stderr_output().encode()
-            ).hexdigest()
-        else:
-            stderr_signature = ""
-
-        #
-        # Read input / output file contents
-        #
-        input_files = {}
-        output_files = {}
-
-        files = (
-            (input_files, self.input_files),
-            (output_files, self.output_files)
-        )
-
-        for (file_results, file_orig) in files:
-            for in_file_name, in_file_path in file_orig.items():
-                file_results[in_file_name] = {
-                    "path": in_file_path,
-                    "content": base64.b64encode(open(in_file_path, "rb").read()).decode()
-                }
-
-        return db.update(
-            row_id,
-            _DB_TABLE_NAME,
-            {
-                "stdout": self.console_output(),
-                "stdout_signature": hashlib.sha512(self.console_output().encode()).hexdigest(),
-                "stderr": self.stderr_output(),
-                "stderr_signature": stderr_signature,
-                "end_time": end_time,
-                "in_files": json.dumps(input_files),
-                "out_files": json.dumps(output_files)
-            }
-        )
-
-    def __add_to_database__(self, command, start_time):
-        return db.insert(
-            _DB_TABLE_NAME,
-            [
-                command,
-                str(start_time),
-                None,
-                None,
-                None,
-                None,
-                None,
-                ",".join(self.input_files.values()),
-                ",".join(self.output_files.values())
-            ]
-        )
 
     @abc.abstractmethod
     def run_ctx(self):
@@ -159,12 +87,10 @@ class LocalExecutor(Executor):
     def _replace_files_in_command_(self) -> str:
         return self.command.format(**{**self.output_files, **self.input_files})
 
-    async def finish_run(self, row_id, process, wait=True):
+    async def finish_run(self, process, wait=True):
         if wait:
             await process.communicate()
         self.error_code = process.returncode
-        end_time = time.time()
-        self.__update_with_results__(row_id, end_time)
 
     async def run_ctx(self):
 
@@ -176,8 +102,6 @@ class LocalExecutor(Executor):
         run_env.update(self.environment)
 
         command = shlex.split(new_command)
-
-        row_id: str = self.__add_to_database__(new_command, start_time)
         
         # process = await asyncio.create_subprocess_shell(new_command,
         #                            env=run_env,
@@ -217,11 +141,9 @@ class LocalExecutor(Executor):
             line = output.strip()
             self._console_stderr.append(output.strip())
 
-        await self.finish_run(row_id, process)
+        await self.finish_run(process)
 
 class execution(object):
-
-    __db_created__: bool = False
 
     def __init__(self, command: str, metadata: dict = None, environment: dict = None, interactive=False):
         self.command = command

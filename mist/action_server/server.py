@@ -9,7 +9,6 @@ from flask_sse import sse
 from .editor import setup_editor
 from .helpers import setup_custom_errors, ensure_json
 from .realtime import setup_realtime
-from .server_catalog import get_server_catalog
 from .storage import Redis, current_jobs
 from ..action_run import execute_from_text
 from ..guuid import guuid
@@ -143,7 +142,8 @@ def run_server(parsed_args: argparse.Namespace):
     app.config["EXECUTOR_MAX_WORKERS"] = concurrency
     app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 
-    app.commands, app.cheatsheet = get_server_catalog()
+    #TODO: fill with commands from catalog and builtin functions
+    app.commands, app.cheatsheet = [], []
     executor.init_app(app)
 
     app.run(host=listen_addr, port=listen_port, debug=False)

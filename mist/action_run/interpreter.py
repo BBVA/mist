@@ -6,7 +6,6 @@ from io import StringIO
 from contextlib import redirect_stdout
 from typing import Callable
 
-from mist.lang.db import db
 from mist.lang.config import config
 from mist.lang.params import params
 from mist.lang.herlpers import command_runner
@@ -66,11 +65,6 @@ async def execute_from_text(text: str,
         "simulate": False,
         "no_check_tools": False
     }
-
-    if db_path := kwargs.get("database_path", None):
-        db.setup(f"sqlite3://{db_path}")
-    else:
-        db.setup()
 
     #
     # Overwrite print buildin function to send each print(...) line to

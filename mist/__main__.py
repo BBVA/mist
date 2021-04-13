@@ -6,11 +6,7 @@ import pkg_resources
 from pathlib import Path
 
 from mist.action_run import cli_run
-from mist.action_log import cli_log
 from mist.action_server import cli_server
-from mist.action_catalog import cli_catalog
-from mist.action_catalog import CORE_CATALOG, Catalog
-
 
 HERE = os.path.dirname(__file__)
 
@@ -28,13 +24,9 @@ def build_cli() -> argparse.ArgumentParser:
 
 Available commands:
    run        Run a .mist file
-   log        Manage execution log of MIST database
    help       Displays help menu
    server     Run live editor on browser
    version    Displays installed MIST version
-   catalog    Manage MIST catalogs
-
-MIST Log manager
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -62,9 +54,7 @@ optional arguments:
     help_action.set_defaults(func=handler_version)
 
     cli_run(subparsers)
-    cli_log(subparsers)
     cli_server(subparsers)
-    cli_catalog(subparsers)
 
     return parser
 
@@ -80,20 +70,6 @@ def main():
               "Try with Docker:\n")
         print("   $ docker run --rm bbvalabs/mist -h")
         exit(1)
-
-    #
-    # Checks if ~/.mist is created and download core catalog
-    #
-    home = Path().home().joinpath(".mist")
-
-    if not home.exists():
-        home.mkdir()
-
-    # if not home.joinpath("catalog").exists():
-    #     home.joinpath("catalog").mkdir(parents=True)
-    #
-    # if not home.joinpath("catalog").joinpath("catalog.db").exists():
-    #     catalog_path = Catalog.add_catalog(CORE_CATALOG)
 
     main_parser = build_cli()
 

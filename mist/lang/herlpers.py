@@ -4,7 +4,6 @@ from string import Formatter
 
 import asyncio
 
-from mist.lang.db import db
 from mist.lang.config import config
 from mist.lang.environment import environment
 from mist.lang.params import params
@@ -27,7 +26,7 @@ def get_var(var, stack):
     for s in reversed(stack):
         if var in s:
             return s[var]
-    return db.fetch_table_as_dict(var)
+    raise MistUndefinedVariableException(var)
 
 def getFromDict(d, childs):
     return d[childs[0]] if len(childs) == 1 else getFromDict(d[childs[0]], childs[1:])

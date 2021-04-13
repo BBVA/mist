@@ -2,7 +2,7 @@ import unittest
 
 from unittest.mock import patch
 
-from mist.lang.herlpers import get_var, db
+from mist.lang.herlpers import get_var
 
 from test.utilTest import *
 
@@ -39,17 +39,3 @@ class Get_var_Test(unittest.TestCase):
         ret = get_var(var_name, get_mistStack())
 
         self.assertEqual(var_value, ret)
-
-    @patch.object(db, 'fetch_table_as_dict')
-    def test_returns_table_values_when_given_variable_name_not_in_stack(self, mock_fetch_table_as_dict):
-        table = [
-            {"id": "", "col01": "val01", "col02": "val02", "col03": "val03"},
-            {"id": "", "col01": "val11", "col02": "val12", "col03": "val13"},
-            {"id": "", "col01": "val21", "col02": "val22", "col03": "val23"}]
-        init_mist()
-        create_variable("FOO", "BAR")
-        mock_fetch_table_as_dict.return_value = table
-
-        ret = get_var("FOOBAR", get_mistStack())
-
-        self.assertEqual(table, ret)

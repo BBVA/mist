@@ -1,7 +1,6 @@
 from mist.lang.config import config
 from mist.lang.environment import environment
 from mist.lang.params import params
-from mist.lang.db import db
 
 
 _mistStack = []
@@ -12,7 +11,6 @@ class MistObj(object):
 
 def init_mist(mistConfig={'debug': True}, mistEnvironment=None, mistParams=None):
 
-    db.setup() # ?needed?
     if mistConfig:
         config.update(mistConfig)
     if mistEnvironment:

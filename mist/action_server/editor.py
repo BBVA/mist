@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-from ..action_catalog import Catalog
 import json
 
 def setup_editor(_app: Flask):

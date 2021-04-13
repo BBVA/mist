@@ -3,10 +3,7 @@ import tempfile
 from unittest import (IsolatedAsyncioTestCase, TestCase, skip)
 from unittest.mock import patch
 
-import sqlite3
-
 from mist.lang.exceptions import MistException
-from mist.lang.db import db
 from mist.lang.function import (functions, tmpFileFunction, fileWriteLine, rangeFunction,
                                 searchInText, searchInXML, searchInJSON,
                                 readFile, readFileAsLines, objectLen, listMap, listReduce)

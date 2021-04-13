@@ -13,7 +13,6 @@ from mist.lang.environment import environment
 from mist.lang.cmd import execution
 from mist.lang.function import functions
 from mist.lang.config import config
-from mist.lang.db import db
 from mist.lang.exceptions import MistAbortException, MistException, MistUndefinedVariableException, MistPipelineException
 from mist.lang.herlpers import MistCallable, get_var, params, command_runner, function_runner, get_id, get_key, get_param, getChildFromVar, resolve_list_dict_reference, ValueContainer
 

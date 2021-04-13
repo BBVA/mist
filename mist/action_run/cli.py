@@ -2,7 +2,6 @@ import argparse
 
 from mist.lang.config import config
 from mist.lang.params import params
-from mist.lang.db import db
 from mist.lang.exceptions import MistMissingBinaryException, MistInputDataException, MistAbortException, MistUndefinedVariableException
 
 from .interpreter import execute
@@ -22,19 +21,6 @@ def cli_handler(parsed_args: argparse.Namespace):
     #
     config.load_cli_values(parsed_args)
     load_cli_exec_values(params, parsed_args)
-
-    #
-    # Setup database
-    #
-    if config.database_path:
-        if config.database_path != 'default':
-            if not config.database_path.endswith("db"):
-                config.database_path = f"{config.database_path}.db"
-            db.setup(f"sqlite3://{config.database_path}")
-        else:
-            db.setup(f"sqlite3://{config.MIST_FILE}.db")
-    else:
-        db.setup()
 
     try:
         execute()
@@ -72,20 +58,12 @@ def cli_handler(parsed_args: argparse.Namespace):
         print()
         print("[*] Closing session")
         print()
-    finally:
-        # Write database signature
-        if db.db_path:
-            signature_path = f"{db.db_path}.signature.txt"
-
-            with open(signature_path, "w") as f:
-                f.write(db.signature())
-            #   f.write(db.sign())
 
 def cli_run(parser: argparse._SubParsersAction):
     run_parser = parser.add_parser('run',
         prog='mist run',
         description='execute a .mist file',
-        usage='''%(prog)s [-h] [-N] [-C] [-R] [-d] [-S] [-p] [-db DATABASE_PATH] MIST_FILE [PARAMS ...]
+        usage='''%(prog)s [-h] [-N] [-C] [-R] [-d] [-S] [-p] IST_FILE [PARAMS ...]
 
 execute a .mist file
 
@@ -100,8 +78,6 @@ optional arguments:
   -R, --real-time       display console output in real time
   -d, --debug           enable debug messages
   -S, --simulate        simulate without execute
-  -db [DATABASE_PATH], --database-path [DATABASE_PATH]
-                        database path file
     ''',
         add_help=False)
     run_parser.add_argument('OPTIONS',
@@ -127,9 +103,4 @@ optional arguments:
                             action="store_true",
                             help="simulate without execute",
                             default=False)
-    run_parser.add_argument('-db', '--database-path',
-                            help="database path file",
-                            nargs='?',
-                            const='default',
-                            default=None)
     run_parser.set_defaults(func=cli_handler)

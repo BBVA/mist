@@ -10,7 +10,6 @@ import inspect
 from functools import partial
 import uuid
 
-from mist.lang.db import db
 from mist.lang.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 from mist.lang.config import config
 from mist.lang.cmd import execution
