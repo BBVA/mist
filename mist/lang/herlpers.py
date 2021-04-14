@@ -106,6 +106,8 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
                 await command_runner(f["commands"], stack)
     else:
         if isNative:
+            if targetStream:
+                stack[-1]["targetStream"] = targetStream
             return await callNative(f, args, namedArgs, namedArgsDict, stack, commands)
         await command_runner(f["commands"], stack)
         lastStack = stack.pop()

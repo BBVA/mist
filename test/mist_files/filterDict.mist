@@ -1,0 +1,10 @@
+dict1 = {"a": 1, "b": 2, "c": 3}
+
+dict2 = filterDict(dict1,["a","b"])
+print(dict2)
+
+dict3 = filterDict(dict1,["a","b"],["aa","b"])
+print(dict3)
+
+dict4 = filterDict(dict1,["a","b"],["aa","bb"])
+print(dict4)

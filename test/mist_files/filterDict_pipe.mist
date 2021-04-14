@@ -1,0 +1,10 @@
+dict1 = {"a": 1, "b": 2, "c": 3}
+
+filterDict(dict1, ["a","b"]) => print()
+
+function f1() => p {
+    d = {"a": 1, "b": 2, "c": 3}
+    d => p
+}
+
+f1() => filterDict(["a"]) => print()

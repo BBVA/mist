@@ -239,6 +239,17 @@ def processWriteLine(p, input, stack:list=None, commands:list=None):
 def uuidStr(stack:list=None, commands:list=None):
     return str(uuid.uuid4())
 
+async def filterDict(d:dict, names:list, newNames:list=None, stack:list=None, commands:list=None):
+    result = {}
+    for index, name in enumerate(names):
+        if newNames:
+            result[newNames[index]] = d[name]
+        else:
+            result[name] = d[name]
+    if "targetStream" in stack[-1]: 
+        await streams.send(stack[-1]["targetStream"][0], result)
+    return result
+
 class _Functions(dict):
 
     def __init__(self):
@@ -277,6 +288,8 @@ class _Functions(dict):
         self["kill"] = {"native": True, "commands": kill}
         self["processWriteLine"] = {"native": True, "commands": processWriteLine}
         self["uuidStr"] = {"native": True, "commands": uuidStr}
+        self["filterDict"] = {"native": True, "commands": filterDict, "async": True}
+        
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
