@@ -355,18 +355,18 @@ bar <span class="o">=</span> True
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>NOTE: Be aware that out1 and out2 is refered to pipes and not to the return value. This will be explained in the Pipes section.</p>
+<p>NOTE: Be aware that out1 and out2 is refered to streams and not to the return value. This will be explained in the Streams section.</p>
 
 <p>Example:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span>salute<span class="o">(</span>name<span class="o">)</span> <span class="o">{</span>
     <span class="k">return</span> <span class="s2">"Hello {name}"</span>
 <span class="o">}</span>
+</code></pre></div></div>
 
-You can invoke a <span class="k">function </span>with positional parameters or with named parameters. For example, invoking previous defined <span class="k">function</span>:
+<p>You can invoke a function with positional parameters or with named parameters. For example, invoking previous defined function:</p>
 
-<span class="sb">```</span>bash
-print<span class="o">(</span>salute<span class="o">(</span><span class="s2">"John"</span><span class="o">))</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print<span class="o">(</span>salute<span class="o">(</span><span class="s2">"John"</span><span class="o">))</span>
 print<span class="o">(</span>salute<span class="o">(</span><span class="nv">name</span><span class="o">=</span><span class="s2">"John"</span><span class="o">))</span>
 </code></pre></div></div>
 
@@ -425,18 +425,133 @@ mylibMyPrint("Hola")
 <p>Note that Python functions receives 2 additional parameters: <em>stack</em> and <em>commands</em>. You can use those parameters to implement advanced functionality.
 The <em>import</em> directive can also import remote files. Example:</p>
 
-<p><code class="language-plaintext highlighter-rouge">bash file=myProgram.mist
-import "https://raw.githubusercontent.com/BBVA/mist/master/test/mist_files/mylib.py"
-mylibMyPrint("Hola")
-</code></p>
+<p>```bash file=myProgram.mist
+import “https://raw.githubusercontent.com/BBVA/mist/master/test/mist_files/mylib.py”
+mylibMyPrint(“Hola”)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+## Streams
 
-<h2 id="streams">Streams</h2>
+### Source streams
 
-<h2 id="finally-hook">Finally Hook</h2>
+In order to comunicate funtion MIST implements streams. When running a function you can specify a source stream to replace one parameter using the following syntax:
 
-<h2 id="structures-and-watch">Structures and Watch?????</h2>
+```bash
+myfunction(:mystream,[param2, param3,...])
 
-<h2 id="abort-vs-done">Abort vs done?</h2>
+or
+
+:mystream =&gt; myfunction([param2, param3,...])
+
+or
+
+mystream =&gt; myfunction([param2, param3,...])
+</code></pre></div></div>
+
+<p>Note that with arrow notation the streams is always mapped to first parameter of the function.</p>
+
+<p>When a new element is inserted in the stream, the function myfunction will be asyncronous invoked using the element of the stream as first parameter. The other parameters will be the same on eachh invocation.</p>
+
+<p>No more than one instance of myfunction will be running at the same time. If there are more elements in the streams they will wait in the stream using FIFO strategy.</p>
+
+<p>You can also use the arrow notation to invoke a function.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>value or <span class="k">function</span><span class="o">)</span> <span class="o">=&gt;</span> myStream
+</code></pre></div></div>
+
+<p>In this case leftValue is a value (string, integer, dictionary…) or a variable. Example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"hello"</span> <span class="o">=&gt;</span> print<span class="o">()</span>
+</code></pre></div></div>
+
+<p>NOTE: You can only use one source stream when invoking a function.</p>
+
+<h3 id="send-operator">Send operator</h3>
+
+<p>You can send data to an stream using the following syntax:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>leftValue <span class="o">=&gt;</span> myStream
+</code></pre></div></div>
+
+<p>In this case leftValue is a value (string, integer, dictionary…) or a variable. Example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mystream <span class="o">=&gt;</span> print<span class="o">()</span>
+<span class="s2">"hello"</span> <span class="o">=&gt;</span> mystream
+<span class="s2">"John"</span> <span class="o">=&gt;</span> mystream
+</code></pre></div></div>
+
+<h3 id="function-with-target-streams">Function with target streams</h3>
+
+<p>A function can send data to one or several streams. When defining a function you can specify how many targets stream you have and an internal name.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span>functionName <span class="o">(</span>param1name, param2name, ...<span class="o">)</span> <span class="o">[=&gt;</span> out1, out2...] <span class="o">{</span>
+    commands...
+    <span class="k">return </span>value
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>out1 and out2 are the internal names of streams where the function will send data. Let us see this with an example:</p>
+
+<p>The following code will print “foo” twice in the console:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span><span class="nb">tee</span><span class="o">(</span>i<span class="o">)</span> <span class="o">=&gt;</span> p <span class="o">{</span>
+    print<span class="o">(</span>i<span class="o">)</span>
+    i <span class="o">=&gt;</span> p
+<span class="o">}</span>
+
+<span class="nb">tee</span><span class="o">(</span><span class="s2">"foo"</span><span class="o">)</span> <span class="o">=&gt;</span> myStream
+myStream <span class="o">=&gt;</span> print<span class="o">()</span>
+</code></pre></div></div>
+
+<p>In contrast to source streams. You can can have more than one target streams when defining and invoking a function.</p>
+
+<p>If we invoke a function that has output streams without specifying the real streams. The output data will be discarded.</p>
+
+<p>Note than a function can return a value and also produce data to output streams.</p>
+
+<h3 id="chains">Chains</h3>
+
+<p>We call chains to several functions connected with arrows.</p>
+
+<p>The following examples will also print “foo” twice in the console:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">tee</span><span class="o">(</span><span class="s2">"foo"</span><span class="o">)</span> <span class="o">=&gt;</span> myStream <span class="o">=&gt;</span> print<span class="o">()</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">tee</span><span class="o">(</span><span class="s2">"foo"</span><span class="o">)</span> <span class="o">=&gt;</span> print<span class="o">()</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"foo"</span> <span class="o">=&gt;</span> <span class="nb">tee</span><span class="o">()</span> <span class="o">=&gt;</span> print<span class="o">()</span>
+</code></pre></div></div>
+
+<p>Note that you can omit the name of the stream when connecting two functions. In this case, a hidden stream will be created automatically.</p>
+
+<p>When a function produces to more than one stream. Only the first stream will be connected to the next function.</p>
+
+<h2 id="finally-hook-and-abort-function">Finally Hook and abort function</h2>
+
+<p>There are a special funcion named “finallyHook” that will be invoked once at the end of the program. This can be used to close connection, and run the needed final code of your program. Example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function </span>finallyHook<span class="o">()</span> <span class="o">{</span>
+    print<span class="o">(</span><span class="s2">"This will be executed at the end of the program"</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The function “abort(reason)” will end the program inmediatelly. The finally hook will not be executed. You can invoke it in any place of your program. It can be considered as the last option when you cannot recover from an error.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>abort<span class="o">(</span><span class="s2">"My custom panic message"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="reserved-work-done">Reserved work: done</h2>
+
+<p>The reserver word “done” will stop the execution of a block of code (closure)</p>
+
+<p>Used inside a function will work as a return without a value.</p>
+
+<p>Used inside an if-else structure will stop the execution of the closure.</p>
 
 
         

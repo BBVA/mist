@@ -278,16 +278,11 @@
 
 <p><img src="content/assets/images/mist-demo-1.png" alt="Demo 1" /></p>
 
-<p><strong>MIST code</strong></p>
+<p><strong>MIST code</strong> (examples/demo/scenario-01.mist)</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># examples/demo/scenario-01.mist</span>
-include <span class="s2">"searchDomains"</span> <span class="s2">"findOpenPorts"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include <span class="s2">"searchDomains"</span> include <span class="s2">"findOpenPorts"</span>
 
-searchDomains<span class="o">(</span>%domain<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
-
-findOpenPorts<span class="o">(</span>:foundDomains, <span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> openPortsFound
-
-print<span class="o">(</span>:openPortsFound<span class="o">)</span>
+searchDomains<span class="o">(</span>%domain<span class="o">)</span> <span class="o">=&gt;</span> findOpenPorts<span class="o">(</span><span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> print<span class="o">()</span>
 </code></pre></div></div>
 
 <p><strong>Execute</strong></p>
@@ -312,16 +307,12 @@ print<span class="o">(</span>:openPortsFound<span class="o">)</span>
 
 <p><img src="content/assets/images/mist-demo-2.png" alt="Demo 2" /></p>
 
-<p><strong>MIST code</strong></p>
+<p><strong>MIST code</strong> (examples/demo/scenario-02.mist)</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># examples/demo/scenario-02.mist</span>
-include <span class="s2">"searchDomains"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"kafkaProducer"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include <span class="s2">"searchDomains"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"kafkaProducer"</span>
 
-searchDomains<span class="o">(</span>%domain<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
-
-findOpenPorts<span class="o">(</span>:foundDomains, <span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> openPortsFound
-
-kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span>, :openPortsFound<span class="o">)</span>
+searchDomains<span class="o">(</span>%domain<span class="o">)</span> <span class="o">=&gt;</span> findOpenPorts<span class="o">(</span><span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> 
+    kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span><span class="o">)</span>
 </code></pre></div></div>
 
 <p><strong>Execute</strong></p>
@@ -352,20 +343,15 @@ kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <spa
 
 <p><img src="content/assets/images/mist-demo-3.png" alt="Demo 3" /></p>
 
-<p><strong>MIST code</strong></p>
+<p><strong>MIST code</strong> (examples/demo/scenario-03.mist)</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># examples/demo/scenario-03.mist</span>
-include <span class="s2">"searchDomains"</span> <span class="s2">"festin"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"filterRepeated"</span> <span class="s2">"kafkaProducer"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include <span class="s2">"searchDomains"</span> <span class="s2">"festin"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"filterRepeated"</span> <span class="s2">"kafkaProducer"</span>
 
 searchDomains<span class="o">(</span>%domain<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
 festin<span class="o">(</span>%domain, <span class="nv">$DNS_SERVER</span>, True<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
 
-filterRepeated<span class="o">(</span>:foundDomains, False<span class="o">)</span> <span class="o">=&gt;</span> nonRepeatedFoundDomains
-
-findOpenPorts<span class="o">(</span>:nonRepeatedFoundDomains, <span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> openPortsFound
-
-kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span>, :openPortsFound<span class="o">)</span>
-
+foundDomains <span class="o">=&gt;</span> filterRepeated<span class="o">(</span>False<span class="o">)</span> <span class="o">=&gt;</span> 
+    findOpenPorts<span class="o">(</span><span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span><span class="o">)</span>
 </code></pre></div></div>
 
 <p><strong>Execute</strong></p>
@@ -402,32 +388,26 @@ kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <spa
 
 <p><img src="content/assets/images/mist-demo-4.png" alt="Demo 4" /></p>
 
-<p><strong>MIST code</strong></p>
+<p><strong>MIST code</strong> (examples/demo/scenario-04.mist)</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># examples/demo/scenario-04.mist</span>
-include <span class="s2">"searchDomains"</span> <span class="s2">"festin"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"filterRepeated"</span> <span class="s2">"kafkaProducer"</span> <span class="s2">"S3Store"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include <span class="s2">"searchDomains"</span> <span class="s2">"festin"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"filterRepeated"</span> <span class="s2">"kafkaProducer"</span> <span class="s2">"S3Store"</span>
 
-<span class="k">function </span>dispacher<span class="o">(</span>p<span class="o">)</span> <span class="o">{</span>
+<span class="k">function </span>dispatcher<span class="o">(</span>p<span class="o">)</span> <span class="o">=&gt;</span> kafka, S3 <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span>isEqual<span class="o">(</span>p.port, <span class="s2">"80"</span><span class="o">))</span> <span class="o">{</span>
-        send<span class="o">(</span>p, <span class="s2">"kafkaOutput"</span><span class="o">)</span>
+        p <span class="o">=&gt;</span> kafka
     <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-        send<span class="o">(</span>p, <span class="s2">"S3Output"</span><span class="o">)</span>
+        p <span class="o">=&gt;</span> S3
     <span class="o">}</span>
 <span class="o">}</span>
 
 searchDomains<span class="o">(</span>%domain<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
 festin<span class="o">(</span>%domain, <span class="nv">$DNS_SERVER</span>, True<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
 
-filterRepeated<span class="o">(</span>:foundDomains, False<span class="o">)</span> <span class="o">=&gt;</span> nonRepeatedFoundDomains
+foundDomains <span class="o">=&gt;</span> filterRepeated<span class="o">(</span>False<span class="o">)</span> <span class="o">=&gt;</span>
+    findOpenPorts<span class="o">(</span><span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> dispatcher<span class="o">()</span> <span class="o">=&gt;</span> kafkaOutput, S3Output
 
-findOpenPorts<span class="o">(</span>:nonRepeatedFoundDomains, <span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> openPortsFound
-
-dispacher<span class="o">(</span>:openPortsFound<span class="o">)</span>
-
-kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span>, :kafkaOutput<span class="o">)</span>
-
-S3Store<span class="o">(</span>:S3Output, <span class="nv">$BUCKET_URI</span><span class="o">)</span>
-
+kafkaOutput <span class="o">=&gt;</span> kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span><span class="o">)</span>
+S3Output <span class="o">=&gt;</span> S3Store<span class="o">(</span><span class="nv">$BUCKET_URI</span><span class="o">)</span>
 </code></pre></div></div>
 
 <p><strong>Execute</strong></p>
@@ -467,35 +447,30 @@ S3Store<span class="o">(</span>:S3Output, <span class="nv">$BUCKET_URI</span><sp
 
 <p><img src="content/assets/images/mist-demo-5.png" alt="Demo 5" /></p>
 
-<p><strong>MIST code</strong></p>
+<p><strong>MIST code</strong> (examples/demo/scenario-05.mist)</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># examples/demo/scenario-05.mist</span>
-include <span class="s2">"searchDomains"</span> <span class="s2">"festin"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"filterRepeated"</span> <span class="s2">"kafkaProducer"</span> <span class="s2">"S3Store"</span> <span class="s2">"kafkaConsumer"</span> <span class="s2">"tail"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>include <span class="s2">"searchDomains"</span> <span class="s2">"festin"</span> <span class="s2">"findOpenPorts"</span> <span class="s2">"filterRepeated"</span> <span class="s2">"kafkaProducer"</span> <span class="s2">"S3Store"</span> <span class="s2">"kafkaConsumer"</span> <span class="s2">"tail"</span>
 
-<span class="k">function </span>dispacher<span class="o">(</span>p<span class="o">)</span> <span class="o">{</span>
+<span class="k">function </span>dispatcher<span class="o">(</span>p<span class="o">)</span> <span class="o">=&gt;</span> kafka, S3 <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span>isEqual<span class="o">(</span>p.port, <span class="s2">"80"</span><span class="o">))</span> <span class="o">{</span>
-        send<span class="o">(</span>p, <span class="s2">"kafkaOutput"</span><span class="o">)</span>
+        p <span class="o">=&gt;</span> kafka
     <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-        send<span class="o">(</span>p, <span class="s2">"S3Output"</span><span class="o">)</span>
+        p <span class="o">=&gt;</span> S3
     <span class="o">}</span>
 <span class="o">}</span>
 
 kafkaConsumer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"inputTopic"</span>, <span class="s2">"*END*"</span>, False<span class="o">)</span> <span class="o">=&gt;</span> inputDomains
 <span class="nb">tail</span><span class="o">(</span><span class="s2">"domains.txt"</span>, <span class="s2">"*END*"</span><span class="o">)</span> <span class="o">=&gt;</span> inputDomains
-send<span class="o">(</span>%domain, <span class="s2">"inputDomains"</span><span class="o">)</span>
+%domain <span class="o">=&gt;</span> inputDomains
 
-searchDomains<span class="o">(</span>:inputDomains<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
-festin<span class="o">(</span>:inputDomains, <span class="nv">$DNS_SERVER</span>, True<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
+inputDomains <span class="o">=&gt;</span> searchDomains<span class="o">()</span> <span class="o">=&gt;</span> foundDomains
+inputDomains <span class="o">=&gt;</span> festin<span class="o">(</span><span class="nv">$DNS_SERVER</span>, True<span class="o">)</span> <span class="o">=&gt;</span> foundDomains
 
-filterRepeated<span class="o">(</span>:foundDomains, False<span class="o">)</span> <span class="o">=&gt;</span> nonRepeatedFoundDomains
+foundDomains <span class="o">=&gt;</span> filterRepeated<span class="o">(</span>False<span class="o">)</span> <span class="o">=&gt;</span> findOpenPorts<span class="o">(</span><span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> 
+    dispatcher<span class="o">()</span> <span class="o">=&gt;</span> kafkaOutput, S3Output
 
-findOpenPorts<span class="o">(</span>:nonRepeatedFoundDomains, <span class="s2">"80,443"</span><span class="o">)</span> <span class="o">=&gt;</span> openPortsFound
-
-dispacher<span class="o">(</span>:openPortsFound<span class="o">)</span>
-
-kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span>, :kafkaOutput<span class="o">)</span>
-
-S3Store<span class="o">(</span>:S3Output, <span class="nv">$BUCKET_URI</span><span class="o">)</span>
+kafkaOutput <span class="o">=&gt;</span> kafkaProducer<span class="o">(</span><span class="nv">$KAFKA_SERVER</span>, <span class="s2">"domainsTopic"</span><span class="o">)</span>
+S3Output <span class="o">=&gt;</span> S3Store<span class="o">(</span><span class="nv">$BUCKET_URI</span><span class="o">)</span>
 </code></pre></div></div>
 
 <p><strong>Execute</strong></p>

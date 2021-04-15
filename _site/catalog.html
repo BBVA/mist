@@ -241,10 +241,54 @@
         
         <h1 id="mist-catalog">Mist Catalog</h1>
 
+<p><a id="mist/catalog/S3Store.md"></a></p>
+<h1 id="s3store-command"><em>S3Store</em> command</h1>
+
+<h2 id="description">Description</h2>
+
+<p>This command stores the data received as lines in the given S3 URI. This command
+is intended to be used with a stream.</p>
+
+<h2 id="input-parameters">Input parameters</h2>
+
+<ul>
+  <li><strong>text</strong>: Source stream to read text lines from</li>
+  <li><strong>remoteUri</strong>: S3Uri of the remote object to create. Must contain bucket, prefix
+and object name</li>
+</ul>
+
+<h2 id="output-parameters">Output parameters</h2>
+
+<p>None.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>This command requires the AWS CLI and the credentials configuration in place.</p>
+
+<h2 id="examples">Examples</h2>
+
+<p>Store the data received from the stream <em>:source</em> as s3://myBucket/facts/list.txt.</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>S3Store(:source, "s3://myBucket/facts/list.txt")
+</code></pre></div></div>
+
+<h2 id="auxiliar-functions">Auxiliar functions</h2>
+
+<h3 id="s3writer"><em>S3Writer</em></h3>
+
+<p>This function copies a local file in the given S3Uri.</p>
+
+<h3 id="input-parameters-1">Input parameters</h3>
+
+<ul>
+  <li><strong>localPath</strong>: Path of the local file to copy</li>
+  <li><strong>remoteUri</strong>: S3Uri of the remote object to create</li>
+</ul>
+
 <p><a id="mist/catalog/festin.md"></a></p>
 <h1 id="festin-command"><em>festin</em> command</h1>
 
-<h2 id="description">Description</h2>
+<h2 id="description-1">Description</h2>
 
 <p>This command finds open S3 buckets from an origin domain list.</p>
 
@@ -252,7 +296,7 @@
 
 <p>Sync or Async</p>
 
-<h2 id="input-parameters">Input parameters</h2>
+<h2 id="input-parameters-2">Input parameters</h2>
 
 <ul>
   <li><strong>originDomain</strong>: Origin domain to search S3 buckets.</li>
@@ -260,7 +304,7 @@
   <li><strong>tor</strong>: “True” if you want to use Tor network, “False” otherwise.</li>
 </ul>
 
-<h2 id="output-parameters">Output parameters</h2>
+<h2 id="output-parameters-1">Output parameters</h2>
 
 <ul>
   <li><strong>result</strong>: Boolean, possible values are: True, if the festin command has been
@@ -293,22 +337,22 @@ print(r["buckets"])
 <p><a id="mist/catalog/filterRepeated.md"></a></p>
 <h1 id="filterrepeated-command"><em>filterRepeated</em> command</h1>
 
-<h2 id="description-1">Description</h2>
+<h2 id="description-2">Description</h2>
 
 <p>To use with queues. This command filter repeated values in a given list. And send non repeated values.</p>
 
-<h2 id="input-parameters-1">Input parameters</h2>
+<h2 id="input-parameters-3">Input parameters</h2>
 
 <ul>
   <li><strong>v</strong>: Any. Input value to check</li>
   <li><strong>values</strong>: List where all values will be saved. (With no repetitions)</li>
 </ul>
 
-<h2 id="output-parameters-1">Output parameters</h2>
+<h2 id="output-parameters-2">Output parameters</h2>
 
 <p>Non repeated items will be sent.</p>
 
-<h2 id="examples">Examples</h2>
+<h2 id="examples-1">Examples</h2>
 
 <p>Filer repeated domains at input queue “domains” and output non repeated to queu “nonRepeatedDomains”.</p>
 
@@ -319,7 +363,7 @@ filterRepeated(:domains, domainProcessed) =&gt; nonRepeatedDomains
 <p><a id="mist/catalog/findOpenPorts.md"></a></p>
 <h1 id="findopenports-command"><em>findOpenPorts</em> command</h1>
 
-<h2 id="description-2">Description</h2>
+<h2 id="description-3">Description</h2>
 
 <p>This command performs a port scan to a target host.</p>
 
@@ -327,7 +371,7 @@ filterRepeated(:domains, domainProcessed) =&gt; nonRepeatedDomains
 
 <p>Sync or Async</p>
 
-<h2 id="input-parameters-2">Input parameters</h2>
+<h2 id="input-parameters-4">Input parameters</h2>
 
 <ul>
   <li><strong>ip</strong>: String. Target IP or dns name.</li>
@@ -335,7 +379,7 @@ filterRepeated(:domains, domainProcessed) =&gt; nonRepeatedDomains
 the protocol (U=UDP, T=TCP, S=SYN scan). Ex: “22”, “1-65535”, “U:53,111,137,T:21-25,80,139,8080,S:9”.</li>
 </ul>
 
-<h2 id="output-parameters-2">Output parameters</h2>
+<h2 id="output-parameters-3">Output parameters</h2>
 
 <ul>
   <li><strong>result</strong>: Boolean, possible values are: True, if the nmap command has been
@@ -356,7 +400,7 @@ executed without errors, or False otherwise.</li>
   <li>nmap</li>
 </ul>
 
-<h2 id="examples-1">Examples</h2>
+<h2 id="examples-2">Examples</h2>
 
 <p>Find open ports among a range (0-9000) at localhost and print them
 out on console.</p>
@@ -374,7 +418,7 @@ print(r)
 <p><a id="mist/catalog/gitLeaksFinder.md"></a></p>
 <h1 id="gitleaksfinder-command"><em>gitLeaksFinder</em> command</h1>
 
-<h2 id="description-3">Description</h2>
+<h2 id="description-4">Description</h2>
 
 <p>Finds sensitive information in Git repositories.</p>
 
@@ -382,13 +426,13 @@ print(r)
 
 <p>Sync</p>
 
-<h2 id="input-parameters-3">Input parameters</h2>
+<h2 id="input-parameters-5">Input parameters</h2>
 
 <ul>
   <li><strong>gitPath</strong>: Path of Git repositories.</li>
 </ul>
 
-<h2 id="output-parameters-3">Output parameters</h2>
+<h2 id="output-parameters-4">Output parameters</h2>
 
 <ul>
   <li><strong>result</strong>: Boolean, possible values are: True, if the gitleaks command has been
@@ -419,7 +463,7 @@ executed without errors and not issues detected, or False otherwise.</li>
   <li>gitleaks</li>
 </ul>
 
-<h2 id="examples-2">Examples</h2>
+<h2 id="examples-3">Examples</h2>
 
 <p>Find sensitive information in git repository at current directory</p>
 
@@ -436,7 +480,7 @@ print(r)
 <p><a id="mist/catalog/kafkaConsumer.md"></a></p>
 <h1 id="kafkaconsumer-command"><em>kafkaConsumer</em> command</h1>
 
-<h2 id="description-4">Description</h2>
+<h2 id="description-5">Description</h2>
 
 <p>Read from a Kafka topic and send values to a queue.</p>
 
@@ -444,7 +488,7 @@ print(r)
 
 <p>Async. This function have to be alwais used with a target queue.</p>
 
-<h2 id="input-parameters-4">Input parameters</h2>
+<h2 id="input-parameters-6">Input parameters</h2>
 
 <ul>
   <li><strong>servers</strong>: String. Server list for bootstrap-server options. Example: “127.0.0.1:9092”</li>
@@ -453,7 +497,7 @@ print(r)
   <li><strong>fromBeginning</strong>: Boolean. True for read the topic from the beginning.</li>
 </ul>
 
-<h2 id="output-parameters-4">Output parameters</h2>
+<h2 id="output-parameters-5">Output parameters</h2>
 
 <p>Every message received in the topic will be send to the queue.</p>
 
@@ -465,7 +509,7 @@ print(r)
   <li>kafka-console-consumer</li>
 </ul>
 
-<h2 id="examples-3">Examples</h2>
+<h2 id="examples-4">Examples</h2>
 
 <p>Connect to Kafka at 127.0.0.1:9092, listen the topic “myTopic” for new messages and send then to “myQueue”.
 When the message “END” arrives, stop listening and finish the process.</p>
@@ -483,7 +527,7 @@ echo(:myQueue)
 <p><a id="mist/catalog/kafkaProducer.md"></a></p>
 <h1 id="kafkaproducer-command"><em>kafkaProducer</em> command</h1>
 
-<h2 id="description-5">Description</h2>
+<h2 id="description-6">Description</h2>
 
 <p>Write messages to a Kafka topic</p>
 
@@ -491,7 +535,7 @@ echo(:myQueue)
 
 <p>Sync(for one message) or Async(for muliple messages received in a queue)</p>
 
-<h2 id="input-parameters-5">Input parameters</h2>
+<h2 id="input-parameters-7">Input parameters</h2>
 
 <ul>
   <li><strong>message</strong>: String. The message to send. You may also want to use a source queue here.</li>
@@ -499,7 +543,7 @@ echo(:myQueue)
   <li><strong>topic</strong>: String. Kafka topic to send messages.</li>
 </ul>
 
-<h2 id="output-parameters-5">Output parameters</h2>
+<h2 id="output-parameters-6">Output parameters</h2>
 
 <p>Every “message” received will be send to kafka topic.</p>
 
@@ -511,7 +555,7 @@ echo(:myQueue)
   <li>kafka-console-producer</li>
 </ul>
 
-<h2 id="examples-4">Examples</h2>
+<h2 id="examples-5">Examples</h2>
 
 <p>Async. Connect to Kafka at 127.0.0.1:9092, listen the topic “q” for new messages and send then to Kafla topic “prueba”.</p>
 
@@ -533,7 +577,7 @@ kafkaProducer("hello", "127.0.0.1:9092", "prueba")
 <p><a id="mist/catalog/pythonCodeAnalysis.md"></a></p>
 <h1 id="pythoncodeanalysis-command"><em>PythonCodeAnalysis</em> command</h1>
 
-<h2 id="description-6">Description</h2>
+<h2 id="description-7">Description</h2>
 
 <p>Performs security code analysis on Python code.</p>
 
@@ -541,13 +585,13 @@ kafkaProducer("hello", "127.0.0.1:9092", "prueba")
 
 <p>Sync</p>
 
-<h2 id="input-parameters-6">Input parameters</h2>
+<h2 id="input-parameters-8">Input parameters</h2>
 
 <ul>
   <li><strong>sources</strong>: Path of Python source code.</li>
 </ul>
 
-<h2 id="output-parameters-6">Output parameters</h2>
+<h2 id="output-parameters-7">Output parameters</h2>
 
 <ul>
   <li><strong>result</strong>: Boolean, possible values are: True, if the gitleaks command has been
@@ -566,7 +610,7 @@ executed without errors and not issues detected, or False otherwise.</li>
   <li>bandit</li>
 </ul>
 
-<h2 id="examples-5">Examples</h2>
+<h2 id="examples-6">Examples</h2>
 
 <p><strong>Basic</strong>: Find vulnerabilities in python code ay current directory</p>
 
@@ -574,50 +618,6 @@ executed without errors and not issues detected, or False otherwise.</li>
 r = gitLeaksFinder("./")
 print(r)
 </code></pre></div></div>
-
-<p><a id="mist/catalog/S3Store.md"></a></p>
-<h1 id="s3store-command"><em>S3Store</em> command</h1>
-
-<h2 id="description-7">Description</h2>
-
-<p>This command stores the data received as lines in the given S3 URI. This command
-is intended to be used with a stream.</p>
-
-<h2 id="input-parameters-7">Input parameters</h2>
-
-<ul>
-  <li><strong>text</strong>: Source stream to read text lines from</li>
-  <li><strong>remoteUri</strong>: S3Uri of the remote object to create. Must contain bucket, prefix
-and object name</li>
-</ul>
-
-<h2 id="output-parameters-7">Output parameters</h2>
-
-<p>None.</p>
-
-<h2 id="dependencies">Dependencies</h2>
-
-<p>This command requires the AWS CLI and the credentials configuration in place.</p>
-
-<h2 id="examples-6">Examples</h2>
-
-<p>Store the data received from the stream <em>:source</em> as s3://myBucket/facts/list.txt.</p>
-
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>S3Store(:source, "s3://myBucket/facts/list.txt")
-</code></pre></div></div>
-
-<h2 id="auxiliar-functions">Auxiliar functions</h2>
-
-<h3 id="s3writer"><em>S3Writer</em></h3>
-
-<p>This function copies a local file in the given S3Uri.</p>
-
-<h3 id="input-parameters-8">Input parameters</h3>
-
-<ul>
-  <li><strong>localPath</strong>: Path of the local file to copy</li>
-  <li><strong>remoteUri</strong>: S3Uri of the remote object to create</li>
-</ul>
 
 <p><a id="mist/catalog/searchDomains.md"></a></p>
 <h1 id="searchdomains-command"><em>searchDomains</em> command</h1>

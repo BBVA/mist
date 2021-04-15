@@ -1,654 +1,346 @@
-# Builtin commands
-
-`MIST` comes with a handful of builtin commands for the most basic tasks. This
-set can be increased by the use of external repositories. Here follow the list
-of builtin commands:
+# Mist builtin functions
 
 
-<!---
-commandName: data
-link: builtin_data.html
-order: 1
---->
-<a id="data"></a>
-## **data** command
+## AND
 
-
-### Description
-
-This command define a knowledge base structure that can be populated later.
-You can access to the component of the structure by using "." symbol
-Every structure can store several instances.
-They can be considered a stack and it can be iterated with the command "iterate".
-When you have put more than one instances in a structure, you have direct access to the last instance inserted.
-
-
-### Syntax
-
-``` text
-  data mydata {
-    key1
-    key2
-    ...
-  }
-```
-
+Boolean AND operator for the given values.
 
 ### Parameters
+- values - List of values to apply the AND operation.
 
-- myDaya: an identifier for the structure
-- keyN: an identifier for a component inside the structure
+### Return value
+Returns the resulting value of applying AND to all parameters.
+    
+## NOT
 
-
-### Examples
-
-This example define the structure myHosys, put 3 instances and then print it.
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "windows" "192.168.1.23" => myHosts(so ip)
-  put "8.8.8.8" "unknown" => myHosts
-
-  # This print all the instaces inserted
-  print myHosts
-
-  # This print 8.8.8.8
-  print myHosts.ip
-```
-
-
-<!---
-commandName: put
-link: builtin_put.html
-order: 2
---->
-<a id="put"></a>
-## **put** command
-
-
-### Description
-
-This command put data to the knowledge base.
-The number of parameter must match with the data structure fields
-
-
-### Syntax
-
-``` text
-  put IDorString [IDorString] [IDorString] ... => targetId
-  put IDorString [IDorString] [IDorString] ... => targetId(field1 field2 field3...)
-```
-
+Boolean not operator.
 
 ### Parameters
+- value
 
-- IdorString: An string or an id with the name of the source local variable.
-- targetId: data structure id of the knowledge base
-- fieldX: optionally, you can chose the order of the fields to put
+### Return value
+Returns the negated value of `value`.
+    
+## OR
 
-
-### Examples
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "windows" "192.168.1.23" => myHosts(so ip)
-  put "8.8.8.8" "unknown" => myHosts
-
-  data myIps {
-    ip
-  }
-
-  iterate myHosts => host {
-    put host.ip => MyIps
-  }
-```
-
-
-<!---
-commandName: print
-link: builtin_print.html
-order: 3
---->
-<a id="print"></a>
-## **print** command
-
-
-### Description
-
-This command write an string, a local variable or a data structure of the knowledge base on console
-
-
-### Syntax
-
-``` text
-  print IDorString
-```
-
+Boolean OR operator for the given values.
 
 ### Parameters
+- values - List of values to apply the OR operation.
 
-- IdorString: An string or an id with the name of the source local variable or data structure.
+### Return value
+Returns the resulting value of applying OR to all parameters.
+    
+## contains
 
-
-### Examples
-
-``` text
-  print "Program init"
-
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "192.168.1.23" "windows" => myHosts
-  put "8.8.8.8" "unknown" => myHosts
-
-  print myHosts
-
-  iterate myHosts => host {
-    print host.ip
-  }
-```
-
-
-<!---
-commandName: check
-link: builtin_check.html
-order: 4
---->
-<a id="check"></a>
-## **check** command
-
-
-### Description
-
-This command check the value of a variable and execute commands if match.
-
-
-### Syntax
-
-``` text
-  check id is value {
-    ...
-  }
-```
-
+Search `values` for `value` and returns true if it's contained.
 
 ### Parameters
+- value - object to search for.
+- values - Collection in which to look for.
 
-- id: an identifier to match with value
-- value: an identifier or string to match with id
+### Return value
+True if `values` contains `value`, false otherwise.
+    
+## abort
 
-
-### Examples
-
-This example define the structure myHosys, put 1 instance, check the ip value and then print some log.
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-
-  check myHosts.ip "127.0.0.1" {
-    print "My IP is the same!"
-  }
-```
-
-
-<!---
-commandName: iterate
-link: builtin_iterate.html
-order: 5
---->
-<a id="iterate"></a>
-## **iterate** command
-
-
-### Description
-
-This command iterate over a data list
-
-
-### Syntax
-
-``` text
-  iterate myList => item {
-    ...
-  }
-```
-
+Abort mist script execurion.
 
 ### Parameters
-
-- myList: An id with the name of the source list: local variable or knowledge base id.
-- item: the name of the local variable to map every item
-
-
-### Examples
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "windows" "192.168.1.23" => myHosts(so ip)
-  put "8.8.8.8" "unknown" => myHosts
-
-  iterate myHosts => host {
-    print host.ip
-  }
-```
-
-
-<!---
-commandName: exec
-link: builtin_exec.html
-order: 6
---->
-<a id="exec"></a>
-## *exec* command
-
-
-### Description
-
-
-This command executes a custom user shell command
-
-
-### Syntax
-
-``` text
-  exec myCustomCommand {
-    input {
-      param1 = param1value
-      ...
-    }
-    output {
-      result
-      resultCode
-      consoleOutput
-      consoleError
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- myCustomCommand: An string with the shell command I want to execute. You can parametrize it using {} place holders
-- paramN: The value of the parameters used in the command
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- resultCode: the exit code provided after command execution
-- consoleOutput: raw text with console standard output of the command.
-- consoleError: raw text with console standard error of the command.
-
-
-### Examples
-
-List all files with "txt" extension
-
-``` text
-  exec "bash -c ls -1 {filter}" {
-    input {
-      filter = "*.txt"
-    }
-    output {
-      result
-      resultCode
-      consoleOutput
-      consoleError
-    }
-    then {
-      print resultCode
-    }
-  }
-```
-
-
-<!---
-commandName: searchInText
-link: builtin_searchInText.html
-order: 7
---->
-<a id="searchInText"></a>
-## *searchInText* command
-
-
-### Description
-
-Search some regex in a text
-
-
-### Syntax
-
-``` text
-  searchInText regex text {
-    output {
-      result
-      found
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- regex: a Python3 regex expression
-- text: a variable that contains the text to look into.
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- found: "True" if regex was found. "False" otherwise
-
-
-### Examples
-
-Find a name in a phrase.
-
-``` text
-  data myData {
-    text
-  }
-  put "Hello, my name is Peter and I like Mist!" => myData
-  searchInText "Peter" myData.text {
-    output {
-      result
-      found
-    }
-    then {
-      check found is True {
-        print "Peter found"
-      }
-    }
-  }
-```
-
-
-<!---
-commandName: searchInXML
-link: builtin_searchInXML.html
-order: 8
---->
-<a id="searchInXML"></a>
-## *searchInXML* command
-
-
-### Description
-
-Search some xpath node in an XML string
-
-Syntax
-------
-
-``` text
-  searchInXML xpath text {
-    output {
-      result
-      found
-      value
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- xpath: an XML xpath to search
-- text: a variable that contains the XML text to look into.
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- found: "True" if xpath was found. "False" otherwise
-- value: If found, it contains the value of the xpath node. "None" otherwise
-
-
-### Examples
-
-Find an item title in a xml document.
-
-``` text
-  data myData {
-    XMLtext
-  }
-
-  put '''<?xml version="1.0" encoding="UTF-8"?>
-  <bookstore>
-    <book category="cooking">
-      <title lang="en">Everyday Italian</title>
-      <author>Giada De Laurentiis</author>
-      <year>2005</year>
-      <price>30.00</price>
-    </book>
-    <book category="children">
-      <title lang="en">Harry Potter</title>
-      <author>J K. Rowling</author>
-      <year>2005</year>
-      <price>29.99</price>
-    </book>
-  </bookstore>
-  ''' => myData
-
-  searchInXML "./book[2]/title" myData.XMLtext {
-    output {
-      r    esult
-      found
-      value
-    }
-    then {
-      print result
-      print found
-      print value
-    }
-  }
-```
-
-
-<!---
-commandName: searchInJSON
-link: builtin_searchInJSON.html
-order: 9
---->
-<a id="searchInJSON"></a>
-## *searchInJSON* command
-
-
-### Description
-
-Search some jsonpath node in an JSON string
-
-
-### Syntax
-
-``` text
-  searchInJSON jsonpath text {
-    output {
-      result
-      found
-      value
-    }
-    then {
-      ...
-    }
-  }
-```
-
-
-### Input parameters
-
-- jsonpath: a JSON path to search
-- text: a variable that contains the JSON text to look into.
-
-
-### Output parameters
-
-- result: a string with values "Success" or "Error". Depending if the command could be executed successfully
-- found: "True" if then jsonpath was found. "False" otherwise
-- value: If found, it contains the value of the jsonpath node. "None" otherwise
-
-
-### Examples
-
-Find an item name in a json document.
-
-``` text
-  data myData {
-    JSONtext
-  }
-
-  put '''
-  {
-  "employees": [
-    {
-      "id": 1,
-      "name": "Pankaj",
-      "salary": "10000"
-    },
-    {
-      "name": "David",
-      "salary": "5000",
-      "id": 2
-    }
-  ]
-  }
-  ''' => myData
-
-  searchInJSON "employees[1].name" myData.JSONtext {
-    output {
-      result
-      found
-      value
-    }
-    then {
-      print result
-      print found
-      print value
-    }
-  }
-```
-
-
-<!---
-commandName: csvDump
-link: builtin_csvDump.html
-order: 10
---->
-<a id="csvDump"></a>
-## *CSVdump* command
-
-
-### Description
-
-This command write a data structure of the knowledge base into a CSV file
-
-
-### Syntax
-
-``` text
-  CSVdump data => "targetFile.csv"
-```
-
+- reason - A text describing the cause.
+    
+## print
+
+Print the arguments in a standard output line.
 
 ### Parameters
+- texts - Variable list of arguments to print.
+    
+## exec
 
-- data: An id with the name of the source data structure in the knowledge base
-- "targetFile.csv": An string with the path and name of the target CSV file
-
-
-### Examples
-
-Define a data structure, fill it with some content, and dump it to a CSV file.
-
-``` text
-  data myHosts {
-    ip
-    so
-  }
-
-  put "127.0.0.1" "linux" => myHosts
-  put "192.168.1.23" "windows" => myHosts
-  put "8.8.8.8" "unknown" => myHosts
-
-  CSVdump myHosts => "myHosts.csv"
-```
-
-
-<!---
-commandName: csvPut
-link: builtin_csvPut.html
-order: 11
---->
-<a id="csvPut"></a>
-## *CSVput* command
-
-
-### Description
-
-This command reads a CSV file and put all the data into the knowledge base
-
-
-### Syntax
-
-``` text
-  CSVput "sourceFile.csv" => target
-```
-
+Runs the given command and returns its output.
 
 ### Parameters
+- command - Command line text to execute.
+- printOutput - Print standard output to the MIST standard output, defaults to true.
+- interactive - Runs the command in interactive mode, defaults to false.
 
-- "sourceFile.csv": An string with the path and name of the source CSV file
-  (CSV header is mandatory, and delimiter must be a comma)
-- target: An id with the target name in the knowledge base
+### Return value
+Returns a dictionary containing the command stderr and stdout and the exit code and description.
+    
+## writeLine
 
-Examples
---------
+Writes a line of text in the given file.
 
-Read a csvFile
+### Parameters
+- name - Path of the file to write to.
+- line - String with the content of the line to write in the file.
+    
+## filterDict
 
-| IP           | SO       |
-|:-------------|:---------|
-| 127.0.0.1    | linux    |
-| 192.168.1.23 | windows  |
-| 8.8.8.8      | unknown  |
+Returns a dictionary containing only the selected entries. If `newNames` is provided the keys are replaced.
 
-and iterate over it printing some of its content.
+### Parameters
+- d - Source dictionary.
+- names - List of keys to filter.
+- newNames - Replacement values for the filtered keys
 
-``` text
-  CSVput "examples/nmap/myhosts.csv" => myHosts
+### Return value
+The filtered dictionary.
+    
+## get
 
-  iterate myHosts => host {
-    print host.ip
-  }
-```
+Return the element of the list at the given index.
+
+### Parameters
+- l - List containing elements.
+- index - The requested index.
+
+### Return value
+Returns the element at the given index.
+    
+## if
+
+Execute the enclosed commands if `val` is true.
+
+### Parameters
+- right - Boolean expression.
+
+### Return value
+Returns true if `val` is true, false otherwise.
+    
+## isEqual
+
+Compares two operands and execute the enclosed commands if both are equal.
+
+### Parameters
+- left - Operand to compare.
+- right - Operand to compare.
+
+### Return value
+Returns true if both operands are equal, false otherwise.
+    
+## isGreater
+
+Compares two operands and execute the enclosed commands if `left` is greater than `right`.
+
+### Parameters
+- left - Operand to compare.
+- right - Operand to compare.
+
+### Return value
+Returns true if `left` is greater than `right`, false otherwise.
+    
+## iterate
+
+Iterates over the elements of a collection while executing the enclosed commands.
+
+### Parameters
+- items - Collection.
+- name - desc.
+    
+## kill
+
+Kill the current process.
+    
+## map
+
+Replace the elements of the given list by aplying the map function to each of them.
+
+### Parameters
+- l - List to process.
+- mapFunc - The function to apply to the list elements, must be defined as mapFunc(val) => val.
+
+### Return value
+Returns the list modified.
+    
+## reduce
+
+Returns the value produced by reduceFunc after applyng it to all the elements of the given list.
+
+### Parameters
+- l - List to process.
+- reduceFunc - The function to process the list elements, must be defined as reduceFunc(base, val) => val.
+
+### Return value
+Returns the value produced.
+    
+## len
+
+Returns the length of the given object.
+
+### Parameters
+- l - Object.
+
+### Return value
+Returns the length.
+    
+None
+## parseInt
+
+Transforms the string value to integer if possible.
+
+### Parameters
+- value - String value.
+
+### Return value
+Integer representation of `value`.
+    
+## parseJSON
+
+Loads a JSON document from a string.
+
+### Parameters
+- jsonstr -  String containing the JSON document.
+
+### Return value
+Returns a JSON document.
+    
+## processWriteLine
+
+Writes a line of text to a process standard input.
+
+### Parameters
+- p - Process descriptor.
+- input - Text to write.
+    
+## eval
+
+Evaluates the given Python expressions.
+
+### Parameters
+- command - Python expression to evaluate.
+
+### Return value
+Retuens the result of evaluating the given expression.
+    
+## range
+
+Creates a list with values generated in the range defined by the parameters.
+
+### Parameters
+- begin - First value in the range.
+- end - Last value, not included, in the range.
+- step - Increment used to generate values, defaults to 1 if begin < end, -11 if end < begin.
+
+### Return value
+A list with all the values generated.
+    
+## readFile
+
+Reads the full content from a given file.
+
+### Parameters
+- path - File path.
+
+### Return value
+Returns the file content.
+    
+## readFileAsLines
+
+Reads the full content from a given file as text lines.
+
+### Parameters
+- path - File path.
+
+### Return value
+Returns a list with all the lines readed from the file.
+    
+## readJSON
+
+Reads a JSON document from a file.
+
+### Parameters
+- jsonfilepath - Path to the file containing the JSON document.
+
+### Return value
+Returns a JSON document.
+    
+## searchInJSON
+
+Finds all the matches of the `JSONpath` expresion in a JSON document.
+
+### Parameters
+- jsonpath - JSONpath expression to define the search.
+- text - The JSON document to search in.
+
+### Return value
+A list with all the matches found.
+    
+## searchInText
+
+Finds all the matches of the `regex` expresion in text.
+
+### Parameters
+- regex - Regular expression to define the search.
+- text - The text to search in.
+
+### Return value
+A list with all the matches found.
+    
+## searchInXML
+
+Finds all the matches of the `xpath` expresion in a XML document.
+
+### Parameters
+- xpath - Xpath expression to define the search.
+- text - The XML document to search in.
+
+### Return value
+A list with all the matches found.
+    
+## sleep
+
+Sleep the current process during the given amount of time.
+
+### Parameters
+- seconds - Seconds to sleep, if given this value takes precedence.
+- ms - Millieconds to sleep, if no secons parameter is given this value is used.
+    
+## strSubstr
+
+Returns a substring.
+
+### Parameters
+- s - String.
+- start - Start position.
+- end - end position.
+
+### Return value
+Returns a substring.
+    
+## terminate
+
+Description.
+
+### Parameters
+- name - desc.
+- name - desc.
+    
+## tmpFile
+
+Creates a temporary file and returns its path.
+
+### Parameters
+- delete - Boolean, defaults to false. The file is deleted after closing it.
+
+### Return value
+Returns the new temporary file's path.
+    
+## toString
+
+Converts the argument to string.
+
+### Parameters
+- value - The value to convert to string.
+
+### Return value
+`value` converted to string.
+    
+## uuidStr
+
+Generates and returns a UUID version 4.
+
+### Return value
+The generated UUID.
+
