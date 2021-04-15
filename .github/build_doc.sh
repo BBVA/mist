@@ -61,8 +61,10 @@ cat docs02 >> $DOCS_FILE
 echo "$LANG_SYNTAX_FILE"
 cp -v mist/lang/SYNTAX.md $LANG_SYNTAX_FILE
 
+# TODO *************************************************************************
 echo "$LANG_FUNCS_FILE"
 cp -v mist/lang/BUILTIN.md $LANG_FUNCS_FILE
+# TODO *************************************************************************
 
 echo "$LANG_CATALOG_FILE"
 echo "# Mist Catalog" > $LANG_CATALOG_FILE
