@@ -1,0 +1,6 @@
+list = [1, 2, 3]
+
+dict = list2dict(list,["a", "b", "c"])
+print(dict)
+
+list => list2dict(["a", "b", "c"]) => print()

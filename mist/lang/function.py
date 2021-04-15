@@ -587,6 +587,14 @@ def autoCall(f, *args, stack:list=None, commands:list=None):
     """ Utility function to invoke dynnamic functions """
     result = f(*args)
     return result if result else args[0]
+    
+async def list2dict(l:list, names:list, stack:list=None, commands:list=None):
+    result = {}
+    for index, value in enumerate(l):
+        result[names[index]] = value
+    if "targetStream" in stack[-1]: 
+        await streams.send(stack[-1]["targetStream"][0], result)
+    return result
 
 class _Functions(dict):
 
@@ -627,7 +635,7 @@ class _Functions(dict):
         self["processWriteLine"] = {"native": True, "commands": processWriteLine}
         self["uuidStr"] = {"native": True, "commands": uuidStr}
         self["filterDict"] = {"native": True, "commands": filterDict, "async": True}
-
+        self["list2dict"] = {"native": True, "commands": list2dict, "async": True}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
