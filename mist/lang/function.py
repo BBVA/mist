@@ -18,56 +18,56 @@ import mist.lang.herlpers as helpers
 from mist.lang.streams import streams
 
 def tmpFileFunction(delete=False, stack:list=None, commands:list=None):
-    """# tmpFile
+    """## tmpFile
 
-    Creates a temporary file and returns its path.
+Creates a temporary file and returns its path.
 
-    ## Parameters
-        delete - Boolean, defaults to false. The file is deleted after closing it.
+### Parameters
+- delete - Boolean, defaults to false. The file is deleted after closing it.
 
-    ## Return value
-        Returns the new temporary file's path.
+### Return value
+Returns the new temporary file's path.
     """
     return tempfile.NamedTemporaryFile(delete=delete).name
 
 def fileWriteLine(name, line, stack:list=None, commands:list=None):
-    """# writeLine
+    """## writeLine
 
-    Writes a line of text in the given file.
+Writes a line of text in the given file.
 
-    ## Parameters
-        name - Path of the file to write to.
-        line - String with the content of the line to write in the file.
+### Parameters
+- name - Path of the file to write to.
+- line - String with the content of the line to write in the file.
     """
     with open(name, 't+a') as f:
         f.write(str(line) + '\n')
 
 def rangeFunction(begin, end, step, stack:list=None, commands:list=None):
-    """# range
+    """## range
 
-    Creates a list with values generated in the range defined by the parameters.
+Creates a list with values generated in the range defined by the parameters.
 
-    ## Parameters
-        begin - First value in the range.
-        end - Last value, not included, in the range.
-        step - Increment used to generate values, defaults to 1 if begin < end, -11 if end < begin.
+### Parameters
+- begin - First value in the range.
+- end - Last value, not included, in the range.
+- step - Increment used to generate values, defaults to 1 if begin < end, -11 if end < begin.
 
-    ## Return value
-        A list with all the values generated.
+### Return value
+A list with all the values generated.
     """
     return list(range(begin, end, step))
 
 def searchInText(regex: str, text: str, stack:list=None, commands:list=None):
-    """# searchInText
+    """## searchInText
 
-    Finds all the matches of the `regex` expresion in text.
+Finds all the matches of the `regex` expresion in text.
 
-    ## Parameters
-        regex - Regular expression to define the search.
-        text - The text to search in.
+### Parameters
+- regex - Regular expression to define the search.
+- text - The text to search in.
 
-    ## Return value
-        A list with all the matches found.
+### Return value
+A list with all the matches found.
     """
     found = []
 
@@ -79,16 +79,16 @@ def searchInText(regex: str, text: str, stack:list=None, commands:list=None):
         return found
 
 def searchInXML(xpath: str, text: str, stack:list=None, commands:list=None):
-    """# searchInXML
+    """## searchInXML
 
-    Finds all the matches of the `xpath` expresion in a XML document.
+Finds all the matches of the `xpath` expresion in a XML document.
 
-    ## Parameters
-        xpath - Xpath expression to define the search.
-        text - The XML document to search in.
+### Parameters
+- xpath - Xpath expression to define the search.
+- text - The XML document to search in.
 
-    ## Return value
-        A list with all the matches found.
+### Return value
+A list with all the matches found.
     """
     found = None
 
@@ -101,16 +101,16 @@ def searchInXML(xpath: str, text: str, stack:list=None, commands:list=None):
         return [ {"tag": e.tag, "text": e.text, "attributes": e.attrib } for e in found ] if found is not None else []
 
 def searchInJSON(jsonpath: str, text: str, stack:list=None, commands:list=None):
-    """# searchInJSON
+    """## searchInJSON
 
-    Finds all the matches of the `JSONpath` expresion in a JSON document.
+Finds all the matches of the `JSONpath` expresion in a JSON document.
 
-    ## Parameters
-        jsonpath - JSONpath expression to define the search.
-        text - The JSON document to search in.
+### Parameters
+- jsonpath - JSONpath expression to define the search.
+- text - The JSON document to search in.
 
-    ## Return value
-        A list with all the matches found.
+### Return value
+A list with all the matches found.
     """
     found = None
 
@@ -124,15 +124,15 @@ def searchInJSON(jsonpath: str, text: str, stack:list=None, commands:list=None):
         return [ e.value for e in found ] if found is not None else []
 
 def readJSON(jsonfilepath: str, stack:list=None, commands:list=None):
-    """# readJSON
+    """## readJSON
 
-    Reads a JSON document from a file.
+Reads a JSON document from a file.
 
-    ## Parameters
-        jsonfilepath - Path to the file containing the JSON document.
+### Parameters
+- jsonfilepath - Path to the file containing the JSON document.
 
-    ## Return value
-        Returns a JSON document.
+### Return value
+Returns a JSON document.
     """
     json_data = {}
     try:
@@ -143,15 +143,15 @@ def readJSON(jsonfilepath: str, stack:list=None, commands:list=None):
     return json_data
 
 def parseJSON(jsonstr: str, stack:list=None, commands:list=None):
-    """# parseJSON
+    """## parseJSON
 
-    Loads a JSON document from a string.
+Loads a JSON document from a string.
 
-    ## Parameters
-        jsonstr -  String containing the JSON document.
+### Parameters
+- jsonstr -  String containing the JSON document.
 
-    ## Return value
-        Returns a JSON document.
+### Return value
+Returns a JSON document.
     """
     json_data = None
     try:
@@ -162,15 +162,15 @@ def parseJSON(jsonstr: str, stack:list=None, commands:list=None):
         return json_data
 
 def readFile(path:str, stack:list=None, commands:list=None):
-    """# readFile
+    """## readFile
 
-    Reads the full content from a given file.
+Reads the full content from a given file.
 
-    ## Parameters
-        path - File path.
+### Parameters
+- path - File path.
 
-    ## Return value
-        Returns the file content.
+### Return value
+Returns the file content.
     """
     if not os.path.isfile(path):
         raise MistException(f"File not found: {path}")
@@ -181,15 +181,15 @@ def readFile(path:str, stack:list=None, commands:list=None):
     return fContent
 
 def readFileAsLines(path:str, stack:list=None, commands:list=None):
-    """# readFileAsLines
+    """## readFileAsLines
 
-    Reads the full content from a given file as text lines.
+Reads the full content from a given file as text lines.
 
-    ## Parameters
-        path - File path.
+### Parameters
+- path - File path.
 
-    ## Return value
-        Returns a list with all the lines readed from the file.
+### Return value
+Returns a list with all the lines readed from the file.
     """
     if not os.path.isfile(path):
         raise MistException(f"File not found: {path}")
@@ -202,17 +202,17 @@ def readFileAsLines(path:str, stack:list=None, commands:list=None):
     return fContent
 
 async def exec(command:str, printOutput=True, interactive=False, stack:list=None, commands:list=None):
-    """# exec
+    """## exec
 
-    Runs the given command and returns its output.
+Runs the given command and returns its output.
 
-    ## Parameters
-        command - Command line text to execute.
-        printOutput - Print standard output to the MIST standard output, defaults to true.
-        interactive - Runs the command in interactive mode, defaults to false.
+### Parameters
+- command - Command line text to execute.
+- printOutput - Print standard output to the MIST standard output, defaults to true.
+- interactive - Runs the command in interactive mode, defaults to false.
 
-    ## Return value
-        Returns a dictionary containing the command stderr and stdout and the exit code and description.
+### Return value
+Returns a dictionary containing the command stderr and stdout and the exit code and description.
     """
     with execution(command, interactive=interactive) as (executor, in_files, out_files):
         with executor as console_lines:
@@ -232,29 +232,29 @@ async def exec(command:str, printOutput=True, interactive=False, stack:list=None
             }
 
 def objectLen(l, stack:list=None, commands:list=None):
-    """# len
+    """## len
 
-    Returns the length of the given object.
+Returns the length of the given object.
 
-    ## Parameters
-        l - Object.
+### Parameters
+- l - Object.
 
-    ## Return value
-        Returns the length.
+### Return value
+Returns the length.
     """
     return len(l)
 
 def listMap(l:list, mapFunc, stack:list=None, commands:list=None):
-    """# map
+    """## map
 
-    Replace the elements of the given list by aplying the map function to each of them.
+Replace the elements of the given list by aplying the map function to each of them.
 
-    ## Parameters
-        l - List to process.
-        mapFunc - The function to apply to the list elements, must be defined as mapFunc(val) => val.
+### Parameters
+- l - List to process.
+- mapFunc - The function to apply to the list elements, must be defined as mapFunc(val) => val.
 
-    ## Return value
-        Returns the list modified.
+### Return value
+Returns the list modified.
     """
     if l is None:
         raise MistException("No list received")
@@ -269,16 +269,16 @@ def listMap(l:list, mapFunc, stack:list=None, commands:list=None):
     return l
 
 def listReduce(l:list, reduceFunc, stack:list=None, commands:list=None):
-    """# reduce
+    """## reduce
 
-    Returns the value produced by reduceFunc after applyng it to all the elements of the given list.
+Returns the value produced by reduceFunc after applyng it to all the elements of the given list.
 
-    ## Parameters
-        l - List to process.
-        reduceFunc - The function to process the list elements, must be defined as reduceFunc(base, val) => val.
+### Parameters
+- l - List to process.
+- reduceFunc - The function to process the list elements, must be defined as reduceFunc(base, val) => val.
 
-    ## Return value
-        Returns the value produced.
+### Return value
+Returns the value produced.
     """
     if l is None:
         raise MistException("No list received")
@@ -294,112 +294,112 @@ def listReduce(l:list, reduceFunc, stack:list=None, commands:list=None):
     return base
 
 async def sleep(seconds:int=None, ms:int=0, stack:list=None, commands:list=None):
-    """# sleep
+    """## sleep
 
-    Sleep the current process during the given amount of time.
+Sleep the current process during the given amount of time.
 
-    ## Parameters
-        seconds - Seconds to sleep, if given this value takes precedence.
-        ms - Millieconds to sleep, if no secons parameter is given this value is used.
+### Parameters
+- seconds - Seconds to sleep, if given this value takes precedence.
+- ms - Millieconds to sleep, if no secons parameter is given this value is used.
     """
     await asyncio.sleep(seconds if seconds else ms/1000)
 
 def pythonEval(command:str, stack:list=None, commands:list=None):
-    """# eval
+    """## eval
 
-    Evaluates the given Python expressions.
+Evaluates the given Python expressions.
 
-    ## Parameters
-        command - Python expression to evaluate.
+### Parameters
+- command - Python expression to evaluate.
 
-    ## Return value
-        Retuens the result of evaluating the given expression.
+### Return value
+Retuens the result of evaluating the given expression.
     """
     return eval(command)
 
 def get(l, index, stack:list=None, commands:list=None):
-    """# get
+    """## get
 
-    Return the element of the list at the given index.
+Return the element of the list at the given index.
 
-    ## Parameters
-        l - List containing elements.
-        index - The requested index.
+### Parameters
+- l - List containing elements.
+- index - The requested index.
 
-    ## Return value
-        Returns the element at the given index.
+### Return value
+Returns the element at the given index.
     """
     return l[index]
 
 async def isEqual(left, right, stack:list=None, commands:list=None):
-    """# isEqual
+    """## isEqual
 
-    Compares two operands and execute the enclosed commands if both are equal.
+Compares two operands and execute the enclosed commands if both are equal.
 
-    ## Parameters
-        left - Operand to compare.
-        right - Operand to compare.
+### Parameters
+- left - Operand to compare.
+- right - Operand to compare.
 
-    ## Return value
-        Returns true if both operands are equal, false otherwise.
+### Return value
+Returns true if both operands are equal, false otherwise.
     """
     if left == right and commands:
         await helpers.command_runner(commands, stack)
     return left == right
 
 async def isGreater(left, right, stack:list=None, commands:list=None):
-    """# isGreater
+    """## isGreater
 
-    Compares two operands and execute the enclosed commands if `left` is greater than `right`.
+Compares two operands and execute the enclosed commands if `left` is greater than `right`.
 
-    ## Parameters
-        left - Operand to compare.
-        right - Operand to compare.
+### Parameters
+- left - Operand to compare.
+- right - Operand to compare.
 
-    ## Return value
-        Returns true if `left` is greater than `right`, false otherwise.
+### Return value
+Returns true if `left` is greater than `right`, false otherwise.
     """
     if left > right and commands:
         await helpers.command_runner(commands, stack)
     return left > right
 
 def contains(value, values, stack:list=None, commands:list=None):
-    """# contains
+    """## contains
 
-    Search `values` for `value` and returns true if it's contained.
+Search `values` for `value` and returns true if it's contained.
 
-    ## Parameters
-        value - object to search for.
-        values - Collection in which to look for.
+### Parameters
+- value - object to search for.
+- values - Collection in which to look for.
 
-    ## Return value
-        True if `values` contains `value`, false otherwise.
+### Return value
+True if `values` contains `value`, false otherwise.
     """
     return value in values
 
 async def ifCommand(val, stack:list=None, commands:list=None):
-    """# if
+    """## if
 
-    Execute the enclosed commands if `val` is true.
+Execute the enclosed commands if `val` is true.
 
-    ## Parameters
-        right - Boolean expression.
+### Parameters
+- right - Boolean expression.
 
-    ## Return value
-        Returns true if `val` is true, false otherwise.
+### Return value
+Returns true if `val` is true, false otherwise.
     """
     if val and commands:
         await helpers.command_runner(commands, stack)
     return val
 
 async def iterateCommand(items, name, stack:list=None, commands:list=None):
-    """# iterate
+    """## iterate
 
-    Iterates over the elements of a collection while executing the enclosed commands.
+Iterates over the elements of a collection while executing the enclosed commands.
 
-    ## Parameters
-        items - Collection.
-        name - desc.
+### Parameters
+- items - Collection.
+- name - desc.
     """
     for item in items:
         stack[-1][name] = item
@@ -407,37 +407,37 @@ async def iterateCommand(items, name, stack:list=None, commands:list=None):
         del stack[-1][name]
 
 def strSubstr(s, start=0, end=999999, step=1, stack:list=None, commands:list=None):
-    """# strSubstr
+    """## strSubstr
 
-    Returns a substring.
+Returns a substring.
 
-    ## Parameters
-        s - String.
-        start - Start position.
-        end - end position.
+### Parameters
+- s - String.
+- start - Start position.
+- end - end position.
 
-    ## Return value
-        Returns a substring.
+### Return value
+Returns a substring.
     """
     return s[start:end:step]
 
 def corePrint(*texts, stack:list=None, commands:list=None):
-    """# print
+    """## print
 
-    Print the arguments in a standard output line.
+Print the arguments in a standard output line.
 
-    ## Parameters
-        texts - Variable list of arguments to print.
+### Parameters
+- texts - Variable list of arguments to print.
     """
     print(*([t for t in texts if texts]))
 
 def coreAbort(reason=None, stack:list=None, commands:list=None):
-    """# abort
+    """## abort
 
-    Abort mist script execurion.
+Abort mist script execurion.
 
-    ## Parameters
-        reason - A text describing the cause.
+### Parameters
+- reason - A text describing the cause.
     """
     if not reason:
         reason = "Abort reached"
@@ -445,54 +445,54 @@ def coreAbort(reason=None, stack:list=None, commands:list=None):
     raise MistAbortException(reason)
 
 def parseInt(value, stack:list=None, commands:list=None):
-    """# parseInt
+    """## parseInt
 
-    Transforms the string value to integer if possible.
+Transforms the string value to integer if possible.
 
-    ## Parameters
-        value - String value.
+### Parameters
+- value - String value.
 
-    ## Return value
-        Integer representation of `value`.
+### Return value
+Integer representation of `value`.
     """
     return int(value)
 
 def toString(value, stack:list=None, commands:list=None):
-    """# toString
+    """## toString
 
-    Converts the argument to string.
+Converts the argument to string.
 
-    ## Parameters
-        value - The value to convert to string.
+### Parameters
+- value - The value to convert to string.
 
-    ## Return value
-        `value` converted to string.
+### Return value
+`value` converted to string.
     """
     return str(value)
 
 def boolNot(value, stack:list=None, commands:list=None):
-    """# NOT
+    """## NOT
 
-    Boolean not operator.
+Boolean not operator.
 
-    ## Parameters
-        value
+### Parameters
+- value
 
-    ## Return value
-        Returns the negated value of `value`.
+### Return value
+Returns the negated value of `value`.
     """
     return (not bool(value))
 
 def boolAnd(*values, stack:list=None, commands:list=None):
-    """# AND
+    """## AND
 
-    Boolean AND operator for the given values.
+Boolean AND operator for the given values.
 
-    ## Parameters
-        values - List of values to apply the AND operation.
+### Parameters
+- values - List of values to apply the AND operation.
 
-    ## Return value
-        Returns the resulting value of applying AND to all parameters.
+### Return value
+Returns the resulting value of applying AND to all parameters.
     """
     ret = True
 
@@ -502,15 +502,15 @@ def boolAnd(*values, stack:list=None, commands:list=None):
     return ret
 
 def boolOr(*values, stack:list=None, commands:list=None):
-    """# OR
+    """## OR
 
-    Boolean OR operator for the given values.
+Boolean OR operator for the given values.
 
-    ## Parameters
-        values - List of values to apply the OR operation.
+### Parameters
+- values - List of values to apply the OR operation.
 
-    ## Return value
-        Returns the resulting value of applying OR to all parameters.
+### Return value
+Returns the resulting value of applying OR to all parameters.
     """
     ret = False
 
@@ -520,61 +520,58 @@ def boolOr(*values, stack:list=None, commands:list=None):
     return ret
 
 def terminate(stack:list=None, commands:list=None):
-    """# terminate
+    """## terminate
 
-    Description.
+Description.
 
-    ## Parameters
-        name - desc.
-        name - desc.
-
-    ## Return value
-        Desc.
+### Parameters
+- name - desc.
+- name - desc.
     """
     stack[-1]["process"].terminate()
 
 def kill(stack:list=None, commands:list=None):
-    """# kill
+    """## kill
 
-    Kill the current process.
+Kill the current process.
     """
     stack[-1]["process"].kill()
 
 def processWriteLine(p, input, stack:list=None, commands:list=None):
-    """# processWriteLine
+    """## processWriteLine
 
-    Writes a line of text to a process standard input.
+Writes a line of text to a process standard input.
 
-    ## Parameters
-        p - Process descriptor.
-        input - Text to write.
+### Parameters
+- p - Process descriptor.
+- input - Text to write.
     """
     if not isinstance(input, str):
         input = json.dumps(input)
     p.stdin.writelines([bytes(input+"\n", 'utf-8')])
 
 def uuidStr(stack:list=None, commands:list=None):
-    """# uuidStr
+    """## uuidStr
 
-    Generates and returns a UUID version 4.
+Generates and returns a UUID version 4.
 
-    ## Return value
-        The generated UUID.
-    """
+### Return value
+The generated UUID.
+"""
     return str(uuid.uuid4())
 
 async def filterDict(d:dict, names:list, newNames:list=None, stack:list=None, commands:list=None):
-    """# filterDict
+    """## filterDict
 
-    Returns a dictionary containing only the selected entries. If `newNames` is provided the keys are replaced.
+Returns a dictionary containing only the selected entries. If `newNames` is provided the keys are replaced.
 
-    ## Parameters
-        d - Source dictionary.
-        names - List of keys to filter.
-        newNames - Replacement values for the filtered keys
+### Parameters
+- d - Source dictionary.
+- names - List of keys to filter.
+- newNames - Replacement values for the filtered keys
 
-    ## Return value
-        The filtered dictionary.
+### Return value
+The filtered dictionary.
     """
     result = {}
     for index, name in enumerate(names):

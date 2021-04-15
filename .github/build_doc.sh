@@ -61,10 +61,9 @@ cat docs02 >> $DOCS_FILE
 echo "$LANG_SYNTAX_FILE"
 cp -v mist/lang/SYNTAX.md $LANG_SYNTAX_FILE
 
-# TODO *************************************************************************
 echo "$LANG_FUNCS_FILE"
-cp -v mist/lang/BUILTIN.md $LANG_FUNCS_FILE
-# TODO *************************************************************************
+echo -e "# Mist builtin functions\n\n" > $LANG_FUNCS_FILE
+python3 get_function_docs.py | tail -n +2 >> $LANG_FUNCS_FILE
 
 echo "$LANG_CATALOG_FILE"
 echo "# Mist Catalog" > $LANG_CATALOG_FILE
