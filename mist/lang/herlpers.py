@@ -7,7 +7,7 @@ import asyncio
 from mist.lang.config import config
 from mist.lang.environment import environment
 from mist.lang.params import params
-from mist.lang.function import functions
+#from mist.lang.function import functions
 
 from mist.lang.streams import streams
 
@@ -83,6 +83,7 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
     elif namedArgs:
         for i in namedArgs:
             namedArgsDict[i.key] = await checkArg(i.value, stack)
+    from mist.lang.function import functions as functions
     f = functions[name]
     isNative = "native" in f and f["native"]
     if not isNative:
