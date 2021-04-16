@@ -5,8 +5,12 @@ on:
     branches:
       - master
     paths:
+      - "images/*"
       - "README.md"
+      - "get_function_docs.py"
       - "mist/lang/*.md"
+      - "mist/lang/function.py"
+      - "mist/catalog/*.md"
       - ".github/workflows/gh-pages.yml"
       - ".github/build_doc.sh"
 
