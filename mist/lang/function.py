@@ -570,7 +570,7 @@ Returns a dictionary containing only the selected entries. If `newNames` is prov
 - names - List of keys to filter.
 - newNames - Replacement values for the filtered keys
 
-### Return value
+### Return and send value
 The filtered dictionary.
     """
     result = {}
@@ -589,6 +589,17 @@ def autoCall(f, *args, stack:list=None, commands:list=None):
     return result if result else args[0]
     
 async def list2dict(l:list, names:list, stack:list=None, commands:list=None):
+    """## list2dict
+
+Convert a list into a dictionary.
+
+### Parameters
+- l - source list.
+- names - list of names for the resulting dictionary.
+
+### Return and sent value
+The resulting dictionary.
+    """
     result = {}
     for index, value in enumerate(l):
         result[names[index]] = value
@@ -596,6 +607,24 @@ async def list2dict(l:list, names:list, stack:list=None, commands:list=None):
         await streams.send(stack[-1]["targetStream"][0], result)
     return result
 
+async def dict2list(d:dict, names:list, stack:list=None, commands:list=None):
+    """## dict2list
+
+Convert a dictionary into a list.
+
+### Parameters
+- l - source dictionary.
+- names - list of key to include into the resulting list.
+
+### Return and sent value
+The resulting list.
+    """
+    result = []
+    for value in names:
+        result.append(d[value])
+    if "targetStream" in stack[-1]: 
+        await streams.send(stack[-1]["targetStream"][0], result)
+    return result
 class _Functions(dict):
 
     def __init__(self):
@@ -636,6 +665,7 @@ class _Functions(dict):
         self["uuidStr"] = {"native": True, "commands": uuidStr}
         self["filterDict"] = {"native": True, "commands": filterDict, "async": True}
         self["list2dict"] = {"native": True, "commands": list2dict, "async": True}
+        self["dict2list"] = {"native": True, "commands": dict2list, "async": True}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
