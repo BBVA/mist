@@ -8,8 +8,8 @@ from typing import Callable
 
 from mist.lang.config import config
 from mist.lang.params import params
-from mist.lang.herlpers import command_runner
-from mist.lang.function import functions
+from mist.lang.herlpers import command_runner, function_runner
+from mist.lang.function import functions, finallyHooks
 from mist.lang.streams import consumers, producers
 from mist.lang.cmd import interactive_processes
 
@@ -103,7 +103,7 @@ async def execute_from_text(text: str,
         # Check installed binaries
         check_installed_binaries(mist_model)
 
-        # Check needed parameters for .mist
+        # Check needed parameters for .mists
         check_mist_parameters(text)
 
         await command_runner(mist_model.commands, stack)
@@ -118,8 +118,8 @@ async def execute_from_text(text: str,
 
 
 async def runFinalizers(stack):
-    if "finallyHook" in functions:
-        await command_runner(functions["finallyHook"]["commands"], stack)
+    for f in finallyHooks:
+        await function_runner(f[0], args=f[1], stack=f[2], commands=f[3], sourceStream=None, targetStream=None, processArgs=False)
 
 
 __all__ = ("execute", "execute_from_text")

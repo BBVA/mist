@@ -21,6 +21,4 @@ function S3Write(localPath, remoteUri) {
   exec("aws s3 cp '{localPath}' {remoteUri}", False)
 }
 
-function finallyHook() {
-  S3Write(localPath, s3File)
-}
+registerFinallyHook("S3Write", localPath, s3File)

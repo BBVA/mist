@@ -7,9 +7,8 @@ import asyncio
 from mist.lang.config import config
 from mist.lang.environment import environment
 from mist.lang.params import params
-#from mist.lang.function import functions
-
 from mist.lang.streams import streams
+from mist.lang.exceptions import MistUndefinedVariableException
 
 def get_var(var, stack):
     #print(f"get_var {var}", file=sys.stderr, flush=True)
@@ -76,13 +75,14 @@ async def callNative(f, args, namedArgs, namedArgsDict, stack, commands):
         else:
             return f["commands"](stack=stack, commands=commands)
 
-async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None, commands=None):
+async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None, commands=None, processArgs=True):
     namedArgsDict = {}
-    if args:
-        args = [await checkArg(a, stack) for a in args]
-    elif namedArgs:
-        for i in namedArgs:
-            namedArgsDict[i.key] = await checkArg(i.value, stack)
+    if processArgs:
+        if args:
+            args = [await checkArg(a, stack) for a in args]
+        elif namedArgs:
+            for i in namedArgs:
+                namedArgsDict[i.key] = await checkArg(i.value, stack)
     from mist.lang.function import functions as functions
     f = functions[name]
     isNative = "native" in f and f["native"]

@@ -625,6 +625,19 @@ The resulting list.
     if "targetStream" in stack[-1]: 
         await streams.send(stack[-1]["targetStream"][0], result)
     return result
+
+finallyHooks = []
+def registerFinallyHook(fname, *p, stack:list=None, commands:list=None):
+    """## registerFinallyHook
+
+Register a function to be executed at the end of the program
+
+### Parameters
+- fname - string with the name of the function
+- *p - parameters for the function
+    """
+    finallyHooks.append((fname, [*p], stack, commands))
+
 class _Functions(dict):
 
     def __init__(self):
@@ -666,6 +679,7 @@ class _Functions(dict):
         self["filterDict"] = {"native": True, "commands": filterDict, "async": True}
         self["list2dict"] = {"native": True, "commands": list2dict, "async": True}
         self["dict2list"] = {"native": True, "commands": dict2list, "async": True}
+        self["registerFinallyHook"] = {"native": True, "commands": registerFinallyHook}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
@@ -677,4 +691,4 @@ class _Functions(dict):
 
 functions = _Functions()
 
-__all__ = ("functions", )
+__all__ = ("functions", "finallyHooks")

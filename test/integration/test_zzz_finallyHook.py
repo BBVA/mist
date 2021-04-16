@@ -16,5 +16,6 @@ async def test_finally_hook(examples_path):
     
     assert """Main end
 message
-finallyHook
+My final hook 1
+My final hook 2
 """ == output
