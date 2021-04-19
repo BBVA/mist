@@ -314,22 +314,6 @@ Note that you can omit the name of the stream when connecting two functions. In 
 
 When a function produces to more than one stream. Only the first stream will be connected to the next function.
 
-## Finally Hook and abort function
-
-There are a special funcion named "finallyHook" that will be invoked once at the end of the program. This can be used to close connection, and run the needed final code of your program. Example:
-
-```bash
-function finallyHook() {
-    print("This will be executed at the end of the program")
-}
-```
-
-The function "abort(reason)" will end the program inmediatelly. The finally hook will not be executed. You can invoke it in any place of your program. It can be considered as the last option when you cannot recover from an error.
-
-```bash
-abort("My custom panic message")
-```
-
 ## Reserved work: done
 
 The reserver word "done" will stop the execution of a block of code (closure)

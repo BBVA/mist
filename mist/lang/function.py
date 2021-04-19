@@ -434,7 +434,7 @@ Print the arguments in a standard output line.
 def coreAbort(reason=None, stack:list=None, commands:list=None):
     """## abort
 
-Abort mist script execurion.
+Abort mist script execution. The program will end inmediatelly and no registered finally hook will be executed.
 
 ### Parameters
 - reason - A text describing the cause.
