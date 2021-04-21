@@ -3,6 +3,7 @@
 # Concurrency: Sync and Async
 # Description: Find open ports at some specific host
 # Tags: ports, network, nmap
+# Tools: nmap
 
 function findOpenPorts(ip, ports) => out {
     openPorts = []

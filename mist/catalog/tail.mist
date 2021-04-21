@@ -3,6 +3,7 @@
 # Concurrency: Async
 # Description: Read a file line by line and send each line to a queue
 # Tags: tail, file
+# Tools: tail
 
 function tail(file, endline) => out {
     r = exec("tail -f {file}", False) {

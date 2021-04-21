@@ -3,6 +3,7 @@
 # Concurrency: Sync
 # Description: Find git secrets in a Git repository
 # Tags: security, secrets, git
+# Tools: gitleaks
 
 function gitLeaksFinder(gitPath) {
     resultFile = tmpFile()

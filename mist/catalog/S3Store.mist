@@ -1,7 +1,8 @@
 # Name: S3Store
 # Version: 1.0.0
 # Description: Stores the data received from source in the given S3Uri.
-# Tags:
+# Tags: aws, s3
+# Tools: aws
 
 localPath = False
 s3File = False

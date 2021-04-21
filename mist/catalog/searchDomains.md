@@ -28,7 +28,7 @@ NOTE: when used as a producer for a queue (Async) every domain found will be sen
 
 The following commands need to be available in your command path:
 
-- dnsrecon.py
+- dnsrecon
 
 ## Example
 

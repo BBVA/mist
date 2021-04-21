@@ -2,7 +2,8 @@
 # Version: 1.0.0
 # Concurrency: Sync and Async
 # Description: Write messages to a Kafka topic.
-# Tags: kafka, producer, topic.
+# Tags: kafka, producer, topic
+# Tools: kafka-console-producer
 
 kafkaProducerQueue = False
 

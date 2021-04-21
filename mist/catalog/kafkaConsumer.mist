@@ -3,6 +3,7 @@
 # Concurrency: Async
 # Description: Read from a Kafka topic and send values.
 # Tags: kafka, consumer, topic, send
+# Tools: kafka-console-consumer
 
 kafkaConsumerEndMessageReceived = False
 function kafkaConsumer(servers, topic, endMessage, fromBeginning) => out {

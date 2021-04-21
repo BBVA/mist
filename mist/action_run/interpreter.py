@@ -14,7 +14,7 @@ from mist.lang.streams import consumers, producers
 from mist.lang.cmd import interactive_processes
 
 from .language_tools import get_mist_model, load_mist_language, \
-    check_mist_parameters, check_installed_binaries
+    check_mist_parameters
 
 
 async def waitForTaks():
@@ -99,9 +99,6 @@ async def execute_from_text(text: str,
 
     with write_to_output:
         mist_model = mist_meta_model.model_from_str(text)
-
-        # Check installed binaries
-        check_installed_binaries(mist_model)
 
         # Check needed parameters for .mists
         check_mist_parameters(text)

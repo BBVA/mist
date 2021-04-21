@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import List
 import asyncio
 import importlib, os, pathlib, sys, tempfile, urllib, uuid
+import shutil
 
 from .streams import streams, consumers, producers
 
@@ -13,7 +14,7 @@ from mist.lang.environment import environment
 from mist.lang.cmd import execution
 from mist.lang.function import functions
 from mist.lang.config import config
-from mist.lang.exceptions import MistAbortException, MistException, MistUndefinedVariableException, MistPipelineException
+from mist.lang.exceptions import MistMissingBinaryException, MistAbortException, MistException, MistUndefinedVariableException, MistPipelineException
 from mist.lang.herlpers import MistCallable, get_var, params, command_runner, function_runner, get_id, get_key, get_param, getChildFromVar, resolve_list_dict_reference, ValueContainer
 
 @dataclass
@@ -133,12 +134,24 @@ class IncludeCommand:
         if config.debug:
             print(f"-> Include {self.files}")
         for f in self.files:
+            commandName = f
             if not (f.endswith(".mist") or f.endswith(".MIST")):
                 f += ".mist"
             if not os.path.isfile(f):
                 f = str(pathlib.Path(sys.modules['mist'].__file__).parent) + "/catalog/" + f
             with open(f, "r") as f:
                 content = f.read()
+                requiredText = "# Tools:"                
+                i = content.find(requiredText)
+                if i>=0:
+                    tools = content[i+len(requiredText):].split("\n")[0].split(",")
+                    for t in tools:
+                        bin = t.strip()
+                        if not shutil.which(bin):
+                            raise MistMissingBinaryException(
+                            f"Command '{commandName}' need '{bin}' to be "
+                            f"executed. Please install them."
+                        )
                 stdout = await mist.action_run.execute_from_text(text=content, fn_params=environment, stack=stack)
                 print(stdout, end = '')
 

@@ -1,5 +1,4 @@
 import re
-import shutil
 import os.path as op
 
 from pathlib import Path
@@ -9,14 +8,13 @@ from functools import lru_cache
 from textx import metamodel_from_str
 
 from mist.lang.params import params
-from mist.lang.exceptions import MistMissingBinaryException, MistInputDataException, MistParseErrorException
+from mist.lang.exceptions import MistInputDataException, MistParseErrorException
 from mist.lang.config import config
 from mist.lang.herlpers import command_runner
 
 from mist.lang.classes import exports as core_exports
 
 from .helpers import get_or_download_mist_file, get_mist_filename, command_name_to_class
-from ..finders import find_commands_folders, find_catalog_metas
 
 REGEX_FIND_PARAMS = re.compile(r'''(\%[\w\_\-]+)''')
 HERE = op.dirname(__file__)
@@ -95,29 +93,6 @@ def load_mist_language(mist_file_or_content: str):
 
     return mist_meta_model
 
-
-# -------------------------------------------------------------------------
-# Model helpers
-# -------------------------------------------------------------------------
-def _find_command_metadata(command: List[object]):
-    meta = []
-
-    if type(command) is list:
-        for c in command:
-            meta.extend(_find_command_metadata(c))
-
-    if hasattr(command, "meta"):
-        meta.append((command.__class__.__name__, command.meta))
-
-    try:
-        for c in command.commands:
-            meta.extend(_find_command_metadata(c))
-    except AttributeError:
-        pass
-
-    return meta
-
-
 def check_mist_parameters(mist_file_path: str) -> None or MistInputDataException:
 
     if type(mist_file_path) is str and op.exists(mist_file_path):
@@ -142,24 +117,7 @@ def check_mist_parameters(mist_file_path: str) -> None or MistInputDataException
             f"\n\n* REMEMBER that params are case sensitive"
         )
 
-
-def check_installed_binaries(mist_model) -> None or MistMissingBinaryException:
-    if metas := _find_command_metadata(mist_model.commands):
-
-        for command_name, m in metas:
-            if bin := m.get("default", {}).get("cmd", None):
-                if not shutil.which(bin):
-                    cmd_name = m.get("default", {}).get("name", None)
-                    cmd_message = m.get("default", {}).get("cmd-error", None)
-                    raise MistMissingBinaryException(
-                        f"Command '{command_name}' need '{bin}' to be "
-                        f"executed. Please install them. \n\nExtra "
-                        f"help: {cmd_message}"
-                    )
-
-
-def get_mist_model() \
-        -> object or MistMissingBinaryException:
+def get_mist_model() -> object:
     """
     This function checks model, language and that all binaries are available
     """
@@ -171,12 +129,6 @@ def get_mist_model() \
         mist_model = mist_meta_model.model_from_file(
             mist_file
         )
-
-        #
-        # Check that binaries needed to execute a command are installed
-        #
-        # if not config.no_check_tools:
-        #     check_installed_binaries(mist_model)
 
         #
         # Check that params in .mist file matches with available params

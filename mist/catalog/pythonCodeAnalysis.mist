@@ -3,6 +3,7 @@
 # Concurrency: Sync
 # Description: Find vulnerabilities in source code for Python
 # Tags: code, source code, python, security
+# Tools: bandit
 
 function pythonCodeAnalysis(sources) {
     resultFile = tmpFile()
