@@ -22,7 +22,9 @@ subtitle: Create complex tools execution Workflows for working together
 
 logo: /content/assets/images/logo-yellow-250x250.png
 
-#google_analytics: #
+analytics:
+  provider: "custom"
+
 #url: "" # the base hostname & protocol for your site, e.g. http://example.com
 #baseurl: "/mist" # the subpath of your site, e.g. /blog
 repository: BBVA/mist
@@ -32,6 +34,15 @@ footer:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: https://github.com/BBVA/mist
+#    - label: "Youtube"
+#      icon: "fab fa-fw fa-youtube"
+#      url: https://youtube.com/BBVA/mist
+    - label: "Mail"
+      icon: "fas fa-fw fa-at"
+      url: mailto://contact@mist-lang.org
+
+atom_feed:
+  hide: true
 
 # Build settings
 markdown: kramdown
