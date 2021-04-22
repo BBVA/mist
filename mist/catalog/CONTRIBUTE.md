@@ -44,9 +44,9 @@ comes the function that contains the code of the command, in this case "findOpen
 
 Of course, depending on your needs, you can have more than one function.
 
-#### Implementing a syncronous command (`nmap`)
+#### Implementing a synchronous command (`nmap`)
 
-Now, lets see a syncronous implementation of `nmap` command. Pay attention to the inline comments.
+Now, lets see a synchronous implementation of `nmap` command. Pay attention to the inline comments.
 
 ```bash
 function findOpenPorts(ip, ports) {
@@ -69,7 +69,7 @@ function findOpenPorts(ip, ports) {
 }
 ```
 
-That is it. The function is ready to be used used syncronously like this:
+That is it. The function is ready to be used used synchronously like this:
 
 ```bash
 include "findOpenPorts"
@@ -79,9 +79,9 @@ r = findOpenPorts("127.0.0.1", "0-9000")
 print(r)
 ```
 
-#### Implementing an asyncronous command (nmap)
+#### Implementing an asynchronous command (nmap)
 
-We are going to modify the previous syncronous implementation to support asyncronous calls.
+We are going to modify the previous synchronous implementation to support asynchronous calls.
 
 ```bash
 function findOpenPorts(ip, ports) {
