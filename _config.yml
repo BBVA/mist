@@ -24,7 +24,7 @@ logo: /content/assets/images/logo-yellow-250x250.png
 
 #google_analytics: #
 #url: "" # the base hostname & protocol for your site, e.g. http://example.com
-baseurl: "/mist" # the subpath of your site, e.g. /blog
+#baseurl: "/mist" # the subpath of your site, e.g. /blog
 repository: BBVA/mist
 
 footer:
