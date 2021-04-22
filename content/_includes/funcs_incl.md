@@ -44,7 +44,7 @@ True if `values` contains `value`, false otherwise.
     
 ## abort
 
-Abort mist script execurion.
+Abort mist script execution. The program will end inmediatelly and no registered finally hook will be executed.
 
 ### Parameters
 - reason - A text describing the cause.
@@ -55,6 +55,17 @@ Print the arguments in a standard output line.
 
 ### Parameters
 - texts - Variable list of arguments to print.
+    
+## dict2list
+
+Convert a dictionary into a list.
+
+### Parameters
+- l - source dictionary.
+- names - list of key to include into the resulting list.
+
+### Return and sent value
+The resulting list.
     
 ## exec
 
@@ -85,7 +96,7 @@ Returns a dictionary containing only the selected entries. If `newNames` is prov
 - names - List of keys to filter.
 - newNames - Replacement values for the filtered keys
 
-### Return value
+### Return and send value
 The filtered dictionary.
     
 ## get
@@ -142,6 +153,17 @@ Iterates over the elements of a collection while executing the enclosed commands
 ## kill
 
 Kill the current process.
+    
+## list2dict
+
+Convert a list into a dictionary.
+
+### Parameters
+- l - source list.
+- names - list of names for the resulting dictionary.
+
+### Return and sent value
+The resulting dictionary.
     
 ## map
 
@@ -255,6 +277,14 @@ Reads a JSON document from a file.
 
 ### Return value
 Returns a JSON document.
+    
+## registerFinallyHook
+
+Register a function to be executed at the end of the program
+
+### Parameters
+- fname - string with the name of the function
+- *p - parameters for the function
     
 ## searchInJSON
 

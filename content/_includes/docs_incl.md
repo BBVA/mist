@@ -73,7 +73,7 @@ In this scenario we'll do:
 ```bash
 include "searchDomains" "findOpenPorts" "kafkaProducer"
 
-searchDomains(%domain) => findOpenPorts("80,443") => 
+searchDomains(%domain) => findOpenPorts("80,443") =>
     kafkaProducer($KAFKA_SERVER, "domainsTopic")
 ```
 
@@ -109,7 +109,7 @@ include "searchDomains" "festin" "findOpenPorts" "filterRepeated" "kafkaProducer
 searchDomains(%domain) => foundDomains
 festin(%domain, $DNS_SERVER, True) => foundDomains
 
-foundDomains => filterRepeated(False) => 
+foundDomains => filterRepeated(False) =>
     findOpenPorts("80,443") => kafkaProducer($KAFKA_SERVER, "domainsTopic")
 ```
 
@@ -213,7 +213,7 @@ tail("domains.txt", "*END*") => inputDomains
 inputDomains => searchDomains() => foundDomains
 inputDomains => festin($DNS_SERVER, True) => foundDomains
 
-foundDomains => filterRepeated(False) => findOpenPorts("80,443") => 
+foundDomains => filterRepeated(False) => findOpenPorts("80,443") =>
     dispatcher() => kafkaOutput, S3Output
 
 kafkaOutput => kafkaProducer($KAFKA_SERVER, "domainsTopic")
@@ -235,7 +235,7 @@ MIST is being developed by BBVA-Labs Security team members.
 
 ## Contributions
 
-Contributions are of course welcome. See [CONTRIBUTING](https://github.com/BBVA/mist/blob/master/CONSTRIBUTING.rst) or skim existing tickets to see where you could help out.
+Contributions are of course welcome. See [CONTRIBUTING](https://github.com/BBVA/mist/blob/master/CONSTRIBUTING.md) or skim existing tickets to see where you could help out.
 
 ## License
 
