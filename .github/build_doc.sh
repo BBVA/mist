@@ -49,9 +49,9 @@ sidebar:
         url: catalog.html
 EOF
 
-echo -e "Generating doc file: \n$DOCS_FILE"
+echo -e "Generating doc file: $DOCS_FILE"
 echo -e "<a id=\"Introduction\"></a>\n\n# Mist Documentation\n\n<a id=\"Documentation\"></a>" > $DOCS_FILE
-csplit --prefix=docs --suppress-matched  README.md '/<!--split-->/' '{*}'
+csplit --prefix=docs --suppress-matched  README.md '/<!--split-->/' '{*}' &> /dev/null
 grep -v "MIST LOGO" docs00 >> $DOCS_FILE
 echo -e "\n\n<a id=\"QuickStart\"></a>" >> $DOCS_FILE
 sed -e 's#https://raw.githubusercontent.com/BBVA/mist/master#content/assets#' docs01 >> $DOCS_FILE
@@ -70,8 +70,11 @@ echo "# Mist Catalog" > $LANG_CATALOG_FILE
 for item in mist/catalog/*.md
 do
   command=$(basename $item .md)
-  echo -e "\n\n<a id=\"$item\"></a>" >> $LANG_CATALOG_FILE
-  cat $item >> $LANG_CATALOG_FILE
+  if [ "$command" != "CONTRIBUTE" ]
+  then
+    echo -e "\n\n<a id=\"$command\"></a>" >> $LANG_CATALOG_FILE
+    cat $item >> $LANG_CATALOG_FILE
+  fi
 done
 
 rm docs??
