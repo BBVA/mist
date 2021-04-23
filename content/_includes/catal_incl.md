@@ -1,7 +1,7 @@
 # Mist Catalog
 
 
-<a id="mist/catalog/S3Store.md"></a>
+<a id="S3Store"></a>
 # *S3Store* command
 
 ## Description
@@ -43,7 +43,7 @@ This function copies a local file in the given S3Uri.
 - **remoteUri**: S3Uri of the remote object to create
 
 
-<a id="mist/catalog/festin.md"></a>
+<a id="festin"></a>
 # *festin* command
 
 ## Description
@@ -88,7 +88,7 @@ print(r["buckets"])
 ```
 
 
-<a id="mist/catalog/filterRepeated.md"></a>
+<a id="filterRepeated"></a>
 # *filterRepeated* command
 
 ## Description
@@ -114,7 +114,7 @@ filterRepeated(:domains, domainProcessed) => nonRepeatedDomains
 ```
 
 
-<a id="mist/catalog/findOpenPorts.md"></a>
+<a id="findOpenPorts"></a>
 # *findOpenPorts* command
 
 ## Description
@@ -166,7 +166,7 @@ Expected output:
 ```
 
 
-<a id="mist/catalog/gitLeaksFinder.md"></a>
+<a id="gitLeaksFinder"></a>
 # *gitLeaksFinder* command
 
 ## Description
@@ -226,7 +226,7 @@ Example output:
 ```
 
 
-<a id="mist/catalog/kafkaConsumer.md"></a>
+<a id="kafkaConsumer"></a>
 # *kafkaConsumer* command
 
 ## Description
@@ -271,7 +271,7 @@ echo(:myQueue)
 ```
 
 
-<a id="mist/catalog/kafkaProducer.md"></a>
+<a id="kafkaProducer"></a>
 # *kafkaProducer* command
 
 ## Description
@@ -320,7 +320,7 @@ kafkaProducer("hello", "127.0.0.1:9092", "prueba")
 ```
 
 
-<a id="mist/catalog/pythonCodeAnalysis.md"></a>
+<a id="pythonCodeAnalysis"></a>
 # *PythonCodeAnalysis* command
 
 ## Description
@@ -361,7 +361,7 @@ print(r)
 ```
 
 
-<a id="mist/catalog/searchDomains.md"></a>
+<a id="searchDomains"></a>
 # *searchDomains* command
 
 ## Description
@@ -405,7 +405,7 @@ print(r)
 ```
 
 
-<a id="mist/catalog/tail.md"></a>
+<a id="tail"></a>
 # *tail* command
 
 ## Description
