@@ -36,3 +36,19 @@ async def kafkaProducer(message, servers, topic):
     message = json.dumps(message)
     kafka_proc.stdin.writelines([bytes(message+"\n", 'utf-8')])
     
+async def festin(originDomain, dns, useTor, q):
+    domains = []
+    tor = ""
+    if useTor:
+        tor = "--tor"
+    proc = await asyncio.create_subprocess_shell(f"festin {originDomain} {tor} -ds {dns}", stdout=asyncio.subprocess.PIPE)
+    line = True
+    while line:
+        line = (await proc.stdout.readline()).decode('utf-8')
+        if "Adding" in line:
+            fields = line.split()
+            r = fields[7][1:-1]
+            if q:
+                await q.put(r)
+            domains.append(r)
+    return domains
