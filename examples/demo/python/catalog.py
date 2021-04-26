@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, json
 
 async def searchDomains(domain, q):
     domains = []
@@ -26,3 +26,13 @@ async def findOpenPorts(ip, ports, q):
                 await q.put({"ip": ip, "port": openPort[0], "protocol": openPort[1]})
             openPorts.append({"port": openPort[0], "protocol": openPort[1]})
     return openPorts
+
+kafka_proc = None
+async def kafkaProducer(message, servers, topic):
+    global kafka_proc
+    if not kafka_proc:
+        kafka_proc = await asyncio.create_subprocess_shell(f"kafka-console-producer --broker-list {servers} --topic {topic}",
+            stdout=asyncio.subprocess.PIPE, stdin=asyncio.subprocess.PIPE)
+    message = json.dumps(message)
+    kafka_proc.stdin.writelines([bytes(message+"\n", 'utf-8')])
+    
