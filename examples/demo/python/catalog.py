@@ -1,4 +1,4 @@
-import asyncio, json
+import asyncio, json, tempfile
 
 async def searchDomains(domain, q):
     domains = []
@@ -52,3 +52,22 @@ async def festin(originDomain, dns, useTor, q):
                 await q.put(r)
             domains.append(r)
     return domains
+
+values = []
+async def filterRepeated(v, q):
+    global values
+    if not v in values:
+        values.append(v)
+        await q.put(v)
+
+localPath = False
+async def S3Store(text):
+    global localPath
+    if not localPath:
+        localPath = tempfile.NamedTemporaryFile(delete=False).name
+    with open(localPath, 't+a') as f:
+        f.write(str(text) + '\n')
+
+async def S3Write(remoteUri):
+    await asyncio.create_subprocess_shell(f"aws s3 cp '{localPath}' {remoteUri}", stdout=asyncio.subprocess.PIPE)
+
