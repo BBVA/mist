@@ -5,6 +5,8 @@ on:
     branches:
       - master
     paths:
+      - "get_function_docs.py"
+      - "CONSTRIBUTING.md"
       - "images/*"
       - "README.md"
       - "get_function_docs.py"
