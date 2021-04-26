@@ -22,6 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v1  # v2 does not have submodules option now
 
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: Build Documentation
         run: ./.github/build_doc.sh
 
