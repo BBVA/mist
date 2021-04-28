@@ -1,7 +1,7 @@
 import re
 from typing import List
 from string import Formatter
-
+#import inspect
 import asyncio
 
 from mist.lang.config import config
@@ -57,6 +57,7 @@ def findQueueInArgs(args, namedArgsDict):
 
 async def callNative(f, args, namedArgs, namedArgsDict, stack, commands):
     if "async" in f and f["async"]:
+    #if inspect.iscoroutinefunction(f["commands"]):
         if args:
             return await f["commands"](*args, stack=stack, commands=commands)
         elif namedArgs:
@@ -86,12 +87,11 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
     from mist.lang.function import functions as functions
     f = functions[name]
     isNative = "native" in f and f["native"]
-    if not isNative:
-        if args:
-            namedArgsDict = dict(zip(f["args"], args))
-        if targetStream:
-            namedArgsDict["targetStream"] = targetStream
-        stack.append(namedArgsDict)
+    if not isNative and args:
+        namedArgsDict = dict(zip(f["args"], args))
+    if targetStream:
+        namedArgsDict["targetStream"] = targetStream
+    stack.append(namedArgsDict)
     if sourceStream:
         queue, position, namedName = findQueueInArgs(args, namedArgsDict)
         if not isNative:

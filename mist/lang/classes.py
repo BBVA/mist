@@ -5,6 +5,7 @@ from typing import List
 import asyncio
 import importlib, os, pathlib, sys, tempfile, urllib, uuid
 import shutil
+import inspect
 
 from .streams import streams, consumers, producers
 
@@ -177,13 +178,16 @@ class ImportCommand:
                     dest.flush()
                 module = importlib.import_module(pathlib.Path(destname).stem)
             else:
+                if not os.path.isfile(py_file):
+                    py_file = mist.action_run.language_tools.mist_file_base_dir + "/" + py_file
                 sys.path.append(os.path.dirname(py_file))
                 module = importlib.import_module(module_name)
             for fname in dir(module):
                 ffunc = getattr(module, fname)
                 if fname[0] != "_" and callable(ffunc):
-                    name = module_name + fname[0].upper() + fname[1:]
-                    functions[name] = {"native": True, "commands": ffunc}
+                    #name = module_name + fname[0].upper() + fname[1:]
+                    name = fname
+                    functions[name] = {"native": True, "commands": ffunc, "async": inspect.iscoroutinefunction(ffunc)}
 
 # Create the classes StringData, ExtParameter, EnvVariable, FunctionInlineCall, CustomList, VarReference and Source, all implementing ValueContainer and containing the corresponding code in herlpers.get_id
 @dataclass
