@@ -1,4 +1,6 @@
-include "searchDomains" "wpscan.mist"
+include "searchDomains" 
+include "wpscan.mist"
+#import "./wpscan.py"
 
 function save(r) {
     print("Wordpress found at", r.target_url)
