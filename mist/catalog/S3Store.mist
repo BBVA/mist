@@ -8,7 +8,7 @@ localPath = False
 
 # Auxiliar function to create the S3 object from the local file
 function S3Write(localPath, remoteUri) {
-  exec("aws s3 cp '{localPath}' {remoteUri}", True)
+  exec("aws s3 cp '{localPath}' {remoteUri}", False)
 }
 
 function S3Store(text, remoteUri) {
