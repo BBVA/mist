@@ -138,7 +138,10 @@ class IncludeCommand:
             if not (f.endswith(".mist") or f.endswith(".MIST")):
                 f += ".mist"
             if not os.path.isfile(f):
-                f = str(pathlib.Path(sys.modules['mist'].__file__).parent) + "/catalog/" + f
+                if os.path.isfile(mist.action_run.language_tools.mist_file_base_dir + "/" + f):
+                    f = mist.action_run.language_tools.mist_file_base_dir + "/" + f
+                else:
+                    f = str(pathlib.Path(sys.modules['mist'].__file__).parent) + "/catalog/" + f
             with open(f, "r") as f:
                 content = f.read()
                 requiredText = "# Tools:"                

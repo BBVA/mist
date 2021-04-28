@@ -16,6 +16,8 @@ from mist.lang.classes import exports as core_exports
 
 from .helpers import get_or_download_mist_file, get_mist_filename, command_name_to_class
 
+mist_file_base_dir = "./"
+
 REGEX_FIND_PARAMS = re.compile(r'''(\%[\w\_\-]+)''')
 HERE = op.dirname(__file__)
 GRAMMAR_TEMPLATE = """
@@ -98,6 +100,8 @@ def check_mist_parameters(mist_file_path: str) -> None or MistInputDataException
     if type(mist_file_path) is str and op.exists(mist_file_path):
         with open(mist_file_path, "r") as f:
             content = f.read()
+        global mist_file_base_dir
+        mist_file_base_dir = op.dirname(mist_file_path)
     else:
         content = mist_file_path
 
@@ -138,4 +142,4 @@ def get_mist_model() -> object:
         return mist_model
 
 
-__all__ = ("get_mist_model", "load_mist_language")
+__all__ = ("get_mist_model", "load_mist_language", "mist_file_base_dir")
