@@ -46,7 +46,27 @@ Of course, depending on your needs, you can have more than one function.
 
 #### Implementing a synchronous command (`nmap`)
 
-Now, lets see a synchronous implementation of `nmap` command. Pay attention to the inline comments.
+Now, lets see a synchronous implementation of `nmap` command. This is an output example of nmap:
+
+```bash
+>nmap -p 0-9000 --open 127.0.0.1
+Starting Nmap 7.91 ( https:s//nmap.org ) at 2021-04-28 17:46 CEST
+Strange read error from 127.0.0.1 (49 - 'Can't assign requested address')
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0011s latency).
+Not shown: 5749 filtered ports, 3245 closed ports
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT     STATE SERVICE
+631/tcp  open  ipp
+2181/tcp open  eforward
+4370/tcp open  elpro_tunnel
+4380/tcp open  unknown
+6379/tcp open  redis
+8021/tcp open  ftp-proxy
+8080/tcp open  http-proxy
+```
+
+And now the command wrapper implementation. Pay attention to the inline comments:
 
 ```bash
 function findOpenPorts(ip, ports) {
@@ -57,7 +77,7 @@ function findOpenPorts(ip, ports) {
         fields = strSplit(outputLine) # split the line by spaces or tabs
         isGreater(len(fields),1) { # if the line has more than 1 field
             isEqual(get(fields,1), "open") { # if the field 1 is "open"
-                openPort = strSplit(get(fields,0),"/") # get the field 0 and remove "/tcp" or "/udp"
+                openPort = strSplit(get(fields,0),"/") # split the field 0 into number(0) and protocol(1)
                 listAppend(openPorts, {"port": openPort[0], "protocol": openPort[1]}) # append the port found to "openPorts"
             }
         }
