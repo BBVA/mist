@@ -638,6 +638,20 @@ Register a function to be executed at the end of the program
     """
     finallyHooks.append((fname, [*p], stack, commands))
 
+def writeToFile(text, filepath, append=True, stack:list=None, commands:list=None):
+    """## writeToFile
+
+Write a string to a file
+
+### Parameters
+- text - string to write
+- fileparh - path of the target file
+- append - True to append, False to overwrite
+    """
+    f = open(filepath, "a" if append else "w")
+    f.write(str(text))
+    f.close()
+
 class _Functions(dict):
 
     def __init__(self):
@@ -680,6 +694,7 @@ class _Functions(dict):
         self["list2dict"] = {"native": True, "commands": list2dict, "async": True}
         self["dict2list"] = {"native": True, "commands": dict2list, "async": True}
         self["registerFinallyHook"] = {"native": True, "commands": registerFinallyHook}
+        self["writeToFile"] = {"native": True, "commands": writeToFile}
 
         # Incorporate all functions of str, dict and list classes:
         # strCapitalize, strCasefold, strCenter, strCount, strEncode, strEndswith, strExpandtabs, strFind, strFormat, strFormat_map, strIndex, strIsalnum, strIsalpha, strIsascii, strIsdecimal, strIsdigit, strIsidentifier, strIslower, strIsnumeric, strIsprintable, strIsspace, strIstitle, strIsupper, strJoin, strLjust, strLower, strLstrip, strMaketrans, strPartition, strReplace, strRfind, strRindex, strRjust, strRpartition, strRsplit, strRstrip, strSplit, strSplitlines, strStartswith, strStrip, strSwapcase, strTitle, strTranslate, strUpper, strZfill, dictClear, dictCopy, dictFromkeys, dictGet, dictItems, dictKeys, dictPop, dictPopitem, dictSetdefault, dictUpdate, dictValues, listAppend, listClear, listCopy, listCount, listExtend, listIndex, listInsert, listPop, listRemove, listReverse, listSort
