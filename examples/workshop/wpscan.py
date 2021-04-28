@@ -6,6 +6,5 @@ async def wpscan(url, stack:list=None, commands:list=None):
     stdout, _ = await proc.communicate()
     parsedOutput = json.loads(stdout)
     if "targetStream" in stack[-1]:
-        print("SEND", url)
         await streams.send(stack[-1]["targetStream"][0], parsedOutput)
     return parsedOutput
