@@ -1,0 +1,9 @@
+include "searchDomains" "wpscan.mist"
+
+function save(r) {
+    print("Wordpress found at", r.target_url)
+    fields = strSplit(r.target_url,"/")
+    writeToFile(r, "{fields[2]}.json")
+}
+
+searchDomains(%domain) => wpscan() => save()
