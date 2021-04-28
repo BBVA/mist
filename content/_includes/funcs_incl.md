@@ -374,6 +374,15 @@ Generates and returns a UUID version 4.
 ### Return value
 The generated UUID.
 
+## writeToFile
+
+Write a string to a file
+
+### Parameters
+- text - string to write
+- fileparh - path of the target file
+- append - True to append, False to overwrite
+    
 
 ## Utility functions
 
