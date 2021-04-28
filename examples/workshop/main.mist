@@ -1,4 +1,4 @@
-include "searchDomains" 
+include "searchDomains" "filterRepeated" 
 include "wpscan.mist"
 #import "./wpscan.py"
 
@@ -8,4 +8,4 @@ function save(r) {
     writeToFile(r, "{fields[2]}.json")
 }
 
-searchDomains(%domain) => wpscan() => save()
+searchDomains(%domain) => filterRepeated(False) => wpscan() => save()
