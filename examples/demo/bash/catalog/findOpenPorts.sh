@@ -4,7 +4,7 @@ findOpenPorts() {
   local ip=$1
   local ports=$2
   local queue=$3
-  local queue2=$3
+  local queue2=$4
   local mode=$5
   local data
 
