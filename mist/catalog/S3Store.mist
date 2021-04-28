@@ -5,21 +5,19 @@
 # Tools: aws
 
 localPath = False
-s3File = False
+
+# Auxiliar function to create the S3 object from the local file
+function S3Write(localPath, remoteUri) {
+  exec("aws s3 cp '{localPath}' {remoteUri}", True)
+}
 
 function S3Store(text, remoteUri) {
 
   if (NOT(localPath)) {
     localPath = tmpFile()
     s3File = remoteUri
+    registerFinallyHook("S3Write", localPath, s3File)
   }
 
   writeLine(localPath, text)
 }
-
-# Auxiliar function to create the S3 object from the local file
-function S3Write(localPath, remoteUri) {
-  exec("aws s3 cp '{localPath}' {remoteUri}", False)
-}
-
-registerFinallyHook("S3Write", localPath, s3File)
