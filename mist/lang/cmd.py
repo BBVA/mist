@@ -117,7 +117,7 @@ class LocalExecutor(Executor):
 
         if self.interactive:
             yield "InteractiveInit", process
-            interactive_processes.append((self, row_id, process))
+            interactive_processes.append((self, process))
             return
         
         while True:

@@ -22,7 +22,7 @@ async def waitForTaks():
     if len(consumers)>0:
         await asyncio.gather(*consumers)
     for i in interactive_processes:
-        await i[0].finish_run(i[1],i[2], False)
+        await i[0].finish_run(i[1], False)
 
 def execute():
     try:
