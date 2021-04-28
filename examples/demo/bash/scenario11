@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -ex
+
+# import catalog tools
+. catalog/searchDomains.sh
+. catalog/findOpenPorts.sh
+
+searchDomains "www.elmundo.es" | \
+findOpenPorts "80,443"

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -ex
+
+# Use MIST library
+. mist/core.sh
+
+# import catalog tools
+. catalog/searchDomains.sh
+. catalog/findOpenPorts.sh
+
+queue=$(openQueue "myqueue")
+queue2=$(openQueue "myqueue2")
+
+searchDomains "www.elmundo.es" $queue "queue" &
+findOpenPorts "80,443" &queue &queue2 "queue" &
+
+wait
+rm /tmp/myqueue
