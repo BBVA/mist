@@ -3,7 +3,7 @@ import sys, asyncio, inspect
 done = 0
 
 async def producer(f, *args):
-    await asyncio.create_task(f(*args))
+    await f(*args)
     global done
     done = done + 1 
 

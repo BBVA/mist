@@ -20,12 +20,12 @@ async def main():
     tasks.append(asyncio.create_task(producer(searchDomains, sys.argv[1], foundDomains)))
     tasks.append(asyncio.create_task(producer(festin, sys.argv[1], os.environ["DNS_SERVER"], True, foundDomains)))
 
-    tasks.append(asyncio.create_task(consumer(foundDomains, findOpenPorts, 1, "80,443", filteredDomains)))
-    tasks.append(asyncio.create_task(consumer(filteredDomains, filterRepeated, 2, portsQueue)))
-    tasks.append(asyncio.create_task(consumer(portsQueue, dispatcher, 3, kafkaQueue, S3Queue)))
+    tasks.append(asyncio.create_task(consumer(foundDomains, findOpenPorts, 2, "80,443", filteredDomains)))
+    tasks.append(asyncio.create_task(consumer(filteredDomains, filterRepeated, 3, portsQueue)))
+    tasks.append(asyncio.create_task(consumer(portsQueue, dispatcher, 4, kafkaQueue, S3Queue)))
 
     tasks.append(asyncio.create_task(consumer(kafkaQueue, kafkaProducer, 5, os.environ["KAFKA_SERVER"], "domainsTopic")))
-    tasks.append(asyncio.create_task(consumer(S3Queue, S3Store, 5)))
+    tasks.append(asyncio.create_task(consumer(S3Queue, S3Store, 6)))
     
     await asyncio.gather(*tasks)
     await S3Write(os.environ["BUCKET_URI"])
