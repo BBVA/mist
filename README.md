@@ -36,7 +36,7 @@ In this scenario we'll do:
 **MIST code** (examples/demo/scenario-01.mist)
 
 ```bash
-include "searchDomains" include "findOpenPorts"
+include "searchDomains" "findOpenPorts"
 
 searchDomains(%domain) => findOpenPorts("80,443") => print()
 ```
