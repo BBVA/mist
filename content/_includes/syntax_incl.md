@@ -185,12 +185,15 @@ The third line include the remote file festin.mist
 
 MIST is implemented in Python. And you can import Python functions and work with them in MIST. *import* directive imports all the funcions defined in a Python file. Example:
 
-```python file=./test/mist_files/mylib.py
+##### python file ./test/mist_files/mylib.py
+
+```bash
 def myPrint(s: str, stack:list=None, commands:list=None):
     print(">",s)
 ```
 
-```bash file=myProgram.mist
+##### file myProgram.mist
+```bash
 import "./test/mist_files/mylib.py"
 mylibMyPrint("Hola")
 ```
@@ -198,7 +201,8 @@ mylibMyPrint("Hola")
 Note that Python functions receives 2 additional parameters: *stack* and *commands*. You can use those parameters to implement advanced functionality.
 The *import* directive can also import remote files. Example:
 
-```bash file=myProgram.mist
+##### file myProgram.mist
+```bash
 import "https://raw.githubusercontent.com/BBVA/mist/master/test/mist_files/mylib.py"
 mylibMyPrint("Hola")
 ```
