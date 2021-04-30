@@ -1,7 +1,6 @@
 # Mist builtin functions
 
 
-## AND
 
 Boolean AND operator for the given values.
 
@@ -383,25 +382,3 @@ Write a string to a file
 - fileparh - path of the target file
 - append - True to append, False to overwrite
     
-
-## Utility functions
-
-Mist, in addition to all the previous functions, provides developers with some
-utility functions to handle with strings, dictionaries and lists that are
-imported directly from Python.
-
-You can see the documentation about all these funcions in [Python's documentation](https://docs.python.org/3/library/stdtypes.html)
-
-### String utility functions
-
-The following functions are available: [capitalize](https://docs.python.org/3/library/stdtypes.html#str.capitalize), [casefold](https://docs.python.org/3/library/stdtypes.html#str.casefold), [center](https://docs.python.org/3/library/stdtypes.html#str.center), [count](https://docs.python.org/3/library/stdtypes.html#str.count), [encode](https://docs.python.org/3/library/stdtypes.html#str.encode), [endswith](https://docs.python.org/3/library/stdtypes.html#str.endswith), [expandtabs](https://docs.python.org/3/library/stdtypes.html#str.expandtabs), [find](https://docs.python.org/3/library/stdtypes.html#str.find), [format](https://docs.python.org/3/library/stdtypes.html#str.format), [format_map](https://docs.python.org/3/library/stdtypes.html#str.format_map), [index](https://docs.python.org/3/library/stdtypes.html#str.index), [isalnum](https://docs.python.org/3/library/stdtypes.html#str.isalnum), [isalpha](https://docs.python.org/3/library/stdtypes.html#str.isalpha), [isascii](https://docs.python.org/3/library/stdtypes.html#str.isascii), [isdecimal](https://docs.python.org/3/library/stdtypes.html#str.isdecimal), [isdigit](https://docs.python.org/3/library/stdtypes.html#str.isdigit), [isidentifier](https://docs.python.org/3/library/stdtypes.html#str.isidentifier), [islower](https://docs.python.org/3/library/stdtypes.html#str.islower), [isnumeric](https://docs.python.org/3/library/stdtypes.html#str.isnumeric), [isprintable](https://docs.python.org/3/library/stdtypes.html#str.isprintable), [isspace](https://docs.python.org/3/library/stdtypes.html#str.isspace), [istitle](https://docs.python.org/3/library/stdtypes.html#str.istitle), [isupper](https://docs.python.org/3/library/stdtypes.html#str.isupper), [join](https://docs.python.org/3/library/stdtypes.html#str.join), [ljust](https://docs.python.org/3/library/stdtypes.html#str.ljust), [lower](https://docs.python.org/3/library/stdtypes.html#str.lower), [lstrip](https://docs.python.org/3/library/stdtypes.html#str.lstrip), [maketrans](https://docs.python.org/3/library/stdtypes.html#str.maketrans), [partition](https://docs.python.org/3/library/stdtypes.html#str.partition), [replace](https://docs.python.org/3/library/stdtypes.html#str.replace), [rfind](https://docs.python.org/3/library/stdtypes.html#str.rfind), [rindex](https://docs.python.org/3/library/stdtypes.html#str.rindex), [rjust](https://docs.python.org/3/library/stdtypes.html#str.rjust), [rpartition](https://docs.python.org/3/library/stdtypes.html#str.rpartition), [rsplit](https://docs.python.org/3/library/stdtypes.html#str.rsplit), [rstrip](https://docs.python.org/3/library/stdtypes.html#str.rstrip), [split](https://docs.python.org/3/library/stdtypes.html#str.split), [splitlines](https://docs.python.org/3/library/stdtypes.html#str.splitlines), [startswith](https://docs.python.org/3/library/stdtypes.html#str.startswith), [strip](https://docs.python.org/3/library/stdtypes.html#str.strip), [swapcase](https://docs.python.org/3/library/stdtypes.html#str.swapcase), [title](https://docs.python.org/3/library/stdtypes.html#str.title), [translate](https://docs.python.org/3/library/stdtypes.html#str.translate), [upper](https://docs.python.org/3/library/stdtypes.html#str.upper), [zfill](https://docs.python.org/3/library/stdtypes.html#str.zfill).
-
-### Dictionary utility functions
-
-The following functions are available: [clear](https://docs.python.org/3/library/stdtypes.html#str.clear), [copy](https://docs.python.org/3/library/stdtypes.html#str.copy), [fromkeys](https://docs.python.org/3/library/stdtypes.html#str.fromkeys), [get](https://docs.python.org/3/library/stdtypes.html#str.get), [items](https://docs.python.org/3/library/stdtypes.html#str.items), [keys](https://docs.python.org/3/library/stdtypes.html#str.keys), [pop](https://docs.python.org/3/library/stdtypes.html#str.pop), [popitem](https://docs.python.org/3/library/stdtypes.html#str.popitem), [setdefault](https://docs.python.org/3/library/stdtypes.html#str.setdefault), [update](https://docs.python.org/3/library/stdtypes.html#str.update), [values](https://docs.python.org/3/library/stdtypes.html#str.values).
-
-### List utility functions
-
-The following functions are available: [append](https://docs.python.org/3/library/stdtypes.html#str.append), [clear](https://docs.python.org/3/library/stdtypes.html#str.clear), [copy](https://docs.python.org/3/library/stdtypes.html#str.copy), [count](https://docs.python.org/3/library/stdtypes.html#str.count), [extend](https://docs.python.org/3/library/stdtypes.html#str.extend), [index](https://docs.python.org/3/library/stdtypes.html#str.index), [insert](https://docs.python.org/3/library/stdtypes.html#str.insert), [pop](https://docs.python.org/3/library/stdtypes.html#str.pop), [remove](https://docs.python.org/3/library/stdtypes.html#str.remove), [reverse](https://docs.python.org/3/library/stdtypes.html#str.reverse), [sort](https://docs.python.org/3/library/stdtypes.html#str.sort).
-
-
