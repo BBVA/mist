@@ -69,6 +69,7 @@ class SetCommand:
 class FunctionCall(MistCallable):
     parent: object
     name: str
+    method: str
     args: list
     namedArgs: list
     commands: list
@@ -88,7 +89,9 @@ class FunctionCall(MistCallable):
             #if arg.value.source:
             if isinstance(arg.value.value, Source):
                 sourceStream = await arg.value.value.getValue(stack)
-
+                
+        if self.method:
+            self.name += "." + self.method
         if sourceStream or self.targetStream:
             t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
             t.waitingForQueue = False

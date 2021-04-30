@@ -15,10 +15,6 @@ async def test_list_functions(examples_path):
     assert "Length = 3" == results[0]
     assert "Cleared = []" == results[1]
     assert "Sorted = ['four', 'one', 'three', 'two']" == results[2]
-    assert "Reversed = ['four', 'three', 'two', 'one']" == results[3]
-    assert "Appended = ['one', 'two', 'three', 'four', 'five']" == results[4]
-    assert "Removed = ['one', 'three', 'four']" == results[5]
-
-# Pending
-#    assert "Mapped = [2, 4, 6]" == results[6]
-#    assert "Reducedd = 6" == results[7]
+    assert "Reversed = ['two', 'three', 'one', 'four']" == results[3]
+    assert "Appended = ['two', 'three', 'one', 'four', 'five']" == results[4]
+    assert "Removed = ['three', 'one', 'four', 'five']" == results[5]

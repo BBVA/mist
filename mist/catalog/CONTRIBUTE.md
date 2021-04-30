@@ -74,11 +74,12 @@ function findOpenPorts(ip, ports) {
     # we call the MIST exec command to execute nmap with the given parameter.
     r = exec("nmap -p {ports} --open {ip}", False) {
         # this block of code is executed for every line of the nmap output (outputLine)
-        fields = strSplit(outputLine) # split the line by spaces or tabs
+        fields = outputLine.split() # split the line by spaces or tabs
         isGreater(len(fields),1) { # if the line has more than 1 field
-            isEqual(get(fields,1), "open") { # if the field 1 is "open"
-                openPort = strSplit(get(fields,0),"/") # split the field 0 into number(0) and protocol(1)
-                listAppend(openPorts, {"port": openPort[0], "protocol": openPort[1]}) # append the port found to "openPorts"
+            isEqual(fields[1], "open") { # if the field 1 is "open"
+                portTuple = fields[0] # get the field 0 that contains the tuple portNumber/protocol
+                openPort = portTuple.split("/") # split the field 0 into number(0) and protocol(1)
+                openPorts.append({"port": openPort[0], "protocol": openPort[1]}) # append the port found to "openPorts"
             }
         }
     }
@@ -107,11 +108,12 @@ We are going to modify the previous synchronous implementation to support asynch
 function findOpenPorts(ip, ports) {
     openPorts = []
     r = exec("nmap -p {ports} --open {ip}", False)  => out { # we add the output stream
-        fields = strSplit(outputLine)
+        fields = outputLine.split()
         isGreater(len(fields),1) {
-            isEqual(get(fields,1), "open") {
-                openPort = strSplit(get(fields,0),"/")
-                listAppend(openPorts, {"port": openPort[0], "protocol": openPort[1]})
+            isEqual(fields[1]), "open") {
+                portTuple = fields[0]
+                openPort = portTuple.split("/")
+                openPorts.append({"port": openPort[0], "protocol": openPort[1]})s
                 # The following lines send the message to out stream
                 message = {"ip": ip, "port": openPort[0], "protocol": openPort[1]}
                 message => out

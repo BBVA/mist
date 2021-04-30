@@ -8,13 +8,14 @@
 function findOpenPorts(ip, ports) => out {
     openPorts = []
     r = exec("nmap -p {ports} --open {ip}", False) {
-        fields = strSplit(outputLine)
+        fields = outputLine.split()
         isGreater(len(fields),1) {
-            isEqual(get(fields,1), "open") {
-                openPort = strSplit(get(fields,0),"/")
+            isEqual(fields[1], "open") {
+                portTuple = fields[0]
+                openPort = portTuple.split("/")
                 message = {"ip": ip, "port": openPort[0], "protocol": openPort[1]}
                 message => out
-                listAppend(openPorts, {"port": openPort[0], "protocol": openPort[1]})
+                openPorts.append({"port": openPort[0], "protocol": openPort[1]})
             }
         }     
     }

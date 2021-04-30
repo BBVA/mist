@@ -1,0 +1,19 @@
+s = "hola Pepe"
+print(s)
+
+print(s.upper())
+
+s2 = s.capitalize()
+print(s2)
+
+l1 = s.split(" ")
+print(l1)
+print(l1[0])
+
+l1.reverse()
+print(l1)
+
+d1 = list2dict(l1, ["name", "greeting"])
+print(d1)
+
+print(d1.keys())

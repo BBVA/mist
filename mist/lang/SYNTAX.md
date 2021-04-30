@@ -325,3 +325,23 @@ The reserver word "done" will stop the execution of a block of code (closure)
 Used inside a function will work as a return without a value.
 
 Used inside an if-else structure will stop the execution of the closure.
+
+## Object Method Call
+
+Mist is implemented in Python. List, Strings, Dictionaries, etc. are Python objects.
+You can call method of any object by using the syntax:
+
+```bash
+object.method()
+```
+
+For example
+
+```bash
+myText = "Hello World"
+print(myText.upper())
+```
+
+This will print "HELLO WORLD"
+
+You can see the documentation about all these funcions in [Python's documentation](https://docs.python.org/3/library/stdtypes.html)

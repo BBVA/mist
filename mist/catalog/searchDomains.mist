@@ -8,11 +8,11 @@
 function searchDomains(originDomain) => out  {
     domains = []
     r = exec("dnsrecon -d {originDomain} -t crt", False) {
-        fields = strSplit(outputLine)
+        fields = outputLine.split()
         isEqual(get(fields,1), "A") {
             message = get(fields,2)
             message => out
-            listAppend(domains, message)
+            domains.append(message)
         }
     }
     r["domains"] = domains

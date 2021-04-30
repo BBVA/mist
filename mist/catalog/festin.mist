@@ -13,16 +13,17 @@ function festin(originDomain, dns, useTor) => out {
     resultFile = tmpFile()
     r = exec ("festin {originDomain} {tor} -ds {dns} -rr {resultFile}", False) {
         if(contains("Adding", outputLine)) {
-            fields = strSplit(outputLine)
+            fields = outputLine.split()
             domain = strSubstr(get(fields ,7), 1, -1)
             domain => out
         }
     }
-    r["buckets"] = []
+    buckets = []
     buckets = readFileAsLines(resultFile)
     iterate(buckets, "line") {
         parsedLine = parseJSON(line)
-        listAppend(r["buckets"],parsedLine)
+        buckets.append(parsedLine)
     }
+    r["buckets"] = buckets
     return r
 }

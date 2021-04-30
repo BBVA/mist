@@ -58,23 +58,39 @@ def findQueueInArgs(args, namedArgsDict):
 async def callNative(f, args, namedArgs, namedArgsDict, stack, commands):
     if "async" in f and f["async"]:
     #if inspect.iscoroutinefunction(f["commands"]):
-        if args:
-            return await f["commands"](*args, stack=stack, commands=commands)
-        elif namedArgs:
-            namedArgsDict["stack"]=stack
-            namedArgsDict["commands"]=commands
-            return await f["commands"](**namedArgsDict)
+        if hasattr(f["commands"], "__annotations__") and "stack" in getattr(f["commands"], "__annotations__"):
+            if args:
+                return await f["commands"](*args, stack=stack, commands=commands)
+            elif namedArgs:
+                namedArgsDict["stack"]=stack
+                namedArgsDict["commands"]=commands
+                return await f["commands"](**namedArgsDict)
+            else:
+                return await f["commands"](stack=stack, commands=commands)
         else:
-            return await f["commands"](stack=stack, commands=commands)
+            if args:
+                return await f["commands"](*args)
+            elif namedArgs:
+                return await f["commands"](**namedArgsDict)
+            else:
+                return await f["commands"]()
     else:
-        if args:
-            return f["commands"](*args, stack=stack, commands=commands)
-        elif namedArgs:
-            namedArgsDict["stack"]=stack
-            namedArgsDict["commands"]=commands
-            return f["commands"](**namedArgsDict)
+        if hasattr(f["commands"], "__annotations__") and "stack" in getattr(f["commands"], "__annotations__"):
+            if args:
+                return f["commands"](*args, stack=stack, commands=commands)
+            elif namedArgs:
+                namedArgsDict["stack"]=stack
+                namedArgsDict["commands"]=commands
+                return f["commands"](**namedArgsDict)
+            else:
+                return f["commands"](stack=stack, commands=commands)
         else:
-            return f["commands"](stack=stack, commands=commands)
+            if args:
+                return f["commands"](*args)
+            elif namedArgs:
+                return f["commands"](**namedArgsDict)
+            else:
+                return f["commands"]()
 
 async def function_runner(name, stack, sourceStream, targetStream, args, namedArgs=None, commands=None, processArgs=True):
     namedArgsDict = {}
@@ -84,8 +100,14 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         elif namedArgs:
             for i in namedArgs:
                 namedArgsDict[i.key] = await checkArg(i.value, stack)
-    from mist.lang.function import functions as functions
-    f = functions[name]
+    
+    if "." in name:
+        fields = name.split(".")
+        o = await get_id(fields[0], stack)
+        f = {"native": True, "commands": getattr(o, fields[1])}
+    else:
+        from mist.lang.function import functions as functions
+        f = functions[name]
     isNative = "native" in f and f["native"]
     if not isNative and args:
         namedArgsDict = dict(zip(f["args"], args))
