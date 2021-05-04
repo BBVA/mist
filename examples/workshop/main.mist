@@ -7,7 +7,7 @@ function save(r) {
         print("Wordpress found at", r.wpinfo.target_url)
         url = r.wpinfo.target_url
         fields = url.split("/")
-        writeToFile(r.consoleOutput, "{fields[2]}.json")
+        writeLine("{fields[2]}.json", r.consoleOutput)
     }
 }
 

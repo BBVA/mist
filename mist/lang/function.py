@@ -633,20 +633,6 @@ Register a function to be executed at the end of the program
     """
     finallyHooks.append((fname, [*p], stack, commands))
 
-def writeToFile(text, filepath, append=True, stack:list=None, commands:list=None):
-    """## writeToFile
-
-Write a string to a file
-
-### Parameters
-- text - string to write
-- fileparh - path of the target file
-- append - True to append, False to overwrite
-    """
-    f = open(filepath, "a" if append else "w")
-    f.write(str(text))
-    f.close()
-
 class _Functions(dict):
 
     def __init__(self):
@@ -689,7 +675,6 @@ class _Functions(dict):
         self["list2dict"] = {"native": True, "commands": list2dict, "async": True}
         self["dict2list"] = {"native": True, "commands": dict2list, "async": True}
         self["registerFinallyHook"] = {"native": True, "commands": registerFinallyHook}
-        self["writeToFile"] = {"native": True, "commands": writeToFile}
 
 functions = _Functions()
 
