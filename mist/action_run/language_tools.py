@@ -12,8 +12,6 @@ from mist.lang.exceptions import MistInputDataException, MistParseErrorException
 from mist.lang.config import config
 from mist.lang.herlpers import command_runner
 
-from mist.lang.classes import exports as core_exports
-
 from .helpers import get_or_download_mist_file, get_mist_filename, command_name_to_class
 
 mist_file_base_dir = "./"
@@ -71,6 +69,7 @@ def load_mist_language(mist_file_or_content: str):
     # Load core.tx file
     grammar = get_core_grammar()
 
+    from mist.lang.classes import exports as core_exports
     base_exports = []
     base_exports.extend(core_exports)
 

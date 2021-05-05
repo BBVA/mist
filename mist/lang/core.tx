@@ -75,7 +75,7 @@ SetCommand:
 ;
 
 FunctionCall:
-  name=ID ('.'method=ID)? ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')') ('{'
+  method=VarReference ('()' | '(' (namedArgs+=NamedArg[','] | args+=IDorSTRING[',']) ')') ('{'
       commands*=Command
     '}')?
 ;

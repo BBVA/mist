@@ -68,8 +68,7 @@ class SetCommand:
 @dataclass
 class FunctionCall(MistCallable):
     parent: object
-    name: str
-    method: str
+    method: str  
     args: list
     namedArgs: list
     commands: list
@@ -77,7 +76,7 @@ class FunctionCall(MistCallable):
 
     async def run(self, stack):
         if config.debug:
-            print(f"-> FunctionCall {self.name}")
+            print(f"-> FunctionCall {self.method}")
 
         sourceStream = None
         for arg in self.args:
@@ -90,10 +89,8 @@ class FunctionCall(MistCallable):
             if isinstance(arg.value.value, Source):
                 sourceStream = await arg.value.value.getValue(stack)
                 
-        if self.method:
-            self.name += "." + self.method
         if sourceStream or self.targetStream:
-            t = asyncio.create_task(function_runner(self.name, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
+            t = asyncio.create_task(function_runner(self.method, stack[:], sourceStream, self.targetStream, self.args, self.namedArgs))
             t.waitingForQueue = False
             if sourceStream:
                 streams.createIfNotExists(sourceStream[1:])
@@ -103,7 +100,7 @@ class FunctionCall(MistCallable):
                     streams.createIfNotExists(s)
                 producers.append(t)
         else:
-            result = await function_runner(self.name, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
+            result = await function_runner(self.method, stack, sourceStream, self.targetStream, self.args, self.namedArgs, self.commands)
             return result
 
 @dataclass

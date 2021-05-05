@@ -115,7 +115,9 @@ async def execute_from_text(text: str,
 
 async def runFinalizers(stack):
     for f in finallyHooks:
-        await function_runner(f[0], args=f[1], stack=f[2], commands=f[3], sourceStream=None, targetStream=None, processArgs=False)
+        from mist.lang.classes import VarReference
+        method = VarReference(None, f[0], [])
+        await function_runner(method, args=f[1], stack=f[2], commands=f[3], sourceStream=None, targetStream=None, processArgs=False)
 
 
 __all__ = ("execute", "execute_from_text")

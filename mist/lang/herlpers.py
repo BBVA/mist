@@ -27,14 +27,13 @@ def get_var(var, stack):
             return s[var]
     raise MistUndefinedVariableException(var)
 
-def getFromDict(d, childs):
-    return d[childs[0]] if len(childs) == 1 else getFromDict(d[childs[0]], childs[1:])
-
 def getChildFromVar(t, childs):
-    if type(t) is list:
-        return getFromDict(t[0], childs)
-    else:
-        return getFromDict(t, childs)
+    if type(t) is dict and childs[0] in t:
+        v = t[childs[0]]
+    else:    
+        v = getattr(t, childs[0])
+    return v if len(childs) == 1 else getChildFromVar(v, childs[1:])
+
 
 async def checkArg(v, stack):
     if isinstance(v, str):
@@ -100,14 +99,12 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         elif namedArgs:
             for i in namedArgs:
                 namedArgsDict[i.key] = await checkArg(i.value, stack)
-    
-    if "." in name:
-        fields = name.split(".")
-        o = await get_id(fields[0], stack)
-        f = {"native": True, "commands": getattr(o, fields[1])}
+    if name.childs:
+        o = await name.getValue(stack)
+        f = {"native": True, "commands": o}
     else:
         from mist.lang.function import functions as functions
-        f = functions[name]
+        f = functions[name.id]
     isNative = "native" in f and f["native"]
     if not isNative and args:
         namedArgsDict = dict(zip(f["args"], args))
@@ -201,12 +198,14 @@ async def get_key(key, stack):
         else:
             raise MistException(f"Invalid reference {key}")
     if key[-1]==')':
-        function = key.split('(')[0].strip()
+        function = key.split('(')[0].strip().split(".")
+        from mist.lang.classes import VarReference
+        method = VarReference(None, function[0], function[1:])
         args = [i.strip() for i in re.sub(' +', ' ', key.split('(',1)[1]).rsplit(')',1)[0].strip().split(',')]
         if '=' in args[0]:
             namedArgs=[ NamedArg(i.split('=',1)[0].strip(), i.split('=',1)[1].strip()) for i in args]
-            return await function_runner(function, stack, None, None, None, namedArgs )
-        return await function_runner(function, stack, None, None, [] if args[0]=='' else args)
+            return await function_runner(method, stack, None, None, None, namedArgs )
+        return await function_runner(method, stack, None, None, [] if args[0]=='' else args)
     if '.' in key:
         t = key.split('.')
         return getChildFromVar(get_var(t[0], stack), t[1:])

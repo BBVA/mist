@@ -19,4 +19,6 @@ Hola pepe
 hola
 ['Pepe', 'hola']
 {'name': 'Pepe', 'greeting': 'hola'}
-dict_keys(['name', 'greeting'])\n""" == console
+dict_keys(['name', 'greeting'])
+FOO
+BAR\n""" == console

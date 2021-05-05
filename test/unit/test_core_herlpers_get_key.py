@@ -6,6 +6,8 @@ from mist.lang.herlpers import get_key, NamedArg
 
 from test.utilTest import *
 
+from mist.lang.classes import VarReference
+
 
 class Get_key_Test(unittest.IsolatedAsyncioTestCase):
 
@@ -45,7 +47,7 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         ret = await get_key("myFunc()", [])
 
         self.assertEqual(result, ret)
-        mock_function_runner.assert_called_once_with("myFunc", [], None, None, [])
+        mock_function_runner.assert_called_once_with(VarReference(parent=None, id='myFunc', childs=[]), [], None, None, [])
 
     @patch('mist.lang.herlpers.function_runner')
     async def test_returns_function_return_value_when_given_a_function_with_args(self, mock_function_runner):
@@ -55,7 +57,7 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         ret = await get_key("myFunc(one, two, three)", [])
 
         self.assertEqual(result, ret)
-        mock_function_runner.assert_called_once_with("myFunc", [], None, None, ["one", "two", "three"])
+        mock_function_runner.assert_called_once_with(VarReference(parent=None, id='myFunc', childs=[]), [], None, None, ["one", "two", "three"])
 
     @patch('mist.lang.herlpers.function_runner')
     async def test_returns_function_return_value_when_given_a_function_with_named_args(self, mock_function_runner):
@@ -66,7 +68,7 @@ class Get_key_Test(unittest.IsolatedAsyncioTestCase):
         ret = await get_key("myFunc(one=1, two=2, three=3)", [])
 
         self.assertEqual(result, ret)
-        mock_function_runner.assert_called_once_with("myFunc", [], None, None, None, [NamedArg("one", "1"), NamedArg("two", "2"), NamedArg("three", "3")])
+        mock_function_runner.assert_called_once_with(VarReference(parent=None, id='myFunc', childs=[]), [], None, None, None, [NamedArg("one", "1"), NamedArg("two", "2"), NamedArg("three", "3")])
 
     @patch('mist.lang.herlpers.get_var')
     @patch('mist.lang.herlpers.getChildFromVar')

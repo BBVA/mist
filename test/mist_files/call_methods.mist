@@ -17,3 +17,7 @@ d1 = list2dict(l1, ["name", "greeting"])
 print(d1)
 
 print(d1.keys())
+
+o = {"a": "foo", "b": {"c": "bar"}}
+print(o.a.upper())
+print(o.b.c.upper())
