@@ -4,7 +4,7 @@ include "wpscan.mist"
 
 function save(r) {
     if (r.result) {
-        print("Wordpress found at", r.wpinfo.target_url)
+        print("[INFO] Wordpress found at", r.wpinfo.target_url)
         url = r.wpinfo.target_url
         fields = url.split("/")
         writeLine("{fields[2]}.json", r.consoleOutput)

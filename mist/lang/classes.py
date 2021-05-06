@@ -36,11 +36,14 @@ class SetCommand:
     parent: object
     key: object
     value: object
+    
+    def __repr__(self):
+        return str(f"{self.key} = {self.value}")
 
     async def run(self, stack):
 
         if config.debug:
-            print(f"-> SetCommand {self.key}")
+            print(f"[DEBUG] " + self.__repr__())
 
         # Get the value to be stored
         val = await self.value.value.run(stack) if isinstance(self.value.value, FunctionCall) else await get_id(self.value, stack)
@@ -65,6 +68,15 @@ class SetCommand:
             raise MistException(f"Unexpected LHS value {type(self.key)}")
         return
 
+
+@dataclass
+class IDorSTRING():
+    parent: object
+    value: object
+
+    def __repr__(self):
+        return str(self.value)
+
 @dataclass
 class FunctionCall(MistCallable):
     parent: object
@@ -74,9 +86,12 @@ class FunctionCall(MistCallable):
     commands: list
     targetStream: str = None
 
+    def __repr__(self):
+        return str(f"{'.'.join([self.method.id] + self.method.childs)}({'.'.join([str(i) for i in self.args])})")
+
     async def run(self, stack):
         if config.debug:
-            print(f"-> FunctionCall {self.method}")
+            print(f"[DEBUG] " + self.__repr__())
 
         sourceStream = None
         for arg in self.args:
@@ -113,7 +128,8 @@ class FunctionDefinition:
 
     async def run(self, stack):
         if config.debug:
-            print(f"-> Function Definition {self.name}")
+            print(f"[DEBUG] FunctionDefinition {self.name}")
+            
         functions[self.name] = {"native": False, "commands": self.commands, "args": self.args}
 
 @dataclass
@@ -123,7 +139,7 @@ class ReturnCommand:
 
     async def run(self, stack):
         if config.debug:
-            print(f"-> ReturnCommand")
+            print(f"[DEBUG] return {self.value}")
         stack[-1]["MistFunctionResultTmpVariable"] = await get_id(self.value, stack)            
 
 @dataclass
@@ -133,7 +149,7 @@ class IncludeCommand:
 
     async def run(self, stack):
         if config.debug:
-            print(f"-> Include {self.files}")
+            print(f"[DEBUG] Include {self.files}")
         for f in self.files:
             commandName = f
             if not (f.endswith(".mist") or f.endswith(".MIST")):
@@ -166,7 +182,7 @@ class ImportCommand:
 
     async def run(self, stack):
         if config.debug:
-            print(f"-> Import {self.files}")
+            print(f"[DEBUG] Import {self.files}")
         for py_file in self.files:
             module_name = pathlib.Path(py_file).stem
             if py_file.startswith("http"):
@@ -203,6 +219,9 @@ class ExtParameter(ValueContainer):
     parent: object
     param: str
 
+    def __repr__(self):
+        return str(self.param)
+
     async def getValue(self, stack):
         return params[self.param]
 
@@ -218,6 +237,9 @@ class EnvVariable(ValueContainer):
 class CustomList(ValueContainer):
     parent: object
     components: list
+
+    def __repr__(self):
+        return str(f"{[str(i) for i in self.components]}")
 
     async def getValue(self, stack):
         return [ await get_id(c, stack) for c in self.components ]
@@ -236,6 +258,9 @@ class ListDictReference(ValueContainer):
     id: str
     member: object
 
+    def __repr__(self):
+        return str(f"{self.id}[{self.member}]")
+
     async def getValue(self, stack):
         return await resolve_list_dict_reference(self.id, self.member, stack)
 
@@ -244,6 +269,9 @@ class VarReference(ValueContainer):
     parent: object
     id: str
     childs: list
+
+    def __repr__(self):
+        return str(f"v'{'.'.join([self.id] + self.childs)}")
 
     async def getValue(self, stack):
         if self.childs:
@@ -281,6 +309,9 @@ class Source(ValueContainer):
     source: str
     sourceIndirect: str
 
+    def __repr__(self):
+        return f"{self.source}{self.sourceIndirect if self.sourceIndirect else ''}"
+
     async def getValue(self, stack):
         if self.source:
             return ":" + self.source
@@ -289,6 +320,9 @@ class Source(ValueContainer):
 @dataclass
 class ObjectWithValue:
     value: object
+
+    def __repr__(self):
+        return f"{self.value}"
 
 @dataclass
 class PipeNext:
@@ -301,9 +335,12 @@ class PipeCommand(MistCallable):
     left: object
     right: object
 
+    def __repr__(self):
+        return f"=> {self.left[0]} " + (f"{self.right}" if self.right else "")
+
     async def run(self, stack):
         if config.debug:
-            print(f"-> PipeCommand {self.left} {self.right}")
+            print(f"[DEBUG] " + self.__repr__())
 
         left = self.left
         right = self.right
@@ -367,4 +404,4 @@ class PipeCommand(MistCallable):
 exports = [ IfCommand, SetCommand, FunctionCall, ImportCommand,
            FunctionDefinition, IncludeCommand, StringData, ExtParameter,
            EnvVariable, CustomList, CustomDict, VarReference, Source,
-           ListDictReference, ReturnCommand, PipeCommand]
+           ListDictReference, ReturnCommand, PipeCommand, IDorSTRING]

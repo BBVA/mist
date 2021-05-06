@@ -11,6 +11,7 @@ import asyncio
 
 from typing import Tuple
 from functools import lru_cache
+from mist.lang.config import config
 
 input_file_regex = re.compile(r'''(\{)(infile-[\w\.\-\d]+)(\})''')
 output_file_regex = re.compile(r'''(\{)(outfile-[\w\.\-\d]+)(\})''')
@@ -101,6 +102,9 @@ class LocalExecutor(Executor):
         run_env.update(self.environment)
 
         command = shlex.split(new_command)
+
+        if config.debug:
+            print(f"[INFO] exec: {new_command}")
         
         # process = await asyncio.create_subprocess_shell(new_command,
         #                            env=run_env,

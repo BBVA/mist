@@ -9,7 +9,7 @@ class MistObj(object):
         self.__dict__ = { 'value': None }
         self.__dict__.update(d)
 
-def init_mist(mistConfig={'debug': True}, mistEnvironment=None, mistParams=None):
+def init_mist(mistConfig={'debug': False}, mistEnvironment=None, mistParams=None):
 
     if mistConfig:
         config.update(mistConfig)

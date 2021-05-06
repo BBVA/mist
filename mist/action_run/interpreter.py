@@ -55,16 +55,6 @@ async def execute_from_text(text: str,
     if kwargs:
         config.update(kwargs)
 
-    # Set config defaults
-    default_configs = {
-        "console_output": True,
-        "real_time": True,
-        "debug": False,
-        "database_path": None,
-        "simulate": False,
-        "no_check_tools": False
-    }
-
     #
     # Overwrite print buildin function to send each print(...) line to
     # callback too
@@ -85,11 +75,6 @@ async def execute_from_text(text: str,
             _file.flush()
 
         builtins.print = real_time_print
-
-
-    if need_config := set(default_configs.keys()) - set(kwargs.keys()):
-        for c in need_config:
-            config[c] = default_configs[c]
 
     mist_meta_model = load_mist_language(text)
 
