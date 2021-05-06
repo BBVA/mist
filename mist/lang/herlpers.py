@@ -110,7 +110,8 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         namedArgsDict = dict(zip(f["args"], args))
     if targetStream:
         namedArgsDict["targetStream"] = targetStream
-    stack.append(namedArgsDict)
+    if not isNative:
+        stack.append(namedArgsDict)
     if sourceStream:
         queue, position, namedName = findQueueInArgs(args, namedArgsDict)
         if not isNative:
