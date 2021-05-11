@@ -6,7 +6,7 @@
 # Tools: tail
 
 function tail(file, endline) => out {
-    r = exec("tail -f {file}", False) {
+    r = exec("tail +1f {file}", False) {
         if (isEqual(outputLine,endline)) {
             terminate()
         } else {
