@@ -212,7 +212,11 @@ Runs the given command and returns its output.
 - interactive - Runs the command in interactive mode, defaults to false.
 
 ### Return value
-Returns a dictionary containing the command stderr and stdout and the exit code and description.
+Returns a dictionary containing:
+- result - True if the execution was succesfull
+- resultCode - command exit code
+- consoleOutput - commmand standard output
+- consoleError - command standard error
     """
     with execution(command, interactive=interactive) as (executor, in_files, out_files):
         with executor as console_lines:
