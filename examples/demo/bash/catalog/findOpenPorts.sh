@@ -1,27 +1,53 @@
 
-
+## Guess if the given ports are open in the hosts received (from stdin or the
+## input queue) and outputs the found ports through stdout or the output queue
 findOpenPorts() {
-  local ip=$1
-  local ports=$2
-  local queue=$3
-  local queue2=$4
-  local mode=$5
-  local data
 
-  data=$(readQueue $queue)
-  while true
+  local ip
+  local ports=$1
+
+  if [ $# -gt 1 ]
+  then
+    local queueIn=$2
+
+    if [ $# -gt 2 ]
+    then
+      local queueOut=$3
+    fi
+  fi
+
+  if [[ -n $queueIn ]]
+  then
+    ip=$(readQueue $queueIn)
+  else
+    read ip
+  fi
+  while [[ $ip != "END" ]]
   do
-    nmap -p ${ports} --open ${ip} | awk '{print $1, $2, $3}' | grep open | \
+    nmap -p "${ports}" --open ${ip} | awk '{print $1, $2, $3}' | grep open | \
     while read port status schema
     do
-      if [ "$mode" == "queue" ]
+      local msg="{\"port\": ${port}, \"protocol\": \"$schema\"}"
+      if [[ -n $queueOut ]]
       then
-        writeQueue $queue2 "{\"port\": ${port%/tcp}, \"protocol\": \"$schema\"}"
+        writeQueue $queueOut "$msg"
       else
-        echo "{\"port\": ${port%/tcp}, \"protocol\": \"$schema\"}"
+        echo $msg
       fi
     done
 
-    data=$(readQueue $queue)
-    [[ -n $data ]] && break
+    if [[ -n $queueIn ]]
+    then
+      ip=$(readQueue $queueIn)
+    else
+      read ip
+    fi
+  done
+
+  if [[ -n $queueOut ]]
+  then
+    writeQueue $queueOut "END"
+  else
+    echo "END"
+  fi
 }

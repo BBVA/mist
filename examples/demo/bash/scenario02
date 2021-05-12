@@ -8,7 +8,7 @@ set -e
 # import catalog tools
 . catalog/searchDomains.sh
 . catalog/findOpenPorts.sh
-. catalog/print.sh
+. catalog/kafkaProducer.sh
 
 FD_QUEUE="foundDomains"
 FP_QUEUE="foundPorts"
@@ -27,9 +27,10 @@ openQueue $FP_QUEUE
 # Launch workflows
 searchDomains "germanramos.com" $FD_QUEUE &
 findOpenPorts "80,443" $FD_QUEUE $FP_QUEUE &
-printOut $FP_QUEUE &
+kafkaProducer $KAFKA_SERVER "domainsTopic" $FP_QUEUE &
 
 wait
 
+
 # Simpler alternative using pipes
-###searchDomains "germanramos.com" | findOpenPorts "80,443" | cat
+###searchDomains "germanramos.com" | findOpenPorts "80,443" | kafkaProducer $KAFKA_SERVER, $itegration_topic

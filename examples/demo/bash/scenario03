@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Use MIST library
+. mist/core.sh
+
+# import catalog tools
+. catalog/searchDomains.sh
+. catalog/findOpenPorts.sh
+. catalog/kafkaProducer.sh
+. catalog/festin.sh
+
+FD_QUEUE="foundDomains"
+FP_QUEUE="foundPorts"
+
+# Cleanup queues after finishing
+cleanup() {
+    closeQueue $FD_QUEUE
+    closeQueue $FP_QUEUE
+}
+
+trap cleanup EXIT ERR
+
+# Create queues
+openQueue $FD_QUEUE
+openQueue $FP_QUEUE
+
+# Launch workflows
+#searchDomains "germanramos.com" $FD_QUEUE &
+callFestin "germanramos.com" $DNS_SERVER "False" $FD_QUEUE &
+findOpenPorts "80,443" $FD_QUEUE $FP_QUEUE &
+kafkaProducer $KAFKA_SERVER "domainsTopic" $FP_QUEUE &
+
+wait
+
+
+# As more than one command have to write to a pipe, the simpler model don't apply in this example
+###callFestin "germanramos.com" $DNS_SERVER "False" |
+###searchDomains "germanramos.com" | findOpenPorts "80,443" | kafkaProducer $KAFKA_SERVER, $itegration_topic

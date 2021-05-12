@@ -1,66 +1,83 @@
 ##
 ##
-## Starting file descriptor for queus
-QUEUE_MIN=100
+## Index for the pipe file descriptor in the queue array
+QUEUE_FD=0
 
-## Index of the file descriptor for reads
-QUEUE_READ_FD=0
-
-## Index of the file descriptor for writes
-QUEUE_WRITE_FD=1
-
-## Index of the pipe path
-QUEUE_PIPE_PATH=2
+## Index of the pipe path in the queue array
+QUEUE_PIPE_PATH=1
 
 
-## Opens a queue for read and write and returns an structure with their file descriptors
+## Opens a named pipe for read and write and createss a global variable with the
+## given name holding a structure representing the queue
 ## Receives the name of the queue as param
-## Returns an array with the input and output file descriptors. It must be called using evaluation
-## MYQUEUE=($(openQueue "myqueue"))
 openQueue() {
+  local queueName=$1
+  local pipeName="/tmp/$queueName"
+
   # Create named pipe
-  local pipeName="/tmp/$1"
   mkfifo $pipeName
 
-  # create file descriptors and redirect for read and write
-  local queue=( $((QUEUE_MIN++)) $((QUEUE_MIN++)) )
-#  exec ${queue[$QUEUE_WRITE_FD]}>${pipeName}
-#  exec ${queue[$QUEUE_READ_FD]}<${pipeName}
-  exec 101>|${pipeName}
-  exec 100<${pipeName}
+  # Create the global variable for the queue and a local reference
+  declare -ga $queueName
+  local -n queue=$queueName
+  queue=( 0 $pipeName )
 
-  echo "${queue[@]}"
+  # Create file descriptor and redirect for read and write
+  exec {queue[$QUEUE_FD]}<>${pipeName}
+
 }
 
-## Closes a queue by closing its input and output file descriptors and deleting its file.
+## Closes a queue by closing the file descriptor and deleting its pipe file.
 ## Receives the queue to close
 closeQueue() {
-  local queue=$1
+  local -n queue=$1
 
-  exec ${queue[$QUEUE_READ_FD]} <&-
-  exec ${queue[$QUEUE_WRITE_FD]} <&-
+  exec {queue[$QUEUE_FD]}<&-
 
-  rm -q ${queue[$QUEUE_PIPE_PATH]}
+  rm "${queue[$QUEUE_PIPE_PATH]}"
 
 }
 
-## Reads an item from a queue.
+## Reads an item from a queue
 ## Receives the queue to read from
-## returns the item readed. It must be called using evaluation
+## Returns the item readed. It must be called using command substitution
 ## DATA=$(readQueue $MYQUEUE)
 readQueue() {
+  local -n queue=$1
   local data
-  local queue=$1
-  read -u ${queue[$QUEUE_READ_FD]} data
+
+  read -u ${queue[$QUEUE_FD]} data
 
   echo "$data"
 }
 
 
-## Writess an item to a queue.
-## Receives the queue to write to and the item to write.
-## writeQueue $MYQUEUE "Peacho de dato"
+## Writess an item to a queue
+## Receives the queue to write to and a data item
 writeQueue() {
-  local fd=${1[$QUEUE_WRITE_FD]}
-  echo "$2" >&${fd}
+  local -n queue=$1
+  local fd=${queue[$QUEUE_FD]}
+
+  echo "$2">&${fd}
+}
+
+## Helper function to get the type of a variable.
+## Receives a variable.
+## Returns a string with the type (str, int, array, map)
+typeof() {
+
+    local signature=$(declare -p "$1" 2>/dev/null)
+
+    if [[ "$signature" =~ "declare --" ]]; then
+        printf "str"
+      elif [[ "$signature" =~ "declare -i" ]]; then
+          printf "int"
+    elif [[ "$signature" =~ "declare -a" ]]; then
+        printf "array"
+    elif [[ "$signature" =~ "declare -A" ]]; then
+        printf "map"
+    else
+        printf "none"
+    fi
+
 }
