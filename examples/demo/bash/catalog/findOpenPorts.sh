@@ -27,7 +27,7 @@ findOpenPorts() {
     nmap -p "${ports}" --open ${ip} | awk '{print $1, $2, $3}' | grep open | \
     while read port status schema
     do
-      local msg="{\"port\": ${port}, \"protocol\": \"$schema\"}"
+      local msg="{\"port\": ${port%"/tcp"}, \"protocol\": \"$schema\"}"
       if [[ -n $queueOut ]]
       then
         writeQueue $queueOut "$msg"

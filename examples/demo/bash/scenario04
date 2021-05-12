@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 # Use MIST library
 . mist/core.sh
@@ -10,14 +10,42 @@ set -e
 . catalog/findOpenPorts.sh
 . catalog/kafkaProducer.sh
 . catalog/festin.sh
+. catalog/S3.sh
 
 FD_QUEUE="foundDomains"
 FP_QUEUE="foundPorts"
+KF_QUEUE="toKafka"
+S3_QUEUE="toS3"
+
+# Local function to split traffic to kafka or s3 based on port
+dispatcher() {
+  local queueIn=$1
+  local httpQueueOut=$2
+  local httpsQueueOut=$3
+  local data
+
+  data=$(readQueue $queueIn)
+  while [[ $data != "END" ]]
+  do
+    if [[ "${data}" =~ '"port": 80,' ]]
+    then
+      writeQueue $httpQueueOut "$data"
+    else
+      writeQueue $httpsQueueOut "$data"
+    fi
+    data=$(readQueue $queueIn)
+  done
+
+  writeQueue $httpQueueOut "$END"
+  writeQueue $httpsQueueOut "$END"
+}
 
 # Cleanup queues after finishing
 cleanup() {
     closeQueue $FD_QUEUE
     closeQueue $FP_QUEUE
+    closeQueue $KF_QUEUE
+    closeQueue $S3_QUEUE
 }
 
 trap cleanup EXIT ERR
@@ -25,12 +53,16 @@ trap cleanup EXIT ERR
 # Create queues
 openQueue $FD_QUEUE
 openQueue $FP_QUEUE
+openQueue $KF_QUEUE
+openQueue $S3_QUEUE
 
 # Launch workflows
 searchDomains "germanramos.com" $FD_QUEUE &
 callFestin "germanramos.com" $DNS_SERVER "False" $FD_QUEUE &
 findOpenPorts "80,443" $FD_QUEUE $FP_QUEUE &
-kafkaProducer $KAFKA_SERVER "domainsTopic" $FP_QUEUE &
+dispatcher $FP_QUEUE $KF_QUEUE $S3_QUEUE &
+kafkaProducer $KAFKA_SERVER "domainsTopic" $KF_QUEUE &
+s3Store $S3_BUCKET_URI $S3_QUEUE &
 
 wait
 
