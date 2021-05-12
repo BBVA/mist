@@ -11,5 +11,5 @@ async def test_filterDictPipe(examples_path):
         content = f.read()
     
     console = await execute_from_text(content, waitTime=1)
-    assert """{'a': 1, 'b': 2}
-{'a': 1}\n""" == console
+    assert '''{"a": 1, "b": 2}
+{"a": 1}\n''' == console

@@ -12,4 +12,4 @@ async def test_search_in_json_example(examples_path):
 
     console = await execute_from_text(content)
 
-    assert "['Pankaj', 'David', 'David', 'Jim']\n" in console
+    assert '["Pankaj", "David", "David", "Jim"]\n' in console

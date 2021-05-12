@@ -433,7 +433,7 @@ Print the arguments in a standard output line.
 ### Parameters
 - texts - Variable list of arguments to print.
     """
-    print(*([t for t in texts if texts]))
+    print(*([json.dumps(t) if isinstance(t, dict) or isinstance(t, list) else t for t in texts if texts]))
 
 def coreAbort(reason=None, stack:list=None, commands:list=None):
     """## abort

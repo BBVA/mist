@@ -11,5 +11,5 @@ async def test_list2dict(examples_path):
         content = f.read()
     
     console = await execute_from_text(content, waitTime=1)
-    assert """{'a': 1, 'b': 2, 'c': 3}
-{'a': 1, 'b': 2, 'c': 3}\n""" == console
+    assert '''{"a": 1, "b": 2, "c": 3}
+{"a": 1, "b": 2, "c": 3}\n''' == console

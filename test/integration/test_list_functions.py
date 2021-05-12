@@ -14,7 +14,7 @@ async def test_list_functions(examples_path):
     results = console.split("\n")
     assert "Length = 3" == results[0]
     assert "Cleared = []" == results[1]
-    assert "Sorted = ['four', 'one', 'three', 'two']" == results[2]
-    assert "Reversed = ['two', 'three', 'one', 'four']" == results[3]
-    assert "Appended = ['two', 'three', 'one', 'four', 'five']" == results[4]
-    assert "Removed = ['three', 'one', 'four', 'five']" == results[5]
+    assert 'Sorted = ["four", "one", "three", "two"]' == results[2]
+    assert 'Reversed = ["two", "three", "one", "four"]' == results[3]
+    assert 'Appended = ["two", "three", "one", "four", "five"]' == results[4]
+    assert 'Removed = ["three", "one", "four", "five"]' == results[5]

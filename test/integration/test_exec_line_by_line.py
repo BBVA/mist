@@ -12,7 +12,7 @@ async def test_exec(examples_path):
 
     console = await execute_from_text(content,stack=[{"MistBaseNamespace": True}])
 
-    assert """H: requirements-doc.txt
+    assert '''H: requirements-doc.txt
 H: requirements-test.txt
 H: requirements.txt
-{'result': True, 'resultCode': 0,""" in console
+{"result": true, "resultCode": 0,''' in console

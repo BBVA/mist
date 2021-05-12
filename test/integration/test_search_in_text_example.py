@@ -12,4 +12,4 @@ async def test_search_in_text_example(examples_path):
 
     console = await execute_from_text(content)
 
-    assert "['Peter', 'Peter']" in console
+    assert '["Peter", "Peter"]' in console

@@ -15,10 +15,10 @@ async def test_call_methods(examples_path):
     assert """hola Pepe
 HOLA PEPE
 Hola pepe
-['hola', 'Pepe']
+["hola", "Pepe"]
 hola
-['Pepe', 'hola']
-{'name': 'Pepe', 'greeting': 'hola'}
+["Pepe", "hola"]
+{"name": "Pepe", "greeting": "hola"}
 dict_keys(['name', 'greeting'])
 FOO
 BAR\n""" == console
