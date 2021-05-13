@@ -9,6 +9,7 @@ import asyncio
 import inspect
 from functools import partial
 import uuid
+import urllib.parse
 
 from mist.lang.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 from mist.lang.config import config
@@ -639,6 +640,19 @@ Register a function to be executed at the end of the program
     """
     finallyHooks.append((fname, [*p], stack, commands))
 
+def urlEncode(s, stack:list=None, commands:list=None):
+    """## urlEncode
+
+Encode an string as url
+
+### Parameters
+- s - string to encopde
+
+### Return and sent value
+The resulting encoded string
+    """
+    return urllib.parse.quote(s)
+
 class _Functions(dict):
 
     def __init__(self):
@@ -681,6 +695,7 @@ class _Functions(dict):
         self["list2dict"] = {"native": True, "commands": list2dict, "async": True}
         self["dict2list"] = {"native": True, "commands": dict2list, "async": True}
         self["registerFinallyHook"] = {"native": True, "commands": registerFinallyHook}
+        self["urlEncode"] = {"native": True, "commands": urlEncode}
 
 functions = _Functions()
 
