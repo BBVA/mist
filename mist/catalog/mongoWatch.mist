@@ -1,0 +1,25 @@
+# Name: mongoWatch
+# Version: 1.0.0
+# Concurrency: Async
+# Description: Subscribe to a MongoDB collection for new inserts. For ever.
+# Tags: database, mongo, mongodb, subscribe, watch
+# Tools: mongo
+
+watchScript = '''
+    cursor = db[collection].watch([{'$match': {'operationType': {'$in': ['insert']}}}])
+    while (!cursor.isExhausted()){
+        if (cursor.hasNext()){
+            print(JSON.stringify(cursor.next().fullDocument))
+        }
+    }
+'''
+
+function mongoWatch(uri, user, password, collection) => out {    
+    localPath = tmpFile()
+    writeLine(localPath, "collection='{collection}';")
+    writeLine(localPath, watchScript)
+    r = exec ("mongo {uri} --username {user} --password {password} --quiet {localPath}", False) {
+        json = parseJSON(outputLine)
+        json => out
+    }
+}
