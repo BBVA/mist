@@ -1,0 +1,11 @@
+# Name: trelloNewCard
+# Version: 1.0.0
+# Concurrency: Sync
+# Description: Add a new card to a trello list
+# Tags: web, trello
+# Tools: curl
+
+function trelloNewCard(idList, name, desc) => out {
+    r = exec("curl -X POST 'https://api.trello.com/1/cards?key={$TRELLO_API_KEY}&token={$TRELLO_TOKEN}&idList={idList}&name={urlEncode(name)}&desc={urlEncode(desc)}'", False)
+    return r
+}
