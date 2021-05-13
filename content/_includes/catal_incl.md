@@ -320,6 +320,54 @@ kafkaProducer("hello", "127.0.0.1:9092", "prueba")
 ```
 
 
+<a id="mongoWatch"></a>
+# *mongoWatch* command
+
+## Description
+
+Subscribe to a MongoDB collection for new inserts.
+Every time that a document is inserted in the collection it will be send for the output stream
+This command run for ever. If you want to stop the program you will need to do Control-C
+or programatically call to abort function
+
+*NOTE*: Due to MongoDB limitations the database must be a replicaset. An stand alone database will not work.
+
+## Concurrency Type
+
+Async
+
+## Input parameters
+
+- **uri**: MongoDB URI including database. i.e.: mongodb+srv://cluster0.ou8h3.mongodb.net/myDatabase
+- **user**: Username for MondoDB connection
+- **password**: Password for MondoDB connection
+- **collection**: Collection to watch for new inserts.
+
+## Output parameters
+
+The document inserted. Output stream.
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- mongo
+
+## Example
+
+Use $MONGO... enrivonment variables to connect to MongoDB.  
+Watch "customers" collection.  
+Print every new document inserted.  
+
+```bash
+include "mongoWatch"
+
+mongoWatch($MONGO_URI, $MONGO_USER, $MONGO_PASSWORD, "customers") => doc
+
+doc => print()
+```
+
+
 <a id="pythonCodeAnalysis"></a>
 # *PythonCodeAnalysis* command
 
@@ -441,4 +489,48 @@ Read file domains.txt, send every line to queue "l". Stop reading when "*END*" i
 include "tail"
 tail("domains.txt","*END*") => l
 print(: l)
+```
+
+
+<a id="trelloNewCard"></a>
+# *trello* library
+
+## Description
+
+This command allow to add a new card to a trello list easily.
+It is needed to set the following environment variables:
+
+- TRELLO_API_KEY
+- TRELLO_TOKEN
+
+Please, see Trello API documentation to get those values (<https://trello.com/app-key>)
+
+## Concurrency Type
+
+Sync
+
+## Input parameters
+
+- **idList**: String. List id for add the new card
+- **name**: String. Card title.
+- **desc**: String. Card description.
+
+## Output parameters
+
+curl execution result
+
+## Tools and services
+
+The following commands need to be available in your command path:
+
+- curl
+
+## Example
+
+Create a new card at list with id 609cf4drtd25e143c94afd42.
+Please, see Trello API documentation to get this value (<https://developer.atlassian.com/cloud/trello/rest/api-group-actions/>)
+
+``` text
+include "trelloNewCard"
+trelloNewCard("609cf4drtd25e143c94afd42", "Test Card", "Mi test card description")
 ```

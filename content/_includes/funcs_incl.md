@@ -104,11 +104,11 @@ The filtered dictionary.
     
 ## get
 
-Return the element of the list at the given index.
+Return one element from a list or dictionary.
 
 ### Parameters
-- l - List containing elements.
-- index - The requested index.
+- l - List or Dictionary containing elements.
+- index - The requested index (number for lists, string for dictionaries)
 
 ### Return value
 Returns the element at the given index.
@@ -369,6 +369,16 @@ Converts the argument to string.
 
 ### Return value
 `value` converted to string.
+    
+## urlEncode
+
+Encode an string as url
+
+### Parameters
+- s - string to encopde
+
+### Return and sent value
+The resulting encoded string
     
 ## uuidStr
 
