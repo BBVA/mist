@@ -1,4 +1,4 @@
-include "searchDomains" "filterRepeated" 
+include "searchDomains" "filterRepeated" "mongoWatch" "trelloNewCard"
 include "wpscan.mist"
 #import "./wpscan.py"
 
@@ -7,8 +7,14 @@ function save(r) {
         print("[INFO] Wordpress found at", r.wpinfo.target_url)
         url = r.wpinfo.target_url
         fields = url.split("/")
-        writeLine("{fields[2]}.json", r.consoleOutput)
+        domain = fields[2]
+        writeLine("{domain}.json", r.consoleOutput)
+        trelloNewCard($TRELLO_LIST_ID, domain, r.consoleOutput)
+        #exec("curl -X POST 'https://api.trello.com/1/cards?key={$TRELLO_API_KEY}&token={$TRELLO_TOKEN}&idList={$TRELLO_LIST_ID}&name={domain}&desc={url}'", False)
     }
 }
 
-searchDomains(%domain) => filterRepeated(False) => wpscan() => save()
+%domain => domains
+mongoWatch($MONGO_URI, $MONGO_USER, $MONGO_PASSWORD, "customers") => get("domain") => domains
+
+domains => searchDomains() => filterRepeated(False) => wpscan() => save()
