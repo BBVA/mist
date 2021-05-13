@@ -321,18 +321,20 @@ Retuens the result of evaluating the given expression.
     """
     return eval(command)
 
-def get(l, index, stack:list=None, commands:list=None):
+async def get(l, index, stack:list=None, commands:list=None):
     """## get
 
-Return the element of the list at the given index.
+Return one element from a list or dictionary.
 
 ### Parameters
-- l - List containing elements.
-- index - The requested index.
+- l - List or Dictionary containing elements.
+- index - The requested index (number for lists, string for dictionaries)
 
 ### Return value
 Returns the element at the given index.
     """
+    if "targetStream" in stack[-1]:
+        await streams.send(stack[-1]["targetStream"][0], l[index])
     return l[index]
 
 async def isEqual(left, right, stack:list=None, commands:list=None):
@@ -532,7 +534,7 @@ Description.
 - name - desc.
 - name - desc.
     """
-    stack[-1]["process"].terminate()
+    helpers.get_var("process", stack).terminate()
 
 def kill(stack:list=None, commands:list=None):
     """## kill
@@ -657,7 +659,7 @@ class _Functions(dict):
         self["reduce"] = {"native": True, "commands": listReduce}
         self["sleep"] = {"native": True, "commands": sleep, "async": True}
         self["eval"] = {"native": True, "commands": pythonEval}
-        self["get"] = {"native": True, "commands": get}
+        self["get"] = {"native": True, "commands": get, "async": True}
         self["isEqual"] = {"native": True, "commands": isEqual, "async": True}
         self["isGreater"] = {"native": True, "commands": isGreater, "async": True}
         self["contains"] = {"native": True, "commands": contains}

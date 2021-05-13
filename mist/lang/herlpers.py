@@ -110,8 +110,7 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         namedArgsDict = dict(zip(f["args"], args))
     if targetStream:
         namedArgsDict["targetStream"] = targetStream
-    if not isNative:
-        stack.append(namedArgsDict)
+    stack.append(namedArgsDict)
     if sourceStream:
         queue, position, namedName = findQueueInArgs(args, namedArgsDict)
         if not isNative:
@@ -129,7 +128,9 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         if isNative:
             if targetStream:
                 stack[-1]["targetStream"] = targetStream
-            return await callNative(f, args, namedArgs, namedArgsDict, stack, commands)
+            result = await callNative(f, args, namedArgs, namedArgsDict, stack, commands)
+            stack.pop()
+            return result
         await command_runner(f["commands"], stack)
         lastStack = stack.pop()
         return lastStack["MistFunctionResultTmpVariable"] if "MistFunctionResultTmpVariable" in lastStack else None
