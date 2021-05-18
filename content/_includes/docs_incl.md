@@ -6,11 +6,17 @@
 
 When you need to create complex Workflows and need to communicate different tools working together, maybe you need `MIST`.
 
-# Why is MIST
+# What is MIST
 
 `MIST` is a high level programming language for defining executions workflows easily.
 
-Ab execution is a command line tool you can invoke from `MIST`. They will connect the tools and manage executions and synchronization fo you.
+`MIST` is interpreted. So, you can use their command line interpreter for running `.mist` programs. `MIST` interpreter will create the workflow graph, execute each tool, manage executions and synchronization fo you.
+
+A quick example about how to run a `MIST` program:
+
+```bash
+> mist run my_program.mist
+```
 
 # Installing
 
@@ -23,6 +29,43 @@ Ab execution is a command line tool you can invoke from `MIST`. They will connec
 <a id="QuickStart"></a>
 # Quick Start
 
+## Requirements
+
+Before start, we should install some command line tools used by catalog functions in the Demos:
+
+### dnsrecon (for searchDomains)
+
+- Ubuntu: sudo apt install dnsrecon
+- Mac & Linux:
+
+``bash
+git clone https://github.com/darkoperator/dnsrecon
+cd dnsrecon && pip install -r requirements.txt
+ln -s /dnsrecon/dnsrecon.py /usr/bin/dnsrecon.py
+
+### nmap (fir findOpenPorts)
+
+- Mac: brew install nmap
+- Ubuntu: sudo apt install nmap
+
+### kafka-console-consumer & kafka-console-producer
+
+- Mac: brew install kafka
+- Ubuntu: sudo apt install kafka
+
+NOTE: For Demo 3 to 5 a Kafka server is expected to be running at localhost
+
+### festin
+
+- Mac & Linux: pip install festin
+
+NOTE: Is also recommended to install **tor** in order to prevent being banned when using festin
+
+## aws (for S3Store)
+
+- Mac: brew install awscli
+- Ubuntu: sudo apt install awscli
+
 ## Demo 1 - The simplest scenario
 
 **Explanation**
@@ -33,7 +76,6 @@ In this scenario we'll do:
 2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
 3. `Fin OpenPorts` - Search open port for each new domain / sub-domain found.   
 4. `Screen (Pring)` - Displays the results into the screen (by using MIST 'print' function).
-
 
 **Use case diagram**
 
@@ -50,7 +92,7 @@ searchDomains(%domain) => findOpenPorts("80,443") => print()
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-01.mist domain=example.com
+> mist run examples/demo/scenario-01.mist domain=example.com
 ```
 
 ## Demo 2 - Sending results to Kafka
@@ -80,7 +122,7 @@ searchDomains(%domain) => findOpenPorts("80,443") =>
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-02.mist domain=example.com
+> mist run examples/demo/scenario-02.mist domain=example.com
 ```
 
 ## Demo 3 - Adding new tool and remove duplicate domains
@@ -116,7 +158,7 @@ foundDomains => filterRepeated(False) =>
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-03.mist domain=example.com
+> mist run examples/demo/scenario-03.mist domain=example.com
 ```
 
 ## Demo 4 - Send results to Kafka and S3 through a dispatcher
@@ -166,7 +208,7 @@ S3Output => S3Store($BUCKET_URI)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-04.mist domain=example.com
+> mist run examples/demo/scenario-04.mist domain=example.com
 ```
 
 ## Demo 5 - Read from Kafka and a File
@@ -223,7 +265,7 @@ S3Output => S3Store($BUCKET_URI)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-05.mist domain=example.com
+> mist run examples/demo/scenario-05.mist domain=example.com
 ```
 
 
