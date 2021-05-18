@@ -11,7 +11,7 @@ When you need to create complex Workflows and need to communicate different tool
 A quick example about how to run a `MIST` program:
 
 ```bash
-> mist my_program.mist
+> mist run my_program.mist
 ```
 
 # Installing
@@ -86,7 +86,7 @@ searchDomains(%domain) => findOpenPorts("80,443") => print()
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-01.mist domain=example.com
+> mist run examples/demo/scenario-01.mist domain=example.com
 ```
 
 ## Demo 2 - Sending results to Kafka
@@ -116,7 +116,7 @@ searchDomains(%domain) => findOpenPorts("80,443") =>
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-02.mist domain=example.com
+> mist run examples/demo/scenario-02.mist domain=example.com
 ```
 
 ## Demo 3 - Adding new tool and remove duplicate domains
@@ -152,7 +152,7 @@ foundDomains => filterRepeated(False) =>
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-03.mist domain=example.com
+> mist run examples/demo/scenario-03.mist domain=example.com
 ```
 
 ## Demo 4 - Send results to Kafka and S3 through a dispatcher
@@ -202,7 +202,7 @@ S3Output => S3Store($BUCKET_URI)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-04.mist domain=example.com
+> mist run examples/demo/scenario-04.mist domain=example.com
 ```
 
 ## Demo 5 - Read from Kafka and a File
@@ -259,7 +259,7 @@ S3Output => S3Store($BUCKET_URI)
 **Execute**
 
 ```bash
-> mist examples/demo/scenario-05.mist domain=example.com
+> mist run examples/demo/scenario-05.mist domain=example.com
 ```
 <!--split-->
 
