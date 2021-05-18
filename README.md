@@ -8,6 +8,12 @@ When you need to create complex Workflows and need to communicate different tool
 
 `MIST` is interpreted. So, you can use their command line interpreter for running `.mist` programs. `MIST` interpreter will create the workflow graph, execute each tool, manage executions and synchronization fo you.
 
+A quick example about how to run a `MIST` program:
+
+```bash
+> mist my_program.mist
+```
+
 # Installing
 
 ```bash
