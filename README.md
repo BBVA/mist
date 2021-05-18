@@ -23,6 +23,43 @@ A quick example about how to run a `MIST` program:
 <!--split-->
 # Quick Start
 
+## Requirements
+
+Before start, we should install some command line tools used by catalog functions in the Demos:
+
+### dnsrecon (for searchDomains)
+
+- Ubuntu: sudo apt install dnsrecon
+- Mac & Linux:
+
+``bash
+git clone https://github.com/darkoperator/dnsrecon
+cd dnsrecon && pip install -r requirements.txt
+ln -s /dnsrecon/dnsrecon.py /usr/bin/dnsrecon.py
+
+### nmap (fir findOpenPorts)
+
+- Mac: brew install nmap
+- Ubuntu: sudo apt install nmap
+
+### kafka-console-consumer & kafka-console-producer
+
+- Mac: brew install kafka
+- Ubuntu: sudo apt install kafka
+
+NOTE: For Demo 3 to 5 a Kafka server is expected to be running at localhost
+
+### festin
+
+- Mac & Linux: pip install festin
+
+NOTE: Is also recommended to install **tor** in order to prevent being banned when using festin
+
+## aws (for S3Store)
+
+- Mac: brew install awscli
+- Ubuntu: sudo apt install awscli
+
 ## Demo 1 - The simplest scenario
 
 **Explanation**
@@ -33,7 +70,6 @@ In this scenario we'll do:
 2. `Search Domains` - Use MIST function for search related domains / sub-domains from a start domain.
 3. `Fin OpenPorts` - Search open port for each new domain / sub-domain found.   
 4. `Screen (Pring)` - Displays the results into the screen (by using MIST 'print' function).
-
 
 **Use case diagram**
 
