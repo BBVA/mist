@@ -1,0 +1,16 @@
+d = {"a": 1, "b": 2, "c": 3}
+d["c"] => print()
+d["c"] => cprint() => print()
+
+function cprint(s) => out {
+    print(s)
+    s => out
+}
+
+l = [1,2,3]
+l[1] => print()
+l[1] => cprint() => print()
+
+l2 = ["a","b","c"]
+l2[2] => print()
+l2[2] => cprint() => print()
