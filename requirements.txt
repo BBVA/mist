@@ -6,3 +6,5 @@ flask
 redis
 flask_sse
 flask-executor
+
+httpx

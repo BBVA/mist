@@ -4,12 +4,10 @@ import re
 import xml.etree.ElementTree as ET
 import json
 from jsonpath_ng.ext import parse
-import csv
 import asyncio
-import inspect
-from functools import partial
 import uuid
 import urllib.parse
+import httpx
 
 from mist.lang.exceptions import (MistException, MistAbortException, MistUndefinedVariableException)
 from mist.lang.config import config
@@ -653,6 +651,39 @@ The resulting encoded string
     """
     return urllib.parse.quote(s)
 
+async def request(url, params={}, headers={}, method="get", data=None, json=None, content=None, verify=True, stack:list=None, commands:list=None):
+    """## request
+
+Make an http request
+
+### Parameters
+- url - string with target url including protocol. Ex: https://example.com
+- params - dictionary containing query params
+- headers - dictionary containing request headers
+- method - string with http method: "get" (default), "post", "put", "delete", "options", "head"
+- verify - boolean to deactivate SSL verification. Defualt is active ("True") 
+- content - bytes data for send binary data with post or put method
+- data - dictionary for send form encoded data with post or put method
+- json - dictionary for send json encoded data with post or put method
+
+NOTE: do not mix content, data and json parameters.
+
+### Return a dictoraty
+- text - string with the response body (if it is text)
+- json - dictionary with the response body (if it is json)
+- content - bytes with the response body (if it is binary)
+- status_code - int
+- headers - headers dictionary
+
+NOTE: More info here: https://www.python-httpx.org/api/#response
+    """
+    async with httpx.AsyncClient(headers=headers, params=params, verify=verify) as client:
+        if method in ["put", "post"]:
+            r = await getattr(client, method)(url, json=json, data=data, content=content)
+        else:
+            r = await getattr(client, method)(url)
+    return r
+
 class _Functions(dict):
 
     def __init__(self):
@@ -696,6 +727,7 @@ class _Functions(dict):
         self["dict2list"] = {"native": True, "commands": dict2list, "async": True}
         self["registerFinallyHook"] = {"native": True, "commands": registerFinallyHook}
         self["urlEncode"] = {"native": True, "commands": urlEncode}
+        self["request"] = {"native": True, "commands": request, "async": True}
 
 functions = _Functions()
 
