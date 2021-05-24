@@ -6,6 +6,14 @@
 # Tools: curl
 
 function trelloNewCard(idList, name, desc) => out {
-    r = exec("curl -X POST 'https://api.trello.com/1/cards?key={$TRELLO_API_KEY}&token={$TRELLO_TOKEN}&idList={idList}&name={urlEncode(name)}&desc={urlEncode(desc)}'", False)
+    url = "https://api.trello.com/1/cards"
+    p = {
+        "key": $TRELLO_API_KEY,
+        "token": $TRELLO_TOKEN,
+        "idList": idList,
+        "name": urlEncode(name),
+        "desc": urlEncode(desc)
+    }
+    r = request(url=url, params=p, method="post")
     return r
 }
