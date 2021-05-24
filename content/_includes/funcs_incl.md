@@ -289,6 +289,31 @@ Register a function to be executed at the end of the program
 - fname - string with the name of the function
 - *p - parameters for the function
     
+## request
+
+Make an http request
+
+### Parameters
+- url - string with target url including protocol. Ex: https://example.com
+- params - dictionary containing query params
+- headers - dictionary containing request headers
+- method - string with http method: "get" (default), "post", "put", "delete", "options", "head"
+- verify - boolean to deactivate SSL verification. Defualt is active ("True") 
+- content - bytes data for send binary data with post or put method
+- data - dictionary for send form encoded data with post or put method
+- json - dictionary for send json encoded data with post or put method
+
+NOTE: do not mix content, data and json parameters.
+
+### Return a dictoraty
+- text - string with the response body (if it is text)
+- json - dictionary with the response body (if it is json)
+- content - bytes with the response body (if it is binary)
+- status_code - int
+- headers - headers dictionary
+
+NOTE: More info here: https://www.python-httpx.org/api/#response
+    
 ## searchInJSON
 
 Finds all the matches of the `JSONpath` expresion in a JSON document.

@@ -35,14 +35,7 @@ Before start, we should install some command line tools used by catalog function
 
 ### dnsrecon (for searchDomains)
 
-- Ubuntu: sudo apt install dnsrecon
-- Mac & Linux:
-
-```bash
-git clone https://github.com/darkoperator/dnsrecon
-cd dnsrecon && pip install -r requirements.txt
-ln -s /dnsrecon/dnsrecon.py /usr/bin/dnsrecon.py
-```
+- Mac & Linux: `pip install git+https://github.com/cr0hn/dnsrecon`
 
 ### nmap (fir findOpenPorts)
 
