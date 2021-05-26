@@ -345,3 +345,29 @@ print(myText.upper())
 This will print "HELLO WORLD"
 
 You can see the documentation about all these funcions in [Python's documentation](https://docs.python.org/3/library/stdtypes.html)
+
+## Call Python functions
+
+You can call any Python function by using the prefix "py."
+
+Example: Call native Python "print" function:
+
+```bash
+py.print("hola")
+```
+
+In addition you can call python funcions from any available module.
+
+Example: Call Python "loads" function from module "json"
+
+```bash
+r = py.json.loads('''{"a": 1}''')
+print(r.a)
+```
+
+Example: Call Python "quote" function from module "urllib.parse"
+
+```bash
+r = py.urllib.parse.quote("a=b")
+print(r)
+```

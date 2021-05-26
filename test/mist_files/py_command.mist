@@ -1,0 +1,7 @@
+py.print("hola")
+
+r = py.json.loads('''{"a": 1}''')
+print(r.a)
+
+r = py.urllib.parse.quote("a=b")
+print(r)

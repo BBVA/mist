@@ -1,8 +1,8 @@
+from mist.lang.function import get
 import re
 from typing import List
 from string import Formatter
-#import inspect
-import asyncio
+import importlib
 
 from mist.lang.config import config
 from mist.lang.environment import environment
@@ -99,7 +99,13 @@ async def function_runner(name, stack, sourceStream, targetStream, args, namedAr
         elif namedArgs:
             for i in namedArgs:
                 namedArgsDict[i.key] = await checkArg(i.value, stack)
-    if name.childs:
+    if name.id == "py":
+        if len(name.childs) > 1:
+            module = importlib.import_module('.'.join(name.childs[0:-1]))
+            f = {"native": True, "commands": getattr(module, name.childs[-1])}
+        if name.childs[0] in __builtins__:
+            f = {"native": True, "commands": __builtins__[name.childs[0]]}
+    elif name.childs:
         o = await name.getValue(stack)
         f = {"native": True, "commands": o}
     else:
