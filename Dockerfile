@@ -3,17 +3,12 @@ RUN pip install --upgrade pip
 
 FROM base as builder
 
-#RUN git clone https://github.com/darkoperator/dnsrecon
-#RUN pip wheel --no-cache-dir --wheel-dir=/root/wheels ./dnsrecon
-
-# RUN pip wheel --no-cache-dir --wheel-dir=/root/wheels mist-lang
 ADD . /mist
 WORKDIR /mist
 RUN pip wheel --no-cache-dir --wheel-dir=/root/wheels .
 
 WORKDIR /
 
-#FROM gcr.io/distroless/python3
 FROM base
 COPY --from=builder /root/wheels /root/wheels
 
@@ -21,15 +16,14 @@ RUN python -m pip install --no-cache-dir --no-cache /root/wheels/* \
     && rm -rf /root/wheels
 
 RUN apt update
-RUN apt install -y nmap
+RUN apt install -y nmap awscli default-jre
+RUN pip install bandit festin git+https://github.com/cr0hn/dnsrecon
 RUN curl -L https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 --output /usr/bin/gitleaks && chmod a+x /usr/bin/gitleaks
-RUN pip install bandit festin
+RUN curl --show-error --location "https://downloads.apache.org/kafka/2.8.0/kafka_2.13-2.8.0.tgz" | tar -xzf - -C /usr/local
+RUN cd /usr/local/kafka_2.13-2.8.0/bin && ln -s kafka-console-consumer.sh kafka-console-consumer && ln -s kafka-console-producer.sh kafka-console-producer
+ENV PATH="/usr/local/kafka_2.13-2.8.0/bin:${PATH}"
 
-RUN git clone https://github.com/darkoperator/dnsrecon
-RUN cd dnsrecon && pip install -r requirements.txt
-RUN ln -s /dnsrecon/dnsrecon.py /usr/bin/dnsrecon.py
-
-RUN mist
+RUN mist version
 
 EXPOSE 9000
 ENTRYPOINT ["mist"]
