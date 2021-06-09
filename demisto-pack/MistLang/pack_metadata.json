@@ -1,0 +1,22 @@
+{
+    "name": "Mist",
+    "description": "MIST is a high level programming language for defining executions workflows easily.",
+    "support": "community",
+    "currentVersion": "1.0.0",
+    "author": "German Ramos",
+    "url": "https://live.paloaltonetworks.com/t5/cortex-xsoar-discussions/bd-p/Cortex_XSOAR_Discussions",
+    "email": "",
+    "categories": [
+        "Utilities"
+    ],
+    "tags": [
+        "mist",
+        "flow"
+    ],
+    "useCases": [],
+    "keywords": [],
+    "devEmail": [
+        "german.ramos@gmail.com"
+    ],
+    "githubUser": []
+}
