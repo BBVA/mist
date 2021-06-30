@@ -2,7 +2,7 @@ import requests
 from typing import Dict, Any, List, Union, Tuple, Any, Optional
 from mist.action_run import execute_from_text
 from mist.lang.config import config
-import asyncio
+import asyncio, json
 
 # Disable insecure warnings
 requests.packages.urllib3.disable_warnings()  # pylint: disable=no-member
@@ -20,18 +20,22 @@ class Client():
         self.base_url = base_url
         self.verify = verify
 
-    # TODO: REMOVE the following dummy function:
-    def baseintegration_dummy(self, url: str) -> Tuple[str, dict]:
-        #TODO: download from private git repo (github and bitbucket)
+    def baseintegration_dummy(self, url, params) -> Tuple[str, dict]:
+        #TODO: download from git repo
         req = requests.get(url)
         if req.status_code == 200:
             try:
                 #TODO: option to download zip files with multple files programs and then download
                 mist_content = req.content.decode("utf-8", "ignore")
-                #TODO: execute with params
-                output = asyncio.run(execute_from_text(mist_content))
-                return "ok", {"url": url, "output": output}
-                #TODO: if last line is a json, parse it and include it in the output
+                output = asyncio.run(execute_from_text(mist_content, fn_params=params))
+                result = {"url": url, "raw_output": output}
+                try:
+                    output_json = json.loads(output)
+                    for k,v in output_json.items():
+                        result[k] = v
+                except:
+                    pass
+                return "ok", result
             except Exception as e:
                 return "mist file error", {"url": url, "output": str(e)}
         return "network error", {"url": url, "output": str(req.status_code)}
@@ -58,12 +62,22 @@ def test_module(client: Client) -> str:
     return message
 
 
-def baseintegration_dummy_command(client: Client, url) -> Tuple[str, dict]: #CommandResults:
+def baseintegration_dummy_command(client: Client, url, params = "") -> Tuple[str, dict]: #CommandResults:
     if not url:
         raise ValueError('url not specified')
 
+    params_dict = {}
+    if params:
+        try:
+            params_json = json.loads(params)
+            for p in params_json:
+                f = p.strip().split("=")
+                params_dict[f[0].strip()] = f[1].strip()
+        except:
+            raise ValueError('Malformed params.')
+
     # Call the Client function and get the raw response
-    result = client.baseintegration_dummy(url)
+    result = client.baseintegration_dummy(url, params_dict)
 
     # return CommandResults(
     #     outputs_prefix='BaseIntegration',
