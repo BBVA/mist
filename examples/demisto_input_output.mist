@@ -1,0 +1,2 @@
+out = {"output_message1": %input_message2, "output_message2": %input_message1}
+print(out)

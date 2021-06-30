@@ -1,6 +1,4 @@
-include "searchDomains" "filterRepeated" "mongoWatch" "trelloNewCard"
-include "wpscan.mist"
-#import "./wpscan.py"
+include "searchDomains" "filterRepeated" "mongoWatch" "trelloNewCard" "wpscan.mist"
 
 function save(r) {
     if (r.result) {
@@ -8,13 +6,9 @@ function save(r) {
         url = r.wpinfo.target_url
         fields = url.split("/")
         domain = fields[2]
-        writeLine("{domain}.json", r.consoleOutput)
         trelloNewCard($TRELLO_LIST_ID, domain, r.consoleOutput)
-        #exec("curl -X POST 'https://api.trello.com/1/cards?key={$TRELLO_API_KEY}&token={$TRELLO_TOKEN}&idList={$TRELLO_LIST_ID}&name={domain}&desc={url}'", False)
     }
 }
 
-%domain => domains
 mongoWatch($MONGO_URI, $MONGO_USER, $MONGO_PASSWORD, "customers") => get("domain") => domains
-
 domains => searchDomains() => filterRepeated(False) => wpscan() => save()
