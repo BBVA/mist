@@ -1,129 +1,194 @@
 id: mist-example
+version: 8
+vcShouldKeepItemLegacyProdMachine: false
 name: mist-example
-version: -1
-fromversion: 4.5.0
-starttaskid: '0'
+starttaskid: "0"
 tasks:
-  '0':
-    id: '0'
-    taskid: '0'
+  "0":
+    id: "0"
+    taskid: 2350853f-886d-4764-892c-08b191b778fd
     type: start
     task:
-      id: '0'
+      id: 2350853f-886d-4764-892c-08b191b778fd
       version: -1
-      name: ''
+      name: ""
       iscommand: false
-      brand: ''
-      description: ''
+      brand: ""
     nexttasks:
       '#none#':
-      - '1'
+      - "1"
     separatecontext: false
-    view: '{"position": {"x": 50, "y": 50}}'
+    view: |-
+      {
+        "position": {
+          "x": 50,
+          "y": 50
+        }
+      }
     note: false
     timertriggers: []
     ignoreworker: false
-  '1':
-    id: 1
-    taskid: '1'
+    skipunavailable: false
+    quietmode: 0
+  "1":
+    id: "1"
+    taskid: 79213997-7260-4178-81ca-a47a23087811
     type: regular
     task:
-      id: '1'
+      id: 79213997-7260-4178-81ca-a47a23087811
       version: -1
       name: DeleteContext
-      description: ''
       script: DeleteContext
       type: regular
       iscommand: true
-      brand: ''
+      brand: ""
     nexttasks:
       '#none#':
-      - '2'
+      - "2"
     scriptarguments:
       all:
-        simple: yes
+        simple: "yes"
     separatecontext: false
-    view: '{"position": {"x": 50, "y": 200}}'
+    view: |-
+      {
+        "position": {
+          "x": 50,
+          "y": 200
+        }
+      }
     note: false
     timertriggers: []
     ignoreworker: false
     skipunavailable: false
-  '2':
-    id: 2
-    taskid: '2'
+    quietmode: 0
+  "2":
+    id: "2"
+    taskid: e6e3d513-b227-4c98-8dbe-eac82efaa8b2
     type: regular
     task:
-      id: '2'
+      id: e6e3d513-b227-4c98-8dbe-eac82efaa8b2
       version: -1
       name: baseintegration-dummy
-      description: ''
       script: '|||baseintegration-dummy'
       type: regular
       iscommand: true
-      brand: ''
+      brand: ""
     nexttasks:
       '#none#':
-      - '3'
-    scriptarguments: {}
+      - "3"
+    scriptarguments:
+      params:
+        simple: |-
+          [
+          "input_message1=foo",
+          "input_message2=bar"
+          ]
+      url:
+        simple: https://raw.githubusercontent.com/BBVA/mist/master/examples/demisto_input_output.mist
     separatecontext: false
-    view: '{"position": {"x": 50, "y": 400}}'
+    view: |-
+      {
+        "position": {
+          "x": 50,
+          "y": 400
+        }
+      }
     note: false
     timertriggers: []
     ignoreworker: false
     skipunavailable: false
-  '3':
-    id: '3'
-    taskid: '3'
+    quietmode: 0
+  "3":
+    id: "3"
+    taskid: d422b1fa-564e-4f79-8419-90d741011504
     type: condition
     task:
-      id: '3'
+      id: d422b1fa-564e-4f79-8419-90d741011504
       version: -1
       name: Verify Outputs
       type: condition
       iscommand: false
-      description: ''
-      brand: ''
+      brand: ""
     nexttasks:
-      yes:
-      - '4'
+      "yes":
+      - "4"
     separatecontext: false
     conditions:
-    - label: yes
+    - label: "yes"
       condition:
+      - - operator: isExists
+          left:
+            value:
+              simple: raw_output
+            iscontext: true
       - - operator: isNotEmpty
           left:
             value:
               simple: url
             iscontext: true
-      - - operator: isNotEmpty
+      - - operator: isEqualString
           left:
             value:
-              simple: raw_output
+              simple: output_message1
             iscontext: true
-    view: '{"position": {"x": 50, "y": 600}}'
+          right:
+            value:
+              simple: bar
+      - - operator: isEqualString
+          left:
+            value:
+              simple: output_message2
+            iscontext: true
+          right:
+            value:
+              simple: foo
+    view: |-
+      {
+        "position": {
+          "x": 60,
+          "y": 600
+        }
+      }
     note: false
     timertriggers: []
     ignoreworker: false
     skipunavailable: false
-  '4':
-    id: '4'
-    taskid: '4'
+    quietmode: 0
+  "4":
+    id: "4"
+    taskid: b505b5e5-b6a4-4953-8df3-1ebe17a10676
     type: title
     task:
-      id: '4'
+      id: b505b5e5-b6a4-4953-8df3-1ebe17a10676
       version: -1
       name: Test Done
       type: title
       iscommand: false
-      brand: ''
-      description: ''
+      brand: ""
     separatecontext: false
-    view: '{"position": {"x": 50, "y": 800}}'
+    view: |-
+      {
+        "position": {
+          "x": 50,
+          "y": 800
+        }
+      }
     note: false
     timertriggers: []
     ignoreworker: false
     skipunavailable: false
-view: '{"linkLabelsPosition": {}, "paper": {"dimensions": {"height": 200, "width":
-  380, "x": 50, "y": 50}}}'
+    quietmode: 0
+view: |-
+  {
+    "linkLabelsPosition": {},
+    "paper": {
+      "dimensions": {
+        "height": 815,
+        "width": 390,
+        "x": 50,
+        "y": 50
+      }
+    }
+  }
 inputs: []
 outputs: []
