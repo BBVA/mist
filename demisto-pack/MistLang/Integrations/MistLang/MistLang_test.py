@@ -93,3 +93,26 @@ def test_baseintegration_dummy_with_params():
     assert response[1]["raw_output"] == '{"output_message1": "bar", "output_message2": "foo"}\n'
     assert response[1]["output_message1"] == "bar"
     assert response[1]["output_message2"] == "foo"
+
+def test_baseintegration_dummy_zip():
+    """Tests helloworld-say-hello command function.
+
+    Checks the output of the command function with the expected output.
+
+    No mock is needed here because the say_hello_command does not call
+    any external API.
+    """
+    from MistLang import Client, baseintegration_dummy_command
+
+    client = Client(base_url='some_mock_url', verify=False)
+    args = {
+        'url': 'https://raw.githubusercontent.com/BBVA/mist/master/examples/multi_file.zip',
+    }
+    response = baseintegration_dummy_command(client, **args)
+
+    assert response[0] == "ok"
+    assert response[1]["raw_output"] == '{"message": "hello"}\n'
+    assert response[1]["message"] == "hello"
+    
+
+

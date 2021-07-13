@@ -3,6 +3,9 @@ from typing import Dict, Any, List, Union, Tuple, Any, Optional
 from mist.action_run import execute_from_text
 from mist.lang.config import config
 import asyncio, json
+from zipfile import ZipFile
+from io import BytesIO
+import os
 
 # Disable insecure warnings
 requests.packages.urllib3.disable_warnings()  # pylint: disable=no-member
@@ -25,8 +28,14 @@ class Client():
         req = requests.get(url)
         if req.status_code == 200:
             try:
-                #TODO: option to download zip files with multple files programs and then download
-                mist_content = req.content.decode("utf-8", "ignore")
+                if url.endswith(".zip"):
+                    zipfile = ZipFile(BytesIO(req.content))
+                    zipfile.extractall("./mist_tmp_zip")
+                    os.chdir('./mist_tmp_zip')
+                    with open("main.mist") as f:
+                        mist_content = f.read()
+                else:
+                    mist_content = req.content.decode("utf-8", "ignore")
                 output = asyncio.run(execute_from_text(mist_content, fn_params=params))
                 result = {"url": url, "raw_output": output}
                 try:
@@ -38,6 +47,10 @@ class Client():
                 return "ok", result
             except Exception as e:
                 return "mist file error", {"url": url, "output": str(e)}
+            finally:
+                if os.path.abspath(os.path.curdir).endswith("mist_tmp_zip"):
+                    os.chdir('..')
+                    os.system("rm -rf ./mist_tmp_zip")
         return "network error", {"url": url, "output": str(req.status_code)}
 
 
