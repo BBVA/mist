@@ -1,0 +1,3 @@
+include "aux.mist"
+
+hello()

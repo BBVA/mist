@@ -1,0 +1,4 @@
+function hello() {
+    msg = {"message": "hello"}
+    print(msg)
+}
